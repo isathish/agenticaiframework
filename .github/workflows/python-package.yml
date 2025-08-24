@@ -80,7 +80,7 @@ jobs:
 
       - name: agenticaiframework
         run: |
-          pytest --maxfail=1 --disable-warnings -q --cov=agenticaiframeworksdk --cov-report=term-missing --cov-fail-under=80
+          pytest --maxfail=1 --disable-warnings -q --cov=agenticai --cov-report=term-missing --cov-fail-under=80
 
       - name: agenticaiframework
         run: |
