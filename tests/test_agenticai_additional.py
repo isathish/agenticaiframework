@@ -8,6 +8,7 @@ from agenticai.evaluation import EvaluationSystem
 from agenticai.guardrails import Guardrail, GuardrailManager
 from agenticai.hub import Hub
 from agenticai.knowledge import KnowledgeRetriever
+from agenticai.llms import LLMManager
 
 def test_register_and_list_protocols(capsys):
     cm = CommunicationManager()
@@ -138,3 +139,33 @@ def test_knowledge_retriever_with_exception(capsys):
     assert results == []
     captured = capsys.readouterr()
     assert "Error retrieving from source 'bad_source'" in captured.out
+
+
+def test_llm_manager_register_set_generate_list(capsys):
+    lm = LLMManager()
+    lm.register_model("m1", lambda prompt, kwargs: f"Response to {prompt}")
+    assert "m1" in lm.list_models()
+    lm.set_active_model("m1")
+    result = lm.generate("Hello")
+    assert "Response to Hello" in result
+    captured = capsys.readouterr()
+    assert "Registered LLM model 'm1'" in captured.out
+    assert "Active LLM model set to 'm1'" in captured.out
+
+def test_llm_manager_no_active_model(capsys):
+    lm = LLMManager()
+    result = lm.generate("test")
+    assert result is None
+    captured = capsys.readouterr()
+    assert "No active model set" in captured.out
+
+def test_llm_manager_with_exception(capsys):
+    lm = LLMManager()
+    def faulty(prompt, kwargs):
+        raise ValueError("fail")
+    lm.register_model("bad", faulty)
+    lm.set_active_model("bad")
+    result = lm.generate("test")
+    assert result is None
+    captured = capsys.readouterr()
+    assert "Error generating with model 'bad'" in captured.out
