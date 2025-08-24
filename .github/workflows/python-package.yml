@@ -1,4 +1,4 @@
-name: Python Package CI/CD
+name: agenticaiframework
 
 on:
   push:
@@ -37,23 +37,23 @@ jobs:
       id-token: write
       contents: write
     steps:
-      - name: Checkout repository
+      - name: agenticaiframework
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUBPATTOKEN || secrets.GITHUB_TOKEN }}
 
-      - name: Set up Python
+      - name: agenticaiframework
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
 
-      - name: Install base dependencies
+      - name: agenticaiframework
         run: |
           python -m pip install --upgrade pip
           pip install setuptools wheel build pytest pytest-cov git-changelog
 
-      - name: Determine and bump version
+      - name: agenticaiframework
         id: version
         run: |
           pip install bump2version
@@ -73,15 +73,15 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           grep "version=" setup.py
 
-      - name: Install package in editable mode
+      - name: agenticaiframework
         run: |
           pip install -e .[dev]
 
-      - name: Run tests with coverage
+      - name: agenticaiframework
         run: |
           pytest --maxfail=1 --disable-warnings -q --cov=agenticai --cov-report=term-missing --cov-fail-under=80
 
-      - name: Commit and tag version
+      - name: agenticaiframework
         run: |
           git config user.name "isathish"
           git config user.email "isathish@icloud.com"
@@ -90,13 +90,13 @@ jobs:
           git commit -m "chore: release $VERSION [skip ci]" || true
           git tag -fa "v$VERSION" -m "Release $VERSION"
 
-      - name: Generate changelog
+      - name: agenticaiframework
         run: |
           git-changelog -o CHANGELOG.md || echo "Changelog generation failed"
           git add CHANGELOG.md
           git commit -m "docs: update changelog for v${{ steps.version.outputs.version }} [skip ci]" || true
 
-      - name: Push changes and tags
+      - name: agenticaiframework
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUBPATTOKEN }}
         run: |
@@ -107,11 +107,11 @@ jobs:
           git push origin HEAD:main
           git push origin --tags --force
 
-      - name: Build package
+      - name: agenticaiframework
         run: |
           python -m build
 
-      - name: Publish package to PyPI with Twine
+      - name: agenticaiframework
         run: |
           python -m pip install --upgrade pip
           pip install twine
@@ -120,10 +120,10 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN || '' }}
 
-      - name: Create GitHub Release
+      - name: agenticaiframework
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ steps.version.outputs.version }}
+          tag_name: agenticaiframework
           files: dist/*
           generate_release_notes: true
         env:
