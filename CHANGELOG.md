@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v1.0.12](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.12) - 2025-08-24
+
+<small>[Compare with v1.0.11](https://github.com/isathish/agenticaiframework/compare/v1.0.11...v1.0.12)</small>
+
+### Added
+
+- Add GitHub Actions workflow to deploy MkDocs site to Pages ([21c0d51](https://github.com/isathish/agenticaiframework/commit/21c0d516f0b3834d612e237b2e17afefa7a551d0) by isathish).
+
 ## [v1.0.11](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.11) - 2025-08-24
 
 <small>[Compare with v1.0.10](https://github.com/isathish/agenticaiframework/compare/v1.0.10...v1.0.11)</small>
