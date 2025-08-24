@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v1.0.4](https://github.com/isathish/AgenticAI/releases/tag/v1.0.4) - 2025-08-24
+
+<small>[Compare with v1.0.3](https://github.com/isathish/AgenticAI/compare/v1.0.3...v1.0.4)</small>
+
+### Added
+
+- Add .gitignore for .DS_Store and fix workflow environment config ([ae890f7](https://github.com/isathish/AgenticAI/commit/ae890f72d15a21c547a65bb472446e86be86bbb6) by isathish).
+- Add comprehensive documentation for API, usage, and extension ([9430bdf](https://github.com/isathish/AgenticAI/commit/9430bdf8a113fe3d8538c02c0c86be90475ffbdf) by isathish).
+
 ## [v1.0.3](https://github.com/isathish/AgenticAI/releases/tag/v1.0.3) - 2025-08-24
 
 <small>[Compare with v1.0.2](https://github.com/isathish/AgenticAI/compare/v1.0.2...v1.0.3)</small>
