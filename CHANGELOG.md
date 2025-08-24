@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v1.0.10](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.10) - 2025-08-24
+
+<small>[Compare with v1.0.8](https://github.com/isathish/agenticaiframework/compare/v1.0.8...v1.0.10)</small>
+
+### Added
+
+- Add bumpversion config and update package version to 1.0.9 ([57c1329](https://github.com/isathish/agenticaiframework/commit/57c13298efeecad166ce373b0bd0ce2eff063bef) by isathish).
+
 ## [v1.0.8](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.8) - 2025-08-24
 
 <small>[Compare with v1.0.7](https://github.com/isathish/agenticaiframework/compare/v1.0.7...v1.0.8)</small>
