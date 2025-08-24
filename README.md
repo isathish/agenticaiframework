@@ -1,2 +1,0 @@
-# AgenticAI
-AgenticAI
