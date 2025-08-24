@@ -1,3 +1,21 @@
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://isathish.github.io/agenticaiframework/">
+    <img src="https://img.shields.io/pypi/v/agenticaiframework?color=blue&label=PyPI%20Version&logo=python&logoColor=white" alt="PyPI Version">
+  </a>
+  <a href="https://pypi.org/project/agenticaiframework/">
+    <img src="https://img.shields.io/pypi/dm/agenticaiframework?color=green&label=Downloads&logo=python&logoColor=white" alt="Downloads">
+  </a>
+  <a href="https://github.com/isathish/agenticaiframework/actions">
+    <img src="https://img.shields.io/github/actions/workflow/status/isathish/agenticaiframework/python-package.yml?branch=main&label=Build&logo=github" alt="Build Status">
+  </a>
+  <a href="https://isathish.github.io/agenticaiframework/">
+    <img src="https://img.shields.io/badge/Documentation-Online-blue?logo=readthedocs&logoColor=white" alt="Documentation">
+  </a>
+</div>
+
+---
 # AgenticAI API Reference
 
 This document provides a reference for the main classes, functions, and modules in **AgenticAI**.
