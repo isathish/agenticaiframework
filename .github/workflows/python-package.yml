@@ -124,7 +124,7 @@ jobs:
       - name: agenticaiframework
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: agenticaiframework
+          tag_name: v${{ steps.version.outputs.version }}
           files: dist/*
           generate_release_notes: true
         env:
