@@ -1,21 +1,3 @@
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://isathish.github.io/agenticaiframework/">
-    <img src="https://img.shields.io/pypi/v/agenticaiframework?color=blue&label=PyPI%20Version&logo=python&logoColor=white" alt="PyPI Version">
-  </a>
-  <a href="https://pypi.org/project/agenticaiframework/">
-    <img src="https://img.shields.io/pypi/dm/agenticaiframework?color=green&label=Downloads&logo=python&logoColor=white" alt="Downloads">
-  </a>
-  <a href="https://github.com/isathish/agenticaiframework/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/isathish/agenticaiframework/python-package.yml?branch=main&label=Build&logo=github" alt="Build Status">
-  </a>
-  <a href="https://isathish.github.io/agenticaiframework/">
-    <img src="https://img.shields.io/badge/Documentation-Online-blue?logo=readthedocs&logoColor=white" alt="Documentation">
-  </a>
-</div>
-
----
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -24,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v1.0.16](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.16) - 2025-08-24
+
+<small>[Compare with v1.0.15](https://github.com/isathish/agenticaiframework/compare/v1.0.15...v1.0.16)</small>
+
+### Added
+
+- Add project logo and status badges to README and docs ([93fcf60](https://github.com/isathish/agenticaiframework/commit/93fcf60502e0ac3f9d02c28c26b23da883a548f2) by isathish).
+
 ## [v1.0.15](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.15) - 2025-08-24
 
 <small>[Compare with v1.0.14](https://github.com/isathish/agenticaiframework/compare/v1.0.14...v1.0.15)</small>
