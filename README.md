@@ -18,7 +18,7 @@
 ---
 # AgenticAI Framework
 
-AgenticAI Framework (`agenticaiframeworkframework`) is a **Python SDK** for building **agentic applications** with advanced orchestration, monitoring, multimodal capabilities, and enterprise-grade scalability.  
+AgenticAI Framework (`agenticaiframework`) is a **Python SDK** for building **agentic applications** with advanced orchestration, monitoring, multimodal capabilities, and enterprise-grade scalability.  
 It provides a modular, extensible architecture for creating intelligent agents that can interact, reason, and execute tasks across multiple domains.
 
 ---
@@ -47,7 +47,7 @@ It provides a modular, extensible architecture for creating intelligent agents t
 ## 📦 Installation
 
 ```bash
-pip install agenticaiframeworkframework
+pip install agenticaiframework
 ```
 
 ---
@@ -55,7 +55,7 @@ pip install agenticaiframeworkframework
 ## ⚡ Quick Start
 
 ```python
-from agenticaiframeworkframework import Agent, AgentManager
+from agenticaiframework import Agent, AgentManager
 
 # Create an agent
 agent = Agent(
@@ -79,7 +79,7 @@ agent.start()
 
 ### 1. Creating and Running an Agent
 ```python
-from agenticaiframeworkframework import Agent
+from agenticaiframework import Agent
 
 agent = Agent(name="HelperBot", role="assistant", capabilities=["text"])
 agent.start()
@@ -87,8 +87,8 @@ agent.start()
 
 ### 2. Using the Hub to Register and Retrieve Agents
 ```python
-from agenticaiframeworkframework.hub import register_agent, get_agent
-from agenticaiframeworkframework import Agent
+from agenticaiframework.hub import register_agent, get_agent
+from agenticaiframework import Agent
 
 agent = Agent(name="DataBot", role="data_processor", capabilities=["data"])
 register_agent(agent)
@@ -99,7 +99,7 @@ print(retrieved_agent.name)  # Output: DataBot
 
 ### 3. Memory Management
 ```python
-from agenticaiframeworkframework.memory import Memory
+from agenticaiframework.memory import Memory
 
 memory = Memory()
 memory.store("user_name", "Alice")
@@ -108,7 +108,7 @@ print(memory.retrieve("user_name"))  # Output: Alice
 
 ### 4. Running Processes
 ```python
-from agenticaiframeworkframework.processes import run_process
+from agenticaiframework.processes import run_process
 
 def greet():
     return "Hello, World!"
@@ -122,13 +122,13 @@ print(result)  # Output: Hello, World!
 ## 🛠 Configuration
 
 You can configure agents and the framework using:
-- **Programmatic configuration** via `agenticaiframeworkframework.configurations`
+- **Programmatic configuration** via `agenticaiframework.configurations`
 - **Environment variables**
 - **Configuration files**
 
 Example:
 ```python
-from agenticaiframeworkframework.configurations import set_config
+from agenticaiframework.configurations import set_config
 
 set_config("max_concurrent_tasks", 5)
 ```
@@ -144,7 +144,7 @@ pytest
 
 Run with coverage:
 ```bash
-pytest --cov=agenticaiframeworkframework --cov-report=term-missing
+pytest --cov=agenticaiframework --cov-report=term-missing
 ```
 
 ---
