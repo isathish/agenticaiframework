@@ -31,7 +31,8 @@ on:
 jobs:
   build_test_publish:
     if: github.ref == 'refs/heads/main'
-    # Removed invalid environment key to fix workflow validation error
+    environment:
+      name: pypi
     runs-on: ubuntu-latest
     permissions:
       id-token: write
