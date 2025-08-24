@@ -1,7 +1,7 @@
 site_name: AgenticAI Framework Documentation
 site_description: Comprehensive documentation for the AgenticAI Framework Python SDK
 site_author: Sathishkumar Nagarajan
-repo_url: https://github.com/isathish/agenticaiframework
+repo_url: https://github.com/isathish/agenticaiframeworkframework
 theme:
   name: material
   palette:

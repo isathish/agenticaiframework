@@ -132,6 +132,28 @@ AgenticAI Framework supports:
 - **LLMs** – OpenAI, Anthropic, HuggingFace, etc.
 - **Communication Protocols** – HTTP, WebSockets, gRPC, MQ.
 - **Custom Tools** – Easily add your own.
+- **Knowledge Retrieval** – Integrate with vector databases and search engines.
+- **MCP Tools** – Extend capabilities with Model Context Protocol integrations.
+
+---
+
+## 🧪 Testing
+
+Run tests:
+```bash
+pytest
+```
+
+Run with coverage:
+```bash
+pytest --cov=agenticaiframework --cov-report=term-missing
+```
+
+---
+
+## 📄 Documentation Sections
+
+- [API Reference](API_REFERENCE.md)
 - [Usage Guide](USAGE.md)
 - [Configuration](CONFIGURATION.md)
 - [Examples](EXAMPLES.md)
@@ -140,13 +162,71 @@ AgenticAI Framework supports:
 
 ---
 
+## 📘 Advanced Topics
+
+### Multi-Agent Orchestration
+Coordinate multiple agents for complex workflows:
+```python
+from agenticaiframework import Agent, AgentManager
+
+agent1 = Agent(name="DataCollector", role="collector", capabilities=["data"])
+agent2 = Agent(name="DataAnalyzer", role="analyzer", capabilities=["analysis"])
+
+manager = AgentManager()
+manager.register_agent(agent1)
+manager.register_agent(agent2)
+
+# Example orchestration logic
+agent1.start()
+agent2.start()
+```
+
+### Monitoring and Logging
+```python
+from agenticaiframework.monitoring import log_event
+
+log_event("Agent started", level="INFO")
+```
+
+### MCP Tools Integration
+```python
+from agenticaiframework.mcp_tools import load_tool
+
+tool = load_tool("weather")
+result = tool.run({"location": "New York"})
+print(result)
+```
+
+### Knowledge Base Integration
+```python
+from agenticaiframework.knowledge import KnowledgeBase
+
+kb = KnowledgeBase()
+kb.add_document("doc1", "This is a sample document.")
+print(kb.search("sample"))
+```
+
+---
+
+## 📊 Performance Tips
+
+- Use asynchronous processes for I/O-bound tasks.
+- Limit concurrent agents to avoid resource contention.
+- Cache frequently used data in memory.
+- Use guardrails to prevent invalid or unsafe operations.
+
+---
+
 ## 🤝 Contributing
 
 We welcome contributions!  
 1. Fork the repo.  
 2. Create a feature branch.  
-3. Submit a pull request.
+3. Submit a pull request.  
+4. Ensure all tests pass before submission.
 
 ---
+
+## 📜 License
 
 © 2025 AgenticAI Framework. Licensed under the MIT License.
