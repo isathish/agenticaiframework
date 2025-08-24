@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="agenticaiframework",
+    name="agenticaiframeworkframework",
     version="1.0.5",
     author="Sathishkumar Nagarajan",
     author_email="mail@sathishkumarnagarajan.com",

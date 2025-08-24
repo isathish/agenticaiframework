@@ -8,7 +8,7 @@ This document explains how to configure **AgenticAI** for different environments
 
 You can configure AgenticAI in three ways:
 
-1. **Programmatically** – Using `set_config()` from `agenticai.configurations`.
+1. **Programmatically** – Using `set_config()` from `agenticaiframeworkframework.configurations`.
 2. **Configuration File** – Editing `configurations.py`.
 3. **Environment Variables** – Setting variables before running your application.
 
@@ -29,7 +29,7 @@ You can configure AgenticAI in three ways:
 ## 3. Programmatic Configuration
 
 ```python
-from agenticai.configurations import set_config
+from agenticaiframeworkframework.configurations import set_config
 
 set_config("llm_provider", "openai")
 set_config("api_key", "your_api_key_here")
@@ -49,7 +49,7 @@ export AGENTICAI_API_KEY=your_api_key_here
 
 ## 5. Configuration File
 
-Edit `agenticai/configurations.py`:
+Edit `agenticaiframeworkframework/configurations.py`:
 
 ```python
 CONFIG = {
@@ -74,7 +74,7 @@ CONFIG = {
 ## 7. Verifying Configuration
 
 ```python
-from agenticai.configurations import get_config
+from agenticaiframeworkframework.configurations import get_config
 
 print(get_config("llm_provider"))
 ```

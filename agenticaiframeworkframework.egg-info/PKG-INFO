@@ -1,3 +1,26 @@
+Metadata-Version: 2.4
+Name: agenticaiframeworkframework
+Version: 1.0.5
+Summary: AgenticAI - A Python SDK for building agentic applications with advanced orchestration, monitoring, and multimodal capabilities.
+Home-page: https://github.com/isathish/AgenticAI
+Author: Sathishkumar Nagarajan
+Author-email: mail@sathishkumarnagarajan.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+Dynamic: summary
+
 # AgenticAI
 
 AgenticAI is a Python SDK for building **agentic applications** with advanced orchestration, monitoring, multimodal capabilities, and enterprise-grade scalability.
@@ -24,13 +47,13 @@ AgenticAI is a Python SDK for building **agentic applications** with advanced or
 ## Installation
 
 ```bash
-pip install agenticaiframeworkframework
+pip install agenticaiframework
 ```
 
 ## Quick Start
 
 ```python
-from agenticaiframeworkframework import Agent, AgentManager
+from agenticaiframework import Agent, AgentManager
 
 # Create an agent
 agent = Agent(name="ExampleAgent", role="assistant", capabilities=["text"], config={})

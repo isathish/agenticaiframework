@@ -16,7 +16,9 @@ agenticaiframework/monitoring.py
 agenticaiframework/processes.py
 agenticaiframework/prompts.py
 agenticaiframework/tasks.py
-agenticaiframework.egg-info/PKG-INFO
-agenticaiframework.egg-info/SOURCES.txt
-agenticaiframework.egg-info/dependency_links.txt
-agenticaiframework.egg-info/top_level.txt
+agenticaiframeworkframework.egg-info/PKG-INFO
+agenticaiframeworkframework.egg-info/SOURCES.txt
+agenticaiframeworkframework.egg-info/dependency_links.txt
+agenticaiframeworkframework.egg-info/top_level.txt
+tests/test_agenticai.py
+tests/test_agenticai_additional.py

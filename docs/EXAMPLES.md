@@ -7,8 +7,8 @@ This document provides practical examples of using **AgenticAI** for various tas
 ## 1. Simple Agent Example
 
 ```python
-from agenticai.agents import Agent
-from agenticai.hub import register_agent, get_agent
+from agenticaiframeworkframework.agents import Agent
+from agenticaiframeworkframework.hub import register_agent, get_agent
 
 class ReverseAgent(Agent):
     def act(self, input_data):
@@ -25,7 +25,7 @@ print(agent.act("Hello"))  # Output: olleH
 ## 2. Using a Tool
 
 ```python
-from agenticai.hub import register_tool, get_tool
+from agenticaiframeworkframework.hub import register_tool, get_tool
 
 def word_count_tool(text):
     return {"word_count": len(text.split())}
@@ -41,8 +41,8 @@ print(tool("This is a test sentence."))
 ## 3. Combining Agents and Tools
 
 ```python
-from agenticai.hub import register_agent, get_agent, register_tool, get_tool
-from agenticai.agents import Agent
+from agenticaiframeworkframework.hub import register_agent, get_agent, register_tool, get_tool
+from agenticaiframeworkframework.agents import Agent
 
 class UpperCaseAgent(Agent):
     def act(self, input_data):
@@ -68,7 +68,7 @@ print(result)  # Output: HELLO WORLD!!!
 ## 4. Using Memory
 
 ```python
-from agenticai.memory import Memory
+from agenticaiframeworkframework.memory import Memory
 
 memory = Memory()
 memory.store("session_id", "12345")
@@ -80,7 +80,7 @@ print(memory.retrieve("session_id"))
 ## 5. Running a Process
 
 ```python
-from agenticai.processes import run_process
+from agenticaiframeworkframework.processes import run_process
 
 result = run_process("data_cleaning", {"file": "data.csv"})
 print(result)
@@ -91,7 +91,7 @@ print(result)
 ## 6. LLM Integration Example
 
 ```python
-from agenticai.llms import OpenAIModel
+from agenticaiframeworkframework.llms import OpenAIModel
 
 llm = OpenAIModel(api_key="your_api_key_here")
 response = llm.generate("Write a haiku about AI.")
@@ -103,7 +103,7 @@ print(response)
 ## 7. Guardrails Example
 
 ```python
-from agenticai.guardrails import add_guardrail
+from agenticaiframeworkframework.guardrails import add_guardrail
 
 def block_sensitive_data(input_data):
     if "password" in input_data.lower():
@@ -118,7 +118,7 @@ add_guardrail(block_sensitive_data)
 ## 8. Full Workflow Example
 
 ```python
-from agenticai.hub import get_agent, get_tool
+from agenticaiframeworkframework.hub import get_agent, get_tool
 
 agent = get_agent("default_agent")
 tool = get_tool("sentiment_analysis")

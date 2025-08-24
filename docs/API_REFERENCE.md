@@ -6,27 +6,27 @@ This document provides a reference for the main classes, functions, and modules 
 
 ## 1. Modules Overview
 
-- **agenticai.agents** – Agent base classes and implementations.
-- **agenticai.communication** – Communication utilities.
-- **agenticai.configurations** – Configuration management.
-- **agenticai.evaluation** – Evaluation and scoring.
-- **agenticai.guardrails** – Safety and compliance checks.
-- **agenticai.hub** – Registry for agents, tools, and processes.
-- **agenticai.knowledge** – Knowledge base management.
-- **agenticai.llms** – LLM integrations.
-- **agenticai.mcp_tools** – MCP tool integrations.
-- **agenticai.memory** – Memory management.
-- **agenticai.monitoring** – Monitoring and logging.
-- **agenticai.processes** – Workflow orchestration.
-- **agenticai.prompts** – Prompt templates.
-- **agenticai.tasks** – Task management.
+- **agenticaiframeworkframework.agents** – Agent base classes and implementations.
+- **agenticaiframeworkframework.communication** – Communication utilities.
+- **agenticaiframeworkframework.configurations** – Configuration management.
+- **agenticaiframeworkframework.evaluation** – Evaluation and scoring.
+- **agenticaiframeworkframework.guardrails** – Safety and compliance checks.
+- **agenticaiframeworkframework.hub** – Registry for agents, tools, and processes.
+- **agenticaiframeworkframework.knowledge** – Knowledge base management.
+- **agenticaiframeworkframework.llms** – LLM integrations.
+- **agenticaiframeworkframework.mcp_tools** – MCP tool integrations.
+- **agenticaiframeworkframework.memory** – Memory management.
+- **agenticaiframeworkframework.monitoring** – Monitoring and logging.
+- **agenticaiframeworkframework.processes** – Workflow orchestration.
+- **agenticaiframeworkframework.prompts** – Prompt templates.
+- **agenticaiframeworkframework.tasks** – Task management.
 
 ---
 
 ## 2. Core Classes
 
 ### `Agent`
-**Location:** `agenticai.agents`
+**Location:** `agenticaiframeworkframework.agents`
 
 **Methods:**
 - `act(input_data)` – Perform an action based on input.
@@ -36,7 +36,7 @@ This document provides a reference for the main classes, functions, and modules 
 ---
 
 ### `Memory`
-**Location:** `agenticai.memory`
+**Location:** `agenticaiframeworkframework.memory`
 
 **Methods:**
 - `store(key, value)` – Store a value.
@@ -46,7 +46,7 @@ This document provides a reference for the main classes, functions, and modules 
 ---
 
 ### `Hub`
-**Location:** `agenticai.hub`
+**Location:** `agenticaiframeworkframework.hub`
 
 **Functions:**
 - `register_agent(name, cls)` – Register an agent.
@@ -59,14 +59,14 @@ This document provides a reference for the main classes, functions, and modules 
 ## 3. Utility Functions
 
 ### `set_config(key, value)`
-**Location:** `agenticai.configurations`
+**Location:** `agenticaiframeworkframework.configurations`
 
 Set a configuration value.
 
 ---
 
 ### `run_process(name, params)`
-**Location:** `agenticai.processes`
+**Location:** `agenticaiframeworkframework.processes`
 
 Run a registered process.
 
@@ -75,7 +75,7 @@ Run a registered process.
 ## 4. Example Usage
 
 ```python
-from agenticai.hub import get_agent
+from agenticaiframeworkframework.hub import get_agent
 
 agent = get_agent("default_agent")
 print(agent.act("Hello"))
