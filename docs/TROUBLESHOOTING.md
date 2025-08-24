@@ -6,11 +6,11 @@ This guide lists common issues you may encounter when using **AgenticAI** and ho
 
 ## 1. Installation Issues
 
-### Problem: `ModuleNotFoundError: No module named 'agenticaiframeworkframework'`
+### Problem: `ModuleNotFoundError: No module named 'agenticaiframework'`
 **Solution:**
 - Ensure you have installed the package:
 ```bash
-pip install agenticaiframeworkframework
+pip install agenticaiframework
 ```
 - If installing from source:
 ```bash

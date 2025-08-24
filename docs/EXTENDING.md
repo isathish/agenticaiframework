@@ -27,15 +27,15 @@ AgenticAI is organized into several core modules:
 
 ## 2. Adding a New Agent
 
-1. Create a new class in `agenticaiframeworkframework/agents.py` or a new file in `agenticaiframeworkframework/agents/` if modularizing.
+1. Create a new class in `agenticaiframework/agents.py` or a new file in `agenticaiframework/agents/` if modularizing.
 2. Inherit from the base `Agent` class.
 3. Implement required methods such as `act()`, `observe()`, and `plan()`.
 4. Register the agent in `hub.py` so it can be discovered.
 
 **Example:**
 ```python
-from agenticaiframeworkframework.agents import Agent
-from agenticaiframeworkframework.hub import register_agent
+from agenticaiframework.agents import Agent
+from agenticaiframework.hub import register_agent
 
 class MyCustomAgent(Agent):
     def act(self, input_data):
@@ -54,7 +54,7 @@ register_agent("my_custom_agent", MyCustomAgent)
 
 **Example:**
 ```python
-from agenticaiframeworkframework.hub import register_tool
+from agenticaiframework.hub import register_tool
 
 def sentiment_analysis_tool(text):
     # Implement sentiment analysis logic

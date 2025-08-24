@@ -9,7 +9,7 @@ This guide explains how to install, configure, and use the **AgenticAI** package
 Install AgenticAI from PyPI:
 
 ```bash
-pip install agenticaiframeworkframework
+pip install agenticaiframework
 ```
 
 Or install from source:
@@ -27,8 +27,8 @@ pip install .
 ### Creating and Running an Agent
 
 ```python
-from agenticaiframeworkframework.agents import Agent
-from agenticaiframeworkframework.hub import register_agent, get_agent
+from agenticaiframework.agents import Agent
+from agenticaiframework.hub import register_agent, get_agent
 
 class EchoAgent(Agent):
     def act(self, input_data):
@@ -47,7 +47,7 @@ print(agent.act("Hello World"))
 AgenticAI comes with prebuilt agents. You can load them via the hub:
 
 ```python
-from agenticaiframeworkframework.hub import get_agent
+from agenticaiframework.hub import get_agent
 
 agent = get_agent("default_agent")
 response = agent.act("Summarize this text.")
@@ -61,7 +61,7 @@ print(response)
 Edit `configurations.py` or pass configuration at runtime:
 
 ```python
-from agenticaiframeworkframework.configurations import set_config
+from agenticaiframework.configurations import set_config
 
 set_config("llm_provider", "openai")
 set_config("api_key", "your_api_key_here")
@@ -72,7 +72,7 @@ set_config("api_key", "your_api_key_here")
 ## 5. Using Tools
 
 ```python
-from agenticaiframeworkframework.hub import get_tool
+from agenticaiframework.hub import get_tool
 
 sentiment_tool = get_tool("sentiment_analysis")
 result = sentiment_tool("I love this product!")
@@ -84,7 +84,7 @@ print(result)
 ## 6. Running Processes
 
 ```python
-from agenticaiframeworkframework.processes import run_process
+from agenticaiframework.processes import run_process
 
 result = run_process("data_analysis", {"dataset": "data.csv"})
 print(result)
@@ -95,7 +95,7 @@ print(result)
 ## 7. Memory Usage
 
 ```python
-from agenticaiframeworkframework.memory import Memory
+from agenticaiframework.memory import Memory
 
 mem = Memory()
 mem.store("user_name", "Alice")
@@ -107,7 +107,7 @@ print(mem.retrieve("user_name"))
 ## 8. Example Workflow
 
 ```python
-from agenticaiframeworkframework.hub import get_agent, get_tool
+from agenticaiframework.hub import get_agent, get_tool
 
 agent = get_agent("default_agent")
 tool = get_tool("sentiment_analysis")

@@ -24,13 +24,13 @@ AgenticAI is a Python SDK for building **agentic applications** with advanced or
 ## Installation
 
 ```bash
-pip install agenticaiframeworkframework
+pip install agenticaiframework
 ```
 
 ## Quick Start
 
 ```python
-from agenticaiframeworkframework import Agent, AgentManager
+from agenticaiframework import Agent, AgentManager
 
 # Create an agent
 agent = Agent(name="ExampleAgent", role="assistant", capabilities=["text"], config={})
