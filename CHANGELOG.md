@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <small>[Compare with v1.0.7](https://github.com/isathish/agenticaiframework/compare/v1.0.7...v1.0.8)</small>
 
+### Added
+
+- Add changelog entry for v1.0.8 release with comparison link ([d5c27c5](https://github.com/isathish/agenticaiframework/commit/d5c27c580081c55a3560dfd0c871c549814af412) by isathish).
+
 ## [v1.0.7](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.7) - 2025-08-24
 
 <small>[Compare with v1.0.6](https://github.com/isathish/agenticaiframework/compare/v1.0.6...v1.0.7)</small>
