@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="agenticaiframework",
-    version=__import__("re").sub(r'(\d+)$', lambda m: str(int(m.group(1)) + 1), "1.0.8"),
+    version="1.0.9",
     author="Sathishkumar Nagarajan",
     author_email="mail@sathishkumarnagarajan.com",
     description="AgenticAI - A Python SDK for building agentic applications with advanced orchestration, monitoring, and multimodal capabilities.",
