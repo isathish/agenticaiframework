@@ -1,0 +1,130 @@
+name: Python Package CI/CD
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "docs/**"
+      - ".github/workflows/static.yml"
+
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: "Type of release (patch, minor, major)"
+        required: true
+        default: "patch"
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      custom_version:
+        description: "Custom version (overrides release_type if provided)"
+        required: false
+        default: ""
+        type: string
+
+jobs:
+  build_test_publish:
+    if: github.ref == 'refs/heads/main'
+    # Removed invalid environment key to fix workflow validation error
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUBPATTOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install base dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools wheel build pytest pytest-cov git-changelog
+
+      - name: Determine and bump version
+        id: version
+        run: |
+          pip install bump2version
+          if [ -n "${{ github.event.inputs.custom_version }}" ]; then
+            VERSION="${{ github.event.inputs.custom_version }}"
+            sed -i "s/version=.*/version=\"$VERSION\",/" setup.py
+          else
+            if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
+              CURRENT_VERSION=$(python setup.py --version 2>/dev/null || echo "0.0.0")
+              echo "Current version: $CURRENT_VERSION"
+              git config user.name "isathish"
+              git config user.email "isathish@icloud.com"
+              bump2version --current-version "$CURRENT_VERSION" patch setup.py --allow-dirty
+            fi
+            VERSION=$(python setup.py --version 2>/dev/null || echo "0.0.1")
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          grep "version=" setup.py
+
+      - name: Install package in editable mode
+        run: |
+          pip install -e .[dev]
+
+      - name: Run tests with coverage
+        run: |
+          pytest --maxfail=1 --disable-warnings -q --cov=agenticai --cov-report=term-missing --cov-fail-under=80
+
+      - name: Commit and tag version
+        run: |
+          git config user.name "isathish"
+          git config user.email "isathish@icloud.com"
+          VERSION="${{ steps.version.outputs.version }}"
+          git add setup.py
+          git commit -m "chore: release $VERSION [skip ci]" || true
+          git tag -fa "v$VERSION" -m "Release $VERSION"
+
+      - name: Generate changelog
+        run: |
+          git-changelog -o CHANGELOG.md || echo "Changelog generation failed"
+          git add CHANGELOG.md
+          git commit -m "docs: update changelog for v${{ steps.version.outputs.version }} [skip ci]" || true
+
+      - name: Push changes and tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUBPATTOKEN }}
+        run: |
+          git remote set-url origin https://isathish:${{ secrets.GITHUBPATTOKEN }}@github.com/${{ github.repository }}
+          git stash --include-untracked || true
+          git pull --rebase origin main
+          git stash pop || true
+          git push origin HEAD:main
+          git push origin --tags --force
+
+      - name: Build package
+        run: |
+          python -m build
+
+      - name: Publish package to PyPI with Twine
+        run: |
+          python -m pip install --upgrade pip
+          pip install twine
+          twine upload --verbose dist/*
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN || '' }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          files: dist/*
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
