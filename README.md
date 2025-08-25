@@ -10,11 +10,16 @@
   <a href="https://github.com/isathish/agenticaiframework/actions">
     <img src="https://img.shields.io/github/actions/workflow/status/isathish/agenticaiframework/python-package.yml?branch=main&label=Build&logo=github" alt="Build Status">
   </a>
-  <a href="https://isathish.github.io/agenticaiframework/">
-    <img src="https://img.shields.io/badge/Documentation-Online-blue?logo=readthedocs&logoColor=white" alt="Documentation">
-  </a>
+
 </div>
 
+
+<div align="center">
+  <a href="https://isathish.github.io/agenticaiframework">
+    <img src="https://img.shields.io/badge/Documentation-Online-blue?logo=readthedocs&logoColor=white" alt="Documentation">
+  </a>
+
+</div>
 ---
 # AgenticAI Framework
 
