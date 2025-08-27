@@ -1,163 +1,186 @@
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://isathish.github.io/agenticaiframework/">
-    <img src="https://img.shields.io/pypi/v/agenticaiframework?color=blue&label=PyPI%20Version&logo=python&logoColor=white" alt="PyPI Version">
-  </a>
-  <a href="https://pypi.org/project/agenticaiframework/">
-    <img src="https://img.shields.io/pypi/dm/agenticaiframework?color=green&label=Downloads&logo=python&logoColor=white" alt="Downloads">
-  </a>
-  <a href="https://github.com/isathish/agenticaiframework/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/isathish/agenticaiframework/python-package.yml?branch=main&label=Build&logo=github" alt="Build Status">
-  </a>
-  <a href="https://isathish.github.io/agenticaiframework/">
-    <img src="https://img.shields.io/badge/Documentation-Online-blue?logo=readthedocs&logoColor=white" alt="Documentation">
-  </a>
-</div>
+# Agentic AI Framework - Examples
 
----
-# AgenticAI Examples
-
-This document provides practical examples of using **AgenticAI** for various tasks.
+This document contains runnable examples for various features of the `agenticaiframework` package.  
+Each example is aligned with the actual API and uses the `agenticaiframework` namespace for imports.
 
 ---
 
-## 1. Simple Agent Example
+## 1. Agents Example
 
 ```python
-from agenticaiframework.agents import Agent
-from agenticaiframework.hub import register_agent, get_agent
+from agenticaiframework.agents import AgentManager, Agent
 
-class ReverseAgent(Agent):
-    def act(self, input_data):
-        return input_data[::-1]
+if __name__ == "__main__":
+    agent_manager = AgentManager()
 
-register_agent("reverse", ReverseAgent)
+    example_agent = Agent(name="ExampleAgent")
+    agent_manager.register_agent(example_agent)
 
-agent = get_agent("reverse")
-print(agent.act("Hello"))  # Output: olleH
+    example_agent.start()
+    example_agent.pause()
+    example_agent.resume()
+    example_agent.stop()
+
+    print("Registered Agents:", [agent.name for agent in agent_manager.agents])
+    retrieved_agent = agent_manager.get_agent("ExampleAgent")
+    print("Retrieved Agent:", retrieved_agent.name)
 ```
 
 ---
 
-## 2. Using a Tool
+## 2. Tasks Example
 
 ```python
-from agenticaiframework.hub import register_tool, get_tool
+from agenticaiframework.tasks import TaskManager, Task
 
-def word_count_tool(text):
-    return {"word_count": len(text.split())}
+if __name__ == "__main__":
+    task_manager = TaskManager()
 
-register_tool("word_count", word_count_tool)
+    class AdditionTask(Task):
+        def run(self, a, b):
+            result = a + b
+            print(f"Task Result: {result}")
+            return result
 
-tool = get_tool("word_count")
-print(tool("This is a test sentence."))
+    addition_task = AdditionTask(name="AdditionTask")
+    task_manager.register_task(addition_task)
+
+    addition_task.run(5, 7)
+    print("Registered Tasks:", [task.name for task in task_manager.tasks])
+    retrieved_task = task_manager.get_task("AdditionTask")
+    print("Retrieved Task:", retrieved_task.name)
 ```
 
 ---
 
-## 3. Combining Agents and Tools
+## 3. LLMs Example
 
 ```python
-from agenticaiframework.hub import register_agent, get_agent, register_tool, get_tool
-from agenticaiframework.agents import Agent
+from agenticaiframework.llms import LLMManager
 
-class UpperCaseAgent(Agent):
-    def act(self, input_data):
-        return input_data.upper()
+if __name__ == "__main__":
+    llm_manager = LLMManager()
 
-register_agent("upper", UpperCaseAgent)
+    llm_manager.register_model("demo-llm", lambda prompt: f"[Demo LLM Response to: {prompt}]")
+    llm_manager.set_active_model("demo-llm")
 
-def exclaim_tool(text):
-    return text + "!!!"
-
-register_tool("exclaim", exclaim_tool)
-
-agent = get_agent("upper")
-tool = get_tool("exclaim")
-
-text = "hello world"
-result = tool(agent.act(text))
-print(result)  # Output: HELLO WORLD!!!
+    print("Generated Text:", llm_manager.generate("Explain the concept of machine learning in simple terms."))
+    print("Available Models:", list(llm_manager.models.keys()))
 ```
 
 ---
 
-## 4. Using Memory
+## 4. Guardrails Example
 
 ```python
-from agenticaiframework.memory import Memory
+from agenticaiframework.guardrails import GuardrailManager
 
-memory = Memory()
-memory.store("session_id", "12345")
-print(memory.retrieve("session_id"))
+if __name__ == "__main__":
+    guardrail_manager = GuardrailManager()
+
+    guardrail_manager.add_guardrail("No profanity", lambda text: "badword" not in text)
+    print("Compliant Output Valid:", guardrail_manager.validate("This is clean text."))
+    print("Non-Compliant Output Valid:", guardrail_manager.validate("This contains badword."))
 ```
 
 ---
 
-## 5. Running a Process
+## 5. Memory Example
 
 ```python
-from agenticaiframework.processes import run_process
+from agenticaiframework.memory import MemoryManager
 
-result = run_process("data_cleaning", {"file": "data.csv"})
-print(result)
+if __name__ == "__main__":
+    memory = MemoryManager()
+
+    memory.store_short_term("user_name", "Alice")
+    memory.store_short_term("last_query", "What is the capital of France?")
+
+    print("Retrieved User Name:", memory.retrieve("user_name"))
+    print("Retrieved Last Query:", memory.retrieve("last_query"))
+
+    keys = list(memory.short_term.keys()) + list(memory.long_term.keys()) + list(memory.external.keys())
+    print("Stored Keys:", keys)
+
+    memory.clear_short_term()
+    memory.clear_long_term()
+    memory.clear_external()
+    print("Memory cleared. Keys now:", list(memory.short_term.keys()) + list(memory.long_term.keys()) + list(memory.external.keys()))
 ```
 
 ---
 
-## 6. LLM Integration Example
+## 6. MCP Tools Example
 
 ```python
-from agenticaiframework.llms import OpenAIModel
+from agenticaiframework.mcp_tools import MCPToolManager, MCPTool
 
-llm = OpenAIModel(api_key="your_api_key_here")
-response = llm.generate("Write a haiku about AI.")
-print(response)
+def greet_tool(name: str) -> str:
+    return f"Hello, {name}! Welcome to MCP Tools."
+
+if __name__ == "__main__":
+    mcp_manager = MCPToolManager()
+
+    greet_mcp_tool = MCPTool(name="greet", capability="greeting", execute_fn=greet_tool)
+    mcp_manager.register_tool(greet_mcp_tool)
+
+    print("Available Tools:", [tool.name for tool in mcp_manager.tools])
+    result = mcp_manager.execute_tool("greet", "Alice")
+    print("Tool Execution Result:", result)
 ```
 
 ---
 
-## 7. Guardrails Example
+## 7. Monitoring Example
 
 ```python
-from agenticaiframework.guardrails import add_guardrail
+from agenticaiframework.monitoring import MonitoringSystem
 
-def block_sensitive_data(input_data):
-    if "password" in input_data.lower():
-        raise ValueError("Sensitive data detected!")
-    return input_data
+if __name__ == "__main__":
+    monitor = MonitoringSystem()
 
-add_guardrail(block_sensitive_data)
+    monitor.log_event("AgentStarted", {"agent_name": "ExampleAgent"})
+    monitor.log_event("TaskCompleted", {"task_name": "AdditionTask", "status": "success"})
+
+    monitor.record_metric("ResponseTime", 1.23)
+    monitor.record_metric("Accuracy", 0.98)
+
+    print("Logged Events:", monitor.events)
+    print("Logged Metrics:", monitor.metrics)
 ```
 
 ---
 
-## 8. Full Workflow Example
+## 8. Prompts Example
 
 ```python
-from agenticaiframework.hub import get_agent, get_tool
+from agenticaiframework.prompts import Prompt
 
-agent = get_agent("default_agent")
-tool = get_tool("sentiment_analysis")
+if __name__ == "__main__":
+    prompt_instance = Prompt(
+        template="Write a {length} paragraph summary about {topic}."
+    )
 
-text = "I absolutely love this product!"
-analysis = tool(text)
-response = agent.act(f"Summarize the sentiment: {analysis}")
-print(response)
+    rendered_prompt = prompt_instance.render(length="short", topic="artificial intelligence")
+    print("Rendered Prompt:", rendered_prompt)
 ```
 
 ---
 
-## 9. Testing Your Code
+## 9. Configurations Example
 
+```python
+from agenticaiframework.configurations import ConfigManager
+
+if __name__ == "__main__":
+    config = ConfigManager()
+    config.set("api_key", "123456")
+    print("API Key:", config.get("api_key"))
+```
+
+---
+
+**Usage:**  
+Run any example with:
 ```bash
-pytest
-```
-
----
-
-## 10. Next Steps
-
-- Explore [USAGE.md](USAGE.md) for more details.
-- Learn how to extend the package in [EXTENDING.md](EXTENDING.md).
+python examples/<example_name>.py

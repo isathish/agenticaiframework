@@ -12,7 +12,17 @@ nav:
 - API Reference: API_REFERENCE.md
 - Usage: USAGE.md
 - Configuration: CONFIGURATION.md
-- Examples: EXAMPLES.md
+- Examples:
+  - Overview: EXAMPLES.md
+  - Memory Example: examples/memory_example.md
+  - MCP Tools Example: examples/mcp_tools_example.md
+  - Monitoring Example: examples/monitoring_example.md
+  - Prompts Example: examples/prompts_example.md
+  - Configurations Example: examples/configurations_example.md
+  - Agents Example: examples/agents_example.md
+  - Tasks Example: examples/tasks_example.md
+  - LLMs Example: examples/llms_example.md
+  - Guardrails Example: examples/guardrails_example.md
 - Extending: EXTENDING.md
 - Troubleshooting: TROUBLESHOOTING.md
 - Modules:
