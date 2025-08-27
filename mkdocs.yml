@@ -15,6 +15,18 @@ nav:
 - Examples: EXAMPLES.md
 - Extending: EXTENDING.md
 - Troubleshooting: TROUBLESHOOTING.md
+- Modules:
+  - Agents: agents.md
+  - Memory: memory.md
+  - Hub: hub.md
+  - Processes: processes.md
+  - LLMs: llms.md
+  - Guardrails: guardrails.md
+  - Knowledge: knowledge.md
+  - MCP Tools: mcp_tools.md
+  - Monitoring: monitoring.md
+  - Prompts: prompts.md
+  - Tasks: tasks.md
 docs_dir: docs
 markdown_extensions:
 - toc:
