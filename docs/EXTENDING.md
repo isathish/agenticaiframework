@@ -16,6 +16,93 @@
 </div>
 
 ---
+
+## 9. Creating Custom Communication Protocols
+
+You can extend `communication.py` to support new protocols.
+
+Example: Adding MQTT support
+```python
+import paho.mqtt.client as mqtt
+
+class MQTTCommunication:
+    def __init__(self, broker, port):
+        self.client = mqtt.Client()
+        self.client.connect(broker, port)
+
+    def publish(self, topic, message):
+        self.client.publish(topic, message)
+
+    def subscribe(self, topic, callback):
+        self.client.subscribe(topic)
+        self.client.on_message = lambda client, userdata, msg: callback(msg.payload.decode())
+```
+
+---
+
+## 10. Adding New Process Types
+
+Extend `processes.py` to add new orchestration patterns.
+
+Example: Conditional process execution
+```python
+def conditional_process(condition, process_a, process_b):
+    if condition():
+        return process_a()
+    else:
+        return process_b()
+```
+
+---
+
+## 11. Extending Knowledge Base
+
+Add new retrieval strategies in `knowledge.py`:
+```python
+class CustomKnowledgeBase:
+    def __init__(self):
+        self.data = {}
+
+    def add_document(self, key, content):
+        self.data[key] = content
+
+    def search(self, query):
+        return [v for k, v in self.data.items() if query.lower() in v.lower()]
+```
+
+---
+
+## 12. Advanced Guardrails
+
+Implement multi-step guardrails:
+```python
+from agenticaiframework.guardrails import add_guardrail
+
+def profanity_filter(input_data):
+    banned_words = ["badword"]
+    for word in banned_words:
+        if word in input_data.lower():
+            raise ValueError("Inappropriate content detected!")
+    return input_data
+
+add_guardrail(profanity_filter)
+```
+
+---
+
+## 13. Packaging Extensions
+
+- Place your extensions in a separate module.
+- Add `__init__.py` to make it importable.
+- Document your extension in `EXTENDING.md`.
+
+---
+
+## 14. Testing Extensions
+
+- Write unit tests for each new feature.
+- Use mocks for external API calls.
+- Run `pytest --cov` to ensure coverage.
 # Extending AgenticAI
 
 This guide explains how to extend the **AgenticAI** package to add new capabilities, integrate with external systems, and customize its behavior.

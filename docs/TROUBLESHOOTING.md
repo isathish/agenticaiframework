@@ -16,6 +16,50 @@
 </div>
 
 ---
+
+## 10. Performance Issues
+
+### Problem: Slow agent responses
+**Solution:**
+- Optimize prompt templates to reduce token usage.
+- Use caching for repeated computations.
+- Profile the code to identify bottlenecks.
+
+---
+
+## 11. Deployment Problems
+
+### Problem: Application works locally but fails in production
+**Solution:**
+- Check environment variables are set correctly in production.
+- Ensure all dependencies are installed.
+- Verify network access for external APIs.
+
+---
+
+## 12. Memory Leaks
+
+### Problem: Increasing memory usage over time
+**Solution:**
+- Clear unused memory entries.
+- Use persistent storage for large datasets.
+- Monitor memory usage with `monitoring.py`.
+
+---
+
+## 13. Debugging Tips for Complex Workflows
+
+- Break workflows into smaller steps.
+- Use verbose logging.
+- Test each component in isolation.
+
+---
+
+## 14. Getting Community Support
+
+- Join the GitHub Discussions page.
+- Ask questions on Stack Overflow with the `agenticaiframework` tag.
+- Contribute to the documentation with your own troubleshooting tips.
 # AgenticAI Troubleshooting Guide
 
 This guide lists common issues you may encounter when using **AgenticAI** and how to resolve them.

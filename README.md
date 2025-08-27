@@ -21,14 +21,14 @@
 
 </div>
 ---
-# AgenticAI Framework
+# 🌟 AgenticAI Framework
 
 AgenticAI Framework (`agenticaiframework`) is a **Python SDK** for building **agentic applications** with advanced orchestration, monitoring, multimodal capabilities, and enterprise-grade scalability.  
 It provides a modular, extensible architecture for creating intelligent agents that can interact, reason, and execute tasks across multiple domains.
 
 ---
 
-## 🚀 Features
+## ✨ Key Features
 
 - **Python-based SDK** for building agentic applications
 - **Lightweight, high-performance agents** for efficient execution
@@ -49,7 +49,7 @@ It provides a modular, extensible architecture for creating intelligent agents t
 
 ---
 
-## 📦 Installation
+## 📦 Installation & Setup
 
 ```bash
 pip install agenticaiframework
@@ -57,7 +57,7 @@ pip install agenticaiframework
 
 ---
 
-## ⚡ Quick Start
+## ⚡ Quick Start in 3 Steps
 
 ```python
 from agenticaiframework import Agent, AgentManager
@@ -80,7 +80,10 @@ agent.start()
 
 ---
 
-## 📚 Usage Examples
+## 📚 Usage Examples & Tutorials
+
+For more detailed examples, see the [docs/EXAMPLES.md](docs/EXAMPLES.md) file.
+
 
 ### 1. Creating and Running an Agent
 ```python
@@ -124,7 +127,22 @@ print(result)  # Output: Hello, World!
 
 ---
 
-## 🛠 Configuration
+## 📖 Extended Documentation & Resources
+
+The `docs` folder contains in-depth guides and examples:
+
+- [API Reference](docs/API_REFERENCE.md) — Detailed API documentation for all modules.
+- [Configuration Guide](docs/CONFIGURATION.md) — How to configure agents, processes, and the framework.
+- [Usage Guide](docs/USAGE.md) — Step-by-step instructions for common workflows.
+- [Extending the Framework](docs/EXTENDING.md) — How to add new agents, tools, and capabilities.
+- [Examples](docs/EXAMPLES.md) — Practical code examples for various use cases.
+- [Troubleshooting](docs/TROUBLESHOOTING.md) — Common issues and solutions.
+
+You can also view the online documentation at: [https://isathish.github.io/agenticaiframework/](https://isathish.github.io/agenticaiframework/)
+
+---
+
+## 🛠 Configuration Made Easy
 
 You can configure agents and the framework using:
 - **Programmatic configuration** via `agenticaiframework.configurations`
@@ -140,7 +158,7 @@ set_config("max_concurrent_tasks", 5)
 
 ---
 
-## 🧪 Testing
+## 🧪 Testing & Quality Assurance
 
 Run the test suite with:
 ```bash
@@ -151,6 +169,18 @@ Run with coverage:
 ```bash
 pytest --cov=agenticaiframework --cov-report=term-missing
 ```
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions from the community!  
+1. Fork the repository.  
+2. Create a feature branch.  
+3. Implement your changes with tests.  
+4. Submit a pull request.  
+
+For more details, see the [Contributing Guidelines](docs/CONTRIBUTING.md) (if available).
 
 ---
 

@@ -16,6 +16,89 @@
 </div>
 
 ---
+
+## 9. Environment-Specific Configurations
+
+You can maintain separate configuration files for different environments:
+
+- `config_dev.py` for development
+- `config_staging.py` for staging
+- `config_prod.py` for production
+
+Load them dynamically based on an environment variable:
+
+```python
+import os
+from agenticaiframework.configurations import set_config
+
+env = os.getenv("AGENTICAI_ENV", "dev")
+if env == "prod":
+    from config_prod import CONFIG
+elif env == "staging":
+    from config_staging import CONFIG
+else:
+    from config_dev import CONFIG
+
+for key, value in CONFIG.items():
+    set_config(key, value)
+```
+
+---
+
+## 10. Dynamic Configuration Updates
+
+You can update configuration values at runtime without restarting the application:
+
+```python
+from agenticaiframework.configurations import set_config, get_config
+
+set_config("log_level", "DEBUG")
+print(get_config("log_level"))  # Output: DEBUG
+```
+
+---
+
+## 11. Configuration Validation
+
+Implement validation to ensure configuration values are correct:
+
+```python
+def validate_config():
+    from agenticaiframework.configurations import get_config
+    if not get_config("api_key"):
+        raise ValueError("API key is missing!")
+```
+
+---
+
+## 12. Secrets Management
+
+For sensitive values like API keys, use a secrets manager:
+
+- AWS Secrets Manager
+- HashiCorp Vault
+- Azure Key Vault
+- Google Secret Manager
+
+Example with AWS Secrets Manager:
+
+```python
+import boto3
+import json
+
+def get_secret(secret_name):
+    client = boto3.client("secretsmanager")
+    response = client.get_secret_value(SecretId=secret_name)
+    return json.loads(response["SecretString"])
+```
+
+---
+
+## 13. Best Practices for Configuration
+
+- Keep configuration files out of version control if they contain secrets.
+- Use `.env` files for local development and load them with `python-dotenv`.
+- Document all configuration keys in `CONFIGURATION.md`.
 # AgenticAI Configuration Guide
 
 This document explains how to configure **AgenticAI** for different environments and use cases.

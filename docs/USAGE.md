@@ -16,6 +16,123 @@
 </div>
 
 ---
+
+## 11. Advanced Usage Patterns
+
+### Multi-Agent Collaboration
+You can orchestrate multiple agents to work together on complex tasks.
+
+```python
+from agenticaiframework import Agent, AgentManager
+
+agent1 = Agent(name="Researcher", role="research", capabilities=["text"])
+agent2 = Agent(name="Summarizer", role="summarize", capabilities=["text"])
+
+manager = AgentManager()
+manager.register_agent(agent1)
+manager.register_agent(agent2)
+
+research_result = agent1.act("Find the latest AI research papers on reinforcement learning.")
+summary = agent2.act(f"Summarize this: {research_result}")
+print(summary)
+```
+
+### Asynchronous Processing
+For I/O-bound tasks, use asynchronous processes to improve performance.
+
+```python
+import asyncio
+from agenticaiframework.processes import run_process_async
+
+async def async_task():
+    return "Completed async task"
+
+result = asyncio.run(run_process_async(async_task))
+print(result)
+```
+
+### Integrating External APIs
+Agents can call external APIs as part of their workflow.
+
+```python
+import requests
+from agenticaiframework.agents import Agent
+
+class WeatherAgent(Agent):
+    def act(self, location):
+        response = requests.get(f"https://api.weatherapi.com/v1/current.json?q={location}&key=YOUR_KEY")
+        return response.json()
+
+weather_agent = WeatherAgent(name="WeatherBot", role="weather", capabilities=["data"])
+print(weather_agent.act("New York"))
+```
+
+---
+
+## 12. Deployment Scenarios
+
+### Local Development
+- Install dependencies with `pip install -e .[dev]`
+- Run tests locally before deployment.
+
+### Docker Deployment
+Create a `Dockerfile`:
+```dockerfile
+FROM python:3.10
+WORKDIR /app
+COPY . .
+RUN pip install .
+CMD ["python", "main.py"]
+```
+
+### Cloud Deployment
+Deploy to AWS Lambda, Google Cloud Functions, or Azure Functions by packaging the code and dependencies.
+
+---
+
+## 13. Security Considerations
+
+- Always validate and sanitize inputs to agents.
+- Use guardrails to prevent unsafe actions.
+- Store API keys securely using environment variables or secret managers.
+- Limit network access for agents running in untrusted environments.
+
+---
+
+## 14. Performance Optimization
+
+- Use caching for repeated computations.
+- Optimize prompt templates for LLMs to reduce token usage.
+- Use batch processing for large datasets.
+- Profile and monitor agent performance using `monitoring.py`.
+
+---
+
+## 15. Troubleshooting Complex Workflows
+
+- Enable debug logging: `set_config("log_level", "DEBUG")`
+- Break down workflows into smaller steps for easier debugging.
+- Use `pytest -v` for verbose test output.
+
+---
+
+## 16. Contributing to AgenticAI
+
+We welcome contributions!  
+1. Fork the repository.  
+2. Create a feature branch.  
+3. Implement your changes with tests.  
+4. Submit a pull request.  
+
+---
+
+## 17. Additional Resources
+
+- [API Reference](API_REFERENCE.md)
+- [Configuration Guide](CONFIGURATION.md)
+- [Extending the Framework](EXTENDING.md)
+- [Examples](EXAMPLES.md)
+- [Troubleshooting](TROUBLESHOOTING.md)
 # Using AgenticAI
 
 This guide explains how to install, configure, and use the **AgenticAI** package with practical examples.
