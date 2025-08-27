@@ -1,11 +1,15 @@
-# Agents Example
+# Agent Management Example
 
-This example demonstrates how to create, register, and control an agent using the `AgentManager` and `Agent` classes from the `agenticaiframework` package.
+This guide provides a **professional, step-by-step walkthrough** for creating, registering, and controlling an agent using the `AgentManager` and `Agent` classes from the `agenticaiframework` package.  
+It is intended for developers building intelligent systems that require autonomous or semi-autonomous agents.
 
 ---
 
-## Configuration
-No special configuration is required. Ensure `agenticaiframework` is installed and accessible in your Python environment.
+## Prerequisites & Configuration
+
+- **Installation**: Ensure `agenticaiframework` is installed and accessible in your Python environment.
+- **No additional configuration** is required for this example.
+- **Python Version**: Compatible with Python 3.8+.
 
 ---
 
@@ -39,18 +43,34 @@ if __name__ == "__main__":
 
 ## Step-by-Step Execution
 
-1. **Import** `AgentManager` and `Agent` from `agenticaiframework.agents`.
-2. **Instantiate** the agent manager.
-3. **Create** an `Agent` instance with a name.
-4. **Register** the agent with the manager.
-5. **Control** the agent using `start`, `pause`, `resume`, and `stop`.
-6. **List** all registered agents.
-7. **Retrieve** a specific agent by name.
+1. **Import Required Classes**  
+   Import `AgentManager` and `Agent` from `agenticaiframework.agents`.
+
+2. **Instantiate the Agent Manager**  
+   Create an instance of `AgentManager` to handle agent registration and lifecycle management.
+
+3. **Create an Agent**  
+   Instantiate an `Agent` with a unique name.
+
+4. **Register the Agent**  
+   Use `register_agent` to add the agent to the manager's registry.
+
+5. **Control the Agent**  
+   Use `start`, `pause`, `resume`, and `stop` to manage the agent's lifecycle.
+
+6. **List Registered Agents**  
+   Access the `agents` list to see all registered agents.
+
+7. **Retrieve a Specific Agent**  
+   Use `get_agent` to fetch an agent by name.
+
+> **Best Practice:** Assign meaningful names to agents to make debugging and monitoring easier.
 
 ---
 
 ## Expected Input
-No user input is required; the script uses hardcoded values for demonstration.
+
+No user input is required; the script uses hardcoded values for demonstration purposes. In production, agent names and behaviors could be dynamically configured based on application needs.
 
 ---
 
@@ -69,5 +89,16 @@ Retrieved Agent: ExampleAgent
 
 ## How to Run
 
+Run the example from the project root:
+
 ```bash
 python examples/agents_example.py
+```
+
+If installed as a package, you can also run it from anywhere:
+
+```bash
+python -m examples.agents_example
+```
+
+> **Tip:** Integrate `AgentManager` with monitoring and task management systems for full lifecycle control of agents in production environments.

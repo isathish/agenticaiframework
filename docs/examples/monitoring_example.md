@@ -1,11 +1,15 @@
-# Monitoring Example
+# Monitoring System Example
 
-This example demonstrates how to use the `MonitoringSystem` in the `agenticaiframework` package to log events and record metrics.
+This guide provides a **professional, step-by-step walkthrough** for using the `MonitoringSystem` in the `agenticaiframework` package to log events and record metrics.  
+It is intended for developers who want to track agent activities, performance, and operational metrics in real-time.
 
 ---
 
-## Configuration
-No special configuration is required. Ensure `agenticaiframework` is installed and accessible in your Python environment.
+## Prerequisites & Configuration
+
+- **Installation**: Ensure `agenticaiframework` is installed and accessible in your Python environment.
+- **No additional configuration** is required for this example.
+- **Python Version**: Compatible with Python 3.8+.
 
 ---
 
@@ -34,16 +38,32 @@ if __name__ == "__main__":
 
 ## Step-by-Step Execution
 
-1. **Import** `MonitoringSystem` from `agenticaiframework.monitoring`.
-2. **Instantiate** the monitoring system.
-3. **Log** events with a type and details using `log_event`.
-4. **Record** metrics with a name and value using `record_metric`.
-5. **Print** the stored events and metrics.
+1. **Import the Class**  
+   Import `MonitoringSystem` from `agenticaiframework.monitoring`.
+
+2. **Instantiate the Monitoring System**  
+   Create an instance of `MonitoringSystem` to manage event logging and metric recording.
+
+3. **Log Events**  
+   Use `log_event` to record significant occurrences, passing:
+   - `event_type`: A string describing the event.
+   - `details`: A dictionary with event-specific data.
+
+4. **Record Metrics**  
+   Use `record_metric` to store performance or operational metrics, passing:
+   - `metric_name`: The name of the metric.
+   - `value`: The metric's value.
+
+5. **Inspect Logged Data**  
+   Access `events` and `metrics` attributes to review stored information.
+
+> **Best Practice:** Use consistent naming conventions for events and metrics to simplify analysis and reporting.
 
 ---
 
 ## Expected Input
-No user input is required; the script uses hardcoded values for demonstration.
+
+No user input is required; the script uses hardcoded values for demonstration purposes. In production, events and metrics could be generated dynamically from agent activities, API calls, or system monitoring hooks.
 
 ---
 
@@ -62,5 +82,16 @@ Logged Metrics: {'ResponseTime': 1.23, 'Accuracy': 0.98}
 
 ## How to Run
 
+Run the example from the project root:
+
 ```bash
 python examples/monitoring_example.py
+```
+
+If installed as a package, you can also run it from anywhere:
+
+```bash
+python -m examples.monitoring_example
+```
+
+> **Tip:** Integrate `MonitoringSystem` into your agents to automatically log key lifecycle events and performance metrics.

@@ -1,11 +1,14 @@
-# Memory Example
+# Memory Management Example
 
-This example demonstrates how to use the `MemoryManager` in the `agenticaiframework` package to store, retrieve, list, and clear memory.
+This guide provides a **professional, step-by-step walkthrough** of using the `MemoryManager` in the `agenticaiframework` package to efficiently store, retrieve, inspect, and clear different types of memory. It is designed for developers building intelligent agents that require persistent or temporary state management.
 
 ---
 
-## Configuration
-No special configuration is required. Ensure `agenticaiframework` is installed and accessible in your Python environment.
+## Prerequisites & Configuration
+
+- **Installation**: Ensure `agenticaiframework` is installed and accessible in your Python environment.
+- **No additional configuration** is required for this example.
+- **Python Version**: Compatible with Python 3.8+.
 
 ---
 
@@ -40,17 +43,31 @@ if __name__ == "__main__":
 
 ## Step-by-Step Execution
 
-1. **Import** `MemoryManager` from `agenticaiframework.memory`.
-2. **Instantiate** the memory manager.
-3. **Store** short-term memory entries using `store_short_term`.
-4. **Retrieve** stored values using `retrieve`.
-5. **List** all stored keys from short-term, long-term, and external memory.
-6. **Clear** all memory types using `clear_short_term`, `clear_long_term`, and `clear_external`.
+1. **Import the Class**  
+   Import `MemoryManager` from `agenticaiframework.memory`.
+
+2. **Instantiate the Manager**  
+   Create an instance of `MemoryManager` to handle all memory operations.
+
+3. **Store Data**  
+   Use `store_short_term` to save temporary key-value pairs (e.g., user session data).
+
+4. **Retrieve Data**  
+   Access stored values using `retrieve` by providing the key.
+
+5. **Inspect Stored Keys**  
+   Combine keys from `short_term`, `long_term`, and `external` memory to get a complete view of stored data.
+
+6. **Clear Memory**  
+   Use `clear_short_term`, `clear_long_term`, and `clear_external` to remove stored data when no longer needed.
+
+> **Best Practice:** Always clear sensitive data from memory after use to prevent leaks in long-running applications.
 
 ---
 
 ## Expected Input
-No user input is required; the script uses hardcoded values for demonstration.
+
+No user input is required; the script uses hardcoded values for demonstration purposes. In production, these values could come from user interactions, API calls, or other runtime events.
 
 ---
 
@@ -72,5 +89,16 @@ Memory cleared. Keys now: []
 
 ## How to Run
 
+Run the example from the project root:
+
 ```bash
 python examples/memory_example.py
+```
+
+If installed as a package, you can also run it from anywhere:
+
+```bash
+python -m examples.memory_example
+```
+
+> **Tip:** Use logging or print statements to verify memory operations during development.

@@ -1,11 +1,15 @@
-# Tasks Example
+# Task Management Example
 
-This example demonstrates how to create, register, and execute a custom task using the `TaskManager` and `Task` classes from the `agenticaiframework` package.
+This guide provides a **professional, step-by-step walkthrough** for creating, registering, and executing a custom task using the `TaskManager` and `Task` classes from the `agenticaiframework` package.  
+It is intended for developers who want to define reusable, modular units of work for their agents.
 
 ---
 
-## Configuration
-No special configuration is required. Ensure `agenticaiframework` is installed and accessible in your Python environment.
+## Prerequisites & Configuration
+
+- **Installation**: Ensure `agenticaiframework` is installed and accessible in your Python environment.
+- **No additional configuration** is required for this example.
+- **Python Version**: Compatible with Python 3.8+.
 
 ---
 
@@ -43,19 +47,37 @@ if __name__ == "__main__":
 
 ## Step-by-Step Execution
 
-1. **Import** `TaskManager` and `Task` from `agenticaiframework.tasks`.
-2. **Instantiate** the task manager.
-3. **Define** a custom task class inheriting from `Task` and implement the `run` method.
-4. **Create** an instance of the custom task.
-5. **Register** the task with the manager.
-6. **Execute** the task by calling its `run` method with arguments.
-7. **List** all registered tasks.
-8. **Retrieve** a specific task by name.
+1. **Import Required Classes**  
+   Import `TaskManager` and `Task` from `agenticaiframework.tasks`.
+
+2. **Instantiate the Task Manager**  
+   Create an instance of `TaskManager` to handle task registration and execution.
+
+3. **Define a Custom Task**  
+   Create a class inheriting from `Task` and implement the `run` method with the desired logic.
+
+4. **Create the Task Instance**  
+   Instantiate your custom task with a unique name.
+
+5. **Register the Task**  
+   Use `register_task` to add the task to the manager's registry.
+
+6. **Execute the Task**  
+   Call the `run` method with the required arguments.
+
+7. **List Registered Tasks**  
+   Access the `tasks` list to see all registered tasks.
+
+8. **Retrieve a Specific Task**  
+   Use `get_task` to fetch a task by name.
+
+> **Best Practice:** Keep tasks focused on a single responsibility to make them easier to test and reuse.
 
 ---
 
 ## Expected Input
-No user input is required; the script uses hardcoded values for demonstration.
+
+No user input is required; the script uses hardcoded values for demonstration purposes. In production, task parameters could be dynamically generated from user input, workflows, or other runtime data.
 
 ---
 
@@ -74,5 +96,16 @@ Retrieved Task: AdditionTask
 
 ## How to Run
 
+Run the example from the project root:
+
 ```bash
 python examples/tasks_example.py
+```
+
+If installed as a package, you can also run it from anywhere:
+
+```bash
+python -m examples.tasks_example
+```
+
+> **Tip:** Combine `TaskManager` with `AgentManager` to assign and execute tasks dynamically within agents.

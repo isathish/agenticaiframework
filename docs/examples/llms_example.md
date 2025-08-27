@@ -1,11 +1,15 @@
-# LLMs Example
+# Language Model Management Example
 
-This example demonstrates how to register, set, and use a language model with the `LLMManager` in the `agenticaiframework` package.
+This guide provides a **professional, step-by-step walkthrough** for registering, setting, and using a language model with the `LLMManager` in the `agenticaiframework` package.  
+It is intended for developers integrating custom or third-party LLMs into their applications.
 
 ---
 
-## Configuration
-No special configuration is required. Ensure `agenticaiframework` is installed and accessible in your Python environment.
+## Prerequisites & Configuration
+
+- **Installation**: Ensure `agenticaiframework` is installed and accessible in your Python environment.
+- **No additional configuration** is required for this example.
+- **Python Version**: Compatible with Python 3.8+.
 
 ---
 
@@ -34,17 +38,33 @@ if __name__ == "__main__":
 
 ## Step-by-Step Execution
 
-1. **Import** `LLMManager` from `agenticaiframework.llms`.
-2. **Instantiate** the LLM manager.
-3. **Register** a model with a name and a callable that generates text.
-4. **Set** the active model using `set_active_model`.
-5. **Generate** text using the `generate` method with a prompt.
-6. **List** all available models.
+1. **Import the Class**  
+   Import `LLMManager` from `agenticaiframework.llms`.
+
+2. **Instantiate the Manager**  
+   Create an instance of `LLMManager` to handle model registration and usage.
+
+3. **Register a Model**  
+   Use `register_model` with:
+   - `name`: Unique identifier for the model.
+   - `callable`: A function or lambda that takes a prompt and returns generated text.
+
+4. **Set the Active Model**  
+   Use `set_active_model` to select which model will be used for generation.
+
+5. **Generate Text**  
+   Call `generate` with a prompt to produce output from the active model.
+
+6. **List Available Models**  
+   Access the `models` dictionary to see all registered models.
+
+> **Best Practice:** Wrap third-party LLM APIs in a callable function to standardize the interface for `LLMManager`.
 
 ---
 
 ## Expected Input
-No user input is required; the script uses hardcoded values for demonstration.
+
+No user input is required; the script uses hardcoded values for demonstration purposes. In production, prompts could be dynamically generated from user input, workflows, or other runtime data.
 
 ---
 
@@ -61,5 +81,16 @@ Available Models: ['demo-llm']
 
 ## How to Run
 
+Run the example from the project root:
+
 ```bash
 python examples/llms_example.py
+```
+
+If installed as a package, you can also run it from anywhere:
+
+```bash
+python -m examples.llms_example
+```
+
+> **Tip:** Use `LLMManager` to manage multiple models and switch between them dynamically based on task requirements.
