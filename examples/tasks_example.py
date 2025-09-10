@@ -1,4 +1,3 @@
-import agenticaiframework as aif
 from agenticaiframework import tasks
 
 # Example: Creating and running tasks

@@ -1,5 +1,4 @@
 from agenticaiframework.processes import Process
-from agenticaiframework.tasks import Task
 
 # Example: Advanced Process usage with Tasks
 # -------------------------------------------

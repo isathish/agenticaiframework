@@ -1,5 +1,5 @@
-import pytest
-import sys, os
+import sys
+import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from agenticaiframework.communication import CommunicationManager
@@ -12,7 +12,10 @@ from agenticaiframework.llms import LLMManager
 
 def test_register_and_list_protocols(capsys):
     cm = CommunicationManager()
-    handler = lambda data: f"Processed {data}"
+
+    def handler(data):
+        return f"Processed {data}"
+
     cm.register_protocol("test", handler)
     assert "test" in cm.list_protocols()
     captured = capsys.readouterr()
@@ -172,7 +175,6 @@ def test_llm_manager_with_exception(capsys):
 
 
 # Additional tests to improve coverage for mcp_tools, memory, and monitoring
-
 from agenticaiframework.mcp_tools import MCPToolManager, MCPTool
 from agenticaiframework.memory import MemoryManager
 from agenticaiframework.monitoring import MonitoringSystem
@@ -280,13 +282,13 @@ def test_monitoring_system_alerts(capsys):
     ms = MonitoringSystem()
     try:
         if hasattr(ms, "alert") and callable(getattr(ms, "alert")):
-            ms.alert("warn1")
-            assert "warn1" in getattr(ms, "alerts", [])
+            ms.alert("warn1")  # type: ignore[attr-defined]
+            assert "warn1" in getattr(ms, "alerts", [])  # type: ignore[attr-defined]
         else:
             # Fallback: simulate alert
-            setattr(ms, "alerts", ["warn1"])
+            setattr(ms, "alerts", ["warn1"])  # type: ignore[attr-defined]
             print("ALERT: warn1")
     except Exception:
         pass
     captured = capsys.readouterr()
-    assert "warn1" in captured.out or "warn1" in str(getattr(ms, "alerts", []))
+    assert "warn1" in captured.out or "warn1" in str(getattr(ms, "alerts", []))  # type: ignore[attr-defined]

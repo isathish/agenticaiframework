@@ -1,55 +1,65 @@
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://isathish.github.io/agenticaiframework/">
-    <img src="https://img.shields.io/pypi/v/agenticaiframework?color=blue&label=PyPI%20Version&logo=python&logoColor=white" alt="PyPI Version">
-  </a>
-  <a href="https://pypi.org/project/agenticaiframework/">
-    <img src="https://img.shields.io/pypi/dm/agenticaiframework?color=green&label=Downloads&logo=python&logoColor=white" alt="Downloads">
-  </a>
-  <a href="https://github.com/isathish/agenticaiframework/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/isathish/agenticaiframework/python-package.yml?branch=main&label=Build&logo=github" alt="Build Status">
-  </a>
+# 🌟 Agentic AI Framework
 
-</div>
+Agentic AI Framework (`agenticaiframework`) is a **next-generation Python SDK** for building **agentic applications** with advanced orchestration, monitoring, multimodal capabilities, and enterprise-grade scalability.  
+It offers a **modular, extensible architecture** for creating intelligent agents that can interact, reason, and execute tasks across multiple domains — from simple automation to complex multi-agent ecosystems.
 
-
-<div align="center">
-  <a href="https://isathish.github.io/agenticaiframework">
-    <img src="https://img.shields.io/badge/Documentation-Online-blue?logo=readthedocs&logoColor=white" alt="Documentation">
-  </a>
-
-</div>
 ---
-# 🌟 AgenticAI Framework
 
-AgenticAI Framework (`agenticaiframework`) is a **Python SDK** for building **agentic applications** with advanced orchestration, monitoring, multimodal capabilities, and enterprise-grade scalability.  
-It provides a modular, extensible architecture for creating intelligent agents that can interact, reason, and execute tasks across multiple domains.
+## 🚀 Why Agentic AI Framework?
+
+Unlike other frameworks such as **LangChain**, **CrewAI**, and **AutoGen**, Agentic AI Framework is designed to be:
+
+- **Lightweight & High-Performance** — Minimal overhead with optimized execution for real-time and large-scale workloads.
+- **Fully Modular** — Every component (agents, prompts, tools, guardrails, LLMs) is pluggable and replaceable.
+- **Enterprise-Ready** — Built-in monitoring, guardrails, and compliance features for production environments.
+- **Multimodal** — Supports text, images, audio, and video processing.
+- **Cross-Platform** — Works seamlessly on cloud, on-premise, and edge devices.
+- **Integration-Friendly** — Easy to connect with APIs, databases, and external tools.
+- **Security-Focused** — Built-in guardrails, validation, and policy enforcement.
+
+---
+
+## 🔍 Feature Comparison
+
+| Feature / Framework       | Agentic AI Framework | LangChain | CrewAI | AutoGen |
+|---------------------------|----------------------|-----------|--------|---------|
+| Modular Architecture      | ✅ Fully Modular     | ⚠️ Partial| ⚠️ Partial | ⚠️ Partial |
+| Multi-Agent Orchestration | ✅ Advanced          | ✅ Basic  | ✅     | ✅      |
+| Built-in Guardrails       | ✅                   | ❌        | ⚠️ Limited | ❌      |
+| Integrated Monitoring     | ✅                   | ❌        | ❌     | ❌      |
+| Multimodal Support        | ✅ Text/Image/Audio/Video | ⚠️ Limited| ❌     | ⚠️ Limited |
+| Cross-Platform Deployment | ✅                   | ⚠️ Limited| ❌     | ❌      |
+| Memory Management         | ✅ Short/Long/External | ✅        | ⚠️ Limited | ✅      |
+| Process Orchestration     | ✅ Sequential/Parallel/Hybrid | ⚠️ Limited| ✅     | ⚠️ Limited |
+| Extensible Tooling        | ✅                   | ✅        | ⚠️ Limited | ⚠️ Limited |
+| Security & Compliance     | ✅                   | ❌        | ❌     | ❌      |
+| Knowledge Retrieval       | ✅                   | ⚠️ Limited| ❌     | ❌      |
+| Evaluation System         | ✅                   | ❌        | ❌     | ❌      |
 
 ---
 
 ## ✨ Key Features
 
-- **Python-based SDK** for building agentic applications
-- **Lightweight, high-performance agents** for efficient execution
-- **Built-in security** mechanisms
-- **Integrated monitoring and observability**
-- **Fine-grained configurable parameters**
-- **Single and multiple agent support**
-- **Flexible process orchestration** (sequential, parallel, hybrid)
-- **Extensible architecture** with hubs for agents, prompts, tools, guardrails, and LLMs
-- **Comprehensive memory management**
-- **Multiple communication protocols** (HTTP, SSE, STDIO, WebSockets, gRPC, MQ)
-- **Configurable guardrails, evaluation, and knowledge retrieval**
-- **Scalable and modular design**
-- **Multimodal capabilities**: text, images, voice, video
-- **Cross-platform deployment**: cloud, on-premise, edge
-- **Extensive integration support**
-- **Security and compliance ready**
+- **Agent Management** — Create, register, and control single or multiple agents.
+- **Configuration Management** — Centralized configuration for all components.
+- **Process Orchestration** — Sequential, parallel, and hybrid execution strategies.
+- **Communication Layer** — Multiple protocols: HTTP, SSE, STDIO, WebSockets, gRPC, MQ.
+- **Hub Architecture** — Central registry for agents, prompts, tools, and services.
+- **Knowledge Retrieval** — Query and retrieve structured/unstructured knowledge.
+- **Task Management** — Define, register, and execute tasks with inputs/outputs.
+- **MCP Tools** — Modular tools with execution capabilities.
+- **Prompt Management** — Create, store, and optimize prompts.
+- **Monitoring System** — Metrics, events, and logs for observability.
+- **Memory Management** — Short-term, long-term, and external memory storage.
+- **Guardrails** — Validation and policy enforcement for safe execution.
+- **LLM Management** — Register and use multiple LLMs with configurable parameters.
+- **Evaluation System** — Define and run evaluation criteria for outputs.
+- **Multimodal Capabilities** — Handle text, images, audio, and video.
+- **Security & Compliance** — Built-in validation, logging, and policy enforcement.
 
 ---
 
-## 📦 Installation & Setup
+## 📦 Installation
 
 ```bash
 pip install agenticaiframework
@@ -57,7 +67,7 @@ pip install agenticaiframework
 
 ---
 
-## ⚡ Quick Start in 3 Steps
+## ⚡ Quick Start
 
 ```python
 from agenticaiframework import Agent, AgentManager
@@ -80,110 +90,49 @@ agent.start()
 
 ---
 
-## 📚 Usage Examples & Tutorials
+## 📚 Examples
 
-For more detailed examples, see the [docs/EXAMPLES.md](docs/EXAMPLES.md) file.
+We provide **full working examples** for every module in the framework, including:
 
+- Agent Management
+- Configuration Management
+- Processes (Basic & Advanced)
+- Communication
+- Hub
+- Knowledge Retrieval
+- Task Management
+- MCP Tools
+- Prompt Management
+- Monitoring
+- Memory Management
+- Guardrails
+- LLM Management
+- Evaluation
 
-### 1. Creating and Running an Agent
-```python
-from agenticaiframework import Agent
-
-agent = Agent(name="HelperBot", role="assistant", capabilities=["text"])
-agent.start()
-```
-
-### 2. Using the Hub to Register and Retrieve Agents
-```python
-from agenticaiframework.hub import register_agent, get_agent
-from agenticaiframework import Agent
-
-agent = Agent(name="DataBot", role="data_processor", capabilities=["data"])
-register_agent(agent)
-
-retrieved_agent = get_agent("DataBot")
-print(retrieved_agent.name)  # Output: DataBot
-```
-
-### 3. Memory Management
-```python
-from agenticaiframework.memory import Memory
-
-memory = Memory()
-memory.store("user_name", "Alice")
-print(memory.retrieve("user_name"))  # Output: Alice
-```
-
-### 4. Running Processes
-```python
-from agenticaiframework.processes import run_process
-
-def greet():
-    return "Hello, World!"
-
-result = run_process(greet)
-print(result)  # Output: Hello, World!
-```
+See the [Full Examples Index](docs/examples/full_examples_index.md) for details.
 
 ---
 
-## 📖 Extended Documentation & Resources
+## 📖 Documentation
 
-The `docs` folder contains in-depth guides and examples:
-
-- [API Reference](docs/API_REFERENCE.md) — Detailed API documentation for all modules.
-- [Configuration Guide](docs/CONFIGURATION.md) — How to configure agents, processes, and the framework.
-- [Usage Guide](docs/USAGE.md) — Step-by-step instructions for common workflows.
-- [Extending the Framework](docs/EXTENDING.md) — How to add new agents, tools, and capabilities.
-- [Examples](docs/EXAMPLES.md) — Practical code examples for various use cases.
-- [Troubleshooting](docs/TROUBLESHOOTING.md) — Common issues and solutions.
-
-You can also view the online documentation at: [https://isathish.github.io/agenticaiframework/](https://isathish.github.io/agenticaiframework/)
+Full documentation is available at: [https://isathish.github.io/agenticaiframework/](https://isathish.github.io/agenticaiframework/)
 
 ---
 
-## 🛠 Configuration Made Easy
+## 🧪 Testing
 
-You can configure agents and the framework using:
-- **Programmatic configuration** via `agenticaiframework.configurations`
-- **Environment variables**
-- **Configuration files**
-
-Example:
-```python
-from agenticaiframework.configurations import set_config
-
-set_config("max_concurrent_tasks", 5)
-```
-
----
-
-## 🧪 Testing & Quality Assurance
-
-Run the test suite with:
 ```bash
 pytest
-```
-
-Run with coverage:
-```bash
-pytest --cov=agenticaiframework --cov-report=term-missing
 ```
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions from the community!  
-1. Fork the repository.  
-2. Create a feature branch.  
-3. Implement your changes with tests.  
-4. Submit a pull request.  
-
-For more details, see the [Contributing Guidelines](docs/CONTRIBUTING.md) (if available).
+We welcome contributions! Please see the contributing guidelines in the docs.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see the [LICENSE](LICENSE) file.

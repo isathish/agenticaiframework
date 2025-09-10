@@ -1,5 +1,5 @@
-import pytest
-import sys, os
+import sys
+import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from agenticaiframework.agents import Agent, AgentManager
 from agenticaiframework.prompts import Prompt, PromptManager
