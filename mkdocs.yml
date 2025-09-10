@@ -1,46 +1,34 @@
-site_name: AgenticAI Framework Documentation
-site_description: Comprehensive documentation for the AgenticAI Framework Python SDK
-site_author: Sathishkumar Nagarajan
-repo_url: https://github.com/isathish/agenticaiframework
-theme:
-  name: material
-  palette:
-    primary: indigo
-    accent: indigo
+site_name: Agentic AI Framework
 nav:
 - Home: index.md
-- API Reference: API_REFERENCE.md
 - Usage: USAGE.md
+- API Reference: API_REFERENCE.md
 - Configuration: CONFIGURATION.md
-- Examples:
-  - Overview: EXAMPLES.md
-  - Memory Example: examples/memory_example.md
-  - MCP Tools Example: examples/mcp_tools_example.md
-  - Monitoring Example: examples/monitoring_example.md
-  - Prompts Example: examples/prompts_example.md
-  - Configurations Example: examples/configurations_example.md
-  - Agents Example: examples/agents_example.md
-  - Tasks Example: examples/tasks_example.md
-  - LLMs Example: examples/llms_example.md
-  - Guardrails Example: examples/guardrails_example.md
+- Agents: agents.md
+- Configurations: CONFIGURATION.md
+- Processes: processes.md
+- Communication: communication.md
+- Hub: hub.md
+- Knowledge: knowledge.md
+- Tasks: tasks.md
+- MCP Tools: mcp_tools.md
+- Prompts: prompts.md
+- Monitoring: monitoring.md
+- Memory: memory.md
+- Guardrails: guardrails.md
+- LLMs: llms.md
+- Evaluation: evaluation.md
 - Extending: EXTENDING.md
 - Troubleshooting: TROUBLESHOOTING.md
-- Modules:
-  - Agents: agents.md
-  - Memory: memory.md
-  - Hub: hub.md
-  - Processes: processes.md
-  - LLMs: llms.md
-  - Guardrails: guardrails.md
-  - Knowledge: knowledge.md
-  - MCP Tools: mcp_tools.md
-  - Monitoring: monitoring.md
-  - Prompts: prompts.md
-  - Tasks: tasks.md
-docs_dir: docs
-markdown_extensions:
-- toc:
-    permalink: true
-- tables
-- admonition
-- codehilite
+- Examples:
+  - Overview: EXAMPLES.md
+  - Full Examples Index: examples/full_examples_index.md
+  - Agents Example: examples/agents_example.md
+  - Configurations Example: examples/configurations_example.md
+  - Guardrails Example: examples/guardrails_example.md
+  - LLMs Example: examples/llms_example.md
+  - MCP Tools Example: examples/mcp_tools_example.md
+  - Memory Example: examples/memory_example.md
+  - Monitoring Example: examples/monitoring_example.md
+  - Prompts Example: examples/prompts_example.md
+  - Tasks Example: examples/tasks_example.md
