@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v1.0.24](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.24) - 2025-09-10
+
+<small>[Compare with v1.0.23](https://github.com/isathish/agenticaiframework/compare/v1.0.23...v1.0.24)</small>
+
+### Added
+
+- Add example docs for AgentManager and ConfigurationManager ([00f0c3c](https://github.com/isathish/agenticaiframework/commit/00f0c3c1abee6a9de1c971797aea64afedf85415) by isathish).
+
 ## [v1.0.23](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.23) - 2025-09-10
 
 <small>[Compare with v1.0.22](https://github.com/isathish/agenticaiframework/compare/v1.0.22...v1.0.23)</small>
