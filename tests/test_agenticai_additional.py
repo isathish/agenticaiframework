@@ -266,7 +266,7 @@ def test_monitoring_system_log_and_metrics(capsys):
         ms.log_event("evt1")
     except TypeError:
         try:
-            ms.log_event("evt1", {"info": "test"})
+            ms.log_event("evt1", {"info": "test"})  # type: ignore[call-arg]
         except Exception:
             pass
     try:

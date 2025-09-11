@@ -7,7 +7,7 @@ nav:
 - Agents: agents.md
 - Configurations: CONFIGURATION.md
 - Processes: processes.md
-- Communication: communication.md
+- Communication: examples/communication_example.md
 - Hub: hub.md
 - Knowledge: knowledge.md
 - Tasks: tasks.md
@@ -17,7 +17,7 @@ nav:
 - Memory: memory.md
 - Guardrails: guardrails.md
 - LLMs: llms.md
-- Evaluation: evaluation.md
+- Evaluation: examples/evaluation_example.md
 - Extending: EXTENDING.md
 - Troubleshooting: TROUBLESHOOTING.md
 - Examples:

@@ -3,63 +3,77 @@
 This document lists **all available examples** in the `examples/` directory, covering every major module and feature of the framework.
 
 ## Agent Management
-- [Agent Manager Example](../../examples/agent_manager_example.py)
-- [Agents Example](../../examples/agents_example.py)
+- [Agent Manager Example](agent_manager_example.md)
+- [Agents Example](agents_example.md)
 
 ## Configuration
-- [Configuration Manager Example](../../examples/configuration_manager_example.py)
-- [Configurations Example](../../examples/configurations_example.py)
+- [Configuration Manager Example](configuration_manager_example.md)
+- [Configurations Example](configurations_example.md)
 
 ## Processes
-- [Processes Example](../../examples/processes_example.py)
-- [Advanced Process Example](../../examples/process_advanced_example.py)
+- [Processes Example](processes_example.md)
+- [Advanced Process Example](process_advanced_example.md)
 
 ## Communication
-- [Communication Manager Example](../../examples/communication_example.py)
+- [Communication Example](communication_example.md)
 
 ## Hub
-- [Hub Example](../../examples/hub_example.py)
+- [Hub Example](hub_example.md)
 
 ## Knowledge
-- [Knowledge Example](../../examples/knowledge_example.py)
-- [Knowledge Retrieval Example](../../examples/knowledge_retrieval.py)
+- [Knowledge Example](knowledge_example.md)
+- [Knowledge Retrieval Example](knowledge_retrieval.md)
 
 ## Tasks
-- [Task Manager Example](../../examples/task_manager_example.py)
-- [Tasks Example](../../examples/tasks_example.py)
+- [Task Manager Example](task_manager_example.md)
+- [Tasks Example](tasks_example.md)
 
 ## MCP Tools
-- [MCP Tools Manager Example](../../examples/mcp_tools_manager_example.py)
-- [MCP Tools Example](../../examples/mcp_tools_example.py)
+- [MCP Tools Manager Example](mcp_tools_manager_example.md)
+- [MCP Tools Example](mcp_tools_example.md)
 
 ## Prompts
-- [Prompt Manager Example](../../examples/prompt_manager_example.py)
-- [Prompts Example](../../examples/prompts_example.py)
+- [Prompt Manager Example](prompt_manager_example.md)
+- [Prompts Example](prompts_example.md)
 
 ## Monitoring
-- [Monitoring System Example](../../examples/monitoring_system_example.py)
-- [Monitoring Example](../../examples/monitoring_example.py)
+- [Monitoring System Example](monitoring_system_example.md)
+- [Monitoring Example](monitoring_example.md)
 
 ## Memory
-- [Memory Manager Example](../../examples/memory_manager_example.py)
-- [Memory Example](../../examples/memory_example.py)
+- [Memory Manager Example](memory_manager_example.md)
+- [Memory Example](memory_example.md)
 
 ## Guardrails
-- [Guardrail Manager Example](../../examples/guardrail_manager_example.py)
-- [Guardrails Example](../../examples/guardrails_example.py)
+- [Guardrail Manager Example](guardrail_manager_example.md)
+- [Guardrails Example](guardrails_example.md)
 
 ## LLMs
-- [LLM Manager Example](../../examples/llm_manager_example.py)
-- [LLMs Example](../../examples/llms_example.py)
+- [LLM Manager Example](llm_manager_example.md)
+- [LLMs Example](llms_example.md)
 
 ## Evaluation
-- [Evaluation Example](../../examples/evaluation_example.py)
+- [Evaluation Example](evaluation_example.md)
+- [Processes Example](processes_example.md)
+- [Advanced Process Example](process_advanced_example.md)
+- [Communication Example](communication_example.md)
+- [Hub Example](hub_example.md)
+- [Knowledge Example](knowledge_example.md)
+- [Knowledge Retrieval Example](knowledge_retrieval.md)
+- [MCP Tools Manager Example](mcp_tools_manager_example.md)
+- [Monitoring System Example](monitoring_system_example.md)
+- [Memory Manager Example](memory_manager_example.md)
+- [Guardrail Manager Example](guardrail_manager_example.md)
+- [LLM Manager Example](llm_manager_example.md)
+- [Code Generation Pipeline Example](code_generation_pipeline.md)
+- [Customer Support Bot Example](customer_support_bot.md)
+- [Research Agent Example](research_agent.md)
 
 ## Code Generation
-- [Code Generation Pipeline Example](../../examples/code_generation_pipeline.py)
+- [Code Generation Pipeline Example](examples/code_generation_pipeline.md)
 
 ## Customer Support
-- [Customer Support Bot Example](../../examples/customer_support_bot.py)
+- [Customer Support Bot Example](examples/customer_support_bot.md)
 
 ## Research
-- [Research Agent Example](../../examples/research_agent.py)
+- [Research Agent Example](examples/research_agent.md)
