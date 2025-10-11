@@ -16,7 +16,7 @@ setup(
     description="AgenticAI - A Python SDK for building agentic applications with advanced orchestration, monitoring, and multimodal capabilities.",
     long_description=open("README.md", encoding='utf-8').read() if __import__("os").path.exists("README.md") else "",
     long_description_content_type="text/markdown",
-    url="https://github.com/isathish/AgenticAI",
+    url="https://github.com/isathish/agenticaiframework",
     packages=find_packages(),
     install_requires=[],
     extras_require={
