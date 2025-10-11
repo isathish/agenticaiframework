@@ -2,7 +2,7 @@ from agenticaiframework.agents import Agent
 from agenticaiframework.tasks import Task
 from agenticaiframework.llms import LLMManager
 from agenticaiframework.guardrails import Guardrail
-from agenticaiframework.monitoring import Monitor
+from agenticaiframework.monitoring import MonitoringSystem
 from agenticaiframework.knowledge import KnowledgeRetriever
 
 # Example: Knowledge Retrieval and Summarization
@@ -11,8 +11,8 @@ if __name__ == "__main__":
     llm = LLMManager()
     llm.register_model("gpt-4", lambda prompt, kwargs: f"[Simulated GPT-4 Knowledge Retrieval for: {prompt}]")
     llm.set_active_model("gpt-4")
-    guardrail = Guardrail(rules=["Provide factual information", "Cite sources"])
-    monitor = Monitor()
+    guardrail = Guardrail(name="KnowledgeGuardrail", validation_fn=lambda text: len(text) > 0)
+    monitor = MonitoringSystem()
     knowledge_base = KnowledgeRetriever()
     knowledge_base.register_source("local_corpus", lambda query: [
         {"title": "Quantum Computing History", "content": "Quantum computing research began in the 1980s... [Source 1]"},

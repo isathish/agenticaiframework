@@ -15,13 +15,16 @@ if __name__ == "__main__":
     llm_manager = LLMManager()
 
     # Define a mock LLM function
-    def mock_llm(prompt):
+    def mock_llm(prompt, kwargs=None):
         return f"Generated response for: {prompt}"
 
     # Register the mock LLM
     llm_manager.register_model("MockLLM", mock_llm)
 
+    # Set the active model
+    llm_manager.set_active_model("MockLLM")
+
     # Generate text using the registered model
     prompt_text = "What is the capital of France?"
-    response = llm_manager.generate("MockLLM", prompt_text)
+    response = llm_manager.generate(prompt_text)
     print("LLM Response:", response)

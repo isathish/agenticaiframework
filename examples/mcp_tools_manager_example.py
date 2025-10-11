@@ -30,5 +30,5 @@ if __name__ == "__main__":
     tool_manager.register_tool(tool2)
 
     # Execute tools
-    print("EchoTool result:", tool_manager.execute_tool("EchoTool", "Hello MCP"))
-    print("MultiplyTool result:", tool_manager.execute_tool("MultiplyTool", 6, 7))
+    print("EchoTool result:", tool_manager.execute_tool_by_name("EchoTool", "Hello MCP"))
+    print("MultiplyTool result:", tool_manager.execute_tool_by_name("MultiplyTool", 6, 7))

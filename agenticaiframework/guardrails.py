@@ -41,5 +41,13 @@ class GuardrailManager:
                 return False
         return True
 
+    def validate(self, guardrail_name: str, data: Any) -> bool:
+        """Validate data against a specific guardrail by name"""
+        for guardrail in self.guardrails.values():
+            if guardrail.name == guardrail_name:
+                return guardrail.validate(data)
+        self._log(f"Guardrail '{guardrail_name}' not found")
+        return False
+
     def _log(self, message: str):
         print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [GuardrailManager] {message}")

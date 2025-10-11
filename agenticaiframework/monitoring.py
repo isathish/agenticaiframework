@@ -31,5 +31,9 @@ class MonitoringSystem:
     def get_logs(self) -> List[str]:
         return self.logs
 
+    def get_metrics(self) -> Dict[str, Any]:
+        """Get all recorded metrics"""
+        return self.metrics.copy()
+
     def _log(self, message: str):
         self.log_message(f"[MonitoringSystem] {message}")

@@ -15,38 +15,386 @@
   </a>
 </div>
 
+# AgenticAI Framework
+
+**A comprehensive Python SDK for building intelligent agentic applications with advanced orchestration, monitoring, and enterprise-grade scalability.**
+
+AgenticAI Framework empowers developers, researchers, and enterprises to create sophisticated AI agents that can reason, interact, and execute complex tasks across multiple domains with unprecedented ease and reliability.
+
 ---
-# Welcome to AgenticAI Framework Documentation
 
-AgenticAI Framework (`agenticaiframework`) is a **powerful Python SDK** for building **agentic applications** with advanced orchestration, monitoring, multimodal capabilities, and enterprise-grade scalability.
+## 🚀 Why AgenticAI Framework?
 
-It is designed for developers, researchers, and enterprises who want to create intelligent agents that can **reason, interact, and execute tasks** across multiple domains with ease.
+!!! success "Enterprise-Ready"
+    Production-ready framework with built-in security, monitoring, and scalability features.
 
----
+!!! tip "Developer-Friendly"
+    Intuitive APIs and comprehensive documentation make building AI agents effortless.
 
-## 🌟 Key Highlights
+!!! info "Flexible Architecture"
+    Modular design allows you to mix and match components based on your needs.
 
-- **Modular Architecture** – Build agents with interchangeable components.
-- **Multi-Agent Support** – Orchestrate multiple agents in parallel or sequential workflows.
-- **Built-in Security** – Guardrails, compliance checks, and safe execution.
-- **Observability** – Integrated monitoring and logging.
-- **Multimodal Capabilities** – Handle text, images, audio, and video.
-- **Cross-Platform Deployment** – Cloud, on-premise, or edge devices.
-- **Extensible** – Add your own tools, prompts, and integrations.
+### Key Benefits
+
+- **🎯 Rapid Development**: Get from idea to production in minutes, not weeks
+- **🔒 Enterprise Security**: Built-in guardrails and compliance features
+- **📊 Full Observability**: Comprehensive monitoring and logging out of the box
+- **🔧 Highly Extensible**: Easy integration with existing systems and tools
+- **⚡ High Performance**: Optimized for both single-agent and multi-agent scenarios
+- **🌐 Multi-Modal**: Support for text, images, audio, and video processing
 
 ---
 
 ## 📦 Installation
 
-Install the latest version from PyPI:
+=== "PyPI (Recommended)"
+    ```bash
+    pip install agenticaiframework
+    ```
 
-```bash
-pip install agenticaiframework
-```
+=== "Development Version"
+    ```bash
+    pip install git+https://github.com/isathish/agenticaiframework.git
+    ```
+
+=== "From Source"
+    ```bash
+    git clone https://github.com/isathish/agenticaiframework.git
+    cd agenticaiframework
+    pip install -e .
+    ```
+
+### System Requirements
+
+- **Python**: 3.8 or higher
+- **OS**: Windows, macOS, Linux
+- **Memory**: Minimum 2GB RAM (4GB+ recommended)
 
 ---
 
 ## ⚡ Quick Start
+
+### Your First Agent
+
+```python
+from agenticaiframework import Agent, Task, LLMManager
+
+# 1. Set up the LLM
+llm = LLMManager()
+llm.register_model("gpt-4", your_llm_function)
+llm.set_active_model("gpt-4")
+
+# 2. Create an agent
+agent = Agent(
+    name="AssistantAgent",
+    role="AI Assistant",
+    capabilities=["text_generation", "analysis"],
+    config={"llm": llm}
+)
+
+# 3. Define a task
+task = Task(
+    name="GreetingTask",
+    objective="Generate a friendly greeting",
+    executor=lambda: llm.generate("Say hello to the user!")
+)
+
+# 4. Execute the task
+agent.start()
+result = task.run()
+print(result)  # Output: A friendly greeting!
+```
+
+### Multi-Agent Collaboration
+
+```python
+from agenticaiframework import Agent, AgentManager, Task
+
+# Create specialized agents
+data_agent = Agent(
+    name="DataCollector",
+    role="Data Collection Specialist",
+    capabilities=["data_retrieval", "web_scraping"],
+    config={"max_requests": 100}
+)
+
+analysis_agent = Agent(
+    name="DataAnalyzer", 
+    role="Data Analysis Expert",
+    capabilities=["statistical_analysis", "visualization"],
+    config={"precision": "high"}
+)
+
+# Manage agents
+manager = AgentManager()
+manager.register_agent(data_agent)
+manager.register_agent(analysis_agent)
+
+# Coordinate workflow
+data_agent.start()
+analysis_agent.start()
+
+# Broadcast instructions
+manager.broadcast("Starting data processing pipeline...")
+```
+
+---
+
+## 🏗️ Core Architecture
+
+```mermaid
+graph TB
+    A[Agent Manager] --> B[Agent 1]
+    A --> C[Agent 2]
+    A --> D[Agent N]
+    
+    B --> E[Task Manager]
+    C --> E
+    D --> E
+    
+    E --> F[Process Engine]
+    F --> G[LLM Manager]
+    F --> H[Memory Manager]
+    F --> I[Knowledge Retriever]
+    
+    J[Monitoring System] --> A
+    J --> E
+    J --> F
+    
+    K[Guardrail Manager] --> G
+    K --> H
+    K --> I
+```
+
+### Core Components
+
+| Component | Purpose | Key Features |
+|-----------|---------|--------------|
+| **Agents** | Core AI entities | Role-based, configurable, extensible |
+| **Tasks** | Work units | Async execution, dependency management |
+| **Processes** | Workflow orchestration | Sequential, parallel, hybrid strategies |
+| **Memory** | Data persistence | Short-term, long-term, external storage |
+| **LLMs** | Language model integration | Multi-provider, model switching |
+| **Knowledge** | Information retrieval | Vector search, caching, indexing |
+| **Guardrails** | Safety & compliance | Input validation, output filtering |
+| **Monitoring** | Observability | Metrics, logs, alerts, tracing |
+
+---
+
+## � Use Cases
+
+### 🏢 Enterprise Applications
+- **Customer Support Automation**: Intelligent chatbots with escalation
+- **Document Processing**: Automated analysis and summarization
+- **Business Intelligence**: Data analysis and reporting agents
+
+### 🔬 Research & Development
+- **Research Assistants**: Literature review and synthesis
+- **Data Science Pipelines**: Automated ML workflows
+- **Experiment Management**: Hypothesis testing and validation
+
+### 💻 Software Development
+- **Code Generation**: Automated programming assistance
+- **Testing & QA**: Intelligent test case generation
+- **DevOps Automation**: Deployment and monitoring agents
+
+### 🎓 Education & Training
+- **Personalized Tutoring**: Adaptive learning systems
+- **Content Creation**: Automated curriculum generation
+- **Assessment Tools**: Intelligent grading and feedback
+
+---
+
+## 📚 Key Concepts
+
+### Agents
+Autonomous entities that can perform tasks, make decisions, and interact with other agents or systems.
+
+```python
+agent = Agent(
+    name="SpecialistAgent",
+    role="Domain Expert", 
+    capabilities=["analysis", "reasoning"],
+    config={
+        "temperature": 0.7,
+        "max_iterations": 10,
+        "memory_type": "long_term"
+    }
+)
+```
+
+### Tasks
+Discrete units of work that agents can execute with specific objectives and success criteria.
+
+```python
+task = Task(
+    name="AnalysisTask",
+    objective="Analyze customer feedback",
+    executor=analysis_function,
+    inputs={"data": customer_data}
+)
+```
+
+### Memory Management
+Sophisticated memory systems for storing and retrieving information across different time horizons.
+
+```python
+from agenticaiframework.memory import MemoryManager
+
+memory = MemoryManager()
+memory.store("customer_preference", "prefers_email", memory_type="long_term")
+preference = memory.retrieve("customer_preference")
+```
+
+### Guardrails
+Safety mechanisms that ensure agents operate within defined boundaries and compliance requirements.
+
+```python
+from agenticaiframework.guardrails import Guardrail, GuardrailManager
+
+# Create a data privacy guardrail
+privacy_guardrail = Guardrail(
+    name="DataPrivacy",
+    validation_fn=lambda text: not contains_pii(text)
+)
+
+guardrail_manager = GuardrailManager()
+guardrail_manager.register_guardrail(privacy_guardrail)
+```
+
+---
+
+## 🔧 Configuration
+
+### Environment Variables
+```bash
+export AGENTICAI_LOG_LEVEL=INFO
+export AGENTICAI_MAX_AGENTS=50
+export AGENTICAI_MEMORY_BACKEND=redis
+```
+
+### Configuration File
+```python
+from agenticaiframework.configurations import ConfigurationManager
+
+config = ConfigurationManager()
+config.set_config("LLM", {
+    "provider": "openai",
+    "model": "gpt-4",
+    "temperature": 0.7,
+    "max_tokens": 2048
+})
+```
+
+---
+
+## 📊 Monitoring & Observability
+
+```python
+from agenticaiframework.monitoring import MonitoringSystem
+
+monitor = MonitoringSystem()
+
+# Record metrics
+monitor.record_metric("task_completion_time", 1.23)
+monitor.record_metric("agent_success_rate", 0.95)
+
+# Log events
+monitor.log_event("TaskStarted", {"task_id": "task_001", "agent": "agent_001"})
+
+# Get insights
+metrics = monitor.get_metrics()
+events = monitor.get_events()
+```
+
+---
+
+## 🛡️ Security Features
+
+- **Input Validation**: Automatic sanitization of user inputs
+- **Output Filtering**: Content screening before responses
+- **Access Control**: Role-based permissions for agents
+- **Audit Logging**: Comprehensive activity tracking
+- **Encryption**: Data protection in transit and at rest
+
+---
+
+## 🚀 Performance Optimization
+
+### Best Practices
+
+1. **Agent Pooling**: Reuse agents for similar tasks
+2. **Memory Optimization**: Use appropriate memory types for data lifecycle
+3. **Async Processing**: Leverage asynchronous execution for I/O operations
+4. **Caching**: Cache frequently accessed knowledge and computations
+5. **Resource Management**: Monitor and limit resource consumption
+
+### Scalability Features
+
+- **Horizontal Scaling**: Distribute agents across multiple processes/machines
+- **Load Balancing**: Automatic task distribution
+- **Resource Monitoring**: Built-in performance tracking
+- **Auto-scaling**: Dynamic agent provisioning based on load
+
+---
+
+## 🔗 Integrations
+
+### LLM Providers
+- OpenAI (GPT-3.5, GPT-4, GPT-4 Turbo)
+- Anthropic (Claude, Claude-2)
+- Google (Gemini, PaLM)
+- HuggingFace Transformers
+- Azure OpenAI Service
+- AWS Bedrock
+
+### Communication Protocols
+- HTTP/HTTPS REST APIs
+- WebSocket connections
+- gRPC for high-performance scenarios
+- Message queues (Redis, RabbitMQ)
+- Server-Sent Events (SSE)
+- Standard I/O (STDIO)
+
+### Storage & Databases
+- PostgreSQL, MySQL (relational data)
+- MongoDB (document storage)
+- Redis (caching and pub/sub)
+- Elasticsearch (search and analytics)
+- Vector databases (Pinecone, Weaviate, Chroma)
+
+---
+
+## 📖 Documentation
+
+| Section | Description |
+|---------|-------------|
+| [Quick Start](quick-start.md) | Get up and running in 5 minutes |
+| [API Reference](API_REFERENCE.md) | Complete API documentation |
+| [Examples](EXAMPLES.md) | Real-world usage examples |
+| [Best Practices](best-practices.md) | Production deployment guidelines |
+| [Troubleshooting](TROUBLESHOOTING.md) | Common issues and solutions |
+
+---
+
+## 🤝 Community & Support
+
+- **GitHub Issues**: [Bug reports and feature requests](https://github.com/isathish/agenticaiframework/issues)
+- **Discussions**: [Community forum](https://github.com/isathish/agenticaiframework/discussions)
+- **Documentation**: [Complete guides and API reference](https://isathish.github.io/agenticaiframework/)
+- **PyPI**: [Package distribution](https://pypi.org/project/agenticaiframework/)
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/isathish/agenticaiframework/blob/main/LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+Built with ❤️ by the AgenticAI team and amazing contributors from the open-source community.
 
 ```python
 from agenticaiframework import Agent, AgentManager

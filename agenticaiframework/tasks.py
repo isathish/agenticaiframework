@@ -55,5 +55,20 @@ class TaskManager:
             results[task_id] = task.run()
         return results
 
+    def execute_task(self, task_name_or_id: str):
+        """Execute a task by name or ID"""
+        # Try to find by ID first
+        task = self.get_task(task_name_or_id)
+        if task:
+            return task.run()
+        
+        # If not found by ID, try to find by name
+        for task in self.tasks.values():
+            if task.name == task_name_or_id:
+                return task.run()
+        
+        self._log(f"Task '{task_name_or_id}' not found")
+        return None
+
     def _log(self, message: str):
         print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [TaskManager] {message}")

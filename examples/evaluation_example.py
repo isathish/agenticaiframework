@@ -19,7 +19,7 @@ if __name__ == "__main__":
         return len(output) > 5
 
     # Add the criterion to the evaluator
-    evaluator.add_criterion("Length Check", length_check)
+    evaluator.define_criterion("Length Check", length_check)
 
     # Evaluate a sample output
     sample_output = "Hello World"

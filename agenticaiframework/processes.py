@@ -13,6 +13,10 @@ class Process:
         self.tasks.append((task_callable, args, kwargs))
         self._log(f"Added task {task_callable.__name__}")
 
+    def add_step(self, step_callable: Callable, *args, **kwargs):
+        """Alias for add_task - add a step to the process"""
+        self.add_task(step_callable, *args, **kwargs)
+
     def execute(self):
         self.status = "running"
         self._log(f"Executing process '{self.name}' with strategy '{self.strategy}'")

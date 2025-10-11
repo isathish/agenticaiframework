@@ -18,9 +18,21 @@ class PromptManager:
     def __init__(self):
         self.prompts: Dict[str, Prompt] = {}
 
-    def register_prompt(self, prompt: Prompt):
-        self.prompts[prompt.id] = prompt
-        self._log(f"Registered prompt with ID {prompt.id}")
+    def register_prompt(self, prompt_or_name, prompt_obj=None):
+        if isinstance(prompt_or_name, Prompt):
+            # Original behavior: register a Prompt object
+            prompt = prompt_or_name
+            self.prompts[prompt.id] = prompt
+            self._log(f"Registered prompt with ID {prompt.id}")
+        elif isinstance(prompt_or_name, str) and prompt_obj is not None:
+            # New behavior: register with a name and Prompt object
+            prompt = prompt_obj
+            prompt.metadata = prompt.metadata or {}
+            prompt.metadata['name'] = prompt_or_name
+            self.prompts[prompt.id] = prompt
+            self._log(f"Registered prompt '{prompt_or_name}' with ID {prompt.id}")
+        else:
+            self._log("Invalid arguments for register_prompt")
 
     def get_prompt(self, prompt_id: str) -> Prompt:
         return self.prompts.get(prompt_id)

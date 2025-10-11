@@ -44,5 +44,14 @@ class MCPToolManager:
             self._log(f"Tool with ID {tool_id} not found")
             return None
 
+    def execute_tool_by_name(self, tool_name: str, *args, **kwargs):
+        """Execute a tool by its name instead of ID"""
+        for tool in self.tools.values():
+            if tool.name == tool_name:
+                self._log(f"Executing MCP tool '{tool.name}'")
+                return tool.execute(*args, **kwargs)
+        self._log(f"Tool with name '{tool_name}' not found")
+        return None
+
     def _log(self, message: str):
         print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [MCPToolManager] {message}")

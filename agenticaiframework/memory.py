@@ -12,6 +12,15 @@ class MemoryManager:
         self.short_term[key] = value
         self._log(f"Stored short-term memory: {key}")
 
+    def store(self, key: str, value: Any, memory_type: str = "short_term"):
+        """Generic store method that defaults to short-term memory"""
+        if memory_type == "long_term":
+            self.store_long_term(key, value)
+        elif memory_type == "external":
+            self.store_external(key, value)
+        else:
+            self.store_short_term(key, value)
+
     def store_long_term(self, key: str, value: Any):
         self.long_term[key] = value
         self._log(f"Stored long-term memory: {key}")

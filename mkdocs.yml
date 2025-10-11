@@ -1,34 +1,141 @@
-site_name: Agentic AI Framework
+site_name: AgenticAI Framework
+site_description: A comprehensive Python SDK for building intelligent agentic applications with advanced orchestration and monitoring
+site_url: https://isathish.github.io/agenticaiframework/
+repo_url: https://github.com/isathish/agenticaiframework
+repo_name: isathish/agenticaiframework
+edit_uri: edit/main/docs/
+
+# Theme Configuration
+theme:
+  name: material
+  palette:
+  # Palette toggle for automatic mode
+  - media: "(prefers-color-scheme)"
+    toggle:
+      icon: material/brightness-auto
+      name: Switch to light mode
+  # Palette toggle for light mode
+  - media: "(prefers-color-scheme: light)"
+    scheme: default
+    primary: blue
+    accent: blue
+    toggle:
+      icon: material/brightness-7
+      name: Switch to dark mode
+  # Palette toggle for dark mode
+  - media: "(prefers-color-scheme: dark)"
+    scheme: slate
+    primary: blue
+    accent: blue
+    toggle:
+      icon: material/brightness-4
+      name: Switch to system preference
+
+  features:
+  - navigation.tabs
+  - navigation.sections
+  - navigation.expand
+  - navigation.path
+  - navigation.top
+  - search.highlight
+  - search.share
+  - content.code.copy
+  - content.code.annotate
+  - content.tabs.link
+
+# Extensions
+markdown_extensions:
+- admonition
+- pymdownx.details
+- pymdownx.superfences
+- pymdownx.highlight:
+    anchor_linenums: true
+    line_spans: __span
+    pygments_lang_class: true
+- pymdownx.inlinehilite
+- pymdownx.snippets
+- pymdownx.tabbed:
+    alternate_style: true
+- tables
+- toc:
+    permalink: true
+
+# Plugins
+plugins:
+- search
+- mkdocstrings:
+    handlers:
+      python:
+        options:
+          show_source: false
+          show_root_heading: true
+          show_if_no_docstring: true
+
+# Navigation Structure
 nav:
 - Home: index.md
-- Usage: USAGE.md
-- API Reference: API_REFERENCE.md
-- Configuration: CONFIGURATION.md
-- Agents: agents.md
-- Configurations: CONFIGURATION.md
-- Processes: processes.md
-- Communication: examples/communication_example.md
-- Hub: hub.md
-- Knowledge: knowledge.md
-- Tasks: tasks.md
-- MCP Tools: mcp_tools.md
-- Prompts: prompts.md
-- Monitoring: monitoring.md
-- Memory: memory.md
-- Guardrails: guardrails.md
-- LLMs: llms.md
-- Evaluation: examples/evaluation_example.md
-- Extending: EXTENDING.md
-- Troubleshooting: TROUBLESHOOTING.md
-- Examples:
+- Getting Started:
+  - Installation: USAGE.md
+  - Quick Start: quick-start.md
+  - Configuration: CONFIGURATION.md
+- Core Modules:
+  - Agents: agents.md
+  - Tasks: tasks.md
+  - Processes: processes.md
+  - LLMs: llms.md
+  - Memory: memory.md
+  - Knowledge: knowledge.md
+  - Communication: communication.md
+  - Monitoring: monitoring.md
+  - Guardrails: guardrails.md
+  - MCP Tools: mcp_tools.md
+  - Prompts: prompts.md
+  - Hub: hub.md
+- Examples & Tutorials:
   - Overview: EXAMPLES.md
-  - Full Examples Index: examples/full_examples_index.md
-  - Agents Example: examples/agents_example.md
-  - Configurations Example: examples/configurations_example.md
-  - Guardrails Example: examples/guardrails_example.md
-  - LLMs Example: examples/llms_example.md
-  - MCP Tools Example: examples/mcp_tools_example.md
-  - Memory Example: examples/memory_example.md
-  - Monitoring Example: examples/monitoring_example.md
-  - Prompts Example: examples/prompts_example.md
-  - Tasks Example: examples/tasks_example.md
+  - Basic Examples:
+    - Agents: examples/agents_example.md
+    - Tasks: examples/tasks_example.md
+    - Memory: examples/memory_example.md
+    - LLMs: examples/llms_example.md
+    - Guardrails: examples/guardrails_example.md
+  - Advanced Examples:
+    - Agent Manager: examples/agent_manager_example.md
+    - Communication: examples/communication_example.md
+    - Configuration Management: examples/configuration_manager_example.md
+    - Knowledge Retrieval: examples/knowledge_retrieval.md
+    - Code Generation Pipeline: examples/code_generation_pipeline.md
+    - Customer Support Bot: examples/customer_support_bot.md
+    - Research Agent: examples/research_agent.md
+  - Complete Workflows:
+    - Full Examples Index: examples/full_examples_index.md
+    - MCP Tools: examples/mcp_tools_example.md
+    - Monitoring: examples/monitoring_example.md
+    - Prompts: examples/prompts_example.md
+- Advanced Topics:
+  - Architecture: architecture.md
+  - Best Practices: best-practices.md
+  - Performance: performance.md
+  - Security: security.md
+  - Deployment: deployment.md
+  - Integration: integration.md
+- Reference:
+  - API Reference: API_REFERENCE.md
+  - Configuration Reference: configuration-reference.md
+  - CLI Reference: cli-reference.md
+  - Extending: EXTENDING.md
+- Help:
+  - Troubleshooting: TROUBLESHOOTING.md
+  - FAQ: faq.md
+  - Contributing: contributing.md
+  - Changelog: changelog.md
+
+# Extra
+extra:
+  social:
+  - icon: fontawesome/brands/github
+    link: https://github.com/isathish/agenticaiframework
+  - icon: fontawesome/brands/python
+    link: https://pypi.org/project/agenticaiframework/
+  version:
+    provider: mike

@@ -141,3 +141,4 @@ cython_debug/
 # Local dev artifacts
 *.pkl
 *.log
+*.pyc

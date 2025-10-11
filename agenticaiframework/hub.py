@@ -9,6 +9,7 @@ class Hub:
         self.tools: Dict[str, Any] = {}
         self.guardrails: Dict[str, Any] = {}
         self.llms: Dict[str, Any] = {}
+        self.services: Dict[str, Any] = {}
 
     def register(self, category: str, name: str, item: Any):
         if hasattr(self, category):
@@ -16,6 +17,15 @@ class Hub:
             self._log(f"Registered {category[:-1]} '{name}'")
         else:
             self._log(f"Invalid category '{category}'")
+
+    def register_service(self, name: str, service: Any):
+        """Register a service in the hub"""
+        self.services[name] = service
+        self._log(f"Registered service '{name}'")
+
+    def get_service(self, name: str) -> Any:
+        """Get a service by name"""
+        return self.services.get(name)
 
     def get(self, category: str, name: str) -> Any:
         if hasattr(self, category):
