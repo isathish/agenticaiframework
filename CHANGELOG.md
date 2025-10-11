@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v1.0.30](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.30) - 2025-10-11
+
+<small>[Compare with v1.0.29](https://github.com/isathish/agenticaiframework/compare/v1.0.29...v1.0.30)</small>
+
 ## [v1.0.29](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.29) - 2025-10-11
 
 <small>[Compare with v1.0.28](https://github.com/isathish/agenticaiframework/compare/v1.0.28...v1.0.29)</small>
