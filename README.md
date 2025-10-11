@@ -187,8 +187,17 @@ pip install "agenticaiframework[monitoring]"
 # For advanced memory features
 pip install "agenticaiframework[memory]"
 
+# For documentation building
+pip install "agenticaiframework[docs]"
+
 # For all optional dependencies
 pip install "agenticaiframework[all]"
+```
+
+### Documentation Dependencies
+```bash
+# Install only documentation dependencies
+pip install -r requirements-docs.txt
 ```
 
 ---
@@ -396,11 +405,19 @@ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 # Install development dependencies
 pip install -e ".[dev]"
 
+# Install documentation dependencies
+pip install -r requirements-docs.txt
+
 # Run tests
 pytest
 
-# Generate documentation
+# Build documentation locally
+mkdocs build
+
+# Serve documentation for development
 mkdocs serve
+
+# View documentation at http://127.0.0.1:8000
 ```
 
 ### Production Deployment
