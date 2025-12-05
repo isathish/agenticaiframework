@@ -103,7 +103,7 @@ def test_guardrail_and_manager(capsys):
     assert gm.get_guardrail(g.id) is None
     captured = capsys.readouterr()
     assert "Registered guardrail" in captured.out
-    assert "Guardrail 'positive_check' failed validation." in captured.out
+    assert "Guardrail 'positive_check' failed validation" in captured.out
     assert "Removed guardrail" in captured.out
 
 
@@ -173,7 +173,7 @@ def test_llm_manager_with_exception(capsys):
     result = lm.generate("test")
     assert result is None
     captured = capsys.readouterr()
-    assert "Error generating with model 'bad'" in captured.out
+    assert "Model 'bad' failed" in captured.out
 
 
 # Additional tests to improve coverage for mcp_tools, memory, and monitoring
