@@ -12,8 +12,6 @@ copyright: Copyright &copy; 2024 AgenticAI Framework Contributors
 theme:
   name: material
   language: en
-  logo: assets/logo.png
-  favicon: assets/favicon.png
   icon:
     repo: fontawesome/brands/github
     edit: material/pencil
@@ -138,6 +136,7 @@ nav:
   - Quick Start Guide: quick-start.md
   - Configuration: CONFIGURATION.md
   - Architecture Overview: architecture.md
+  - 🎨 Architecture Diagrams: diagrams.md
 - 📦 Core Modules:
   - 🤖 Agents: agents.md
   - ✅ Tasks: tasks.md
