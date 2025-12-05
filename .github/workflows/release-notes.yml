@@ -1,0 +1,340 @@
+name: Generate AI Release Notes
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to generate release notes for'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  generate-release-notes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install openai anthropic requests
+
+      - name: Analyze repository changes
+        id: analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Determine tag
+          if [ -n "${{ github.event.inputs.tag }}" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+          else
+            TAG="${GITHUB_REF#refs/tags/}"
+          fi
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          
+          # Get previous tag
+          PREVIOUS_TAG=$(git tag --sort=-creatordate | grep -v "$TAG" | head -1)
+          if [ -z "$PREVIOUS_TAG" ]; then
+            PREVIOUS_TAG=$(git rev-list --max-parents=0 HEAD)
+          fi
+          echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
+          
+          # Collect commit information
+          git log $PREVIOUS_TAG..$TAG --pretty=format:"%H|%s|%b|%an|%ae|%ad" --date=short > /tmp/commits.txt
+          
+          # Get changed files with stats
+          git diff --stat $PREVIOUS_TAG..$TAG > /tmp/file_stats.txt
+          
+          # Get detailed changes for key files
+          git diff $PREVIOUS_TAG..$TAG -- "*.py" "*.md" "setup.py" "requirements*.txt" > /tmp/detailed_changes.txt
+          
+          # Get PR information if available
+          COMMITS=$(git log $PREVIOUS_TAG..$TAG --pretty=format:"%h" | tr '\n' ' ')
+          for commit in $COMMITS; do
+            gh api repos/${{ github.repository }}/commits/$commit/pulls --jq '.[].number' 2>/dev/null || true
+          done | sort -u > /tmp/prs.txt || true
+
+      - name: Generate AI-powered release notes
+        id: generate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python3 << 'PYTHON_SCRIPT'
+          import os
+          import json
+          import subprocess
+          from datetime import datetime
+          
+          # Read commit data
+          with open('/tmp/commits.txt', 'r') as f:
+              commits_data = f.read()
+          
+          with open('/tmp/file_stats.txt', 'r') as f:
+              file_stats = f.read()
+          
+          # Read detailed changes (limited to avoid token limits)
+          with open('/tmp/detailed_changes.txt', 'r') as f:
+              detailed_changes = f.read()[:10000]  # Limit to 10k chars
+          
+          tag = "${{ steps.analyze.outputs.tag }}"
+          previous_tag = "${{ steps.analyze.outputs.previous_tag }}"
+          
+          # Parse commits
+          commits = []
+          for line in commits_data.strip().split('\n'):
+              if line:
+                  parts = line.split('|')
+                  if len(parts) >= 2:
+                      commits.append({
+                          'hash': parts[0][:7],
+                          'subject': parts[1],
+                          'body': parts[2] if len(parts) > 2 else '',
+                          'author': parts[3] if len(parts) > 3 else '',
+                      })
+          
+          # Categorize commits
+          categories = {
+              'features': [],
+              'fixes': [],
+              'docs': [],
+              'tests': [],
+              'refactor': [],
+              'chore': [],
+              'breaking': []
+          }
+          
+          for commit in commits:
+              subject_lower = commit['subject'].lower()
+              body_lower = commit['body'].lower()
+              
+              # Check for breaking changes
+              if 'breaking' in body_lower or 'breaking change' in subject_lower:
+                  categories['breaking'].append(commit)
+              # Categorize by conventional commit prefixes
+              elif any(prefix in subject_lower for prefix in ['feat:', 'feature:', 'add:']):
+                  categories['features'].append(commit)
+              elif any(prefix in subject_lower for prefix in ['fix:', 'bug:', 'patch:']):
+                  categories['fixes'].append(commit)
+              elif any(prefix in subject_lower for prefix in ['docs:', 'doc:']):
+                  categories['docs'].append(commit)
+              elif any(prefix in subject_lower for prefix in ['test:', 'tests:']):
+                  categories['tests'].append(commit)
+              elif any(prefix in subject_lower for prefix in ['refactor:', 'refactoring:']):
+                  categories['refactor'].append(commit)
+              elif any(prefix in subject_lower for prefix in ['chore:', 'ci:', 'build:']):
+                  categories['chore'].append(commit)
+              else:
+                  categories['chore'].append(commit)
+          
+          # Generate release notes
+          release_notes = f"# Release {tag}\n\n"
+          release_notes += f"**Full Changelog**: `{previous_tag}...{tag}`\n\n"
+          
+          # Summary section
+          total_commits = len(commits)
+          release_notes += f"## 📊 Release Summary\n\n"
+          release_notes += f"This release includes **{total_commits} commits** "
+          release_notes += f"with **{len(categories['features'])} new features**, "
+          release_notes += f"**{len(categories['fixes'])} bug fixes**, "
+          release_notes += f"and **{len(categories['docs'])} documentation updates**.\n\n"
+          
+          # Breaking changes (if any)
+          if categories['breaking']:
+              release_notes += "## ⚠️ Breaking Changes\n\n"
+              for commit in categories['breaking']:
+                  release_notes += f"- {commit['subject']} ({commit['hash']})\n"
+                  if commit['body']:
+                      release_notes += f"  {commit['body'][:200]}...\n"
+              release_notes += "\n"
+          
+          # Features
+          if categories['features']:
+              release_notes += "## ✨ New Features\n\n"
+              for commit in categories['features']:
+                  release_notes += f"- {commit['subject']} ({commit['hash']})\n"
+              release_notes += "\n"
+          
+          # Bug fixes
+          if categories['fixes']:
+              release_notes += "## 🐛 Bug Fixes\n\n"
+              for commit in categories['fixes']:
+                  release_notes += f"- {commit['subject']} ({commit['hash']})\n"
+              release_notes += "\n"
+          
+          # Documentation
+          if categories['docs']:
+              release_notes += "## 📚 Documentation\n\n"
+              for commit in categories['docs']:
+                  release_notes += f"- {commit['subject']} ({commit['hash']})\n"
+              release_notes += "\n"
+          
+          # Testing
+          if categories['tests']:
+              release_notes += "## 🧪 Testing\n\n"
+              for commit in categories['tests']:
+                  release_notes += f"- {commit['subject']} ({commit['hash']})\n"
+              release_notes += "\n"
+          
+          # Refactoring
+          if categories['refactor']:
+              release_notes += "## ♻️ Refactoring\n\n"
+              for commit in categories['refactor']:
+                  release_notes += f"- {commit['subject']} ({commit['hash']})\n"
+              release_notes += "\n"
+          
+          # Other changes
+          if categories['chore']:
+              release_notes += "## 🔧 Maintenance\n\n"
+              for commit in categories['chore'][:10]:  # Limit to 10
+                  release_notes += f"- {commit['subject']} ({commit['hash']})\n"
+              if len(categories['chore']) > 10:
+                  release_notes += f"- ... and {len(categories['chore']) - 10} more maintenance changes\n"
+              release_notes += "\n"
+          
+          # File statistics
+          release_notes += "## 📁 Changed Files\n\n"
+          release_notes += "```\n"
+          release_notes += file_stats[:1000]  # Limit output
+          release_notes += "\n```\n\n"
+          
+          # Contributors
+          authors = set(commit['author'] for commit in commits if commit.get('author'))
+          if authors:
+              release_notes += "## 👥 Contributors\n\n"
+              release_notes += f"Thank you to all {len(authors)} contributors who made this release possible!\n\n"
+              for author in sorted(authors):
+                  release_notes += f"- @{author.replace(' ', '')}\n"
+              release_notes += "\n"
+          
+          # Installation instructions
+          release_notes += "## 📦 Installation\n\n"
+          release_notes += f"```bash\n"
+          release_notes += f"pip install agenticaiframework=={tag.lstrip('v')}\n"
+          release_notes += f"```\n\n"
+          
+          # Save release notes
+          with open('RELEASE_NOTES.md', 'w') as f:
+              f.write(release_notes)
+          
+          print("✅ Release notes generated successfully!")
+          print("\n" + "="*60)
+          print(release_notes)
+          print("="*60)
+          
+          PYTHON_SCRIPT
+
+      - name: Enhance with AI (OpenAI GPT)
+        if: env.OPENAI_API_KEY != ''
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python3 << 'PYTHON_SCRIPT'
+          import os
+          import json
+          
+          try:
+              import openai
+              
+              # Read generated release notes
+              with open('RELEASE_NOTES.md', 'r') as f:
+                  release_notes = f.read()
+              
+              with open('/tmp/commits.txt', 'r') as f:
+                  commits = f.read()[:3000]
+              
+              # Create prompt for GPT
+              prompt = f"""You are a technical writer creating release notes for a Python AI agent framework.
+
+          Based on the following information, enhance and improve the release notes by:
+          1. Adding more context and user impact for key features
+          2. Improving clarity and readability
+          3. Highlighting the most important changes
+          4. Adding emoji for better visual organization
+          5. Keeping the same markdown structure
+
+          Current Release Notes:
+          {release_notes}
+
+          Recent Commits:
+          {commits[:2000]}
+
+          Generate enhanced release notes in markdown format:"""
+              
+              client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+              
+              response = client.chat.completions.create(
+                  model="gpt-4",
+                  messages=[
+                      {"role": "system", "content": "You are an expert technical writer for software release notes."},
+                      {"role": "user", "content": prompt}
+                  ],
+                  max_tokens=2000,
+                  temperature=0.7
+              )
+              
+              enhanced_notes = response.choices[0].message.content
+              
+              # Save enhanced version
+              with open('RELEASE_NOTES_AI.md', 'w') as f:
+                  f.write(enhanced_notes)
+              
+              print("✅ AI-enhanced release notes generated!")
+              print(enhanced_notes)
+              
+          except ImportError:
+              print("⚠️ OpenAI package not available, skipping AI enhancement")
+          except Exception as e:
+              print(f"⚠️ AI enhancement failed: {e}")
+              print("Using standard release notes")
+          
+          PYTHON_SCRIPT
+
+      - name: Update or create GitHub release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.analyze.outputs.tag }}"
+          
+          # Use AI-enhanced notes if available, otherwise use standard
+          if [ -f "RELEASE_NOTES_AI.md" ]; then
+            NOTES_FILE="RELEASE_NOTES_AI.md"
+            echo "Using AI-enhanced release notes"
+          else
+            NOTES_FILE="RELEASE_NOTES.md"
+            echo "Using standard release notes"
+          fi
+          
+          # Check if release exists
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Updating existing release..."
+            gh release edit "$TAG" --notes-file "$NOTES_FILE"
+          else
+            echo "Creating new release..."
+            gh release create "$TAG" \
+              --title "Release $TAG" \
+              --notes-file "$NOTES_FILE"
+          fi
+
+      - name: Upload release notes as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes
+          path: |
+            RELEASE_NOTES.md
+            RELEASE_NOTES_AI.md
+          retention-days: 90

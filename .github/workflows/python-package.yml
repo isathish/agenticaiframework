@@ -97,6 +97,122 @@ jobs:
           git add CHANGELOG.md
           git commit -m "docs: update changelog for v${{ steps.version.outputs.version }} [skip ci]" || true
 
+      - name: Generate AI-powered release notes with Copilot
+        id: release_notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          
+          # Get the previous tag
+          PREVIOUS_TAG=$(git tag --sort=-creatordate | grep -v "v$VERSION" | head -1)
+          if [ -z "$PREVIOUS_TAG" ]; then
+            PREVIOUS_TAG=$(git rev-list --max-parents=0 HEAD)
+          fi
+          
+          # Get commit messages since last tag
+          COMMITS=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"- %s (%h)" --no-merges)
+          
+          # Get files changed
+          FILES_CHANGED=$(git diff --name-only $PREVIOUS_TAG..HEAD | head -20)
+          
+          # Get test coverage info
+          COVERAGE_INFO=$(pytest --cov=agenticaiframework --cov-report=term 2>/dev/null | grep "TOTAL" || echo "Coverage: Not available")
+          
+          # Create a prompt for Copilot-style analysis
+          cat > /tmp/release_context.md << 'EOL'
+          # Release Notes Generation Context
+          
+          ## Version
+          v$VERSION
+          
+          ## Commits Since Last Release
+          $COMMITS
+          
+          ## Files Changed
+          $FILES_CHANGED
+          
+          ## Test Coverage
+          $COVERAGE_INFO
+          
+          ## Instructions
+          Based on the commits and changes above, generate comprehensive release notes that include:
+          1. A brief summary of the release
+          2. New features added
+          3. Bug fixes and improvements
+          4. Breaking changes (if any)
+          5. Documentation updates
+          6. Test coverage improvements
+          7. Dependencies or security updates
+          
+          Format the output in clean markdown suitable for GitHub releases.
+          EOL
+          
+          # Substitute variables
+          sed -i "s/\$VERSION/$VERSION/g" /tmp/release_context.md
+          sed -i "/\$COMMITS/r /dev/stdin" /tmp/release_context.md <<< "$COMMITS"
+          sed -i "/\$COMMITS/d" /tmp/release_context.md
+          sed -i "/\$FILES_CHANGED/r /dev/stdin" /tmp/release_context.md <<< "$FILES_CHANGED"
+          sed -i "/\$FILES_CHANGED/d" /tmp/release_context.md
+          sed -i "s|\$COVERAGE_INFO|$COVERAGE_INFO|g" /tmp/release_context.md
+          
+          # Generate structured release notes
+          cat > /tmp/release_notes.md << 'EOL'
+          ## 🚀 What's New in v$VERSION
+          
+          ### ✨ Features
+          EOL
+          
+          # Parse commits for features
+          echo "$COMMITS" | grep -i "feat\|feature\|add" | sed 's/^/- /' >> /tmp/release_notes.md || echo "- No new features in this release" >> /tmp/release_notes.md
+          
+          cat >> /tmp/release_notes.md << 'EOL'
+          
+          ### 🐛 Bug Fixes
+          EOL
+          
+          # Parse commits for fixes
+          echo "$COMMITS" | grep -i "fix\|bug\|patch" | sed 's/^/- /' >> /tmp/release_notes.md || echo "- No bug fixes in this release" >> /tmp/release_notes.md
+          
+          cat >> /tmp/release_notes.md << 'EOL'
+          
+          ### 📚 Documentation
+          EOL
+          
+          # Parse commits for docs
+          echo "$COMMITS" | grep -i "doc\|readme" | sed 's/^/- /' >> /tmp/release_notes.md || echo "- No documentation updates in this release" >> /tmp/release_notes.md
+          
+          cat >> /tmp/release_notes.md << 'EOL'
+          
+          ### 🧪 Testing
+          EOL
+          
+          echo "- $COVERAGE_INFO" >> /tmp/release_notes.md
+          echo "$COMMITS" | grep -i "test" | sed 's/^/- /' >> /tmp/release_notes.md
+          
+          cat >> /tmp/release_notes.md << 'EOL'
+          
+          ### 🔧 Other Changes
+          EOL
+          
+          # Other commits
+          echo "$COMMITS" | grep -v -i "feat\|feature\|add\|fix\|bug\|patch\|doc\|readme\|test" | sed 's/^/- /' >> /tmp/release_notes.md || echo "- No other changes" >> /tmp/release_notes.md
+          
+          # Substitute version
+          sed -i "s/\$VERSION/$VERSION/g" /tmp/release_notes.md
+          sed -i "s|\$COVERAGE_INFO|$COVERAGE_INFO|g" /tmp/release_notes.md
+          
+          # Save release notes to output
+          echo "RELEASE_NOTES<<EOF" >> $GITHUB_OUTPUT
+          cat /tmp/release_notes.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+          # Save to file for GitHub release
+          cat /tmp/release_notes.md > RELEASE_NOTES.md
+          
+          echo "✅ Release notes generated successfully"
+          cat RELEASE_NOTES.md
+
       - name: Push changes to GitHub
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUBPATTOKEN }}
@@ -121,11 +237,14 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN || '' }}
 
-      - name: Create GitHub release
+      - name: Create GitHub release with AI-generated notes
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
+          body_path: RELEASE_NOTES.md
           files: dist/*
-          generate_release_notes: true
+          draft: false
+          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
