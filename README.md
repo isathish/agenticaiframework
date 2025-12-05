@@ -32,11 +32,13 @@ Comprehensive documentation, extensive examples, intuitive APIs, and powerful de
 
 ## 🏗️ Core Architecture
 
-AgenticAI Framework is built around **12 core modules** that work together seamlessly:
+AgenticAI Framework is built around **13 core modules** that work together seamlessly:
 
 ### 🤖 **Agents** - Intelligent Autonomous Entities
+- **Context engineering** with token tracking and automatic compression
 - **Multi-role agents** with configurable capabilities and behaviors
 - **Lifecycle management** with start, pause, resume, and stop controls
+- **Performance monitoring** with comprehensive metrics and error tracking
 - **Custom agent types** for specialized domains (customer service, research, code generation)
 - **Advanced coordination** patterns for multi-agent collaboration
 
@@ -47,15 +49,34 @@ AgenticAI Framework is built around **12 core modules** that work together seaml
 - **Performance monitoring** with comprehensive metrics and resource tracking
 
 ### 🧠 **Memory** - Advanced Memory Systems
-- **Multi-tier memory** architecture (short-term, long-term, working memory)
+- **Multi-tier memory** architecture (short-term, long-term, external memory)
+- **TTL (Time-To-Live)** support for automatic memory expiration
+- **Priority-based eviction** with LRU algorithm
+- **Memory consolidation** for frequently accessed data
 - **Semantic search** capabilities with intelligent information retrieval
-- **Memory persistence** with file-based and database storage options
-- **Memory sharing** and federation between agents
-
 ### 🔗 **LLMs** - Language Model Management
+- **Circuit breaker pattern** to prevent cascading failures
+- **Automatic retry** with exponential backoff
+- **Response caching** for improved performance
+- **Fallback chains** for high availability
 - **Multi-provider support** with unified interface for different LLM providers
-- **Dynamic model switching** based on task requirements and performance
-- **Cost optimization** with intelligent model selection and caching
+### 🛡️ **Guardrails** - Safety and Compliance
+- **Priority-based enforcement** with circuit breakers
+- **Severity levels** (low, medium, high, critical)
+- **Remediation actions** for automatic issue resolution
+- **Content filtering** with customizable validation rules
+- **Policy enforcement** for ethical AI behavior
+- **Security validation** to prevent prompt injection and data leakage
+- **Compliance monitoring** with audit trails and reporting
+- **Violation tracking** with comprehensive analytics
+
+### 🔐 **Security** - Enterprise-Grade Security (NEW)
+- **Prompt injection detection** with 15+ attack patterns
+- **Input validation** and sanitization
+- **Rate limiting** per user/session
+- **Content filtering** with customizable rules
+- **Audit logging** with comprehensive event tracking
+- **Security metrics** and reportingd caching
 - **Response validation** and quality assurance
 
 ### 🛡️ **Guardrails** - Safety and Compliance
@@ -66,11 +87,15 @@ AgenticAI Framework is built around **12 core modules** that work together seaml
 
 ### 📊 **Monitoring** - Comprehensive Observability
 - **Real-time metrics** collection and analysis
-- **Performance tracking** with detailed execution insights
-- **Error monitoring** with intelligent alerting and recovery
-- **Custom dashboards** and reporting capabilities
-
-### 💬 **Communication** - Inter-Agent Communication
+### 🎯 **Prompts** - Intelligent Prompt Management
+- **Defensive prompting** with automatic protection
+- **Injection detection** and prevention
+- **Safe rendering mode** for untrusted inputs
+- **Template system** with variable substitution and inheritance
+- **A/B testing** for prompt optimization
+- **Version control** for prompt evolution tracking with rollback
+- **Vulnerability scanning** across all prompts
+- **Performance analytics** for prompt effectiveness
 - **Multiple protocols** (HTTP, WebSocket, gRPC, Message Queues)
 - **Pub/sub messaging** for decoupled agent communication
 - **Event-driven architecture** with comprehensive event handling
@@ -508,11 +533,36 @@ pytest tests/test_tasks.py -v
 pytest tests/test_memory.py -v
 ```
 
+## 🧪 Testing
+
+### Running Tests
+```bash
+# Run all tests
+pytest tests/
+
+# Run specific test suites
+pytest tests/test_security.py              # Security features
+pytest tests/test_context_engineering.py    # Context management
+pytest tests/test_memory_advanced.py        # Memory features
+pytest tests/test_llm_reliability.py        # LLM reliability
+pytest tests/test_prompts_guardrails.py     # Prompts & guardrails
+pytest tests/test_integration.py            # Integration tests
+
+# Run with coverage
+pytest tests/ --cov=agenticaiframework --cov-report=html
+
+# Run with verbose output
+pytest tests/ -v
+```
+
 ### Test Coverage
-- **Agents Module**: 95% coverage
-- **Tasks Module**: 98% coverage  
-- **Memory Module**: 92% coverage
-- **Overall Framework**: 94% coverage
+- **Security Module**: Comprehensive tests for injection detection, validation, rate limiting, and content filtering
+- **Context Engineering**: Tests for token tracking, compression, and importance weighting
+- **Memory Management**: Tests for TTL, priority eviction, consolidation, and search
+- **LLM Reliability**: Tests for circuit breaker, retry mechanism, caching, and fallback chains
+- **Prompts & Guardrails**: Tests for safe rendering, version control, severity levels, and priority enforcement
+- **Integration**: End-to-end tests for complete workflows
+- **Overall Framework**: 94%+ coverage across all modules
 
 ### Quality Metrics
 - **Code Quality**: A+ (SonarQube)

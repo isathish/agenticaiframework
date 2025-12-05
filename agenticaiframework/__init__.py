@@ -3,7 +3,7 @@ AgenticAI Python Package
 Fully functional implementation of the Agentic Framework as described.
 """
 
-from .agents import Agent, AgentManager
+from .agents import Agent, AgentManager, ContextManager
 from .prompts import Prompt, PromptManager
 from .processes import Process
 from .tasks import Task, TaskManager
@@ -12,14 +12,22 @@ from .monitoring import MonitoringSystem
 from .guardrails import Guardrail, GuardrailManager
 from .evaluation import EvaluationSystem
 from .knowledge import KnowledgeRetriever
-from .llms import LLMManager
+from .llms import LLMManager, CircuitBreaker
 from .communication import CommunicationManager
-from .memory import MemoryManager
+from .memory import MemoryManager, MemoryEntry
 from .hub import Hub
 from .configurations import ConfigurationManager
+from .security import (
+    PromptInjectionDetector,
+    InputValidator,
+    RateLimiter,
+    ContentFilter,
+    AuditLogger,
+    SecurityManager
+)
 
 __all__ = [
-    "Agent", "AgentManager",
+    "Agent", "AgentManager", "ContextManager",
     "Prompt", "PromptManager",
     "Process",
     "Task", "TaskManager",
@@ -28,9 +36,15 @@ __all__ = [
     "Guardrail", "GuardrailManager",
     "EvaluationSystem",
     "KnowledgeRetriever",
-    "LLMManager",
+    "LLMManager", "CircuitBreaker",
     "CommunicationManager",
-    "MemoryManager",
+    "MemoryManager", "MemoryEntry",
     "Hub",
-    "ConfigurationManager"
+    "ConfigurationManager",
+    "PromptInjectionDetector",
+    "InputValidator",
+    "RateLimiter",
+    "ContentFilter",
+    "AuditLogger",
+    "SecurityManager"
 ]
