@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v1.0.32](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.32) - 2025-12-05
+
+<small>[Compare with v1.0.31](https://github.com/isathish/agenticaiframework/compare/v1.0.31...v1.0.32)</small>
+
+### Added
+
+- Add comprehensive test suites for reliability, memory management, prompts, and security features ([eb6bdc9](https://github.com/isathish/agenticaiframework/commit/eb6bdc91a79136915efa96481f3eaae710111dfa) by isathish).
+
+### Removed
+
+- Remove obsolete test suites for LLM reliability, memory management, prompt and guardrail features, and security functionalities to streamline the testing framework. ([3c445d6](https://github.com/isathish/agenticaiframework/commit/3c445d61d61e2797c9bf348ccd632f4cc330b8fa) by isathish).
+
 ## [v1.0.31](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.31) - 2025-10-11
 
 <small>[Compare with v1.0.30](https://github.com/isathish/agenticaiframework/compare/v1.0.30...v1.0.31)</small>
