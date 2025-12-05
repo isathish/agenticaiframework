@@ -5,7 +5,7 @@ Tests TTL, priority eviction, consolidation, and search.
 
 import pytest
 import time
-from agenticaiframework.memory import MemoryEntry, Memory
+from agenticaiframework.memory import MemoryEntry, MemoryManager
 
 
 class TestMemoryEntry:
@@ -57,7 +57,7 @@ class TestMemoryTTL:
     
     def test_store_with_ttl(self):
         """Test storing memories with TTL."""
-        memory = Memory()
+        memory = MemoryManager()
         
         memory.store(
             "temporary",
@@ -72,7 +72,7 @@ class TestMemoryTTL:
     
     def test_ttl_expiration(self):
         """Test that expired memories are removed."""
-        memory = Memory()
+        memory = MemoryManager()
         
         memory.store(
             "temporary",
@@ -89,7 +89,7 @@ class TestMemoryTTL:
     
     def test_mixed_ttl_memories(self):
         """Test mixing memories with and without TTL."""
-        memory = Memory()
+        memory = MemoryManager()
         
         memory.store("permanent", "Stays forever", tier='short_term')
         memory.store("temporary", "Expires", tier='short_term', ttl=1)
@@ -107,7 +107,7 @@ class TestMemoryPriorityEviction:
     
     def test_priority_storage(self):
         """Test storing memories with priority."""
-        memory = Memory()
+        memory = MemoryManager()
         
         memory.store(
             "high_priority",
@@ -128,7 +128,7 @@ class TestMemoryPriorityEviction:
     
     def test_eviction_order(self):
         """Test that low priority items are evicted first."""
-        memory = Memory()
+        memory = MemoryManager()
         
         # Store items with different priorities
         memory.store("critical", "Critical", tier='short_term', priority=1.0)
@@ -145,7 +145,7 @@ class TestMemoryConsolidation:
     
     def test_consolidation(self):
         """Test consolidating frequently accessed memories."""
-        memory = Memory()
+        memory = MemoryManager()
         
         # Store and access multiple times
         memory.store("key", "value", tier='short_term')
@@ -161,7 +161,7 @@ class TestMemoryConsolidation:
     
     def test_consolidation_threshold(self):
         """Test that consolidation respects access threshold."""
-        memory = Memory()
+        memory = MemoryManager()
         
         memory.store("low_access", "value1", tier='short_term')
         memory.store("high_access", "value2", tier='short_term')
@@ -183,7 +183,7 @@ class TestMemorySearch:
     
     def test_search_by_content(self):
         """Test searching memories by content."""
-        memory = Memory()
+        memory = MemoryManager()
         
         memory.store("key1", "The quick brown fox", tier='short_term')
         memory.store("key2", "The lazy dog", tier='short_term')
@@ -196,7 +196,7 @@ class TestMemorySearch:
     
     def test_search_case_insensitive(self):
         """Test that search is case-insensitive."""
-        memory = Memory()
+        memory = MemoryManager()
         
         memory.store("key1", "UPPERCASE TEXT", tier='short_term')
         memory.store("key2", "lowercase text", tier='short_term')
@@ -208,7 +208,7 @@ class TestMemorySearch:
     
     def test_search_across_tiers(self):
         """Test searching across all memory tiers."""
-        memory = Memory()
+        memory = MemoryManager()
         
         memory.store("key1", "short term item", tier='short_term')
         memory.store("key2", "long term item", tier='long_term')
@@ -220,7 +220,7 @@ class TestMemorySearch:
     
     def test_search_no_results(self):
         """Test search with no matching results."""
-        memory = Memory()
+        memory = MemoryManager()
         
         memory.store("key1", "content one", tier='short_term')
         memory.store("key2", "content two", tier='short_term')
@@ -235,7 +235,7 @@ class TestMemoryExport:
     
     def test_export_all(self):
         """Test exporting all memories."""
-        memory = Memory()
+        memory = MemoryManager()
         
         memory.store("key1", "value1", tier='short_term')
         memory.store("key2", "value2", tier='long_term')
@@ -248,7 +248,7 @@ class TestMemoryExport:
     
     def test_export_specific_tier(self):
         """Test exporting specific memory tier."""
-        memory = Memory()
+        memory = MemoryManager()
         
         memory.store("key1", "value1", tier='short_term')
         memory.store("key2", "value2", tier='long_term')
@@ -264,7 +264,7 @@ class TestMemoryStatistics:
     
     def test_get_stats(self):
         """Test getting memory statistics."""
-        memory = Memory()
+        memory = MemoryManager()
         
         memory.store("key1", "value1", tier='short_term')
         memory.store("key2", "value2", tier='long_term')
@@ -277,7 +277,7 @@ class TestMemoryStatistics:
     
     def test_stats_by_tier(self):
         """Test tier-specific statistics."""
-        memory = Memory()
+        memory = MemoryManager()
         
         memory.store("key1", "value1", tier='short_term')
         memory.store("key2", "value2", tier='short_term')
@@ -295,7 +295,7 @@ class TestMemoryIntegration:
     
     def test_full_lifecycle(self):
         """Test full memory lifecycle: store, recall, expire, consolidate."""
-        memory = Memory()
+        memory = MemoryManager()
         
         # Store with TTL
         memory.store("temp", "temporary data", tier='short_term', ttl=2)
@@ -319,7 +319,7 @@ class TestMemoryIntegration:
     
     def test_memory_under_load(self):
         """Test memory system under load."""
-        memory = Memory()
+        memory = MemoryManager()
         
         # Store many items
         for i in range(100):
@@ -340,7 +340,7 @@ class TestMemoryIntegration:
     
     def test_mixed_operations(self):
         """Test mixing different memory operations."""
-        memory = Memory()
+        memory = MemoryManager()
         
         # Store
         memory.store("key1", "value1", tier='short_term', priority=0.8)

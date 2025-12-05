@@ -8,8 +8,8 @@ import time
 from agenticaiframework.agents import Agent, ContextManager
 from agenticaiframework.prompts import Prompt
 from agenticaiframework.guardrails import Guardrail, GuardrailManager
-from agenticaiframework.memory import Memory
-from agenticaiframework.llms import LLM
+from agenticaiframework.memory import MemoryManager
+from agenticaiframework.llms import LLMManager
 from agenticaiframework.security import SecurityManager
 
 
@@ -75,7 +75,7 @@ class TestMemoryWithSecurity:
     
     def test_secure_memory_storage(self):
         """Test storing validated content in memory."""
-        memory = Memory()
+        memory = MemoryManager()
         security = SecurityManager()
         
         # Validate before storing
@@ -96,7 +96,7 @@ class TestMemoryWithSecurity:
     
     def test_memory_with_ttl_and_security(self):
         """Test memory with TTL and security validation."""
-        memory = Memory()
+        memory = MemoryManager()
         security = SecurityManager()
         
         # Store temporary data with validation
@@ -225,14 +225,14 @@ class TestLLMReliabilityWorkflow:
     
     def test_llm_with_fallback_chain(self):
         """Test LLM with fallback chain configuration."""
-        primary = LLM(
+        primary = LLMManager(
             name="primary-model",
             provider="test",
             enable_cache=True,
             max_retries=3
         )
         
-        fallback = LLM(
+        fallback = LLMManager(
             name="fallback-model",
             provider="test"
         )
@@ -246,7 +246,7 @@ class TestLLMReliabilityWorkflow:
     
     def test_caching_across_similar_requests(self):
         """Test that similar requests use cache."""
-        llm = LLM(
+        llm = LLMManager(
             name="test-model",
             provider="test",
             enable_cache=True
@@ -275,7 +275,7 @@ class TestFullStackIntegration:
             goal="Help securely",
             backstory="Security-aware"
         )
-        memory = Memory()
+        memory = MemoryManager()
         guardrails = GuardrailManager()
         
         # Add guardrails
@@ -336,7 +336,7 @@ class TestFullStackIntegration:
         )
         
         security = SecurityManager()
-        shared_memory = Memory()
+        shared_memory = MemoryManager()
         
         # Agent 1: Research
         research_query = "Research AI safety"
@@ -371,7 +371,7 @@ class TestFullStackIntegration:
     def test_performance_under_load(self):
         """Test system performance with many operations."""
         security = SecurityManager()
-        memory = Memory()
+        memory = MemoryManager()
         
         # Process many inputs
         for i in range(50):
@@ -423,7 +423,7 @@ class TestErrorHandlingIntegration:
     
     def test_circuit_breaker_prevents_cascade(self):
         """Test that circuit breakers prevent cascading failures."""
-        llm = LLM(
+        llm = LLMManager(
             name="test",
             provider="test",
             max_retries=2

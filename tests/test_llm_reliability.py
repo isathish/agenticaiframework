@@ -5,7 +5,7 @@ Tests CircuitBreaker, retry mechanism, caching, and fallback chains.
 
 import pytest
 import time
-from agenticaiframework.llms import CircuitBreaker, LLM
+from agenticaiframework.llms import CircuitBreaker, LLMManager
 
 
 class TestCircuitBreaker:
@@ -115,7 +115,7 @@ class TestLLMRetryMechanism:
     
     def test_retry_configuration(self):
         """Test configuring retry parameters."""
-        llm = LLM(
+        llm = LLMManager(
             name="test-model",
             provider="test",
             max_retries=5,
@@ -127,7 +127,7 @@ class TestLLMRetryMechanism:
     
     def test_exponential_backoff(self):
         """Test exponential backoff calculation."""
-        llm = LLM(
+        llm = LLMManager(
             name="test-model",
             provider="test",
             max_retries=3,
@@ -143,7 +143,7 @@ class TestLLMCaching:
     
     def test_cache_storage(self):
         """Test that responses are cached."""
-        llm = LLM(
+        llm = LLMManager(
             name="test-model",
             provider="test",
             enable_cache=True
@@ -157,7 +157,7 @@ class TestLLMCaching:
     
     def test_cache_retrieval(self):
         """Test retrieving cached responses."""
-        llm = LLM(
+        llm = LLMManager(
             name="test-model",
             provider="test",
             enable_cache=True
@@ -173,7 +173,7 @@ class TestLLMCaching:
     
     def test_cache_key_generation(self):
         """Test that cache keys are generated consistently."""
-        llm = LLM(
+        llm = LLMManager(
             name="test-model",
             provider="test",
             enable_cache=True
@@ -187,7 +187,7 @@ class TestLLMCaching:
     
     def test_different_prompts_different_keys(self):
         """Test that different prompts generate different keys."""
-        llm = LLM(
+        llm = LLMManager(
             name="test-model",
             provider="test",
             enable_cache=True
@@ -200,7 +200,7 @@ class TestLLMCaching:
     
     def test_clear_cache(self):
         """Test clearing the cache."""
-        llm = LLM(
+        llm = LLMManager(
             name="test-model",
             provider="test",
             enable_cache=True
@@ -221,9 +221,9 @@ class TestLLMFallbackChain:
     
     def test_fallback_configuration(self):
         """Test configuring fallback models."""
-        primary = LLM(name="primary", provider="test")
-        fallback1 = LLM(name="fallback1", provider="test")
-        fallback2 = LLM(name="fallback2", provider="test")
+        primary = LLMManager(name="primary", provider="test")
+        fallback1 = LLMManager(name="fallback1", provider="test")
+        fallback2 = LLMManager(name="fallback2", provider="test")
         
         primary.add_fallback(fallback1)
         primary.add_fallback(fallback2)
@@ -232,9 +232,9 @@ class TestLLMFallbackChain:
     
     def test_fallback_order(self):
         """Test that fallbacks are tried in order."""
-        primary = LLM(name="primary", provider="test")
-        fallback1 = LLM(name="fallback1", provider="test")
-        fallback2 = LLM(name="fallback2", provider="test")
+        primary = LLMManager(name="primary", provider="test")
+        fallback1 = LLMManager(name="fallback1", provider="test")
+        fallback2 = LLMManager(name="fallback2", provider="test")
         
         primary.add_fallback(fallback1)
         primary.add_fallback(fallback2)
@@ -249,7 +249,7 @@ class TestLLMPerformanceTracking:
     
     def test_track_latency(self):
         """Test tracking request latency."""
-        llm = LLM(name="test-model", provider="test")
+        llm = LLMManager(name="test-model", provider="test")
         
         # Simulate tracking
         llm.total_requests = 5
@@ -263,7 +263,7 @@ class TestLLMPerformanceTracking:
     
     def test_track_tokens(self):
         """Test tracking token usage."""
-        llm = LLM(name="test-model", provider="test")
+        llm = LLMManager(name="test-model", provider="test")
         
         llm.total_tokens = 1000
         llm.total_requests = 10
@@ -275,7 +275,7 @@ class TestLLMPerformanceTracking:
     
     def test_track_errors(self):
         """Test tracking error count."""
-        llm = LLM(name="test-model", provider="test")
+        llm = LLMManager(name="test-model", provider="test")
         
         llm.total_errors = 3
         llm.total_requests = 10
@@ -291,7 +291,7 @@ class TestLLMIntegration:
     
     def test_circuit_breaker_with_retry(self):
         """Test circuit breaker working with retry mechanism."""
-        llm = LLM(
+        llm = LLMManager(
             name="test-model",
             provider="test",
             max_retries=3,
@@ -304,7 +304,7 @@ class TestLLMIntegration:
     
     def test_caching_with_retry(self):
         """Test that caching works with retry mechanism."""
-        llm = LLM(
+        llm = LLMManager(
             name="test-model",
             provider="test",
             enable_cache=True,
@@ -317,7 +317,7 @@ class TestLLMIntegration:
     
     def test_full_reliability_stack(self):
         """Test all reliability features together."""
-        primary = LLM(
+        primary = LLMManager(
             name="primary",
             provider="test",
             enable_cache=True,
@@ -325,7 +325,7 @@ class TestLLMIntegration:
             retry_delay=0.1
         )
         
-        fallback = LLM(name="fallback", provider="test")
+        fallback = LLMManager(name="fallback", provider="test")
         primary.add_fallback(fallback)
         
         # All features should be configured
@@ -336,7 +336,7 @@ class TestLLMIntegration:
     
     def test_metrics_aggregation(self):
         """Test aggregating metrics across features."""
-        llm = LLM(
+        llm = LLMManager(
             name="test-model",
             provider="test",
             enable_cache=True,
