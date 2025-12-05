@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v1.0.40](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.40) - 2025-12-05
+
+<small>[Compare with v1.0.39](https://github.com/isathish/agenticaiframework/compare/v1.0.39...v1.0.40)</small>
+
+### Fixed
+
+- fix: correct comment formatting for mermaid custom fence in markdown extensions ([0726c61](https://github.com/isathish/agenticaiframework/commit/0726c618af69aaa802d0d40844a8d77113776e15) by isathish).
+
 ## [v1.0.39](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.39) - 2025-12-05
 
 <small>[Compare with v1.0.38](https://github.com/isathish/agenticaiframework/compare/v1.0.38...v1.0.39)</small>
