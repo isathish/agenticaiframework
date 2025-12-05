@@ -54,6 +54,52 @@ def stop() -> None
 def execute_task(task_callable: Callable, *args, **kwargs) -> Any
 ```
 
+### ContextManager Class
+
+The `ContextManager` provides sophisticated context window management for agents with token tracking and intelligent pruning.
+
+#### Constructor
+
+```python
+ContextManager(max_tokens: int = 4096)
+```
+
+**Parameters:**
+
+- **`max_tokens`** *(int)*: Maximum tokens to maintain in context (default: 4096)
+
+#### Key Methods
+
+```python
+def add_context(content: str, importance: float = 0.5) -> None
+def get_context_summary() -> str
+def get_stats() -> Dict[str, Any]
+def clear() -> None
+```
+
+**Example:**
+
+```python
+from agenticaiframework.agents import ContextManager
+
+# Create context manager
+ctx = ContextManager(max_tokens=2048)
+
+# Add context with importance weighting
+ctx.add_context("Critical system instruction", importance=0.9)
+ctx.add_context("Background information", importance=0.5)
+ctx.add_context("Optional details", importance=0.3)
+
+# Get context summary
+summary = ctx.get_context_summary()
+print(summary)
+
+# Get statistics
+stats = ctx.get_stats()
+print(f"Context items: {stats['total_items']}")
+print(f"Token utilization: {stats.get('utilization', 0):.2%}")
+```
+
 ### AgentManager Class
 
 The `AgentManager` orchestrates multiple agents and handles their coordination.

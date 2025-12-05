@@ -621,4 +621,222 @@ class HealthChecker:
             }
 ```
 
-These best practices will help you build robust, scalable, and maintainable applications with AgenticAI Framework. Remember to adapt these patterns to your specific use case and requirements.
+## Security Best Practices
+
+### 1. Enable All Security Features in Production
+
+Always enable comprehensive security in production environments:
+
+```python
+from agenticaiframework.security import SecurityManager
+
+# Production security configuration
+security = SecurityManager(
+    enable_injection_detection=True,
+    enable_input_validation=True,
+    enable_rate_limiting=True,
+    enable_content_filtering=True,
+    enable_audit_logging=True
+)
+```
+
+### 2. Implement Defense in Depth
+
+Layer multiple security controls:
+
+```python
+def secure_agent_input(user_input: str, user_id: str) -> dict:
+    # Layer 1: Rate limiting
+    rate_result = rate_limiter.check_rate_limit(user_id)
+    if not rate_result['allowed']:
+        return {"error": "Rate limit exceeded"}
+    
+    # Layer 2: Input validation
+    validation = input_validator.validate(user_input)
+    if not validation['is_valid']:
+        return {"error": "Invalid input", "details": validation['errors']}
+    
+    # Layer 3: Injection detection
+    injection = injection_detector.detect(user_input)
+    if injection['is_injection']:
+        audit_logger.log_event("injection_detected", {
+            "user_id": user_id,
+            "confidence": injection['confidence']
+        })
+        return {"error": "Security violation detected"}
+    
+    # Layer 4: Content filtering
+    filter_result = content_filter.filter_text(user_input)
+    if filter_result['blocked']:
+        return {"error": "Content policy violation"}
+    
+    return {"success": True, "sanitized_input": validation['sanitized']}
+```
+
+### 3. Audit All Security Events
+
+Maintain comprehensive audit logs:
+
+```python
+from agenticaiframework.security import AuditLogger
+
+audit_logger = AuditLogger(
+    log_file="/var/log/agenticai/security.log",
+    retention_days=90
+)
+
+# Log all security-relevant events
+audit_logger.log_event("user_authentication", {
+    "user_id": user_id,
+    "timestamp": datetime.now().isoformat(),
+    "ip_address": request.remote_addr,
+    "success": True
+})
+
+audit_logger.log_event("prompt_injection_blocked", {
+    "user_id": user_id,
+    "pattern_matched": "ignore_instructions",
+    "confidence": 0.95
+})
+```
+
+### 4. Validate and Sanitize All Inputs
+
+Never trust user input:
+
+```python
+from agenticaiframework.security import InputValidator
+
+validator = InputValidator(
+    max_length=10000,
+    allow_html=False,
+    allow_scripts=False
+)
+
+def process_user_input(raw_input: str) -> str:
+    # Validate
+    validation = validator.validate(raw_input)
+    if not validation['is_valid']:
+        raise ValueError(f"Invalid input: {validation['errors']}")
+    
+    # Sanitize
+    clean_input = validator.sanitize(raw_input)
+    
+    # Additional domain-specific sanitization
+    clean_input = remove_sensitive_patterns(clean_input)
+    
+    return clean_input
+```
+
+### 5. Implement Rate Limiting
+
+Protect against abuse:
+
+```python
+from agenticaiframework.security import RateLimiter
+
+# Different limits for different endpoints
+api_limiter = RateLimiter(max_requests=100, window_seconds=60)
+expensive_limiter = RateLimiter(max_requests=10, window_seconds=60)
+
+@app.route('/api/query')
+def handle_query(user_id: str):
+    if not api_limiter.check_rate_limit(user_id)['allowed']:
+        return {"error": "Rate limit exceeded"}, 429
+    
+    # Process request
+    return process_query()
+
+@app.route('/api/expensive_operation')
+def handle_expensive(user_id: str):
+    if not expensive_limiter.check_rate_limit(user_id)['allowed']:
+        return {"error": "Rate limit exceeded"}, 429
+    
+    # Process expensive request
+    return process_expensive_operation()
+```
+
+### 6. Use Prompt Security Features
+
+Enable security in prompt rendering:
+
+```python
+from agenticaiframework.prompts import Prompt, PromptManager
+
+# Create prompts with security enabled
+manager = PromptManager(enable_security=True)
+
+prompt = Prompt(
+    template="Process user request: {user_input}",
+    metadata={"category": "user_facing"},
+    enable_security=True
+)
+
+# Render safely
+try:
+    result = manager.render_prompt(
+        prompt.id,
+        user_input=untrusted_user_input
+    )
+except ValueError as e:
+    # Handle injection attempts
+    log_security_violation(e)
+```
+
+### 7. Monitor Security Metrics
+
+Track and alert on security events:
+
+```python
+from agenticaiframework.security import SecurityManager
+from agenticaiframework.monitoring import MonitoringSystem
+
+security = SecurityManager()
+monitor = MonitoringSystem()
+
+# Regular security checks
+def check_security_health():
+    report = security.get_security_report()
+    
+    # Track metrics
+    monitor.track_metric("injection_attempts", report['injection_attempts'])
+    monitor.track_metric("rate_limit_violations", report['rate_limit_violations'])
+    monitor.track_metric("content_violations", report['content_violations'])
+    
+    # Alert on anomalies
+    if report['injection_attempts'] > threshold:
+        monitor.create_alert(
+            "high_injection_attempts",
+            lambda: report['injection_attempts'] > threshold
+        )
+```
+
+### 8. Regular Security Updates
+
+Keep detection patterns current:
+
+```python
+from agenticaiframework.security import PromptInjectionDetector
+
+detector = PromptInjectionDetector()
+
+# Add new threat patterns as they emerge
+detector.add_pattern(
+    r"new_attack_pattern_here",
+    severity="high"
+)
+
+# Update blocked words
+content_filter.add_blocked_word("new_spam_term", category="spam")
+
+# Review and update regularly
+def update_security_patterns():
+    # Load latest patterns from threat intelligence
+    patterns = load_latest_threat_patterns()
+    for pattern in patterns:
+        detector.add_pattern(pattern['regex'], pattern['severity'])
+```
+
+---
+
+These best practices will help you build robust, secure, scalable, and maintainable applications with AgenticAI Framework. Remember to adapt these patterns to your specific use case and requirements.

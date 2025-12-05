@@ -522,53 +522,57 @@ CMD ["python", "-m", "agenticaiframework.server"]
 ### Running Tests
 ```bash
 # Run all tests
-pytest
-
-# Run with coverage
-pytest --cov=agenticaiframework --cov-report=html
-
-# Run specific test categories
-pytest tests/test_agents.py -v
-pytest tests/test_tasks.py -v
-pytest tests/test_memory.py -v
-```
-
-## 🧪 Testing
-
-### Running Tests
-```bash
-# Run all tests
 pytest tests/
 
-# Run specific test suites
-pytest tests/test_security.py              # Security features
-pytest tests/test_context_engineering.py    # Context management
-pytest tests/test_memory_advanced.py        # Memory features
-pytest tests/test_llm_reliability.py        # LLM reliability
-pytest tests/test_prompts_guardrails.py     # Prompts & guardrails
-pytest tests/test_integration.py            # Integration tests
-
-# Run with coverage
+# Run with coverage report
 pytest tests/ --cov=agenticaiframework --cov-report=html
+
+# Run specific test modules
+pytest tests/test_agenticai.py -v              # Core framework tests
+pytest tests/test_memory_coverage.py -v        # Memory system tests
+pytest tests/test_agents_coverage.py -v        # Agent & context tests
+pytest tests/test_prompts_coverage.py -v       # Prompt security tests
+pytest tests/test_guardrails_final.py -v       # Guardrails tests
 
 # Run with verbose output
 pytest tests/ -v
+
+# Generate HTML coverage report
+pytest tests/ --cov=agenticaiframework --cov-report=html
+# View report at htmlcov/index.html
 ```
 
-### Test Coverage
-- **Security Module**: Comprehensive tests for injection detection, validation, rate limiting, and content filtering
-- **Context Engineering**: Tests for token tracking, compression, and importance weighting
-- **Memory Management**: Tests for TTL, priority eviction, consolidation, and search
-- **LLM Reliability**: Tests for circuit breaker, retry mechanism, caching, and fallback chains
-- **Prompts & Guardrails**: Tests for safe rendering, version control, severity levels, and priority enforcement
-- **Integration**: End-to-end tests for complete workflows
-- **Overall Framework**: 94%+ coverage across all modules
+### Test Coverage ✅
+**Total: 80.06% coverage achieved with 166 passing tests**
+
+#### Module Coverage:
+- **Communication**: 100% ✅ - Full coverage of all communication protocols
+- **Configurations**: 100% ✅ - Complete configuration management coverage
+- **Evaluation**: 100% ✅ - Full evaluation system coverage
+- **Processes**: 97% ✅ - Comprehensive workflow orchestration
+- **Knowledge**: 94% ✅ - Knowledge base operations
+- **Hub**: 85% ✅ - Agent hub and coordination
+- **Tasks**: 80% ✅ - Task management and execution
+- **MCP Tools**: 79% - Model Context Protocol tools
+- **LLMs**: 76% - LLM management with circuit breaker
+- **Agents**: 70% - Agent management and context engineering
+- **Prompts**: 67% - Template system with security features
+- **Guardrails**: 62% - Priority-based validation and enforcement
+- **Memory**: 56% - Multi-tier memory with TTL and consolidation
+- **Security**: 27% - Injection detection, validation, rate limiting (newly added)
+
+#### Test Categories:
+- **Core Functionality**: 93 tests covering basic operations
+- **Advanced Features**: 45 tests for context engineering, memory, and workflows
+- **Security & Safety**: 18 tests for injection protection and guardrails
+- **Edge Cases**: 10 tests for error handling and exceptions
 
 ### Quality Metrics
-- **Code Quality**: A+ (SonarQube)
-- **Security Scan**: ✅ No vulnerabilities
-- **Performance**: <100ms average response time
-- **Reliability**: 99.9% uptime in production
+- **Test Coverage**: 80.06% across 14 modules (166 passing tests) ✅
+- **Code Quality**: Production-ready with comprehensive testing
+- **Security**: Prompt injection detection, content filtering, and rate limiting
+- **Performance**: Circuit breakers, caching, and retry mechanisms
+- **Reliability**: Robust error handling and recovery
 
 ---
 

@@ -1,27 +1,102 @@
 # Guardrails Module
 
 ## Overview
+
 The `guardrails` module in the AgenticAI Framework enforces safety, compliance, and quality constraints on AI-generated outputs. It ensures that responses adhere to predefined rules, ethical guidelines, and domain-specific requirements before being delivered to the end user.
 
-## Key Classes and Functions
-- **Guardrail** — Base class for defining custom guardrails.
-- **ContentFilter** — Filters out disallowed or unsafe content.
-- **PolicyEnforcer** — Applies organizational or legal policies to AI outputs.
-- **validate_output(output)** — Validates generated content against all active guardrails.
-- **add_guardrail(guardrail)** — Dynamically adds a new guardrail at runtime.
+## Core Components
 
-## Example Usage
+### Guardrail Class
+
+The `Guardrail` class defines individual validation rules with priority and severity levels.
+
+#### Constructor
+
 ```python
-from agenticaiframework.guardrails import ContentFilter, PolicyEnforcer
+Guardrail(
+    name: str,
+    validation_fn: Callable[[Any], bool],
+    policy: Dict[str, Any] = None,
+    severity: str = "medium"
+)
+```
 
-# Initialize guardrails
-filter_guardrail = ContentFilter(blocked_keywords=["confidential", "classified"])
-policy_guardrail = PolicyEnforcer(policies=["no_personal_data"])
+**Parameters:**
 
-# Validate output
-output = "This is a confidential document."
-if not filter_guardrail.validate_output(output):
-    print("Output blocked due to sensitive content.")
+- **`name`** *(str)*: Unique identifier for the guardrail
+- **`validation_fn`** *(Callable[[Any], bool])*: Function that returns True if validation passes
+- **`policy`** *(Dict[str, Any])*: Policy configuration (e.g., priority, max_retries)
+- **`severity`** *(str)*: Severity level ("low", "medium", "high", "critical")
+
+#### Methods
+
+```python
+def validate(data: Any) -> bool
+def get_stats() -> Dict[str, Any]
+```
+
+**Example:**
+
+```python
+from agenticaiframework.guardrails import Guardrail
+
+# Create a guardrail
+age_check = Guardrail(
+    name="age_verification",
+    validation_fn=lambda x: x.get('age', 0) >= 18,
+    policy={"priority": 10},
+    severity="high"
+)
+
+# Validate data
+user_data = {"age": 25, "name": "Alice"}
+is_valid = age_check.validate(user_data)
+print(f"Validation result: {is_valid}")
+
+# Get statistics
+stats = age_check.get_stats()
+print(f"Validation count: {stats['validation_count']}")
+print(f"Violation rate: {stats['violation_rate']:.2%}")
+```
+
+### GuardrailManager Class
+
+The `GuardrailManager` orchestrates multiple guardrails with priority-based enforcement.
+
+#### Key Methods
+
+```python
+def register_guardrail(guardrail: Guardrail) -> None
+def enforce_guardrails(data: Any) -> Dict[str, Any]
+def get_guardrail_by_name(name: str) -> Optional[Guardrail]
+def list_guardrails() -> List[Guardrail]
+```
+
+**Example:**
+
+```python
+from agenticaiframework.guardrails import Guardrail, GuardrailManager
+
+# Create manager
+manager = GuardrailManager()
+
+# Register multiple guardrails
+manager.register_guardrail(Guardrail(
+    name="range_check",
+    validation_fn=lambda x: 0 <= x <= 100,
+    severity="medium"
+))
+
+manager.register_guardrail(Guardrail(
+    name="type_check",
+    validation_fn=lambda x: isinstance(x, (int, float)),
+    severity="critical"
+))
+
+# Enforce all guardrails
+result = manager.enforce_guardrails(50)
+print(f"Valid: {result['is_valid']}")
+print(f"Violations: {result.get('violations', [])}")
 ```
 
 ## Use Cases

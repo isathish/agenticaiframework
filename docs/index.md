@@ -255,11 +255,41 @@ from agenticaiframework.guardrails import Guardrail, GuardrailManager
 # Create a data privacy guardrail
 privacy_guardrail = Guardrail(
     name="DataPrivacy",
-    validation_fn=lambda text: not contains_pii(text)
+    validation_fn=lambda text: not contains_pii(text),
+    severity="high"
 )
 
 guardrail_manager = GuardrailManager()
 guardrail_manager.register_guardrail(privacy_guardrail)
+
+# Enforce guardrails
+result = guardrail_manager.enforce_guardrails(user_input)
+```
+
+### Security
+Comprehensive security features protect your AI applications from threats and ensure compliance.
+
+```python
+from agenticaiframework.security import SecurityManager
+
+# Initialize security with all features enabled
+security = SecurityManager(
+    enable_injection_detection=True,
+    enable_input_validation=True,
+    enable_rate_limiting=True,
+    enable_content_filtering=True,
+    enable_audit_logging=True
+)
+
+# Validate user input with all security checks
+result = security.validate_input(user_input, user_id="user123")
+
+if result['is_safe']:
+    # Process safe input
+    process_request(result['sanitized_text'])
+else:
+    # Handle security issues
+    log_security_event(result['issues'])
 ```
 
 ---

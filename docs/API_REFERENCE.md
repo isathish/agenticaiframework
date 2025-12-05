@@ -1,73 +1,247 @@
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://isathish.github.io/agenticaiframework/">
-    <img src="https://img.shields.io/pypi/v/agenticaiframework?color=blue&label=PyPI%20Version&logo=python&logoColor=white" alt="PyPI Version">
-  </a>
-  <a href="https://pypi.org/project/agenticaiframework/">
-    <img src="https://img.shields.io/pypi/dm/agenticaiframework?color=green&label=Downloads&logo=python&logoColor=white" alt="Downloads">
-  </a>
-  <a href="https://github.com/isathish/agenticaiframework/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/isathish/agenticaiframework/python-package.yml?branch=main&label=Build&logo=github" alt="Build Status">
-  </a>
-  <a href="https://isathish.github.io/agenticaiframework/">
-    <img src="https://img.shields.io/badge/Documentation-Online-blue?logo=readthedocs&logoColor=white" alt="Documentation">
-  </a>
-</div>
+# API Reference
+
+Complete API reference for the AgenticAI Framework.
 
 ---
 
-## 6. Detailed Module API
+## Module Overview
 
 ### agenticaiframework.agents
-- `Agent` – Base class for all agents.
-- `AgentManager` – Manages multiple agents.
+
+**Classes:**
+- `Agent(name, role, capabilities, config)` – Base agent class
+- `AgentManager()` – Multi-agent orchestration
+- `ContextManager(max_tokens)` – Context window management
+
+**Agent Methods:**
+- `start()` – Start the agent
+- `pause()` – Pause agent execution
+- `resume()` – Resume agent execution
+- `stop()` – Stop the agent
+- `execute_task(task_callable, *args, **kwargs)` – Execute a task
+
+**AgentManager Methods:**
+- `register_agent(agent)` – Register an agent
+- `get_agent(agent_id)` – Get agent by ID
+- `list_agents()` – List all agents
+- `remove_agent(agent_id)` – Remove an agent
+- `broadcast(message)` – Broadcast to all agents
+
+**ContextManager Methods:**
+- `add_context(content, importance)` – Add context with importance weighting
+- `get_context_summary()` – Get context summary
+- `get_stats()` – Get context statistics
+- `clear()` – Clear context
 
 ### agenticaiframework.communication
-- `send_message()` – Send a message to another agent or system.
-- `receive_message()` – Receive a message.
+
+**Classes:**
+- `CommunicationManager()` – Protocol-based communication
+
+**Methods:**
+- `register_protocol(name, handler_fn)` – Register communication protocol
+- `register_handler(handler_fn, name)` – Register handler (alias)
+- `send(protocol, data)` – Send data via protocol
+- `send_message(message, protocol)` – Send message
+- `list_protocols()` – List registered protocols
 
 ### agenticaiframework.configurations
-- `set_config(key, value)` – Set a configuration value.
-- `get_config(key)` – Retrieve a configuration value.
+
+**Classes:**
+- `ConfigurationManager()` – Configuration management
+
+**Methods:**
+- `set(key, value)` – Set configuration value
+- `get(key, default)` – Get configuration value
+- `update(config_dict)` – Update multiple values
+- `remove(key)` – Remove configuration
+- `list_configs()` – List all configurations
 
 ### agenticaiframework.evaluation
-- `evaluate_response(response)` – Evaluate the quality of a response.
+
+**Classes:**
+- `EvaluationSystem()` – Evaluation and scoring
+
+**Methods:**
+- `define_metric(name, evaluator_fn)` – Define evaluation metric
+- `evaluate(data)` – Evaluate data against metrics
+- `get_metrics()` – Get defined metrics
 
 ### agenticaiframework.guardrails
-- `add_guardrail(func)` – Add a guardrail function.
-- `remove_guardrail(func)` – Remove a guardrail.
+
+**Classes:**
+- `Guardrail(name, validation_fn, policy, severity)` – Single guardrail
+- `GuardrailManager()` – Guardrail orchestration
+
+**Guardrail Methods:**
+- `validate(data)` – Validate data
+- `get_stats()` – Get guardrail statistics
+
+**GuardrailManager Methods:**
+- `register_guardrail(guardrail)` – Register guardrail
+- `enforce_guardrails(data)` – Enforce all guardrails
+- `get_guardrail_by_name(name)` – Get guardrail by name
+- `list_guardrails()` – List all guardrails
 
 ### agenticaiframework.hub
-- `register_agent(name, cls)` – Register an agent.
-- `get_agent(name)` – Retrieve an agent.
-- `register_tool(name, func)` – Register a tool.
-- `get_tool(name)` – Retrieve a tool.
+
+**Classes:**
+- `Hub()` – Agent and tool registry
+
+**Methods:**
+- `register_agent(name, agent_class)` – Register agent class
+- `get_agent(name)` – Get registered agent
+- `list_agents()` – List agents
+- `remove_agent(name)` – Remove agent
+- `register_tool(name, tool_fn)` – Register tool
+- `get_tool(name)` – Get tool
 
 ### agenticaiframework.knowledge
-- `KnowledgeBase` – Manage documents and search.
+
+**Classes:**
+- `KnowledgeRetriever()` – Knowledge base operations
+
+**Methods:**
+- `register_source(name, source_fn)` – Register knowledge source
+- `retrieve(query, source)` – Retrieve knowledge
+- `clear_cache()` – Clear retrieval cache
 
 ### agenticaiframework.llms
-- `OpenAIModel` – Example LLM integration.
+
+**Classes:**
+- `LLMManager()` – LLM lifecycle management
+- `CircuitBreaker(failure_threshold)` – Circuit breaker for reliability
+
+**LLMManager Methods:**
+- `register_model(name, model_instance)` – Register LLM
+- `set_active_model(name)` – Set active model
+- `generate(prompt, **kwargs)` – Generate response
+- `list_models()` – List registered models
+
+**CircuitBreaker Methods:**
+- `call(fn, *args, **kwargs)` – Execute with circuit breaker
+- `reset()` – Reset circuit breaker state
 
 ### agenticaiframework.mcp_tools
-- `load_tool(name)` – Load an MCP tool.
+
+**Classes:**
+- `MCPToolManager()` – MCP tool management
+
+**Methods:**
+- `register_tool(name, tool_fn)` – Register MCP tool
+- `invoke_tool(name, *args, **kwargs)` – Invoke tool
+- `list_tools()` – List registered tools
 
 ### agenticaiframework.memory
-- `Memory` – Store and retrieve key-value pairs.
+
+**Classes:**
+- `MemoryEntry(key, value, ttl, priority, metadata)` – Memory entry
+- `MemoryManager(short_term_limit, long_term_limit)` – Multi-tier memory
+
+**MemoryManager Methods:**
+- `store(key, value, memory_type, ttl, priority, metadata)` – Store memory
+- `retrieve(key)` – Retrieve memory
+- `search(query)` – Search memories
+- `consolidate()` – Consolidate memories
+- `get_stats()` – Get memory statistics
+- `clear_short_term()` – Clear short-term memory
+- `clear_long_term()` – Clear long-term memory
+- `clear_external()` – Clear external memory
+- `clear_all()` – Clear all memory
 
 ### agenticaiframework.monitoring
-- `log_event(message, level)` – Log an event.
+
+**Classes:**
+- `MonitoringSystem()` – System monitoring
+
+**Methods:**
+- `log(message, level)` – Log message
+- `track_metric(name, value)` – Track metric
+- `create_alert(name, condition_fn)` – Create alert
+- `get_metrics()` – Get metrics
 
 ### agenticaiframework.processes
-- `run_process(name, params)` – Run a process.
-- `run_process_async(func)` – Run a process asynchronously.
+
+**Classes:**
+- `Process(name, steps)` – Process definition
+
+**Methods:**
+- `run(*args, **kwargs)` – Run process
+- `run_async(*args, **kwargs)` – Run process asynchronously
 
 ### agenticaiframework.prompts
-- `PromptTemplate` – Manage prompt templates.
+
+**Classes:**
+- `Prompt(template, metadata, enable_security)` – Prompt template
+- `PromptManager(enable_security)` – Prompt management
+
+**Prompt Methods:**
+- `render(**kwargs)` – Render prompt
+- `render_safe(**kwargs)` – Render with sanitization
+- `update_template(new_template)` – Update template
+
+**PromptManager Methods:**
+- `register_prompt(prompt)` – Register prompt
+- `get_prompt(prompt_id)` – Get prompt by ID
+- `render_prompt(prompt_id, **kwargs)` – Render prompt
+- `list_prompts()` – List prompts
+- `delete_prompt(prompt_id)` – Delete prompt
+
+### agenticaiframework.security
+
+**Classes:**
+- `PromptInjectionDetector(enable_logging, custom_patterns)` – Injection detection
+- `InputValidator(max_length, allow_html, allow_scripts)` – Input validation
+- `RateLimiter(max_requests, window_seconds, strategy)` – Rate limiting
+- `ContentFilter(blocked_words, categories, severity_threshold)` – Content filtering
+- `AuditLogger(log_file, retention_days, log_level)` – Audit logging
+- `SecurityManager(enable_*)` – Unified security management
+
+**PromptInjectionDetector Methods:**
+- `detect(text)` – Detect injection attempts
+- `add_pattern(pattern, severity)` – Add detection pattern
+- `get_stats()` – Get detection statistics
+
+**InputValidator Methods:**
+- `validate(text)` – Validate input
+- `sanitize(text)` – Sanitize input
+- `sanitize_html(text)` – Remove HTML
+- `sanitize_sql(text)` – Remove SQL injection patterns
+
+**RateLimiter Methods:**
+- `check_rate_limit(identifier)` – Check rate limit
+- `get_remaining(identifier)` – Get remaining requests
+- `reset(identifier)` – Reset rate limit
+
+**ContentFilter Methods:**
+- `filter_text(text)` – Filter content
+- `add_blocked_word(word, category)` – Add blocked word
+- `get_stats()` – Get filter statistics
+
+**AuditLogger Methods:**
+- `log_event(event_type, details)` – Log security event
+- `query_logs(filters)` – Query logs
+- `clear_old_logs()` – Clear old logs
+
+**SecurityManager Methods:**
+- `validate_input(text, user_id)` – Comprehensive validation
+- `get_security_report()` – Get security report
 
 ### agenticaiframework.tasks
-- `Task` – Define and manage tasks.
+
+**Classes:**
+- `Task(name, description, callable_fn)` – Task definition
+- `TaskManager()` – Task orchestration
+
+**Task Methods:**
+- `run(*args, **kwargs)` – Run task
+- `get_result()` – Get task result
+
+**TaskManager Methods:**
+- `register_task(task)` – Register task
+- `run_task(task_id, *args, **kwargs)` – Run task
+- `run_all()` – Run all tasks
+- `list_tasks()` – List tasks
 
 ---
 

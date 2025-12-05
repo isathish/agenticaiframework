@@ -1,32 +1,114 @@
 # Prompts Module
 
 ## Overview
-The `prompts` module in the AgenticAI Framework provides utilities for creating, managing, and optimizing prompts for Large Language Models (LLMs). It supports dynamic prompt construction, templating, and context injection to improve AI output quality.
 
-## Key Classes and Functions
-- **PromptTemplate** — Defines a reusable prompt with placeholders for dynamic values.
-- **PromptManager** — Manages a collection of prompt templates.
-- **render_prompt(template_name, **kwargs)** — Renders a prompt by filling in placeholders with provided values.
-- **optimize_prompt(prompt, **kwargs)** — Adjusts prompt wording for better LLM performance.
-- **load_prompts_from_file(file_path)** — Loads prompt templates from a file.
+The `prompts` module in the AgenticAI Framework provides comprehensive prompt management with security features, version control, and safe rendering for Large Language Models (LLMs).
 
-## Example Usage
+## Core Components
+
+### Prompt Class
+
+The `Prompt` class represents a prompt template with security and versioning features.
+
+#### Constructor
+
 ```python
-from agenticaiframework.prompts import PromptTemplate, PromptManager
+Prompt(
+    template: str,
+    metadata: Dict[str, Any] = None,
+    enable_security: bool = True
+)
+```
 
-# Create a prompt template
-template = PromptTemplate(
-    name="greeting",
-    template="Hello {name}, welcome to {platform}!"
+**Parameters:**
+
+- **`template`** *(str)*: The prompt template with `{variable}` placeholders
+- **`metadata`** *(Dict[str, Any])*: Additional metadata (tags, description, etc.)
+- **`enable_security`** *(bool)*: Enable injection detection and sanitization
+
+#### Methods
+
+```python
+def render(**kwargs) -> str
+def render_safe(**kwargs) -> str
+def update_template(new_template: str) -> None
+```
+
+**Example:**
+
+```python
+from agenticaiframework.prompts import Prompt
+
+# Create a prompt with security enabled
+prompt = Prompt(
+    template="Hello {name}, your task is: {task}",
+    metadata={"category": "greeting", "version": "1.0"},
+    enable_security=True
 )
 
-# Render the prompt
-prompt_text = template.render(name="Alice", platform="AgenticAI")
-print(prompt_text)
+# Render with variables
+result = prompt.render(name="Alice", task="analyze data")
+print(result)
 
-# Manage multiple prompts
-manager = PromptManager()
-manager.add_template(template)
+# Safe rendering with automatic sanitization
+safe_result = prompt.render_safe(
+    name="Bob",
+    task="<script>alert('xss')</script>"
+)
+print(safe_result)  # Script tags removed
+```
+
+### PromptManager Class
+
+The `PromptManager` manages a collection of prompts with security and versioning.
+
+#### Constructor
+
+```python
+PromptManager(enable_security: bool = True)
+```
+
+#### Key Methods
+
+```python
+def register_prompt(prompt: Prompt) -> None
+def get_prompt(prompt_id: str) -> Optional[Prompt]
+def render_prompt(prompt_id: str, **kwargs) -> str
+def list_prompts() -> List[str]
+def delete_prompt(prompt_id: str) -> None
+```
+
+**Example:**
+
+```python
+from agenticaiframework.prompts import Prompt, PromptManager
+
+# Create manager with security enabled
+manager = PromptManager(enable_security=True)
+
+# Register multiple prompts
+greeting_prompt = Prompt(
+    template="Welcome {user}! How can I help you today?",
+    metadata={"type": "greeting"}
+)
+manager.register_prompt(greeting_prompt)
+
+task_prompt = Prompt(
+    template="Task: {task}\nContext: {context}\nOutput format: {format}",
+    metadata={"type": "task"}
+)
+manager.register_prompt(task_prompt)
+
+# Render by ID
+result = manager.render_prompt(
+    greeting_prompt.id,
+    user="Alice"
+)
+print(result)
+
+# List all prompts
+prompts = manager.list_prompts()
+print(f"Registered prompts: {len(prompts)}")
 ```
 
 ## Use Cases

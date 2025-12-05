@@ -15,47 +15,63 @@ The Memory module enables agents to:
 
 ## Core Components
 
-### Memory Class
+### MemoryEntry Class
 
-The base `Memory` class provides fundamental storage and retrieval capabilities.
+The `MemoryEntry` class represents a single memory item with metadata and TTL support.
 
 #### Constructor
 
 ```python
-Memory(
-    capacity: int = 10000,
-    persistence: bool = False,
-    storage_path: str = None,
-    memory_type: str = "hybrid"
+MemoryEntry(
+    key: str,
+    value: Any,
+    ttl: int = None,
+    priority: int = 0,
+    metadata: Dict[str, Any] = None
 )
 ```
 
 **Parameters:**
 
-- **`capacity`** *(int)*: Maximum number of items to store (default: 10000)
-- **`persistence`** *(bool)*: Whether to persist memory to disk
-- **`storage_path`** *(str)*: Path for persistent storage
-- **`memory_type`** *(str)*: Type of memory ("short_term", "long_term", "hybrid")
+- **`key`** *(str)*: Unique identifier for the memory entry
+- **`value`** *(Any)*: The data to store
+- **`ttl`** *(int)*: Time-to-live in seconds (None for no expiration)
+- **`priority`** *(int)*: Priority level for eviction (higher = more important)
+- **`metadata`** *(Dict[str, Any])*: Additional metadata
 
-#### Properties
+### MemoryManager Class
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `capacity` | int | Maximum storage capacity |
-| `size` | int | Current number of stored items |
-| `memory_type` | str | Type of memory system |
-| `persistence_enabled` | bool | Whether persistence is active |
-| `last_accessed` | datetime | Last access timestamp |
+The `MemoryManager` provides multi-tier memory storage with automatic consolidation.
+
+#### Constructor
+
+```python
+MemoryManager(
+    short_term_limit: int = 100,
+    long_term_limit: int = 1000,
+    enable_logging: bool = True
+)
+```
+
+**Parameters:**
+
+- **`short_term_limit`** *(int)*: Maximum items in short-term memory (default: 100)
+- **`long_term_limit`** *(int)*: Maximum items in long-term memory (default: 1000)
+- **`enable_logging`** *(bool)*: Enable logging of memory operations
 
 #### Core Methods
 
 ```python
-def store(key: str, value: Any, ttl: int = None, tags: List[str] = None) -> None
+def store(key: str, value: Any, memory_type: str = "short_term", 
+          ttl: int = None, priority: int = 0, metadata: Dict[str, Any] = None) -> None
 def retrieve(key: str) -> Any
-def search(query: str, limit: int = 10) -> List[Dict]
-def clear() -> None
-def cleanup() -> None
+def search(query: str) -> List[Dict[str, Any]]
+def consolidate() -> None
 def get_stats() -> Dict[str, Any]
+def clear_short_term() -> None
+def clear_long_term() -> None
+def clear_external() -> None
+def clear_all() -> None
 ```
 
 ### MemoryManager Class
