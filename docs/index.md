@@ -535,26 +535,52 @@ AgenticAI Framework supports:
 
 ## 🧪 Testing
 
-Run tests:
+AgenticAI Framework includes comprehensive test coverage (80%+) to ensure reliability.
+
+### Running Tests
+
 ```bash
-pytest
+# Run all tests
+pytest tests/
+
+# Run with coverage
+pytest tests/ --cov=agenticaiframework --cov-report=html
+
+# Run specific test categories
+pytest tests/ -m unit          # Unit tests only
+pytest tests/ -m integration   # Integration tests only
+pytest tests/ -m "not slow"    # Fast tests only
 ```
 
-Run with coverage:
-```bash
-pytest --cov=agenticaiframework --cov-report=term-missing
-```
+### Test Coverage
+
+**Current Coverage: 80.06%** (166 passing tests)
+
+| Module | Coverage |
+|--------|----------|
+| communication.py | 100% ✅ |
+| configurations.py | 100% ✅ |
+| evaluation.py | 100% ✅ |
+| processes.py | 97% |
+| knowledge.py | 94% |
+| monitoring.py | 86% |
+
+For detailed testing guide, see [Testing Guide](TESTING.md).
 
 ---
 
 ## 📄 Documentation Sections
 
-- [API Reference](API_REFERENCE.md)
-- [Usage Guide](USAGE.md)
-- [Configuration](CONFIGURATION.md)
-- [Examples](EXAMPLES.md)
-- [Extending the Framework](EXTENDING.md)
-- [Troubleshooting](TROUBLESHOOTING.md)
+- [Quick Start](quick-start.md) - Get started in 5 minutes
+- [API Reference](API_REFERENCE.md) - Complete API documentation
+- [Usage Guide](USAGE.md) - Comprehensive usage patterns
+- [Testing Guide](TESTING.md) - Testing strategies and best practices
+- [Configuration](CONFIGURATION.md) - Configuration options
+- [Examples](EXAMPLES.md) - Real-world examples
+- [Best Practices](best-practices.md) - Production best practices
+- [Security](security.md) - Security features and guidelines
+- [Extending the Framework](EXTENDING.md) - Customization guide
+- [Troubleshooting](TROUBLESHOOTING.md) - Common issues and solutions
 
 ---
 
