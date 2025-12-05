@@ -1,11 +1,20 @@
-# Best Practices Guide
+# :star: Best Practices Guide
 
-This guide covers best practices for building production-ready applications with AgenticAI Framework.
+<div class="annotate" markdown>
 
-## General Principles
+Production-ready patterns and expert recommendations for building scalable, reliable AI agent applications with AgenticAI Framework.
 
-### 1. Design for Observability
-Always implement comprehensive monitoring and logging from the start.
+</div>
+
+---
+
+## :bulb: General Principles
+
+### :material-eye: 1. Design for Observability
+
+!!! tip "Monitor Everything"
+    
+    Always implement comprehensive monitoring and logging from day one.
 
 ```python
 from agenticaiframework.monitoring import MonitoringSystem
@@ -20,24 +29,54 @@ monitor.log_event("ApplicationStarted", {"version": "1.0.0"})
 monitor.record_metric("startup_time", startup_duration)
 ```
 
-### 2. Implement Proper Error Handling
-Handle errors gracefully and provide meaningful feedback.
+!!! success "Benefits"
+    - Debug issues faster
+    - Track performance trends
+    - Understand user behavior
+    - Optimize resource usage
 
-```python
-def safe_task_execution(task):
-    try:
-        result = task.run()
-        monitor.log_event("TaskCompleted", {"task": task.name})
-        return result
-    except Exception as e:
-        monitor.log_event("TaskFailed", {
-            "task": task.name, 
-            "error": str(e),
-            "error_type": type(e).__name__
-        })
-        # Implement fallback or recovery logic
-        return handle_task_failure(task, e)
-```
+### :material-alert-circle: 2. Implement Proper Error Handling
+
+!!! warning "Handle Failures Gracefully"
+    
+    Always anticipate and handle errors with meaningful feedback and recovery strategies.
+
+=== ":material-shield-check: Safe Execution"
+
+    ```python
+    def safe_task_execution(task):
+        try:
+            result = task.run()
+            monitor.log_event("TaskCompleted", {"task": task.name})
+            return result
+        except Exception as e:
+            monitor.log_event("TaskFailed", {
+                "task": task.name, 
+                "error": str(e),
+                "error_type": type(e).__name__
+            })
+            # Implement fallback or recovery logic
+            return handle_task_failure(task, e)
+    ```
+
+=== ":material-refresh: Retry Logic"
+
+    ```python
+    from tenacity import retry, stop_after_attempt, wait_exponential
+    
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=4, max=10)
+    )
+    def execute_with_retry(task):
+        return task.run()
+    ```
+
+!!! tip "Error Handling Checklist"
+    - :white_check_mark: Log all errors with context
+    - :white_check_mark: Implement retry logic for transient failures
+    - :white_check_mark: Provide fallback mechanisms
+    - :white_check_mark: Alert on critical errors
 
 ### 3. Use Configuration Management
 Centralize configuration and avoid hard-coding values.

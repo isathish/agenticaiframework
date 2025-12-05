@@ -1,41 +1,104 @@
-# Testing Guide
+# :test_tube: Testing Guide
 
-This guide covers testing strategies and best practices for applications built with AgenticAI Framework.
+<div class="annotate" markdown>
 
-## Overview
+Comprehensive testing strategies and best practices for building reliable AI agent applications with AgenticAI Framework.
 
-The AgenticAI Framework includes comprehensive test coverage (80%+) and provides tools for testing your agent-based applications.
+</div>
 
-## Running Tests
+---
 
-### Basic Test Execution
+## :sparkles: Overview
 
-```bash
-# Run all tests
-pytest tests/
+!!! success "Test Coverage"
+    
+    The AgenticAI Framework maintains **84%+ test coverage** with **210+ tests** ensuring reliability and quality.
 
-# Run with verbose output
-pytest tests/ -v
+<div class="grid" markdown>
 
-# Run specific test file
-pytest tests/test_agents.py
+:material-check-all:{ .lg } **Comprehensive Coverage**
+:   All core modules tested with unit and integration tests
 
-# Run specific test
-pytest tests/test_agents.py::test_agent_creation
-```
+:material-speedometer:{ .lg } **Fast Execution**
+:   Full test suite runs in under 30 seconds
 
-### With Coverage
+:material-shield-check:{ .lg } **Quality Assurance**
+:   Automated CI/CD testing on every commit
 
-```bash
-# Run tests with coverage report
-pytest tests/ --cov=agenticaiframework --cov-report=html
+:material-flask:{ .lg } **Easy to Extend**
+:   Simple patterns for adding new tests
 
-# View coverage report
-open htmlcov/index.html
+</div>
 
-# Run with coverage threshold
-pytest tests/ --cov=agenticaiframework --cov-fail-under=80
-```
+---
+
+## :rocket: Running Tests
+
+### :material-play-circle: Basic Test Execution
+
+=== ":simple-pytest: All Tests"
+
+    ```bash
+    # Run all tests
+    pytest tests/
+    ```
+
+=== ":material-text: Verbose Output"
+
+    ```bash
+    # Run with detailed output
+    pytest tests/ -v
+    ```
+
+=== ":material-file: Specific File"
+
+    ```bash
+    # Run specific test file
+    pytest tests/test_agents.py
+    ```
+
+=== ":material-function: Specific Test"
+
+    ```bash
+    # Run specific test function
+    pytest tests/test_agents.py::test_agent_creation
+    ```
+
+### :material-chart-line: Coverage Testing
+
+!!! tip "Track Test Coverage"
+
+    Monitor how much of your code is covered by tests:
+
+=== ":material-file-chart: HTML Report"
+
+    ```bash
+    # Generate HTML coverage report
+    pytest tests/ --cov=agenticaiframework --cov-report=html
+    
+    # View in browser
+    open htmlcov/index.html
+    ```
+    
+    !!! success
+        Beautiful interactive report showing covered and missed lines.
+
+=== ":material-console: Terminal Report"
+
+    ```bash
+    # Show coverage in terminal
+    pytest tests/ --cov=agenticaiframework --cov-report=term-missing
+    ```
+
+=== ":material-shield-check: Enforce Threshold"
+
+    ```bash
+    # Fail if coverage below 80%
+    pytest tests/ --cov=agenticaiframework --cov-fail-under=80
+    ```
+    
+    !!! warning
+        Use this in CI/CD to maintain quality standards.
 
 ### Test Categories
 

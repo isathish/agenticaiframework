@@ -89,6 +89,277 @@ def backup_memory(name: str, backup_path: str) -> None
 def restore_memory(name: str, backup_path: str) -> None
 ```
 
+---
+
+## :art: Low-Level Design (LLD)
+
+### Memory Architecture
+
+!!! info "Multi-Tier Memory System"
+    
+    The memory system uses a three-tier architecture for optimal performance:
+
+```mermaid
+graph TB
+    subgraph "Application Layer"
+        AGENT[Agent]
+        QUERY[Query Interface]
+    end
+    
+    subgraph "Memory Manager"
+        MGR[Memory Manager]
+        CACHE[LRU Cache]
+        INDEX[Search Index]
+    end
+    
+    subgraph "Tier 1: Short-Term Memory"
+        STM["In-Memory Store<br/>(Fast Access)<br/>TTL: Minutes-Hours"]
+        EVICT1[Eviction Policy]
+    end
+    
+    subgraph "Tier 2: Long-Term Memory"
+        LTM["Persistent Store<br/>(Database)<br/>TTL: Days-Months"]
+        COMPRESS[Compression]
+    end
+    
+    subgraph "Tier 3: External Storage"
+        EXT["Archive Storage<br/>(S3/Blob)<br/>TTL: Permanent"]
+        ENCRYPT[Encryption]
+    end
+    
+    subgraph "Storage Backends"
+        REDIS[(Redis)]
+        POSTGRES[(PostgreSQL)]
+        MONGO[(MongoDB)]
+        S3[(S3/Azure Blob)]
+    end
+    
+    AGENT --> QUERY
+    QUERY --> MGR
+    MGR --> CACHE
+    CACHE -."miss".-> INDEX
+    
+    MGR --> STM
+    STM --> EVICT1
+    EVICT1 -."consolidate".-> LTM
+    
+    MGR --> LTM
+    LTM --> COMPRESS
+    COMPRESS -."archive".-> EXT
+    
+    MGR --> EXT
+    EXT --> ENCRYPT
+    
+    STM --> REDIS
+    LTM --> POSTGRES
+    LTM --> MONGO
+    EXT --> S3
+    
+    style STM fill:#4caf50
+    style LTM fill:#2196f3
+    style EXT fill:#9e9e9e
+    style CACHE fill:#ff9800
+```
+
+### Memory Class Diagram
+
+```mermaid
+classDiagram
+    class MemoryEntry {
+        +str key
+        +Any value
+        +int ttl
+        +int priority
+        +Dict metadata
+        +datetime created_at
+        +datetime expires_at
+        +int access_count
+        
+        +is_expired() bool
+        +update_access() void
+        +to_dict() Dict
+    }
+    
+    class Memory {
+        -int capacity
+        -str memory_type
+        -Dict~str,MemoryEntry~ store
+        -LRUCache cache
+        -bool persistence
+        
+        +store(key, value, ttl, priority) void
+        +retrieve(key) Any
+        +delete(key) void
+        +exists(key) bool
+        +keys() List~str~
+        +cleanup() int
+        -_evict_if_needed() void
+        -_persist() void
+    }
+    
+    class MemoryManager {
+        -Dict~str,Memory~ memories
+        -int short_term_limit
+        -int long_term_limit
+        -bool enable_logging
+        -SearchIndex index
+        
+        +store(key, value, memory_type, ttl) void
+        +retrieve(key) Any
+        +search(query) List
+        +consolidate() void
+        +get_stats() Dict
+        +clear_all() void
+        -_transfer_to_long_term(entries) void
+        -_build_search_index() void
+    }
+    
+    class SearchIndex {
+        -Dict~str,Set~ inverted_index
+        -TFIDFVectorizer vectorizer
+        
+        +add_entry(key, content) void
+        +search(query, top_k) List
+        +remove_entry(key) void
+        +rebuild() void
+        -_tokenize(text) List
+        -_calculate_relevance(query, doc) float
+    }
+    
+    class ConsolidationPolicy {
+        <<interface>>
+        +should_consolidate(entry) bool
+        +select_entries_to_consolidate() List
+    }
+    
+    class LRUEvictionPolicy {
+        -int max_size
+        -OrderedDict lru_order
+        
+        +should_evict() bool
+        +select_victim() str
+        +update_access(key) void
+    }
+    
+    class TTLEvictionPolicy {
+        -int default_ttl
+        
+        +should_evict() bool
+        +get_expired_keys() List~str~
+    }
+    
+    Memory "1" *-- "*" MemoryEntry: contains
+    MemoryManager "1" *-- "*" Memory: manages
+    MemoryManager "1" --> "1" SearchIndex: uses
+    Memory "1" --> "1" LRUEvictionPolicy: uses
+    Memory "1" --> "1" TTLEvictionPolicy: uses
+    MemoryManager "1" --> "1" ConsolidationPolicy: uses
+```
+
+### Memory Consolidation Flow
+
+```mermaid
+flowchart TD
+    START([Consolidation Triggered]) --> CHECK{Check<br/>Criteria}
+    
+    CHECK -->|Time Based| TIME[Check Time Elapsed]
+    CHECK -->|Capacity Based| CAP[Check Capacity Threshold]
+    CHECK -->|Manual| MANUAL[Force Consolidation]
+    
+    TIME --> EVAL
+    CAP --> EVAL
+    MANUAL --> EVAL
+    
+    EVAL{Should<br/>Consolidate?} -->|No| END([Skip])
+    EVAL -->|Yes| SELECT[Select Entries]
+    
+    SELECT --> FILTER[Apply Filters]
+    FILTER --> SCORE[Score by Importance]
+    
+    SCORE --> PRIORITY[Sort by Priority]
+    PRIORITY --> BATCH[Create Batches]
+    
+    BATCH --> COMPRESS{Compress<br/>Data?}
+    COMPRESS -->|Yes| COMP[Apply Compression]
+    COMPRESS -->|No| TRANSFER
+    
+    COMP --> TRANSFER[Transfer to Long-term]
+    
+    TRANSFER --> VERIFY{Transfer<br/>Success?}
+    VERIFY -->|No| RETRY{Retry?}
+    VERIFY -->|Yes| REMOVE[Remove from Short-term]
+    
+    RETRY -->|Yes| TRANSFER
+    RETRY -->|No| FAIL[Log Error]
+    
+    REMOVE --> UPDATE[Update Stats]
+    UPDATE --> LOG[Log Consolidation]
+    
+    LOG --> END2([Complete])
+    FAIL --> END2
+    
+    style START fill:#4caf50
+    style END2 fill:#4caf50
+    style TRANSFER fill:#2196f3
+    style FAIL fill:#f44336
+```
+
+### Memory Retrieval Strategy
+
+```mermaid
+sequenceDiagram
+    participant App
+    participant MemMgr as Memory Manager
+    participant Cache
+    participant STM as Short-Term
+    participant LTM as Long-Term
+    participant EXT as External
+    participant Index as Search Index
+    
+    App->>MemMgr: retrieve(key)
+    activate MemMgr
+    
+    MemMgr->>Cache: check(key)
+    alt Cache Hit
+        Cache-->>MemMgr: value
+        MemMgr-->>App: return value
+    else Cache Miss
+        Cache-->>MemMgr: None
+        
+        MemMgr->>STM: retrieve(key)
+        alt STM Hit
+            STM-->>MemMgr: value
+            MemMgr->>Cache: store(key, value)
+            MemMgr-->>App: return value
+        else STM Miss
+            STM-->>MemMgr: None
+            
+            MemMgr->>LTM: retrieve(key)
+            alt LTM Hit
+                LTM-->>MemMgr: value
+                MemMgr->>Cache: store(key, value)
+                MemMgr->>STM: promote(key, value)
+                MemMgr-->>App: return value
+            else LTM Miss
+                LTM-->>MemMgr: None
+                
+                MemMgr->>EXT: retrieve(key)
+                alt EXT Hit
+                    EXT-->>MemMgr: value
+                    MemMgr->>LTM: store(key, value)
+                    MemMgr->>Cache: store(key, value)
+                    MemMgr-->>App: return value
+                else Not Found
+                    EXT-->>MemMgr: None
+                    MemMgr-->>App: KeyNotFound
+                end
+            end
+        end
+    end
+    
+    deactivate MemMgr
+```
+
 ## Memory Types
 
 ### Short-Term Memory

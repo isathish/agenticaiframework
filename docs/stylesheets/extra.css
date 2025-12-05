@@ -1,0 +1,234 @@
+/* Custom Styles for AgenticAI Framework Documentation */
+
+/* Grid Layout Improvements */
+.md-typeset .grid {
+    grid-gap: 1rem;
+    margin: 1.5em 0;
+}
+
+.md-typeset .grid.cards > * {
+    border: 1px solid var(--md-default-fg-color--lightest);
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.md-typeset .grid.cards > *:hover {
+    border-color: var(--md-accent-fg-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Icon Styling */
+.md-typeset .lg {
+    font-size: 2em;
+    line-height: 1;
+}
+
+/* Admonition Improvements */
+.md-typeset .admonition,
+.md-typeset details {
+    border-left: 4px solid;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.md-typeset .admonition.success {
+    border-left-color: #00c853;
+}
+
+.md-typeset .admonition.tip {
+    border-left-color: #00b0ff;
+}
+
+.md-typeset .admonition.warning {
+    border-left-color: #ff6d00;
+}
+
+.md-typeset .admonition.info {
+    border-left-color: #2979ff;
+}
+
+/* Code Block Enhancements */
+.md-typeset pre > code {
+    border-radius: 0.5rem;
+}
+
+.md-typeset .highlight {
+    border-radius: 0.5rem;
+}
+
+/* Button Styling */
+.md-button {
+    font-weight: 600;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.md-button:hover {
+    transform: scale(1.05);
+}
+
+.md-button--primary {
+    background-color: var(--md-primary-fg-color);
+    border: 2px solid var(--md-primary-fg-color);
+}
+
+/* Table Improvements */
+.md-typeset table:not([class]) {
+    border: 1px solid var(--md-default-fg-color--lightest);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.md-typeset table:not([class]) th {
+    background-color: var(--md-code-bg-color);
+    font-weight: 700;
+}
+
+.md-typeset table:not([class]) tr:hover {
+    background-color: var(--md-code-bg-color);
+}
+
+/* Tabs Styling */
+.md-typeset .tabbed-set {
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.md-typeset .tabbed-labels {
+    border-bottom: 2px solid var(--md-default-fg-color--lightest);
+}
+
+.md-typeset .tabbed-labels > label {
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.md-typeset .tabbed-labels > label:hover {
+    background-color: var(--md-code-bg-color);
+}
+
+/* Header Improvements */
+.md-typeset h1 {
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+}
+
+.md-typeset h2 {
+    font-weight: 700;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 2px solid var(--md-default-fg-color--lightest);
+}
+
+.md-typeset h3 {
+    font-weight: 600;
+}
+
+/* Annotation Styling */
+.annotate {
+    font-size: 1.1em;
+    line-height: 1.8;
+    margin: 1.5rem 0;
+}
+
+/* Badge Styling */
+.md-tag {
+    border-radius: 0.5rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+}
+
+/* Navigation Footer */
+.md-footer-meta {
+    background-color: var(--md-footer-bg-color);
+}
+
+/* Search Improvements */
+.md-search__form {
+    border-radius: 2rem;
+}
+
+.md-search__input {
+    border-radius: 2rem;
+}
+
+/* Logo Spacing */
+.md-header__title {
+    margin-left: 1rem;
+}
+
+/* Mobile Responsiveness */
+@media screen and (max-width: 76.1875em) {
+    .md-typeset .grid.cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Dark Mode Specific Adjustments */
+[data-md-color-scheme="slate"] {
+    --md-code-bg-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > * {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > *:hover {
+    border-color: var(--md-accent-fg-color);
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Inline Code Styling */
+.md-typeset code {
+    border-radius: 0.25rem;
+    padding: 0.125rem 0.375rem;
+    font-weight: 500;
+}
+
+/* Keyboard Key Styling */
+.md-typeset kbd {
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Emphasis Styling */
+.md-typeset mark {
+    background-color: rgba(255, 235, 59, 0.3);
+    border-radius: 0.25rem;
+    padding: 0.125rem 0.25rem;
+}
+
+/* Custom Color Classes */
+.text-success {
+    color: #00c853;
+}
+
+.text-warning {
+    color: #ff6d00;
+}
+
+.text-info {
+    color: #2979ff;
+}
+
+.text-danger {
+    color: #d32f2f;
+}
+
+/* Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Print Styles */
+@media print {
+    .md-header,
+    .md-footer,
+    .md-sidebar {
+        display: none;
+    }
+    
+    .md-content {
+        max-width: 100%;
+    }
+}

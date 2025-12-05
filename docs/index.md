@@ -1,146 +1,219 @@
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://isathish.github.io/agenticaiframework/">
-    <img src="https://img.shields.io/pypi/v/agenticaiframework?color=blue&label=PyPI%20Version&logo=python&logoColor=white" alt="PyPI Version">
-  </a>
-  <a href="https://pypi.org/project/agenticaiframework/">
-    <img src="https://img.shields.io/pypi/dm/agenticaiframework?color=green&label=Downloads&logo=python&logoColor=white" alt="Downloads">
-  </a>
-  <a href="https://github.com/isathish/agenticaiframework/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/isathish/agenticaiframework/python-package.yml?branch=main&label=Build&logo=github" alt="Build Status">
-  </a>
-  <a href="https://isathish.github.io/agenticaiframework/">
-    <img src="https://img.shields.io/badge/Documentation-Online-blue?logo=readthedocs&logoColor=white" alt="Documentation">
-  </a>
+<div align="center" markdown>
+
+# :robot: AgenticAI Framework
+
+**A comprehensive Python SDK for building intelligent agentic applications**
+
+[:octicons-rocket-24: Get Started](quick-start.md){ .md-button .md-button--primary }
+[:octicons-download-24: Install](USAGE.md){ .md-button }
+[:octicons-mark-github-16: GitHub](https://github.com/isathish/agenticaiframework){ .md-button }
+
+<p align="center">
+  <a href="https://pypi.org/project/agenticaiframework/"><img src="https://img.shields.io/pypi/v/agenticaiframework?color=blue&label=PyPI&logo=python&logoColor=white" alt="PyPI Version"></a>
+  <a href="https://pypi.org/project/agenticaiframework/"><img src="https://img.shields.io/pypi/dm/agenticaiframework?color=green&label=Downloads&logo=python" alt="Downloads"></a>
+  <a href="https://github.com/isathish/agenticaiframework/actions"><img src="https://img.shields.io/github/actions/workflow/status/isathish/agenticaiframework/python-package.yml?branch=main&label=Build&logo=github" alt="Build Status"></a>
+  <a href="https://github.com/isathish/agenticaiframework"><img src="https://img.shields.io/github/license/isathish/agenticaiframework?color=blue" alt="License"></a>
+</p>
+
+---
+
 </div>
 
-# AgenticAI Framework
-
-**A comprehensive Python SDK for building intelligent agentic applications with advanced orchestration, monitoring, and enterprise-grade scalability.**
+## :sparkles: Why Choose AgenticAI Framework?
 
 AgenticAI Framework empowers developers, researchers, and enterprises to create sophisticated AI agents that can reason, interact, and execute complex tasks across multiple domains with unprecedented ease and reliability.
 
+<div class="grid cards" markdown>
+
+-   :material-rocket-launch:{ .lg .middle } __Enterprise-Ready__
+
+    ---
+
+    Production-ready framework with built-in security, monitoring, and scalability features for mission-critical applications.
+
+    [:octicons-arrow-right-24: Learn more](best-practices.md)
+
+-   :material-code-braces:{ .lg .middle } __Developer-Friendly__
+
+    ---
+
+    Intuitive APIs and comprehensive documentation make building AI agents effortless. Get started in minutes.
+
+    [:octicons-arrow-right-24: Quick Start](quick-start.md)
+
+-   :material-puzzle:{ .lg .middle } __Flexible Architecture__
+
+    ---
+
+    Modular design allows you to mix and match components based on your needs. Extend with ease.
+
+    [:octicons-arrow-right-24: Architecture](architecture.md)
+
+-   :material-lightning-bolt:{ .lg .middle } __High Performance__
+
+    ---
+
+    Optimized for both single-agent and multi-agent scenarios with built-in async support and caching.
+
+    [:octicons-arrow-right-24: Performance](performance.md)
+
+</div>
+
+### :star: Key Features
+
+<div class="grid" markdown>
+
+:octicons-zap-24:{ .lg } **Rapid Development**
+:   Get from idea to production in minutes, not weeks with intuitive APIs
+
+:octicons-shield-check-24:{ .lg } **Enterprise Security**
+:   Built-in guardrails, input validation, and compliance features
+
+:octicons-graph-24:{ .lg } **Full Observability**
+:   Comprehensive monitoring, logging, and metrics out of the box
+
+:octicons-plug-24:{ .lg } **Highly Extensible**
+:   Easy integration with existing systems and tools via MCP protocol
+
+:octicons-people-24:{ .lg } **Multi-Agent**
+:   Orchestrate complex workflows with multiple specialized agents
+
+:octicons-globe-24:{ .lg } **Multi-Modal**
+:   Support for text, images, audio, and video processing
+
+</div>
+
 ---
 
-## 🚀 Why AgenticAI Framework?
+## :package: Installation
 
-!!! success "Enterprise-Ready"
-    Production-ready framework with built-in security, monitoring, and scalability features.
+=== ":simple-python: PyPI (Recommended)"
 
-!!! tip "Developer-Friendly"
-    Intuitive APIs and comprehensive documentation make building AI agents effortless.
-
-!!! info "Flexible Architecture"
-    Modular design allows you to mix and match components based on your needs.
-
-### Key Benefits
-
-- **🎯 Rapid Development**: Get from idea to production in minutes, not weeks
-- **🔒 Enterprise Security**: Built-in guardrails and compliance features
-- **📊 Full Observability**: Comprehensive monitoring and logging out of the box
-- **🔧 Highly Extensible**: Easy integration with existing systems and tools
-- **⚡ High Performance**: Optimized for both single-agent and multi-agent scenarios
-- **🌐 Multi-Modal**: Support for text, images, audio, and video processing
-
----
-
-## 📦 Installation
-
-=== "PyPI (Recommended)"
     ```bash
     pip install agenticaiframework
     ```
 
-=== "Development Version"
+    Install with specific extras:
+
+    ```bash
+    # With all optional dependencies
+    pip install agenticaiframework[all]
+    
+    # With specific features
+    pip install agenticaiframework[security,monitoring]
+    ```
+
+=== ":material-git: Development Version"
+
     ```bash
     pip install git+https://github.com/isathish/agenticaiframework.git
     ```
 
-=== "From Source"
+=== ":material-source-branch: From Source"
+
     ```bash
     git clone https://github.com/isathish/agenticaiframework.git
     cd agenticaiframework
     pip install -e .
     ```
 
-### System Requirements
-
-- **Python**: 3.8 or higher
-- **OS**: Windows, macOS, Linux
-- **Memory**: Minimum 2GB RAM (4GB+ recommended)
-
----
-
-## ⚡ Quick Start
-
-### Your First Agent
-
-```python
-from agenticaiframework import Agent, Task, LLMManager
-
-# 1. Set up the LLM
-llm = LLMManager()
-llm.register_model("gpt-4", your_llm_function)
-llm.set_active_model("gpt-4")
-
-# 2. Create an agent
-agent = Agent(
-    name="AssistantAgent",
-    role="AI Assistant",
-    capabilities=["text_generation", "analysis"],
-    config={"llm": llm}
-)
-
-# 3. Define a task
-task = Task(
-    name="GreetingTask",
-    objective="Generate a friendly greeting",
-    executor=lambda: llm.generate("Say hello to the user!")
-)
-
-# 4. Execute the task
-agent.start()
-result = task.run()
-print(result)  # Output: A friendly greeting!
-```
-
-### Multi-Agent Collaboration
-
-```python
-from agenticaiframework import Agent, AgentManager, Task
-
-# Create specialized agents
-data_agent = Agent(
-    name="DataCollector",
-    role="Data Collection Specialist",
-    capabilities=["data_retrieval", "web_scraping"],
-    config={"max_requests": 100}
-)
-
-analysis_agent = Agent(
-    name="DataAnalyzer", 
-    role="Data Analysis Expert",
-    capabilities=["statistical_analysis", "visualization"],
-    config={"precision": "high"}
-)
-
-# Manage agents
-manager = AgentManager()
-manager.register_agent(data_agent)
-manager.register_agent(analysis_agent)
-
-# Coordinate workflow
-data_agent.start()
-analysis_agent.start()
-
-# Broadcast instructions
-manager.broadcast("Starting data processing pipeline...")
-```
+!!! info "System Requirements"
+    
+    - :fontawesome-brands-python: **Python**: 3.8 or higher
+    - :fontawesome-solid-desktop: **OS**: Windows, macOS, Linux
+    - :fontawesome-solid-memory: **Memory**: Minimum 2GB RAM (4GB+ recommended)
 
 ---
 
-## 🏗️ Core Architecture
+## :zap: Quick Start
+
+!!! example "Your First Agent in 30 Seconds"
+
+    === "Step 1: Setup"
+    
+        ```python
+        from agenticaiframework import Agent, Task, LLMManager
+        
+        # Set up the LLM
+        llm = LLMManager()
+        llm.register_model("gpt-4", your_llm_function)
+        llm.set_active_model("gpt-4")
+        ```
+    
+    === "Step 2: Create Agent"
+    
+        ```python
+        # Create an intelligent agent
+        agent = Agent(
+            name="AssistantAgent",
+            role="AI Assistant",
+            capabilities=["text_generation", "analysis"],
+            config={"llm": llm}
+        )
+        ```
+    
+    === "Step 3: Define Task"
+    
+        ```python
+        # Define what the agent should do
+        task = Task(
+            name="GreetingTask",
+            objective="Generate a friendly greeting",
+            executor=lambda: llm.generate("Say hello!")
+        )
+        ```
+    
+    === "Step 4: Execute"
+    
+        ```python
+        # Run the agent
+        agent.start()
+        result = task.run()
+        print(result)  # Output: A friendly greeting!
+        ```
+
+    [:octicons-arrow-right-24: Full Tutorial](quick-start.md)
+
+!!! tip "Multi-Agent Collaboration"
+
+    Create teams of specialized agents that work together:
+
+    ```python
+    from agenticaiframework import Agent, AgentManager
+    
+    # Create specialized agents
+    data_agent = Agent(
+        name="DataCollector",
+        role="Data Collection Specialist",
+        capabilities=["data_retrieval", "web_scraping"],
+        config={"max_requests": 100}
+    )
+    
+    analysis_agent = Agent(
+        name="DataAnalyzer", 
+        role="Data Analysis Expert",
+        capabilities=["statistical_analysis", "visualization"],
+        config={"precision": "high"}
+    )
+    
+    # Manage and coordinate
+    manager = AgentManager()
+    manager.register_agent(data_agent)
+    manager.register_agent(analysis_agent)
+    
+    # Start collaborative workflow
+    data_agent.start()
+    analysis_agent.start()
+    manager.broadcast("Starting data processing pipeline...")
+    ```
+
+    [:octicons-arrow-right-24: Advanced Examples](EXAMPLES.md)
+
+---
+
+## :building_construction: Core Architecture
+
+<div class="annotate" markdown>
 
 ```mermaid
 graph TB
@@ -164,44 +237,157 @@ graph TB
     K[Guardrail Manager] --> G
     K --> H
     K --> I
+    
+    style A fill:#4051b5
+    style J fill:#00c853
+    style K fill:#ff6d00
 ```
 
-### Core Components
+</div>
 
-| Component | Purpose | Key Features |
-|-----------|---------|--------------|
-| **Agents** | Core AI entities | Role-based, configurable, extensible |
-| **Tasks** | Work units | Async execution, dependency management |
-| **Processes** | Workflow orchestration | Sequential, parallel, hybrid strategies |
-| **Memory** | Data persistence | Short-term, long-term, external storage |
-| **LLMs** | Language model integration | Multi-provider, model switching |
-| **Knowledge** | Information retrieval | Vector search, caching, indexing |
-| **Guardrails** | Safety & compliance | Input validation, output filtering |
-| **Monitoring** | Observability | Metrics, logs, alerts, tracing |
+### :gear: Core Components
+
+<div class="grid cards" markdown>
+
+-   :material-robot:{ .lg .middle } __Agents__
+
+    ---
+
+    Core AI entities with role-based capabilities
+    
+    - Configurable behaviors
+    - State management
+    - Extensible design
+    
+    [:octicons-arrow-right-24: Learn more](agents.md)
+
+-   :material-checkbox-marked-circle:{ .lg .middle } __Tasks__
+
+    ---
+
+    Discrete work units with clear objectives
+    
+    - Async execution
+    - Dependency management
+    - Result tracking
+    
+    [:octicons-arrow-right-24: Learn more](tasks.md)
+
+-   :material-cog-sync:{ .lg .middle } __Processes__
+
+    ---
+
+    Workflow orchestration and coordination
+    
+    - Sequential pipelines
+    - Parallel execution
+    - Hybrid strategies
+    
+    [:octicons-arrow-right-24: Learn more](processes.md)
+
+-   :material-brain:{ .lg .middle } __LLMs__
+
+    ---
+
+    Language model integration layer
+    
+    - Multi-provider support
+    - Model switching
+    - Circuit breaker pattern
+    
+    [:octicons-arrow-right-24: Learn more](llms.md)
+
+-   :material-database:{ .lg .middle } __Memory__
+
+    ---
+
+    Sophisticated data persistence
+    
+    - Short-term memory
+    - Long-term storage
+    - External backends
+    
+    [:octicons-arrow-right-24: Learn more](memory.md)
+
+-   :material-book-open:{ .lg .middle } __Knowledge__
+
+    ---
+
+    Information retrieval system
+    
+    - Vector search
+    - Semantic caching
+    - Index management
+    
+    [:octicons-arrow-right-24: Learn more](knowledge.md)
+
+-   :material-shield-check:{ .lg .middle } __Guardrails__
+
+    ---
+
+    Safety and compliance layer
+    
+    - Input validation
+    - Output filtering
+    - Policy enforcement
+    
+    [:octicons-arrow-right-24: Learn more](guardrails.md)
+
+-   :material-chart-line:{ .lg .middle } __Monitoring__
+
+    ---
+
+    Full observability stack
+    
+    - Metrics collection
+    - Event logging
+    - Alert system
+    
+    [:octicons-arrow-right-24: Learn more](monitoring.md)
+
+</div>
 
 ---
 
-## � Use Cases
+## :material-lightbulb-on: Use Cases
 
-### 🏢 Enterprise Applications
-- **Customer Support Automation**: Intelligent chatbots with escalation
-- **Document Processing**: Automated analysis and summarization
-- **Business Intelligence**: Data analysis and reporting agents
+<div class="grid cards" markdown>
 
-### 🔬 Research & Development
-- **Research Assistants**: Literature review and synthesis
-- **Data Science Pipelines**: Automated ML workflows
-- **Experiment Management**: Hypothesis testing and validation
+-   :material-office-building:{ .lg } __Enterprise Applications__
 
-### 💻 Software Development
-- **Code Generation**: Automated programming assistance
-- **Testing & QA**: Intelligent test case generation
-- **DevOps Automation**: Deployment and monitoring agents
+    ---
 
-### 🎓 Education & Training
-- **Personalized Tutoring**: Adaptive learning systems
-- **Content Creation**: Automated curriculum generation
-- **Assessment Tools**: Intelligent grading and feedback
+    - **Customer Support**: Intelligent chatbots with escalation
+    - **Document Processing**: Automated analysis and summarization
+    - **Business Intelligence**: Data analysis and reporting
+
+-   :material-flask:{ .lg } __Research & Development__
+
+    ---
+
+    - **Research Assistants**: Literature review and synthesis
+    - **Data Science**: Automated ML workflows
+    - **Experiment Management**: Hypothesis testing
+
+-   :material-code-tags:{ .lg } __Software Development__
+
+    ---
+
+    - **Code Generation**: Automated programming assistance
+    - **Testing & QA**: Intelligent test case generation
+    - **DevOps**: Deployment and monitoring automation
+
+-   :material-school:{ .lg } __Education & Training__
+
+    ---
+
+    - **Personalized Tutoring**: Adaptive learning systems
+    - **Content Creation**: Automated curriculum generation
+    - **Assessment Tools**: Intelligent grading and feedback
+
+</div>
+
+[:octicons-arrow-right-24: More Examples](EXAMPLES.md){ .md-button }
 
 ---
 

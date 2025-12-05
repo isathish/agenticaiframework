@@ -5,9 +5,19 @@ repo_url: https://github.com/isathish/agenticaiframework
 repo_name: isathish/agenticaiframework
 edit_uri: edit/main/docs/
 
+# Copyright
+copyright: Copyright &copy; 2024 AgenticAI Framework Contributors
+
 # Theme Configuration
 theme:
   name: material
+  language: en
+  logo: assets/logo.png
+  favicon: assets/favicon.png
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+    view: material/eye
   palette:
   # Palette toggle for automatic mode
   - media: "(prefers-color-scheme)"
@@ -17,48 +27,97 @@ theme:
   # Palette toggle for light mode
   - media: "(prefers-color-scheme: light)"
     scheme: default
-    primary: blue
-    accent: blue
+    primary: indigo
+    accent: indigo
     toggle:
       icon: material/brightness-7
       name: Switch to dark mode
   # Palette toggle for dark mode
   - media: "(prefers-color-scheme: dark)"
     scheme: slate
-    primary: blue
-    accent: blue
+    primary: indigo
+    accent: amber
     toggle:
       icon: material/brightness-4
       name: Switch to system preference
 
   features:
+  # Navigation
   - navigation.tabs
+  - navigation.tabs.sticky
   - navigation.sections
   - navigation.expand
   - navigation.path
   - navigation.top
+  - navigation.indexes
+  - navigation.footer
+  - navigation.tracking
+  # Search
   - search.highlight
   - search.share
+  - search.suggest
+  # Content
   - content.code.copy
   - content.code.annotate
   - content.tabs.link
+  - content.tooltips
+  - content.action.edit
+  - content.action.view
+  # TOC
+  - toc.follow
+  - toc.integrate
+  # Announce
+  - announce.dismiss
 
 # Extensions
 markdown_extensions:
+# Admonitions
 - admonition
 - pymdownx.details
-- pymdownx.superfences
+- pymdownx.superfences:
+    custom_fences:
+    - name: mermaid
+      class: mermaid
+      format: !!python/name:pymdownx.superfences.fence_code_format "" # Code highlighting
 - pymdownx.highlight:
     anchor_linenums: true
     line_spans: __span
     pygments_lang_class: true
+    auto_title: true
+    linenums: true
 - pymdownx.inlinehilite
-- pymdownx.snippets
+- pymdownx.snippets:
+    auto_append:
+    - includes/abbreviations.md
+# Tabs
 - pymdownx.tabbed:
     alternate_style: true
+    combine_header_slug: true
+# Additional features
+- attr_list
+- md_in_html
+- def_list
+- footnotes
+- abbr
 - tables
+- pymdownx.arithmatex:
+    generic: true
+- pymdownx.betterem:
+    smart_enable: all
+- pymdownx.caret
+- pymdownx.mark
+- pymdownx.tilde
+- pymdownx.keys
+- pymdownx.smartsymbols
+- pymdownx.emoji:
+    emoji_index: !!python/name:material.extensions.emoji.twemoji ""
+    emoji_generator: !!python/name:material.extensions.emoji.to_svg ""
+- pymdownx.tasklist:
+    custom_checkbox: true
 - toc:
     permalink: true
+    permalink_title: Anchor link to this section
+    toc_depth: 3
 
 # Plugins
 plugins:
@@ -73,33 +132,34 @@ plugins:
 
 # Navigation Structure
 nav:
-- Home: index.md
-- Getting Started:
-  - Installation: USAGE.md
-  - Quick Start: quick-start.md
+- 🏠 Home: index.md
+- 🚀 Getting Started:
+  - Installation & Setup: USAGE.md
+  - Quick Start Guide: quick-start.md
   - Configuration: CONFIGURATION.md
-- Core Modules:
-  - Agents: agents.md
-  - Tasks: tasks.md
-  - Processes: processes.md
-  - LLMs: llms.md
-  - Memory: memory.md
-  - Knowledge: knowledge.md
-  - Communication: communication.md
-  - Monitoring: monitoring.md
-  - Guardrails: guardrails.md
-  - MCP Tools: mcp_tools.md
-  - Prompts: prompts.md
-  - Hub: hub.md
-- Examples & Tutorials:
-  - Overview: EXAMPLES.md
-  - Basic Examples:
+  - Architecture Overview: architecture.md
+- 📦 Core Modules:
+  - 🤖 Agents: agents.md
+  - ✅ Tasks: tasks.md
+  - 🔄 Processes: processes.md
+  - 🧠 LLMs: llms.md
+  - 💾 Memory: memory.md
+  - 📚 Knowledge: knowledge.md
+  - 💬 Communication: communication.md
+  - 📊 Monitoring: monitoring.md
+  - 🛡️ Guardrails: guardrails.md
+  - 🔧 MCP Tools: mcp_tools.md
+  - 📝 Prompts: prompts.md
+  - 🌐 Hub: hub.md
+- 📖 Examples & Tutorials:
+  - 📋 Overview: EXAMPLES.md
+  - 🎯 Basic Examples:
     - Agents: examples/agents_example.md
     - Tasks: examples/tasks_example.md
     - Memory: examples/memory_example.md
     - LLMs: examples/llms_example.md
     - Guardrails: examples/guardrails_example.md
-  - Advanced Examples:
+  - 🚀 Advanced Examples:
     - Agent Manager: examples/agent_manager_example.md
     - Communication: examples/communication_example.md
     - Configuration Management: examples/configuration_manager_example.md
@@ -107,35 +167,65 @@ nav:
     - Code Generation Pipeline: examples/code_generation_pipeline.md
     - Customer Support Bot: examples/customer_support_bot.md
     - Research Agent: examples/research_agent.md
-  - Complete Workflows:
+  - 🎨 Complete Workflows:
     - Full Examples Index: examples/full_examples_index.md
     - MCP Tools: examples/mcp_tools_example.md
     - Monitoring: examples/monitoring_example.md
     - Prompts: examples/prompts_example.md
-- Advanced Topics:
-  - Architecture: architecture.md
-  - Best Practices: best-practices.md
-  - Performance: performance.md
-  - Security: security.md
-  - Deployment: deployment.md
-  - Integration: integration.md
-- Reference:
-  - API Reference: API_REFERENCE.md
-  - Configuration Reference: configuration-reference.md
-  - CLI Reference: cli-reference.md
-  - Extending: EXTENDING.md
-- Help:
-  - Troubleshooting: TROUBLESHOOTING.md
-  - FAQ: faq.md
-  - Contributing: contributing.md
-  - Changelog: changelog.md
+- 🎓 Advanced Topics:
+  - 💡 Best Practices: best-practices.md
+  - ⚡ Performance Optimization: performance.md
+  - 🔒 Security & Privacy: security.md
+  - 🚢 Deployment Guide: deployment.md
+  - 🔌 Integration Patterns: integration.md
+- 📚 Reference:
+  - 📖 API Reference: API_REFERENCE.md
+  - ⚙️ Configuration Reference: configuration-reference.md
+  - 💻 CLI Reference: cli-reference.md
+  - 🔧 Extending Framework: EXTENDING.md
+- 🆘 Help & Support:
+  - 🐛 Troubleshooting: TROUBLESHOOTING.md
+  - ❓ FAQ: faq.md
+  - 🤝 Contributing: contributing.md
+  - 📝 Changelog: changelog.md
+- 🧪 Development:
+  - Testing Guide: TESTING.md
+  - Release Automation: RELEASE_AUTOMATION.md
+
+# Extra CSS and JavaScript
+extra_css:
+- stylesheets/extra.css
+
+extra_javascript:
+- https://polyfill.io/v3/polyfill.min.js?features=es6
+- https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
 # Extra
 extra:
   social:
   - icon: fontawesome/brands/github
     link: https://github.com/isathish/agenticaiframework
+    name: GitHub Repository
   - icon: fontawesome/brands/python
     link: https://pypi.org/project/agenticaiframework/
+    name: PyPI Package
+  - icon: fontawesome/solid/book
+    link: https://isathish.github.io/agenticaiframework/
+    name: Documentation
   version:
     provider: mike
+    default: latest
+  analytics:
+    feedback:
+      title: Was this page helpful?
+      ratings:
+      - icon: material/emoticon-happy-outline
+        name: This page was helpful
+        data: 1
+        note: >-
+          Thanks for your feedback!
+      - icon: material/emoticon-sad-outline
+        name: This page could be improved
+        data: 0
+        note: >-
+          Thanks for your feedback! Help us improve by <a href="https://github.com/isathish/agenticaiframework/issues/new" target="_blank" rel="noopener">opening an issue</a>.

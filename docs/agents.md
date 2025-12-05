@@ -1,35 +1,68 @@
-# Agents Module
+# :robot: Agents Module
+
+<div class="annotate" markdown>
 
 The Agents module is the cornerstone of the AgenticAI Framework, providing the foundation for creating intelligent, autonomous agents that can reason, interact, and execute tasks across various domains.
 
-## Overview
+</div>
 
-Agents in AgenticAI Framework are autonomous entities that:
+---
 
-- **Execute tasks** with specific objectives and capabilities
-- **Maintain state** through configurable memory systems
-- **Communicate** with other agents and external services
-- **Learn and adapt** based on interactions and feedback
-- **Operate safely** within defined guardrails and constraints
+## :sparkles: Overview
 
-## Core Components
+!!! abstract "What are Agents?"
+    
+    Agents in AgenticAI Framework are autonomous entities with sophisticated capabilities:
 
-### Agent Class
+<div class="grid" markdown>
+
+:material-play-circle:{ .lg } **Execute Tasks**
+:   Perform specific objectives with defined capabilities and success criteria
+
+:material-database-check:{ .lg } **Maintain State**
+:   Store and manage information through configurable memory systems
+
+:material-chat-processing:{ .lg } **Communicate**
+:   Interact with other agents and external services seamlessly
+
+:material-brain:{ .lg } **Learn & Adapt**
+:   Evolve based on interactions and feedback over time
+
+:material-shield-check:{ .lg } **Operate Safely**
+:   Function within defined guardrails and compliance constraints
+
+:material-cog-sync:{ .lg } **Coordinate Workflows**
+:   Collaborate with other agents for complex multi-step processes
+
+</div>
+
+---
+
+## :gear: Core Components
+
+### :material-robot-outline: Agent Class
 
 The `Agent` class is the base implementation for all agent types in the framework.
 
-#### Constructor
+!!! info "Constructor"
 
-```python
-Agent(name: str, role: str, capabilities: List[str], config: Dict[str, Any])
-```
+    ```python
+    Agent(
+        name: str,
+        role: str,
+        capabilities: List[str],
+        config: Dict[str, Any]
+    )
+    ```
 
 **Parameters:**
 
-- **`name`** *(str)*: Unique identifier for the agent
-- **`role`** *(str)*: Describes the agent's purpose and domain expertise
-- **`capabilities`** *(List[str])*: List of what the agent can do (e.g., `["text_generation", "data_analysis"]`)
-- **`config`** *(Dict[str, Any])*: Configuration parameters and settings
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `name` | `str` | Unique identifier for the agent |
+| `role` | `str` | Describes the agent's purpose and domain expertise |
+| `capabilities` | `List[str]` | List of what the agent can do (e.g., `["text_generation", "data_analysis"]`) |
+| `config` | `Dict[str, Any]` | Configuration parameters and settings |
 
 #### Properties
 
@@ -43,6 +76,197 @@ Agent(name: str, role: str, capabilities: List[str], config: Dict[str, Any])
 | `status` | str | Current status (initialized, running, paused, stopped) |
 | `memory` | List | Agent's memory storage |
 | `version` | str | Agent version |
+
+---
+
+## :art: Low-Level Design (LLD)
+
+### Agent Class Diagram
+
+!!! info "Complete Agent Architecture"
+    
+    Detailed class relationships and interfaces:
+
+```mermaid
+classDiagram
+    class Agent {
+        -str _id
+        -str name
+        -str role
+        -List~str~ capabilities
+        -Dict~str,Any~ config
+        -str status
+        -List memory
+        -str version
+        -datetime created_at
+        -datetime last_active
+        
+        +__init__(name, role, capabilities, config)
+        +start() void
+        +pause() void
+        +resume() void
+        +stop() void
+        +execute_task(callable, args, kwargs) Any
+        +add_capability(capability) void
+        +remove_capability(capability) void
+        +update_config(config) void
+        +get_status() str
+        +get_metrics() Dict
+        -_validate_state_transition(new_state) bool
+        -_update_status(status) void
+    }
+    
+    class ContextManager {
+        -int max_tokens
+        -List~ContextItem~ contexts
+        -int current_tokens
+        -Dict~str,float~ importance_weights
+        
+        +__init__(max_tokens)
+        +add_context(content, importance) void
+        +get_context_summary() str
+        +get_full_context() List
+        +get_stats() Dict
+        +clear() void
+        +update_importance(index, importance) void
+        -_prune_contexts() void
+        -_calculate_tokens(content) int
+        -_should_prune() bool
+    }
+    
+    class ContextItem {
+        +str content
+        +float importance
+        +datetime timestamp
+        +int tokens
+        +Dict metadata
+    }
+    
+    class AgentManager {
+        -Dict~str,Agent~ _agents
+        -Queue _task_queue
+        -ThreadPoolExecutor _executor
+        -Lock _lock
+        
+        +register_agent(agent) void
+        +unregister_agent(agent_id) void
+        +get_agent(agent_id) Agent
+        +list_agents() List~Agent~
+        +find_agents_by_capability(capability) List~Agent~
+        +broadcast(message) void
+        +assign_task(task, agent_id) Future
+        +get_statistics() Dict
+        -_validate_agent(agent) bool
+    }
+    
+    class AgentPool {
+        -List~Agent~ available_agents
+        -List~Agent~ busy_agents
+        -int max_size
+        -Queue pending_tasks
+        
+        +add_agent(agent) void
+        +remove_agent(agent_id) void
+        +get_available_agent(capabilities) Agent
+        +return_agent(agent) void
+        +get_pool_stats() Dict
+        -_balance_load() void
+    }
+    
+    Agent "1" *-- "1" ContextManager: has
+    Agent "*" --o "1" AgentManager: managed by
+    AgentManager "1" *-- "1" AgentPool: uses
+    AgentPool "1" o-- "*" Agent: contains
+    ContextManager "1" *-- "*" ContextItem: stores
+```
+
+### Agent State Machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> Initialized: Agent Created
+    
+    Initialized --> Running: start()
+    Initialized --> Terminated: destroy()
+    
+    Running --> Idle: No Tasks
+    Running --> Paused: pause()
+    Running --> Terminated: stop()
+    
+    Idle --> Executing: execute_task()
+    Idle --> Paused: pause()
+    Idle --> Terminated: stop()
+    
+    Executing --> Idle: Success
+    Executing --> Error: Exception
+    Executing --> Paused: pause()
+    Executing --> Terminated: stop()
+    
+    Paused --> Running: resume()
+    Paused --> Terminated: stop()
+    
+    Error --> Running: retry()
+    Error --> Idle: handle_error()
+    Error --> Terminated: stop()
+    
+    Terminated --> [*]
+    
+    note right of Initialized
+        Configuration loaded
+        Capabilities validated
+        Resources allocated
+    end note
+    
+    note right of Executing
+        Task in progress
+        Memory active
+        LLM calls happening
+    end note
+    
+    note right of Error
+        Error logged
+        Metrics recorded
+        Recovery attempted
+    end note
+```
+
+### Task Execution Flow
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Agent
+    participant ContextMgr as Context Manager
+    participant Memory
+    participant LLM
+    participant Monitor
+    
+    Client->>Agent: execute_task(callable, args)
+    activate Agent
+    
+    Agent->>Agent: _validate_state_transition("executing")
+    Agent->>Monitor: log_event("task_started")
+    
+    Agent->>ContextMgr: get_context_summary()
+    ContextMgr-->>Agent: context_data
+    
+    Agent->>Memory: retrieve_relevant_memory()
+    Memory-->>Agent: historical_data
+    
+    Agent->>LLM: generate(prompt, context)
+    activate LLM
+    LLM-->>Agent: response
+    deactivate LLM
+    
+    Agent->>Memory: store_interaction(task, response)
+    Agent->>ContextMgr: add_context(response, importance=0.8)
+    
+    Agent->>Monitor: record_metric("task_completed")
+    Agent->>Agent: _update_status("idle")
+    
+    Agent-->>Client: result
+    deactivate Agent
+```
 
 #### Core Methods
 
@@ -114,90 +338,183 @@ def remove_agent(agent_id: str) -> None
 def broadcast(message: str) -> None
 ```
 
-## Creating Agents
+#### Multi-Agent Coordination
 
-### Basic Agent Creation
-
-```python
-from agenticaiframework import Agent
-
-# Create a basic agent
-agent = Agent(
-    name="DataAnalyst",
-    role="Data Analysis Specialist",
-    capabilities=["data_processing", "statistical_analysis", "visualization"],
-    config={
-        "processing_timeout": 300,
-        "output_format": "json",
-        "precision": "high"
-    }
-)
-
-# Start the agent
-agent.start()
-print(f"Agent {agent.name} is now {agent.status}")
+```mermaid
+flowchart TB
+    START([Request Received]) --> ROUTE{Route by<br/>Capability}
+    
+    ROUTE -->|Match Found| ASSIGN[Assign to Agent]
+    ROUTE -->|No Match| CREATE[Create New Agent]
+    ROUTE -->|Multiple Matches| BALANCE[Load Balance]
+    
+    CREATE --> REGISTER[Register with Manager]
+    REGISTER --> ASSIGN
+    BALANCE --> ASSIGN
+    
+    ASSIGN --> QUEUE[Add to Task Queue]
+    QUEUE --> AVAIL{Agent<br/>Available?}
+    
+    AVAIL -->|Yes| EXEC[Execute Task]
+    AVAIL -->|No| WAIT[Wait in Queue]
+    WAIT --> AVAIL
+    
+    EXEC --> MONITOR[Monitor Progress]
+    MONITOR --> CHECK{Task<br/>Complete?}
+    
+    CHECK -->|Success| STORE[Store Results]
+    CHECK -->|Error| RETRY{Retry<br/>Possible?}
+    CHECK -->|In Progress| MONITOR
+    
+    RETRY -->|Yes| EXEC
+    RETRY -->|No| FAIL[Mark Failed]
+    
+    STORE --> NOTIFY[Notify Subscribers]
+    FAIL --> NOTIFY
+    
+    NOTIFY --> END([Response Sent])
+    
+    style START fill:#4caf50
+    style END fill:#4caf50
+    style EXEC fill:#2196f3
+    style FAIL fill:#f44336
+    style STORE fill:#ff9800
 ```
 
-### Specialized Agent Types
+---
 
-#### Customer Service Agent
+## :rocket: Creating Agents
 
-```python
-customer_agent = Agent(
-    name="CustomerSupport",
-    role="Customer Service Representative",
-    capabilities=[
-        "natural_language_processing",
-        "sentiment_analysis", 
-        "response_generation",
-        "escalation_handling"
-    ],
-    config={
-        "response_tone": "professional_friendly",
-        "max_response_length": 500,
-        "escalation_threshold": 0.8,
-        "supported_languages": ["en", "es", "fr"]
-    }
-)
+### :material-plus-circle: Basic Agent Creation
+
+!!! example "Create Your First Agent"
+
+    ```python
+    from agenticaiframework import Agent
+    
+    # Create a basic agent
+    agent = Agent(
+        name="DataAnalyst",
+        role="Data Analysis Specialist",
+        capabilities=[
+            "data_processing",
+            "statistical_analysis",
+            "visualization"
+        ],
+        config={
+            "processing_timeout": 300,
+            "output_format": "json",
+            "precision": "high"
+        }
+    )
+    
+    # Start the agent
+    agent.start()
+    print(f"Agent {agent.name} is now {agent.status}")
+    ```
+
+### Agent Discovery & Registry Pattern
+
+```mermaid
+graph LR
+    subgraph "Agent Registry"
+        REG[(Registry<br/>Database)]
+        INDEX[Search Index]
+    end
+    
+    subgraph "Agents"
+        A1["Agent 1<br/>cap: [A, B]"]
+        A2["Agent 2<br/>cap: [B, C]"]
+        A3["Agent 3<br/>cap: [A, C]"]
+    end
+    
+    subgraph "Discovery"
+        DISC[Discovery Service]
+        MATCH[Capability Matcher]
+        SCORE[Scoring Engine]
+    end
+    
+    A1 & A2 & A3 -->|register| REG
+    REG -->|index| INDEX
+    
+    CLIENT[Client Request] -->|find agent<br/>with cap: [A, C]| DISC
+    DISC --> INDEX
+    INDEX -->|candidates| MATCH
+    MATCH -->|score| SCORE
+    SCORE -->|best match| A3
+    
+    style REG fill:#4caf50
+    style A3 fill:#ff9800
 ```
 
-#### Research Agent
+---
 
-```python
-research_agent = Agent(
-    name="ResearchAssistant",
-    role="Academic Research Specialist", 
-    capabilities=[
-        "literature_search",
-        "data_extraction",
-        "citation_management",
-        "summary_generation"
-    ],
-    config={
-        "search_depth": "comprehensive",
-        "citation_style": "APA",
-        "fact_checking": True,
-        "source_credibility_threshold": 0.9
-    }
-)
-```
+### :material-star-circle: Specialized Agent Types
 
-#### Code Generation Agent
+=== ":material-headset: Customer Service"
 
-```python
-code_agent = Agent(
-    name="CodeGenerator",
-    role="Software Development Assistant",
-    capabilities=[
-        "code_generation",
-        "code_review",
-        "testing",
-        "documentation_generation"
-    ],
-    config={
-        "programming_languages": ["python", "javascript", "java"],
-        "code_style": "pep8",
-        "test_coverage_target": 90,
+    ```python
+    customer_agent = Agent(
+        name="CustomerSupport",
+        role="Customer Service Representative",
+        capabilities=[
+            "natural_language_processing",
+            "sentiment_analysis", 
+            "response_generation",
+            "escalation_handling"
+        ],
+        config={
+            "response_tone": "professional_friendly",
+            "max_response_length": 500,
+            "escalation_threshold": 0.8,
+            "supported_languages": ["en", "es", "fr"]
+        }
+    )
+    ```
+    
+    !!! tip "Use Case"
+        Perfect for automated customer support with intelligent escalation to human agents.
+
+=== ":material-book-search: Research"
+
+    ```python
+    research_agent = Agent(
+        name="ResearchAssistant",
+        role="Academic Research Specialist", 
+        capabilities=[
+            "literature_search",
+            "data_extraction",
+            "citation_management",
+            "summary_generation"
+        ],
+        config={
+            "search_depth": "comprehensive",
+            "citation_style": "APA",
+            "fact_checking": True,
+            "source_credibility_threshold": 0.9
+        }
+    )
+    ```
+    
+    !!! tip "Use Case"
+        Ideal for academic research, literature reviews, and knowledge synthesis.
+
+=== ":material-code-braces: Code Generation"
+
+    ```python
+    code_agent = Agent(
+        name="CodeGenerator",
+        role="Software Development Assistant",
+        capabilities=[
+            "code_generation",
+            "code_review",
+            "testing",
+            "documentation_generation"
+        ],
+        config={
+            "programming_languages": ["python", "javascript", "java"],
+            "code_style": "pep8",
+            "test_coverage_target": 90,
         "documentation_format": "sphinx"
     }
 )

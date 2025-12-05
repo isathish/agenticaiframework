@@ -1,39 +1,81 @@
-# Automated Release Notes with GitHub Copilot
+# :robot: Automated Release Notes
 
-This guide explains how AgenticAI Framework automatically generates intelligent, AI-powered release notes for every release.
+<div class="annotate" markdown>
 
-## Overview
+Intelligent, AI-powered release notes generation using **OpenAI GPT-4** and GitHub Copilot for every release.
 
-The framework uses a multi-tiered approach to generate comprehensive release notes:
+</div>
 
-1. **Automated commit analysis** - Categorizes and analyzes all commits
-2. **Intelligent categorization** - Groups changes by type (features, fixes, etc.)
-3. **AI enhancement** - Uses OpenAI GPT-4 to improve clarity and context
-4. **Automatic publishing** - Creates GitHub releases and updates CHANGELOG
+---
 
-## 🚀 How It Works
+## :sparkles: Overview
 
-### Trigger Points
+!!! abstract "AI-Powered Release Process"
+    
+    The framework uses a sophisticated multi-tiered approach to generate comprehensive, professional release notes automatically.
 
-Release notes are automatically generated when:
+<div class="grid" markdown>
 
-1. **Code is pushed to main branch**
-   ```bash
-   git push origin main
-   # Triggers automatic version bump and release
-   ```
+:material-git:{ .lg } **Commit Analysis**
+:   Automatically categorizes and analyzes all commits since last release
 
-2. **A version tag is created**
-   ```bash
-   git tag v0.2.0
-   git push origin v0.2.0
-   # Triggers release notes workflow
-   ```
+:material-tag-multiple:{ .lg } **Smart Categorization**
+:   Groups changes by type (features, fixes, docs, tests, etc.)
 
-3. **Manual workflow dispatch**
-   ```bash
-   gh workflow run python-package.yml -f release_type=minor
-   ```
+:material-robot:{ .lg } **AI Enhancement**
+:   Uses OpenAI GPT-4 to improve clarity, context, and readability
+
+:material-publish:{ .lg } **Auto Publishing**
+:   Creates GitHub releases and updates CHANGELOG automatically
+
+</div>
+
+---
+
+## :rocket: How It Works
+
+### :material-lightning-bolt: Trigger Points
+
+!!! info "Automatic Generation"
+    
+    Release notes are automatically generated in these scenarios:
+
+=== ":material-source-branch: Push to Main"
+
+    Automatically triggered on main branch push:
+    
+    ```bash
+    git push origin main
+    ```
+    
+    !!! success "What Happens"
+        - Version automatically bumped
+        - Commits analyzed and categorized
+        - Release notes generated with AI
+        - GitHub release created
+
+=== ":material-tag: Version Tag"
+
+    Create and push a version tag:
+    
+    ```bash
+    git tag v0.2.0
+    git push origin v0.2.0
+    ```
+    
+    !!! tip
+        Use semantic versioning: `v{major}.{minor}.{patch}`
+
+=== ":material-play-circle: Manual Dispatch"
+
+    Run workflow manually:
+    
+    ```bash
+    gh workflow run python-package.yml -f release_type=minor
+    ```
+    
+    !!! warning
+        Requires GitHub CLI (`gh`) and proper permissions
 
 ### The Process
 

@@ -1,43 +1,70 @@
-# Tasks Module
+# :material-checkbox-marked-circle: Tasks Module
+
+<div class="annotate" markdown>
 
 The Tasks module provides a comprehensive framework for defining, scheduling, and executing work units within the AgenticAI Framework. It enables sophisticated workflow management, task coordination, and progress tracking for AI agents.
 
-## Overview
+</div>
 
-The Tasks module enables:
+---
 
-- **Task Definition**: Create structured units of work with metadata and execution logic
-- **Scheduling**: Execute tasks at specific times, intervals, or based on conditions  
-- **Queue Management**: Handle task prioritization, dependencies, and execution order
-- **Progress Tracking**: Monitor task status, results, and performance metrics
-- **Error Handling**: Implement retries, fallbacks, and error recovery strategies
-- **Workflow Orchestration**: Coordinate complex multi-step processes
+## :sparkles: Overview
 
-## Core Components
+!!! abstract "What are Tasks?"
+    
+    Tasks are the fundamental work units that agents execute. They provide structure, tracking, and coordination capabilities.
 
-### Task Class
+<div class="grid" markdown>
+
+:material-file-document-edit:{ .lg } **Task Definition**
+:   Create structured units of work with metadata and execution logic
+
+:material-clock-outline:{ .lg } **Scheduling**
+:   Execute tasks at specific times, intervals, or based on conditions
+
+:material-playlist-check:{ .lg } **Queue Management**
+:   Handle task prioritization, dependencies, and execution order
+
+:material-chart-line:{ .lg } **Progress Tracking**
+:   Monitor task status, results, and performance metrics
+
+:material-alert-circle:{ .lg } **Error Handling**
+:   Implement retries, fallbacks, and error recovery strategies
+
+:material-workflow:{ .lg } **Workflow Orchestration**
+:   Coordinate complex multi-step processes seamlessly
+
+</div>
+
+---
+
+## :gear: Core Components
+
+### :material-checkbox-outline: Task Class
 
 The `Task` class represents a single unit of work with comprehensive metadata and execution capabilities.
 
-#### Constructor
+!!! info "Constructor"
 
-```python
-Task(
-    name: str,
-    description: str = "",
-    priority: int = 1,
-    dependencies: List[str] = None,
-    config: Dict[str, Any] = None
-)
-```
+    ```python
+    Task(
+        name: str,
+        description: str = "",
+        priority: int = 1,
+        dependencies: List[str] = None,
+        config: Dict[str, Any] = None
+    )
+    ```
 
 **Parameters:**
 
-- **`name`** *(str)*: Unique identifier for the task
-- **`description`** *(str)*: Human-readable description of the task
-- **`priority`** *(int)*: Task priority (1=highest, 10=lowest)
-- **`dependencies`** *(List[str])*: List of task names that must complete first
-- **`config`** *(Dict[str, Any])*: Task-specific configuration parameters
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `name` | `str` | *required* | Unique identifier for the task |
+| `description` | `str` | `""` | Human-readable description |
+| `priority` | `int` | `1` | Priority level (1=highest, 10=lowest) |
+| `dependencies` | `List[str]` | `None` | Prerequisite task names |
+| `config` | `Dict[str, Any]` | `None` | Task-specific configuration |
 
 #### Properties
 
@@ -68,6 +95,242 @@ def add_dependency(task_name: str) -> None
 def remove_dependency(task_name: str) -> None
 ```
 
+---
+
+## :art: Low-Level Design (LLD)
+
+### Task Management Class Diagram
+
+```mermaid
+classDiagram
+    class Task {
+        -str _id
+        -str name
+        -str description
+        -int priority
+        -List~str~ dependencies
+        -str status
+        -Any result
+        -str error
+        -datetime created_at
+        -datetime started_at
+        -datetime completed_at
+        -Callable executor
+        -Dict~str,Any~ config
+        
+        +__init__(name, description, priority, dependencies)
+        +execute() Any
+        +cancel() void
+        +retry() void
+        +get_status() str
+        +get_result() Any
+        +add_dependency(task_name) void
+        +remove_dependency(task_name) void
+        +get_duration() float
+        -_validate_dependencies() bool
+        -_update_status(status) void
+    }
+    
+    class TaskScheduler {
+        -List~Task~ scheduled_tasks
+        -Dict~str,datetime~ schedule_times
+        -Thread scheduler_thread
+        -bool running
+        
+        +add_task(task, schedule_time) void
+        +remove_task(task_id) void
+        +run_pending() List~str~
+        +schedule_recurring(task, interval) void
+        +get_scheduled_tasks() List~Task~
+        +start() void
+        +stop() void
+        -_check_schedule() void
+        -_execute_due_tasks() void
+    }
+    
+    class TaskQueue {
+        -PriorityQueue _queue
+        -Dict~str,Task~ _task_map
+        -Lock _lock
+        -int max_size
+        
+        +enqueue(task) void
+        +dequeue() Task
+        +peek() Task
+        +get_queue_size() int
+        +clear() void
+        +get_tasks_by_status(status) List~Task~
+        +reorder(task_id, new_priority) void
+        -_resolve_dependencies(task) bool
+    }
+    
+    class TaskManager {
+        -TaskQueue queue
+        -TaskScheduler scheduler
+        -Dict~str,Task~ active_tasks
+        -ThreadPoolExecutor executor
+        -int max_workers
+        
+        +submit_task(task) str
+        +cancel_task(task_id) void
+        +get_task_status(task_id) str
+        +get_task_result(task_id) Any
+        +wait_for_task(task_id, timeout) Any
+        +get_all_tasks() List~Task~
+        -_execute_task(task) void
+        -_handle_task_completion(task) void
+        -_handle_task_error(task, error) void
+    }
+    
+    class DependencyGraph {
+        -Dict~str,Set~ graph
+        -Dict~str,int~ in_degree
+        
+        +add_task(task_id) void
+        +add_dependency(from_task, to_task) void
+        +remove_dependency(from_task, to_task) void
+        +get_ready_tasks() List~str~
+        +has_cycle() bool
+        +topological_sort() List~str~
+        -_dfs_cycle_check(node, visited, stack) bool
+    }
+    
+    TaskManager "1" *-- "1" TaskQueue: manages
+    TaskManager "1" *-- "1" TaskScheduler: uses
+    TaskManager "1" *-- "*" Task: executes
+    TaskQueue "1" *-- "*" Task: queues
+    TaskScheduler "1" o-- "*" Task: schedules
+    Task "*" --> "1" DependencyGraph: tracked by
+```
+
+### Task Execution State Machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> Pending: Task Created
+    
+    Pending --> Waiting: Has Dependencies
+    Pending --> Ready: No Dependencies
+    
+    Waiting --> Ready: Dependencies Met
+    Waiting --> Cancelled: cancel()
+    
+    Ready --> Running: Executor Available
+    Ready --> Cancelled: cancel()
+    
+    Running --> Completed: Success
+    Running --> Failed: Error
+    Running --> Cancelled: cancel()
+    
+    Failed --> Retrying: retry()
+    Failed --> Cancelled: Max Retries
+    
+    Retrying --> Running: Retry Attempt
+    Retrying --> Cancelled: cancel()
+    
+    Completed --> [*]
+    Cancelled --> [*]
+    
+    note right of Pending
+        Task submitted
+        Validation complete
+    end note
+    
+    note right of Waiting
+        Blocked by dependencies
+        Monitoring prerequisite tasks
+    end note
+    
+    note right of Running
+        Executor allocated
+        Task being processed
+    end note
+```
+
+### Dependency Resolution Flow
+
+```mermaid
+flowchart TD
+    START([Task Submitted]) --> CHECK{Has<br/>Dependencies?}
+    
+    CHECK -->|No| READY[Mark as Ready]
+    CHECK -->|Yes| BUILD[Build Dependency Graph]
+    
+    BUILD --> CYCLE{Cycle<br/>Detected?}
+    CYCLE -->|Yes| ERROR[Reject: Circular Dependency]
+    CYCLE -->|No| WAIT[Mark as Waiting]
+    
+    WAIT --> MONITOR[Monitor Dependencies]
+    MONITOR --> DEPCHECK{All Deps<br/>Complete?}
+    
+    DEPCHECK -->|No| MONITOR
+    DEPCHECK -->|Yes| DEPSTATUS{All Deps<br/>Successful?}
+    
+    DEPSTATUS -->|Yes| READY
+    DEPSTATUS -->|No| DEPFAIL[Mark as Failed]
+    
+    READY --> QUEUE[Add to Execution Queue]
+    QUEUE --> EXEC{Executor<br/>Available?}
+    
+    EXEC -->|No| QUEUE
+    EXEC -->|Yes| RUN[Execute Task]
+    
+    RUN --> SUCCESS{Task<br/>Success?}
+    SUCCESS -->|Yes| COMPLETE[Mark Complete]
+    SUCCESS -->|No| RETRYCHECK{Retry<br/>Available?}
+    
+    RETRYCHECK -->|Yes| WAIT2[Wait & Retry]
+    RETRYCHECK -->|No| FAIL[Mark Failed]
+    
+    WAIT2 --> RUN
+    
+    COMPLETE --> NOTIFY[Notify Dependent Tasks]
+    FAIL --> NOTIFY
+    DEPFAIL --> NOTIFY
+    ERROR --> END([Task Rejected])
+    
+    NOTIFY --> END([Task Complete])
+    
+    style START fill:#4caf50
+    style COMPLETE fill:#4caf50
+    style ERROR fill:#f44336
+    style FAIL fill:#f44336
+    style RUN fill:#2196f3
+```
+
+### Task Priority Queue Visualization
+
+```mermaid
+graph TB
+    subgraph "Priority Queue (Min Heap)"
+        ROOT["Priority 1<br/>Task A<br/>Critical"]
+        
+        L1_1["Priority 2<br/>Task B<br/>High"]
+        L1_2["Priority 2<br/>Task C<br/>High"]
+        
+        L2_1["Priority 3<br/>Task D<br/>Medium"]
+        L2_2["Priority 4<br/>Task E<br/>Low"]
+        L2_3["Priority 5<br/>Task F<br/>Low"]
+        L2_4["Priority 6<br/>Task G<br/>Lowest"]
+        
+        ROOT --> L1_1
+        ROOT --> L1_2
+        L1_1 --> L2_1
+        L1_1 --> L2_2
+        L1_2 --> L2_3
+        L1_2 --> L2_4
+    end
+    
+    DEQUEUE[Dequeue Operation] -.->|Returns Task A| ROOT
+    ENQUEUE[New Task Priority 2] -.->|Heapify| L1_1
+    
+    style ROOT fill:#f44336
+    style L1_1 fill:#ff9800
+    style L1_2 fill:#ff9800
+    style L2_1 fill:#ffc107
+    style L2_2 fill:#ffeb3b
+```
+
 ### TaskScheduler Class
 
 The `TaskScheduler` manages task execution timing and coordination.
@@ -80,6 +343,32 @@ def remove_task(task_id: str) -> None
 def run_pending() -> List[str]
 def schedule_recurring(task: Task, interval: timedelta) -> None
 def get_scheduled_tasks() -> List[Task]
+```
+
+#### Scheduling Timeline
+
+```mermaid
+gantt
+    title Task Scheduling Timeline
+    dateFormat HH:mm
+    axisFormat %H:%M
+    
+    section High Priority
+    Task A (P1)     :done, t1, 09:00, 10m
+    Task B (P2)     :done, t2, 09:12, 15m
+    
+    section Medium Priority
+    Task C (P5)     :done, t3, 09:30, 20m
+    Task D (P5)     :active, t4, 09:52, 25m
+    
+    section Low Priority
+    Task E (P8)     :crit, t5, 10:20, 10m
+    Task F (P9)     :t6, 10:32, 15m
+    
+    section Recurring
+    Hourly Task     :milestone, m1, 09:00, 0m
+    Hourly Task     :milestone, m2, 10:00, 0m
+    Hourly Task     :milestone, m3, 11:00, 0m
 ```
 
 ### TaskQueue Class

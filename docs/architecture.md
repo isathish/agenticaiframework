@@ -1,103 +1,420 @@
-# Architecture Guide
+# :building_construction: Architecture Guide
 
-This guide provides an in-depth look at the AgenticAI Framework architecture, design principles, and component interactions.
+<div class="annotate" markdown>
 
-## Overview
+Comprehensive architectural overview of AgenticAI Framework with High-Level Design (HLD) and Low-Level Design (LLD) diagrams.
 
-AgenticAI Framework is built on a modular, event-driven architecture that enables scalable and maintainable agentic applications. The framework follows these core design principles:
+</div>
 
-- **Modularity**: Each component has a single responsibility
-- **Extensibility**: Easy to add new capabilities and integrations
-- **Observability**: Built-in monitoring and logging throughout
-- **Safety**: Guardrails and validation at every layer
-- **Performance**: Optimized for both single and multi-agent scenarios
+---
 
-## Architecture Diagram
+## :sparkles: Overview
+
+!!! abstract "Design Philosophy"
+    
+    AgenticAI Framework is built on a **modular, event-driven architecture** that enables scalable and maintainable agentic applications.
+
+### :star: Core Design Principles
+
+<div class="grid" markdown>
+
+:material-puzzle:{ .lg } **Modularity**
+:   Each component has a single, well-defined responsibility
+
+:material-plus-circle:{ .lg } **Extensibility**
+:   Easy to add new capabilities and integrations
+
+:material-eye:{ .lg } **Observability**
+:   Built-in monitoring and logging throughout
+
+:material-shield-check:{ .lg } **Safety**
+:   Guardrails and validation at every layer
+
+:material-lightning-bolt:{ .lg } **Performance**
+:   Optimized for single and multi-agent scenarios
+
+:material-scale-balance:{ .lg } **Scalability**
+:   Horizontal and vertical scaling capabilities
+
+</div>
+
+---
+
+## :art: High-Level Design (HLD)
+
+### System Overview
+
+!!! info "Architecture Layers"
+    
+    The framework is organized into 5 distinct layers, each with specific responsibilities:
 
 ```mermaid
 graph TB
-    subgraph "Application Layer"
-        UA[User Application]
-        API[Framework APIs]
+    subgraph "Layer 1: Application Layer"
+        UA["👤 User Application<br/>Custom AI Applications"]
+        API["🔌 Framework APIs<br/>Python SDK Interface"]
     end
     
-    subgraph "Agent Layer"
-        AM[Agent Manager]
-        A1[Agent 1]
-        A2[Agent 2]
-        AN[Agent N]
+    subgraph "Layer 2: Agent Orchestration"
+        AM["🤖 Agent Manager<br/>Lifecycle & Coordination"]
+        A1["🎯 Specialized Agent 1<br/>Domain Expert"]
+        A2["🎯 Specialized Agent 2<br/>Task Executor"]
+        AN["🎯 Agent N<br/>Custom Role"]
     end
     
-    subgraph "Orchestration Layer"
-        TM[Task Manager]
-        PM[Process Manager]
-        CM[Communication Manager]
+    subgraph "Layer 3: Task & Process Management"
+        TM["✅ Task Manager<br/>Task Queue & Scheduling"]
+        PM["🔄 Process Manager<br/>Workflow Orchestration"]
+        CM["💬 Communication Manager<br/>Inter-Agent Messages"]
     end
     
-    subgraph "Core Services"
-        LM[LLM Manager]
-        MM[Memory Manager]
-        KM[Knowledge Manager]
-        GM[Guardrail Manager]
+    subgraph "Layer 4: Core Intelligence Services"
+        LM["🧠 LLM Manager<br/>Model Integration"]
+        MM["💾 Memory Manager<br/>State Persistence"]
+        KM["📚 Knowledge Manager<br/>Information Retrieval"]
+        GM["🛡️ Guardrail Manager<br/>Safety & Compliance"]
     end
     
-    subgraph "Infrastructure Layer"
-        MON[Monitoring System]
-        CONFIG[Configuration Manager]
-        HUB[Hub]
+    subgraph "Layer 5: Infrastructure & Integration"
+        MON["📊 Monitoring System<br/>Metrics & Logs"]
+        CONFIG["⚙️ Configuration Manager<br/>Settings & Secrets"]
+        HUB["🌐 Hub<br/>Agent Discovery"]
+        SEC["🔒 Security Manager<br/>Auth & Validation"]
     end
     
-    subgraph "External Integrations"
-        LLMS[LLM Providers]
-        DB[Databases]
-        APIs[External APIs]
-        TOOLS[MCP Tools]
+    subgraph "External Systems"
+        LLMS["🤖 LLM Providers<br/>OpenAI, Anthropic, Azure"]
+        DB["💾 Databases<br/>Redis, PostgreSQL, MongoDB"]
+        APIS["🌐 External APIs<br/>REST, GraphQL"]
+        TOOLS["🔧 MCP Tools<br/>External Tools"]
     end
     
     UA --> API
     API --> AM
-    AM --> A1
-    AM --> A2
-    AM --> AN
-    
-    A1 --> TM
-    A2 --> TM
-    AN --> TM
-    
-    TM --> PM
-    TM --> CM
-    
-    PM --> LM
-    PM --> MM
-    PM --> KM
-    
-    GM --> LM
-    GM --> MM
-    GM --> KM
-    
-    MON --> AM
-    MON --> TM
-    MON --> PM
-    
-    CONFIG --> AM
-    CONFIG --> TM
-    CONFIG --> PM
-    
-    HUB --> A1
-    HUB --> A2
-    HUB --> AN
-    
+    AM --> A1 & A2 & AN
+    A1 & A2 & AN --> TM
+    TM --> PM & CM
+    PM --> LM & MM & KM
+    GM -."validates".-> LM & MM & KM
+    MON -."observes".-> AM & TM & PM
+    CONFIG --> AM & TM & PM
+    HUB --> A1 & A2 & AN
+    SEC -."protects".-> API & AM
     LM --> LLMS
-    MM --> DB
-    KM --> DB
-    CM --> APIs
+    MM & KM --> DB
+    CM --> APIS
     PM --> TOOLS
+    
+    classDef layer1 fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef layer2 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef layer3 fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    classDef layer4 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef layer5 fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef external fill:#eceff1,stroke:#455a64,stroke-width:2px
+    
+    class UA,API layer1
+    class AM,A1,A2,AN layer2
+    class TM,PM,CM layer3
+    class LM,MM,KM,GM layer4
+    class MON,CONFIG,HUB,SEC layer5
+    class LLMS,DB,APIS,TOOLS external
 ```
 
-## Core Components
+### Component Interaction Diagram
+
+!!! example "Request Flow"
+    
+    How a typical request flows through the system:
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant API
+    participant AgentMgr as Agent Manager
+    participant Agent
+    participant TaskMgr as Task Manager
+    participant LLMMgr as LLM Manager
+    participant Memory
+    participant Guardrails
+    participant Monitor
+    
+    User->>API: Submit Request
+    API->>AgentMgr: Route to Agent
+    AgentMgr->>Agent: Assign Task
+    Agent->>TaskMgr: Create Task
+    
+    TaskMgr->>Guardrails: Validate Input
+    Guardrails-->>TaskMgr: Validation Result
+    
+    TaskMgr->>Memory: Retrieve Context
+    Memory-->>TaskMgr: Historical Data
+    
+    TaskMgr->>LLMMgr: Generate Response
+    LLMMgr->>Guardrails: Validate Output
+    Guardrails-->>LLMMgr: Approved Output
+    LLMMgr-->>TaskMgr: Generated Response
+    
+    TaskMgr->>Memory: Store Result
+    TaskMgr->>Monitor: Log Metrics
+    
+    TaskMgr-->>Agent: Task Complete
+    Agent-->>AgentMgr: Report Status
+    AgentMgr-->>API: Response
+    API-->>User: Final Result
+    
+    Note over Monitor: Continuous observability
+```
+
+### Data Flow Architecture
+
+```mermaid
+flowchart LR
+    subgraph Input
+        UI[User Input]
+        EXT[External Data]
+    end
+    
+    subgraph Processing
+        VAL[Input Validation]
+        CTX[Context Enrichment]
+        PROC[Task Processing]
+        GEN[Response Generation]
+        FILTER[Output Filtering]
+    end
+    
+    subgraph Storage
+        MEM[(Short-term Memory)]
+        LTM[(Long-term Storage)]
+        CACHE[(Cache Layer)]
+    end
+    
+    subgraph Output
+        RES[User Response]
+        LOG[Audit Logs]
+        METRIC[Metrics]
+    end
+    
+    UI --> VAL
+    EXT --> VAL
+    VAL --> CTX
+    
+    CTX --> MEM
+    MEM --> PROC
+    CACHE --> PROC
+    
+    PROC --> GEN
+    GEN --> FILTER
+    
+    FILTER --> RES
+    FILTER --> LOG
+    PROC --> METRIC
+    
+    PROC --> LTM
+    LTM --> CTX
+    
+    style VAL fill:#ffeb3b
+    style FILTER fill:#ffeb3b
+    style MEM fill:#4caf50
+    style LTM fill:#4caf50
+    style CACHE fill:#4caf50
+```
+
+### Deployment Architecture
+
+!!! tip "Scalability Options"
+    
+    The framework supports multiple deployment patterns:
+
+```mermaid
+graph TB
+    subgraph "Development Environment"
+        DEV["💻 Local Development<br/>Single Process<br/>In-Memory Storage"]
+    end
+    
+    subgraph "Production - Single Node"
+        API1["🌐 API Server<br/>FastAPI/Flask"]
+        AGENT1["🤖 Agent Pool<br/>ThreadPool Executor"]
+        REDIS1[("💾 Redis<br/>Memory & Cache")]
+        DB1[("🗄️ PostgreSQL<br/>Persistent Storage")]
+        
+        API1 --> AGENT1
+        AGENT1 --> REDIS1
+        AGENT1 --> DB1
+    end
+    
+    subgraph "Production - Distributed"
+        LB["⚖️ Load Balancer<br/>nginx/ALB"]
+        
+        subgraph "API Tier"
+            API2["🌐 API 1"]
+            API3["🌐 API 2"]
+            API4["🌐 API N"]
+        end
+        
+        subgraph "Agent Tier"
+            WORKER1["🤖 Worker 1<br/>Agent Pool"]
+            WORKER2["🤖 Worker 2<br/>Agent Pool"]
+            WORKER3["🤖 Worker N<br/>Agent Pool"]
+        end
+        
+        subgraph "Message Queue"
+            MQ["📬 RabbitMQ/Redis Queue<br/>Task Distribution"]
+        end
+        
+        subgraph "Storage Tier"
+            REDIS2[("💾 Redis Cluster<br/>Distributed Cache")]
+            DB2[("🗄️ PostgreSQL<br/>Primary DB")]
+            DB3[("🗄️ PostgreSQL<br/>Replica")]
+            VECTOR[("🔍 Vector DB<br/>Pinecone/Weaviate")]
+        end
+        
+        subgraph "Monitoring"
+            PROM["📊 Prometheus<br/>Metrics"]
+            GRAF["📈 Grafana<br/>Dashboards"]
+            ELK["📋 ELK Stack<br/>Logs"]
+        end
+        
+        LB --> API2 & API3 & API4
+        API2 & API3 & API4 --> MQ
+        MQ --> WORKER1 & WORKER2 & WORKER3
+        WORKER1 & WORKER2 & WORKER3 --> REDIS2
+        WORKER1 & WORKER2 & WORKER3 --> DB2
+        DB2 -."replication".-> DB3
+        WORKER1 & WORKER2 & WORKER3 --> VECTOR
+        
+        API2 & API3 & API4 --> PROM
+        WORKER1 & WORKER2 & WORKER3 --> PROM
+        PROM --> GRAF
+        API2 & API3 & API4 --> ELK
+        WORKER1 & WORKER2 & WORKER3 --> ELK
+    end
+    
+    DEV -."evolves to".-> API1
+    API1 -."scales to".-> LB
+    
+    classDef dev fill:#e1f5fe,stroke:#01579b
+    classDef prod fill:#f3e5f5,stroke:#4a148c
+    classDef storage fill:#e8f5e9,stroke:#1b5e20
+    classDef monitor fill:#fff3e0,stroke:#e65100
+    
+    class DEV dev
+    class API1,AGENT1 prod
+    class REDIS1,DB1 storage
+    class LB,API2,API3,API4,WORKER1,WORKER2,WORKER3,MQ prod
+    class REDIS2,DB2,DB3,VECTOR storage
+    class PROM,GRAF,ELK monitor
+```
+
+---
+
+## :gear: Core Components
 
 ### Agent Manager
-The central orchestrator for all agents in the system.
+
+!!! abstract "Central Orchestration"
+    
+    The Agent Manager is the central orchestrator for all agents in the system.agents in the system.agents in the system.
+
+#### Class Diagram - Agent Management
+
+```mermaid
+classDiagram
+    class Agent {
+        +str id
+        +str name
+        +str role
+        +List~str~ capabilities
+        +Dict config
+        +str status
+        +List memory
+        +start() void
+        +pause() void
+        +resume() void
+        +stop() void
+        +execute_task(callable, args) Any
+    }
+    
+    class AgentManager {
+        -Dict~str,Agent~ agents
+        -Queue task_queue
+        +register_agent(Agent) void
+        +get_agent(str) Agent
+        +list_agents() List~Agent~
+        +remove_agent(str) void
+        +broadcast(str) void
+        +assign_task(Task, Agent) void
+    }
+    
+    class ContextManager {
+        -int max_tokens
+        -List~Context~ contexts
+        -int current_tokens
+        +add_context(str, float) void
+        +get_context_summary() str
+        +get_stats() Dict
+        +clear() void
+        -prune_contexts() void
+    }
+    
+    class Task {
+        +str id
+        +str name
+        +str description
+        +int priority
+        +List~str~ dependencies
+        +str status
+        +Any result
+        +execute() Any
+        +cancel() void
+        +retry() void
+    }
+    
+    AgentManager "1" --> "*" Agent: manages
+    Agent "1" --> "1" ContextManager: uses
+    Agent "1" --> "*" Task: executes
+    AgentManager "1" --> "*" Task: queues
+```agents in the system.
+
+#### Agent Lifecycle State Machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> Initialized: create()
+    
+    Initialized --> Running: start()
+    Initialized --> Terminated: destroy()
+    
+    Running --> Paused: pause()
+    Running --> Executing: execute_task()
+    Running --> Terminated: stop()
+    
+    Paused --> Running: resume()
+    Paused --> Terminated: stop()
+    
+    Executing --> Running: task_complete()
+    Executing --> Error: task_failed()
+    Executing --> Terminated: stop()
+    
+    Error --> Running: retry()
+    Error --> Terminated: stop()
+    
+    Terminated --> [*]
+    
+    note right of Initialized
+        Agent created with
+        name, role, capabilities
+    end note
+    
+    note right of Running
+        Agent ready to
+        accept tasks
+    end note
+    
+    note right of Executing
+        Agent actively
+        processing task
+    end note
+```
 
 **Responsibilities:**
 - Agent lifecycle management (create, start, stop, destroy)

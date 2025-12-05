@@ -1,57 +1,116 @@
-# Quick Start Guide
+# :rocket: Quick Start Guide
 
-This guide will help you get up and running with AgenticAI Framework in just a few minutes.
+<div class="annotate" markdown>
 
-## Prerequisites
+Get up and running with AgenticAI Framework in just **5 minutes**! This guide will walk you through creating your first intelligent agent.
 
-- Python 3.8 or higher
-- pip package manager
+</div>
 
-## Installation
+---
 
-Install AgenticAI Framework using pip:
+## :clipboard: Prerequisites
 
-```bash
-pip install agenticaiframework
-```
+!!! info "What You Need"
+    
+    - :fontawesome-brands-python: **Python 3.8+**: Latest Python version recommended
+    - :material-package: **pip**: Python package manager
+    - :material-clock-fast: **5 minutes**: That's all it takes!
 
-## Basic Example: Your First Agent
+---
 
-Let's create a simple agent that can generate text responses:
+## :package: Installation
 
-```python
-from agenticaiframework import Agent, Task, LLMManager
+=== ":simple-python: Using pip"
 
-# Step 1: Set up the LLM Manager
-llm_manager = LLMManager()
+    Install AgenticAI Framework using pip:
+    
+    ```bash
+    pip install agenticaiframework
+    ```
 
-# Register a simple mock LLM for demonstration
-def simple_llm(prompt, kwargs=None):
-    return f"Response to: {prompt}"
+=== ":material-speedometer: Quick Install"
 
-llm_manager.register_model("simple-llm", simple_llm)
-llm_manager.set_active_model("simple-llm")
+    Install with all extras for full functionality:
+    
+    ```bash
+    pip install agenticaiframework[all]
+    ```
 
-# Step 2: Create an agent
-agent = Agent(
-    name="QuickStartAgent",
-    role="Assistant",
-    capabilities=["text_generation"],
-    config={"llm": llm_manager}
-)
+!!! success "Installation Complete!"
+    
+    Verify installation:
+    
+    ```bash
+    python -c "import agenticaiframework; print(agenticaiframework.__version__)"
+    ```
 
-# Step 3: Define and run a task
-task = Task(
-    name="GreetingTask",
-    objective="Generate a friendly greeting",
-    executor=lambda: llm_manager.generate("Say hello to the user!")
-)
+---
 
-# Step 4: Start the agent and run the task
-agent.start()
-result = task.run()
-print(f"Agent response: {result}")
-```
+## :zap: Your First Agent
+
+!!! example "Build an Intelligent Agent in 4 Steps"
+
+    Let's create a simple agent that can generate text responses:
+
+=== ":one: Setup LLM"
+
+    ```python
+    from agenticaiframework import Agent, Task, LLMManager
+    
+    # Set up the LLM Manager
+    llm_manager = LLMManager()
+    
+    # Register a simple mock LLM for demonstration
+    def simple_llm(prompt, kwargs=None):
+        return f"Response to: {prompt}"
+    
+    llm_manager.register_model("simple-llm", simple_llm)
+    llm_manager.set_active_model("simple-llm")
+    ```
+    
+    !!! tip
+        In production, register real LLM providers like OpenAI, Anthropic, or Azure OpenAI.
+
+=== ":two: Create Agent"
+
+    ```python
+    # Create an intelligent agent
+    agent = Agent(
+        name="QuickStartAgent",
+        role="Assistant",
+        capabilities=["text_generation"],
+        config={"llm": llm_manager}
+    )
+    ```
+    
+    !!! info
+        Agents can have multiple capabilities and custom configurations.
+
+=== ":three: Define Task"
+
+    ```python
+    # Define what the agent should do
+    task = Task(
+        name="GreetingTask",
+        objective="Generate a friendly greeting",
+        executor=lambda: llm_manager.generate("Say hello to the user!")
+    )
+    ```
+    
+    !!! tip
+        Tasks can have dependencies, priorities, and error handling.
+
+=== ":four: Execute"
+
+    ```python
+    # Start the agent and run the task
+    agent.start()
+    result = task.run()
+    print(f"Agent response: {result}")
+    ```
+    
+    !!! success "Done!"
+        Your first agent is now running! :tada:
 
 ## Multi-Agent Example
 
