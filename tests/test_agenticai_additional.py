@@ -95,8 +95,10 @@ def test_guardrail_and_manager(capsys):
     gm.register_guardrail(g)
     assert gm.get_guardrail(g.id) == g
     assert g in gm.list_guardrails()
-    assert gm.enforce_guardrails(10) is True
-    assert gm.enforce_guardrails(-5) is False
+    result = gm.enforce_guardrails(10)
+    assert result['is_valid'] is True
+    result = gm.enforce_guardrails(-5)
+    assert result['is_valid'] is False
     gm.remove_guardrail(g.id)
     assert gm.get_guardrail(g.id) is None
     captured = capsys.readouterr()
