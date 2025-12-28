@@ -54,7 +54,9 @@ theme:
   - navigation.footer
   - navigation.tracking
   - navigation.instant
+  - navigation.instant.prefetch
   - navigation.instant.progress
+  - navigation.path
   # Search
   - search.highlight
   - search.share
@@ -138,6 +140,9 @@ plugins:
     separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
     lang:
     - en
+- tags:
+    enabled: true
+    tags_file: tags.md
 - mkdocstrings:
     handlers:
       python:
@@ -158,6 +163,7 @@ plugins:
 - git-revision-date-localized:
     enable_creation_date: true
     type: timeago
+    fallback_to_build_date: true
 - minify:
     minify_html: true
     minify_js: true
@@ -173,6 +179,9 @@ plugins:
     width: 100%
     height: auto
     zoomable: true
+    draggable: true
+    skip_classes:
+    - skip-lightbox
     draggable: true
     skip_classes:
     - custom-skip-class-name
@@ -212,19 +221,32 @@ nav:
     - Memory: examples/memory_example.md
     - LLMs: examples/llms_example.md
     - Guardrails: examples/guardrails_example.md
-  - 🚀 Advanced Examples:
+    - Prompts: examples/prompts_example.md
+  - 🔧 Manager Classes:
     - Agent Manager: examples/agent_manager_example.md
+    - Task Manager: examples/task_manager_example.md
+    - Memory Manager: examples/memory_manager_example.md
+    - LLM Manager: examples/llm_manager_example.md
+    - Prompt Manager: examples/prompt_manager_example.md
+    - Guardrail Manager: examples/guardrail_manager_example.md
+    - MCP Tools Manager: examples/mcp_tools_manager_example.md
+    - Monitoring System: examples/monitoring_system_example.md
+    - Configuration Manager: examples/configuration_manager_example.md
+  - 🚀 Advanced Examples:
     - Communication: examples/communication_example.md
-    - Configuration Management: examples/configuration_manager_example.md
     - Knowledge Retrieval: examples/knowledge_retrieval.md
     - Code Generation Pipeline: examples/code_generation_pipeline.md
     - Customer Support Bot: examples/customer_support_bot.md
     - Research Agent: examples/research_agent.md
+    - Configurations: examples/configurations_example.md
+    - Processes: examples/processes_example.md
+    - Process Advanced: examples/process_advanced_example.md
+    - Evaluation: examples/evaluation_example.md
+    - Hub: examples/hub_example.md
   - 🎨 Complete Workflows:
     - Full Examples Index: examples/full_examples_index.md
     - MCP Tools: examples/mcp_tools_example.md
     - Monitoring: examples/monitoring_example.md
-    - Prompts: examples/prompts_example.md
 - 🎓 Advanced Topics:
   - 💡 Best Practices: best-practices.md
   - ⚡ Performance Optimization: performance.md
@@ -242,8 +264,6 @@ nav:
   - 🤝 Contributing: contributing.md
 - 🧪 Development:
   - Testing Guide: TESTING.md
-  - Release Automation: RELEASE_AUTOMATION.md
-  - Documentation Improvements: DOCUMENTATION_IMPROVEMENTS.md
 
 # Extra CSS and JavaScript
 extra_css:
