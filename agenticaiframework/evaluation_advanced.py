@@ -2337,6 +2337,75 @@ class HITLEvaluator:
             'avg_review_time_seconds': statistics.mean(metrics['review_times']) if metrics['review_times'] else 0,
             'avg_trust_score': statistics.mean(metrics['trust_scores']) if metrics['trust_scores'] else 0
         }
+    
+    # Convenience methods for easier API usage
+    def record_review(self,
+                     decision: str,
+                     approved: bool,
+                     review_time_seconds: float = None) -> Dict[str, Any]:
+        """
+        Record a human review decision.
+        
+        Args:
+            decision: The decision being reviewed
+            approved: Whether the human approved it
+            review_time_seconds: Time taken for review
+            
+        Returns:
+            Interaction record
+        """
+        return self.record_escalation(
+            agent_recommendation=decision,
+            human_accepted=approved,
+            review_time_seconds=review_time_seconds,
+            metadata={'type': 'review'}
+        )
+    
+    def record_override(self,
+                       agent_decision: str,
+                       human_decision: str,
+                       reason: str = None) -> Dict[str, Any]:
+        """
+        Record a human override of agent decision.
+        
+        Args:
+            agent_decision: The agent's original decision
+            human_decision: The human's override decision
+            reason: Reason for override
+            
+        Returns:
+            Interaction record
+        """
+        metadata = {'type': 'override', 'human_decision': human_decision}
+        if reason:
+            metadata['reason'] = reason
+            
+        return self.record_escalation(
+            agent_recommendation=agent_decision,
+            human_accepted=False,
+            metadata=metadata
+        )
+    
+    def record_trust_signal(self,
+                           interaction_id: str,
+                           trust_score: float) -> Dict[str, Any]:
+        """
+        Record a trust signal from human feedback.
+        
+        Args:
+            interaction_id: ID of the interaction
+            trust_score: Trust score (0-1)
+            
+        Returns:
+            Trust signal record
+        """
+        self.hitl_metrics['trust_scores'].append(trust_score)
+        
+        return {
+            'interaction_id': interaction_id,
+            'trust_score': trust_score,
+            'timestamp': time.time()
+        }
 
 
 # =============================================================================
