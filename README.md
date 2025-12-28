@@ -1,8 +1,9 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/isathish/agenticaiframework/main/docs/images/agentic-ai-logo.png" alt="AgenticAI Framework" width="600"/>
+<!-- Logo will be available once agenticaiframework.png is added to docs/assets/ -->
+<!-- <img src="https://raw.githubusercontent.com/isathish/agenticaiframework/main/docs/assets/agenticaiframework.png" alt="AgenticAI Framework" width="600"/> -->
 
-# AgenticAI Framework
+# 🤖 AgenticAI Framework
 ### *Enterprise-Grade Multi-Agent Orchestration Platform*
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
