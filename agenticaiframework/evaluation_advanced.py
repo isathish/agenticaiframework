@@ -1118,3 +1118,978 @@ class ABTestingFramework:
             'baseline_success_rate': canary['metrics']['baseline']['success'] / baseline_total if baseline_total else 0,
             'canary_success_rate': canary['metrics']['canary']['success'] / canary_total if canary_total else 0
         }
+
+
+# =============================================================================
+# Model-Level Evaluations (LLM Quality)
+# =============================================================================
+
+class ModelQualityEvaluator:
+    """
+    Model-Level Evaluation system.
+    
+    Evaluates LLM quality metrics:
+    - Reasoning quality
+    - Language understanding
+    - Hallucination detection
+    - Token efficiency
+    """
+    
+    def __init__(self):
+        self.evaluations: List[Dict[str, Any]] = []
+        self.model_metrics: Dict[str, Dict[str, Any]] = defaultdict(
+            lambda: {'evaluations': 0, 'metrics': defaultdict(list)}
+        )
+    
+    def evaluate_response(self,
+                         model_name: str,
+                         prompt: str,
+                         response: str,
+                         ground_truth: str = None,
+                         metadata: Dict[str, Any] = None) -> Dict[str, Any]:
+        """Evaluate model response quality."""
+        metrics = {}
+        
+        # Accuracy (if ground truth provided)
+        if ground_truth:
+            metrics['exact_match'] = 1.0 if response.strip() == ground_truth.strip() else 0.0
+            metrics['token_overlap'] = self._calculate_token_overlap(response, ground_truth)
+        
+        # Hallucination indicators
+        metrics['hallucination_score'] = self._detect_hallucination(prompt, response)
+        
+        # Reasoning quality
+        metrics['reasoning_quality'] = self._assess_reasoning(response)
+        
+        # Token efficiency
+        metrics['token_efficiency'] = len(prompt.split()) / max(len(response.split()), 1)
+        
+        # Response completeness
+        metrics['completeness'] = self._assess_completeness(response)
+        
+        evaluation = {
+            'id': str(uuid.uuid4()),
+            'model': model_name,
+            'prompt': prompt,
+            'response': response,
+            'metrics': metrics,
+            'metadata': metadata or {},
+            'timestamp': time.time()
+        }
+        
+        self.evaluations.append(evaluation)
+        
+        # Update model-level aggregates
+        for metric_name, value in metrics.items():
+            self.model_metrics[model_name]['metrics'][metric_name].append(value)
+        self.model_metrics[model_name]['evaluations'] += 1
+        
+        return evaluation
+    
+    def _calculate_token_overlap(self, response: str, ground_truth: str) -> float:
+        """Calculate token overlap similarity."""
+        resp_tokens = set(response.lower().split())
+        truth_tokens = set(ground_truth.lower().split())
+        
+        if not truth_tokens:
+            return 0.0
+        
+        intersection = len(resp_tokens & truth_tokens)
+        return intersection / len(truth_tokens)
+    
+    def _detect_hallucination(self, prompt: str, response: str) -> float:
+        """Detect potential hallucinations (simplified)."""
+        # Check for common hallucination patterns
+        hallucination_indicators = [
+            'according to my knowledge',
+            'i believe',
+            'i think',
+            'probably',
+            'might be',
+            'could be'
+        ]
+        
+        response_lower = response.lower()
+        indicator_count = sum(1 for ind in hallucination_indicators if ind in response_lower)
+        
+        # Higher score = more likely hallucination
+        return min(indicator_count * 0.2, 1.0)
+    
+    def _assess_reasoning(self, response: str) -> float:
+        """Assess reasoning quality."""
+        # Check for reasoning indicators
+        reasoning_indicators = [
+            'because', 'therefore', 'thus', 'since', 'as a result',
+            'consequently', 'due to', 'step', 'first', 'second'
+        ]
+        
+        response_lower = response.lower()
+        indicator_count = sum(1 for ind in reasoning_indicators if ind in response_lower)
+        
+        return min(indicator_count * 0.15, 1.0)
+    
+    def _assess_completeness(self, response: str) -> float:
+        """Assess response completeness."""
+        # Simple heuristic based on length and structure
+        word_count = len(response.split())
+        has_punctuation = any(p in response for p in '.!?')
+        
+        completeness = 0.0
+        if word_count > 10:
+            completeness += 0.5
+        if has_punctuation:
+            completeness += 0.5
+        
+        return completeness
+    
+    def get_model_summary(self, model_name: str) -> Dict[str, Any]:
+        """Get summary metrics for a model."""
+        if model_name not in self.model_metrics:
+            return {'error': 'Model not found'}
+        
+        model_data = self.model_metrics[model_name]
+        summary = {
+            'model': model_name,
+            'total_evaluations': model_data['evaluations'],
+            'metrics': {}
+        }
+        
+        for metric_name, values in model_data['metrics'].items():
+            if values:
+                summary['metrics'][metric_name] = {
+                    'mean': statistics.mean(values),
+                    'min': min(values),
+                    'max': max(values),
+                    'stdev': statistics.stdev(values) if len(values) > 1 else 0
+                }
+        
+        return summary
+
+
+# =============================================================================
+# Task/Skill-Level Evaluations
+# =============================================================================
+
+class TaskEvaluator:
+    """
+    Task/Skill-Level Evaluation system.
+    
+    Tracks task completion, instruction following, and multi-step reasoning.
+    """
+    
+    def __init__(self):
+        self.task_executions: List[Dict[str, Any]] = []
+        self.task_metrics: Dict[str, Dict[str, Any]] = defaultdict(
+            lambda: {'attempts': 0, 'successes': 0, 'failures': 0, 'retries': []}
+        )
+    
+    def record_task_execution(self,
+                            task_name: str,
+                            success: bool,
+                            completion_percentage: float = None,
+                            retry_count: int = 0,
+                            error_recovered: bool = False,
+                            duration_ms: float = None,
+                            metadata: Dict[str, Any] = None) -> Dict[str, Any]:
+        """Record task execution."""
+        execution = {
+            'id': str(uuid.uuid4()),
+            'task_name': task_name,
+            'success': success,
+            'completion_percentage': completion_percentage or (100.0 if success else 0.0),
+            'retry_count': retry_count,
+            'error_recovered': error_recovered,
+            'duration_ms': duration_ms,
+            'metadata': metadata or {},
+            'timestamp': time.time()
+        }
+        
+        self.task_executions.append(execution)
+        
+        # Update task metrics
+        metrics = self.task_metrics[task_name]
+        metrics['attempts'] += 1
+        if success:
+            metrics['successes'] += 1
+        else:
+            metrics['failures'] += 1
+        metrics['retries'].append(retry_count)
+        
+        return execution
+    
+    def get_task_metrics(self, task_name: str = None) -> Dict[str, Any]:
+        """Get metrics for a specific task or all tasks."""
+        if task_name:
+            if task_name not in self.task_metrics:
+                return {'error': 'Task not found'}
+            
+            metrics = self.task_metrics[task_name]
+            total = metrics['attempts']
+            
+            return {
+                'task_name': task_name,
+                'success_rate': metrics['successes'] / total if total else 0,
+                'failure_rate': metrics['failures'] / total if total else 0,
+                'avg_retry_count': statistics.mean(metrics['retries']) if metrics['retries'] else 0,
+                'total_attempts': total
+            }
+        
+        # Return all tasks
+        summary = {}
+        for task, metrics in self.task_metrics.items():
+            total = metrics['attempts']
+            summary[task] = {
+                'success_rate': metrics['successes'] / total if total else 0,
+                'attempts': total
+            }
+        
+        return summary
+
+
+# =============================================================================
+# Tool & API Invocation Evaluations
+# =============================================================================
+
+class ToolInvocationEvaluator:
+    """
+    Tool & API Invocation Evaluation system.
+    
+    Tracks tool usage correctness, parameter validity, and call ordering.
+    """
+    
+    def __init__(self):
+        self.tool_calls: List[Dict[str, Any]] = []
+        self.tool_metrics: Dict[str, Dict[str, Any]] = defaultdict(
+            lambda: {
+                'calls': 0, 'successful': 0, 'failed': 0,
+                'invalid_params': 0, 'latencies': []
+            }
+        )
+    
+    def record_tool_call(self,
+                        tool_name: str,
+                        parameters: Dict[str, Any],
+                        success: bool,
+                        valid_parameters: bool = True,
+                        latency_ms: float = None,
+                        error: str = None,
+                        metadata: Dict[str, Any] = None) -> Dict[str, Any]:
+        """Record tool invocation."""
+        call = {
+            'id': str(uuid.uuid4()),
+            'tool_name': tool_name,
+            'parameters': parameters,
+            'success': success,
+            'valid_parameters': valid_parameters,
+            'latency_ms': latency_ms,
+            'error': error,
+            'metadata': metadata or {},
+            'timestamp': time.time()
+        }
+        
+        self.tool_calls.append(call)
+        
+        # Update metrics
+        metrics = self.tool_metrics[tool_name]
+        metrics['calls'] += 1
+        if success:
+            metrics['successful'] += 1
+        else:
+            metrics['failed'] += 1
+        if not valid_parameters:
+            metrics['invalid_params'] += 1
+        if latency_ms:
+            metrics['latencies'].append(latency_ms)
+        
+        return call
+    
+    def get_tool_metrics(self, tool_name: str = None) -> Dict[str, Any]:
+        """Get tool usage metrics."""
+        if tool_name:
+            if tool_name not in self.tool_metrics:
+                return {'error': 'Tool not found'}
+            
+            metrics = self.tool_metrics[tool_name]
+            total = metrics['calls']
+            
+            return {
+                'tool_name': tool_name,
+                'success_rate': metrics['successful'] / total if total else 0,
+                'failure_rate': metrics['failed'] / total if total else 0,
+                'invalid_param_rate': metrics['invalid_params'] / total if total else 0,
+                'avg_latency_ms': statistics.mean(metrics['latencies']) if metrics['latencies'] else 0,
+                'total_calls': total
+            }
+        
+        # Return all tools
+        summary = {}
+        for tool, metrics in self.tool_metrics.items():
+            total = metrics['calls']
+            summary[tool] = {
+                'success_rate': metrics['successful'] / total if total else 0,
+                'calls': total
+            }
+        
+        return summary
+    
+    def detect_tool_call_patterns(self) -> Dict[str, Any]:
+        """Detect common tool call patterns and issues."""
+        if len(self.tool_calls) < 2:
+            return {'error': 'Insufficient data'}
+        
+        patterns = {
+            'repeated_failures': [],
+            'slow_tools': [],
+            'frequent_invalid_params': []
+        }
+        
+        for tool, metrics in self.tool_metrics.items():
+            total = metrics['calls']
+            if total < 5:
+                continue
+            
+            # Repeated failures
+            if metrics['failed'] / total > 0.3:
+                patterns['repeated_failures'].append(tool)
+            
+            # Slow tools
+            if metrics['latencies'] and statistics.mean(metrics['latencies']) > 5000:
+                patterns['slow_tools'].append(tool)
+            
+            # Frequent invalid params
+            if metrics['invalid_params'] / total > 0.2:
+                patterns['frequent_invalid_params'].append(tool)
+        
+        return patterns
+
+
+# =============================================================================
+# Workflow/Orchestration Evaluations
+# =============================================================================
+
+class WorkflowEvaluator:
+    """
+    Workflow/Orchestration Evaluation system.
+    
+    Tracks multi-agent workflows, handoffs, and orchestration success.
+    """
+    
+    def __init__(self):
+        self.workflows: Dict[str, Dict[str, Any]] = {}
+        self.workflow_metrics: Dict[str, Dict[str, Any]] = defaultdict(
+            lambda: {'attempts': 0, 'completions': 0, 'deadlocks': 0, 'durations': []}
+        )
+    
+    def start_workflow(self, workflow_name: str, workflow_id: str = None) -> str:
+        """Start tracking a workflow."""
+        workflow_id = workflow_id or str(uuid.uuid4())
+        
+        self.workflows[workflow_id] = {
+            'id': workflow_id,
+            'name': workflow_name,
+            'status': 'running',
+            'steps': [],
+            'agents': set(),
+            'start_time': time.time(),
+            'end_time': None
+        }
+        
+        self.workflow_metrics[workflow_name]['attempts'] += 1
+        
+        return workflow_id
+    
+    def record_step(self,
+                   workflow_id: str,
+                   step_name: str,
+                   agent_name: str = None,
+                   success: bool = True,
+                   metadata: Dict[str, Any] = None):
+        """Record a workflow step."""
+        if workflow_id not in self.workflows:
+            raise ValueError(f"Workflow {workflow_id} not found")
+        
+        workflow = self.workflows[workflow_id]
+        
+        step = {
+            'step_name': step_name,
+            'agent': agent_name,
+            'success': success,
+            'metadata': metadata or {},
+            'timestamp': time.time()
+        }
+        
+        workflow['steps'].append(step)
+        if agent_name:
+            workflow['agents'].add(agent_name)
+    
+    def complete_workflow(self, workflow_id: str, success: bool = True, deadlock: bool = False):
+        """Mark workflow as complete."""
+        if workflow_id not in self.workflows:
+            raise ValueError(f"Workflow {workflow_id} not found")
+        
+        workflow = self.workflows[workflow_id]
+        workflow['status'] = 'completed' if success else 'failed'
+        workflow['end_time'] = time.time()
+        
+        duration = workflow['end_time'] - workflow['start_time']
+        
+        # Update metrics
+        metrics = self.workflow_metrics[workflow['name']]
+        if success:
+            metrics['completions'] += 1
+        if deadlock:
+            metrics['deadlocks'] += 1
+        metrics['durations'].append(duration)
+    
+    def get_workflow_metrics(self, workflow_name: str = None) -> Dict[str, Any]:
+        """Get workflow metrics."""
+        if workflow_name:
+            if workflow_name not in self.workflow_metrics:
+                return {'error': 'Workflow not found'}
+            
+            metrics = self.workflow_metrics[workflow_name]
+            total = metrics['attempts']
+            
+            return {
+                'workflow_name': workflow_name,
+                'completion_rate': metrics['completions'] / total if total else 0,
+                'deadlock_rate': metrics['deadlocks'] / total if total else 0,
+                'avg_duration_seconds': statistics.mean(metrics['durations']) if metrics['durations'] else 0,
+                'total_attempts': total
+            }
+        
+        # Return all workflows
+        summary = {}
+        for name, metrics in self.workflow_metrics.items():
+            total = metrics['attempts']
+            summary[name] = {
+                'completion_rate': metrics['completions'] / total if total else 0,
+                'attempts': total
+            }
+        
+        return summary
+
+
+# =============================================================================
+# Memory & Context Evaluations
+# =============================================================================
+
+class MemoryEvaluator:
+    """
+    Memory & Context Evaluation system.
+    
+    Evaluates memory accuracy, context relevance, and knowledge freshness.
+    """
+    
+    def __init__(self):
+        self.memory_evaluations: List[Dict[str, Any]] = []
+        self.memory_metrics: Dict[str, Any] = {
+            'total_queries': 0,
+            'relevant_retrievals': 0,
+            'stale_data_usage': 0,
+            'context_precision_scores': [],
+            'memory_overwrite_errors': 0
+        }
+    
+    def evaluate_memory_retrieval(self,
+                                  query: str,
+                                  retrieved_memories: List[Dict[str, Any]],
+                                  relevant_memories: List[Dict[str, Any]] = None,
+                                  metadata: Dict[str, Any] = None) -> Dict[str, Any]:
+        """Evaluate memory retrieval quality."""
+        evaluation = {
+            'id': str(uuid.uuid4()),
+            'query': query,
+            'retrieved_count': len(retrieved_memories),
+            'timestamp': time.time()
+        }
+        
+        # Context precision (if ground truth provided)
+        if relevant_memories:
+            precision = self._calculate_precision(retrieved_memories, relevant_memories)
+            recall = self._calculate_recall(retrieved_memories, relevant_memories)
+            evaluation['precision'] = precision
+            evaluation['recall'] = recall
+            
+            self.memory_metrics['context_precision_scores'].append(precision)
+        
+        # Check for stale data
+        stale_count = sum(1 for m in retrieved_memories if self._is_stale(m))
+        evaluation['stale_count'] = stale_count
+        
+        if stale_count > 0:
+            self.memory_metrics['stale_data_usage'] += 1
+        
+        self.memory_evaluations.append(evaluation)
+        self.memory_metrics['total_queries'] += 1
+        
+        return evaluation
+    
+    def _calculate_precision(self, retrieved: List[Dict], relevant: List[Dict]) -> float:
+        """Calculate retrieval precision."""
+        if not retrieved:
+            return 0.0
+        
+        retrieved_ids = {m.get('id', str(m)) for m in retrieved}
+        relevant_ids = {m.get('id', str(m)) for m in relevant}
+        
+        true_positives = len(retrieved_ids & relevant_ids)
+        return true_positives / len(retrieved_ids)
+    
+    def _calculate_recall(self, retrieved: List[Dict], relevant: List[Dict]) -> float:
+        """Calculate retrieval recall."""
+        if not relevant:
+            return 0.0
+        
+        retrieved_ids = {m.get('id', str(m)) for m in retrieved}
+        relevant_ids = {m.get('id', str(m)) for m in relevant}
+        
+        true_positives = len(retrieved_ids & relevant_ids)
+        return true_positives / len(relevant_ids)
+    
+    def _is_stale(self, memory: Dict[str, Any]) -> bool:
+        """Check if memory is stale."""
+        if 'timestamp' not in memory:
+            return False
+        
+        # Consider stale if older than 30 days
+        age_seconds = time.time() - memory['timestamp']
+        return age_seconds > (30 * 24 * 3600)
+    
+    def record_memory_error(self, error_type: str):
+        """Record memory-related errors."""
+        if error_type == 'overwrite':
+            self.memory_metrics['memory_overwrite_errors'] += 1
+    
+    def get_memory_metrics(self) -> Dict[str, Any]:
+        """Get memory evaluation metrics."""
+        metrics = self.memory_metrics
+        
+        return {
+            'total_queries': metrics['total_queries'],
+            'stale_data_rate': metrics['stale_data_usage'] / metrics['total_queries'] if metrics['total_queries'] else 0,
+            'avg_precision': statistics.mean(metrics['context_precision_scores']) if metrics['context_precision_scores'] else 0,
+            'memory_errors': metrics['memory_overwrite_errors']
+        }
+
+
+# =============================================================================
+# RAG (Knowledge Retrieval) Evaluations
+# =============================================================================
+
+class RAGEvaluator:
+    """
+    RAG (Retrieval-Augmented Generation) Evaluation system.
+    
+    Evaluates retrieval accuracy, citation correctness, and answer groundedness.
+    """
+    
+    def __init__(self):
+        self.rag_evaluations: List[Dict[str, Any]] = []
+        self.rag_metrics: Dict[str, Any] = {
+            'total_queries': 0,
+            'precision_scores': [],
+            'recall_scores': [],
+            'faithfulness_scores': [],
+            'groundedness_scores': []
+        }
+    
+    def evaluate_rag_response(self,
+                             query: str,
+                             retrieved_docs: List[Dict[str, Any]],
+                             generated_answer: str,
+                             relevant_docs: List[Dict[str, Any]] = None,
+                             ground_truth_answer: str = None,
+                             metadata: Dict[str, Any] = None) -> Dict[str, Any]:
+        """Evaluate RAG response quality."""
+        evaluation = {
+            'id': str(uuid.uuid4()),
+            'query': query,
+            'num_retrieved': len(retrieved_docs),
+            'answer_length': len(generated_answer),
+            'timestamp': time.time()
+        }
+        
+        # Retrieval metrics
+        if relevant_docs:
+            precision = self._calculate_retrieval_precision(retrieved_docs, relevant_docs)
+            recall = self._calculate_retrieval_recall(retrieved_docs, relevant_docs)
+            
+            evaluation['retrieval_precision'] = precision
+            evaluation['retrieval_recall'] = recall
+            
+            self.rag_metrics['precision_scores'].append(precision)
+            self.rag_metrics['recall_scores'].append(recall)
+        
+        # Faithfulness (answer grounded in retrieved docs)
+        faithfulness = self._assess_faithfulness(generated_answer, retrieved_docs)
+        evaluation['faithfulness'] = faithfulness
+        self.rag_metrics['faithfulness_scores'].append(faithfulness)
+        
+        # Groundedness (no hallucinations)
+        groundedness = self._assess_groundedness(generated_answer, retrieved_docs)
+        evaluation['groundedness'] = groundedness
+        self.rag_metrics['groundedness_scores'].append(groundedness)
+        
+        # Check for citations
+        evaluation['has_citations'] = self._has_citations(generated_answer)
+        
+        self.rag_evaluations.append(evaluation)
+        self.rag_metrics['total_queries'] += 1
+        
+        return evaluation
+    
+    def _calculate_retrieval_precision(self, retrieved: List[Dict], relevant: List[Dict]) -> float:
+        """Calculate retrieval precision."""
+        if not retrieved:
+            return 0.0
+        
+        retrieved_ids = {str(d.get('id', d)) for d in retrieved}
+        relevant_ids = {str(d.get('id', d)) for d in relevant}
+        
+        true_positives = len(retrieved_ids & relevant_ids)
+        return true_positives / len(retrieved_ids)
+    
+    def _calculate_retrieval_recall(self, retrieved: List[Dict], relevant: List[Dict]) -> float:
+        """Calculate retrieval recall."""
+        if not relevant:
+            return 0.0
+        
+        retrieved_ids = {str(d.get('id', d)) for d in retrieved}
+        relevant_ids = {str(d.get('id', d)) for d in relevant}
+        
+        true_positives = len(retrieved_ids & relevant_ids)
+        return true_positives / len(relevant_ids)
+    
+    def _assess_faithfulness(self, answer: str, docs: List[Dict]) -> float:
+        """Assess if answer is faithful to retrieved documents."""
+        if not docs:
+            return 0.0
+        
+        # Simple token overlap assessment
+        answer_tokens = set(answer.lower().split())
+        
+        doc_tokens = set()
+        for doc in docs:
+            content = doc.get('content', str(doc))
+            doc_tokens.update(content.lower().split())
+        
+        if not doc_tokens:
+            return 0.0
+        
+        overlap = len(answer_tokens & doc_tokens)
+        return overlap / len(answer_tokens) if answer_tokens else 0.0
+    
+    def _assess_groundedness(self, answer: str, docs: List[Dict]) -> float:
+        """Assess answer groundedness (inverse hallucination)."""
+        # Check for statements not supported by docs
+        # Simplified: use token coverage
+        return self._assess_faithfulness(answer, docs)
+    
+    def _has_citations(self, answer: str) -> bool:
+        """Check if answer has citations."""
+        citation_patterns = ['[', ']', 'source:', 'reference:', 'according to']
+        return any(pattern in answer.lower() for pattern in citation_patterns)
+    
+    def get_rag_metrics(self) -> Dict[str, Any]:
+        """Get RAG evaluation metrics."""
+        metrics = self.rag_metrics
+        
+        return {
+            'total_queries': metrics['total_queries'],
+            'avg_retrieval_precision': statistics.mean(metrics['precision_scores']) if metrics['precision_scores'] else 0,
+            'avg_retrieval_recall': statistics.mean(metrics['recall_scores']) if metrics['recall_scores'] else 0,
+            'avg_faithfulness': statistics.mean(metrics['faithfulness_scores']) if metrics['faithfulness_scores'] else 0,
+            'avg_groundedness': statistics.mean(metrics['groundedness_scores']) if metrics['groundedness_scores'] else 0
+        }
+
+
+# =============================================================================
+# Autonomy & Planning Evaluations
+# =============================================================================
+
+class AutonomyEvaluator:
+    """
+    Autonomy & Planning Evaluation system.
+    
+    Evaluates agent planning quality, self-correction, and autonomy level.
+    """
+    
+    def __init__(self):
+        self.planning_evaluations: List[Dict[str, Any]] = []
+        self.autonomy_metrics: Dict[str, Any] = {
+            'total_plans': 0,
+            'replanning_count': 0,
+            'human_interventions': 0,
+            'autonomous_completions': 0,
+            'goal_drift_incidents': 0,
+            'plan_optimality_scores': []
+        }
+    
+    def evaluate_plan(self,
+                     goal: str,
+                     plan_steps: List[str],
+                     optimal_steps: List[str] = None,
+                     replanned: bool = False,
+                     human_intervention: bool = False,
+                     goal_achieved: bool = True,
+                     metadata: Dict[str, Any] = None) -> Dict[str, Any]:
+        """Evaluate planning quality."""
+        evaluation = {
+            'id': str(uuid.uuid4()),
+            'goal': goal,
+            'num_steps': len(plan_steps),
+            'replanned': replanned,
+            'human_intervention': human_intervention,
+            'goal_achieved': goal_achieved,
+            'timestamp': time.time()
+        }
+        
+        # Plan optimality
+        if optimal_steps:
+            optimality = self._calculate_plan_optimality(plan_steps, optimal_steps)
+            evaluation['optimality'] = optimality
+            self.autonomy_metrics['plan_optimality_scores'].append(optimality)
+        
+        # Autonomy score
+        autonomy_score = 1.0
+        if human_intervention:
+            autonomy_score -= 0.5
+        if replanned:
+            autonomy_score -= 0.2
+        if not goal_achieved:
+            autonomy_score -= 0.3
+        evaluation['autonomy_score'] = max(0, autonomy_score)
+        
+        self.planning_evaluations.append(evaluation)
+        
+        # Update metrics
+        self.autonomy_metrics['total_plans'] += 1
+        if replanned:
+            self.autonomy_metrics['replanning_count'] += 1
+        if human_intervention:
+            self.autonomy_metrics['human_interventions'] += 1
+        else:
+            self.autonomy_metrics['autonomous_completions'] += 1
+        if not goal_achieved:
+            self.autonomy_metrics['goal_drift_incidents'] += 1
+        
+        return evaluation
+    
+    def _calculate_plan_optimality(self, actual_steps: List[str], optimal_steps: List[str]) -> float:
+        """Calculate plan optimality."""
+        if not optimal_steps:
+            return 1.0
+        
+        # Simple metric: ratio of optimal to actual steps
+        return len(optimal_steps) / max(len(actual_steps), 1)
+    
+    def get_autonomy_metrics(self) -> Dict[str, Any]:
+        """Get autonomy evaluation metrics."""
+        metrics = self.autonomy_metrics
+        total = metrics['total_plans']
+        
+        return {
+            'total_plans': total,
+            'replanning_rate': metrics['replanning_count'] / total if total else 0,
+            'human_intervention_rate': metrics['human_interventions'] / total if total else 0,
+            'autonomous_completion_rate': metrics['autonomous_completions'] / total if total else 0,
+            'goal_drift_rate': metrics['goal_drift_incidents'] / total if total else 0,
+            'avg_plan_optimality': statistics.mean(metrics['plan_optimality_scores']) if metrics['plan_optimality_scores'] else 0
+        }
+
+
+# =============================================================================
+# Performance & Scalability Evaluations
+# =============================================================================
+
+class PerformanceEvaluator:
+    """
+    Performance & Scalability Evaluation system.
+    
+    Tracks latency, throughput, and stability metrics.
+    """
+    
+    def __init__(self):
+        self.performance_data: List[Dict[str, Any]] = []
+        self.latencies: List[float] = []
+        self.failure_count: int = 0
+        self.total_requests: int = 0
+    
+    def record_request(self,
+                      request_id: str,
+                      latency_ms: float,
+                      success: bool,
+                      concurrent_requests: int = 1,
+                      metadata: Dict[str, Any] = None):
+        """Record request performance."""
+        record = {
+            'request_id': request_id,
+            'latency_ms': latency_ms,
+            'success': success,
+            'concurrent_requests': concurrent_requests,
+            'metadata': metadata or {},
+            'timestamp': time.time()
+        }
+        
+        self.performance_data.append(record)
+        self.latencies.append(latency_ms)
+        self.total_requests += 1
+        
+        if not success:
+            self.failure_count += 1
+    
+    def get_performance_metrics(self) -> Dict[str, Any]:
+        """Get performance metrics."""
+        if not self.latencies:
+            return {'error': 'No data'}
+        
+        sorted_latencies = sorted(self.latencies)
+        
+        return {
+            'total_requests': self.total_requests,
+            'failure_rate': self.failure_count / self.total_requests if self.total_requests else 0,
+            'latency_mean_ms': statistics.mean(self.latencies),
+            'latency_p50_ms': sorted_latencies[len(sorted_latencies) // 2],
+            'latency_p95_ms': sorted_latencies[int(len(sorted_latencies) * 0.95)],
+            'latency_p99_ms': sorted_latencies[int(len(sorted_latencies) * 0.99)],
+            'latency_max_ms': max(self.latencies)
+        }
+
+
+# =============================================================================
+# Human-in-the-Loop (HITL) Evaluations
+# =============================================================================
+
+class HITLEvaluator:
+    """
+    Human-in-the-Loop (HITL) Evaluation system.
+    
+    Evaluates agent-human collaboration quality.
+    """
+    
+    def __init__(self):
+        self.hitl_interactions: List[Dict[str, Any]] = []
+        self.hitl_metrics: Dict[str, Any] = {
+            'total_escalations': 0,
+            'accepted_recommendations': 0,
+            'overridden_decisions': 0,
+            'review_times': [],
+            'trust_scores': []
+        }
+    
+    def record_escalation(self,
+                         agent_recommendation: str,
+                         human_accepted: bool,
+                         review_time_seconds: float = None,
+                         trust_score: float = None,
+                         metadata: Dict[str, Any] = None) -> Dict[str, Any]:
+        """Record human-in-the-loop interaction."""
+        interaction = {
+            'id': str(uuid.uuid4()),
+            'recommendation': agent_recommendation,
+            'accepted': human_accepted,
+            'review_time_seconds': review_time_seconds,
+            'trust_score': trust_score,
+            'metadata': metadata or {},
+            'timestamp': time.time()
+        }
+        
+        self.hitl_interactions.append(interaction)
+        
+        # Update metrics
+        self.hitl_metrics['total_escalations'] += 1
+        if human_accepted:
+            self.hitl_metrics['accepted_recommendations'] += 1
+        else:
+            self.hitl_metrics['overridden_decisions'] += 1
+        
+        if review_time_seconds:
+            self.hitl_metrics['review_times'].append(review_time_seconds)
+        
+        if trust_score:
+            self.hitl_metrics['trust_scores'].append(trust_score)
+        
+        return interaction
+    
+    def get_hitl_metrics(self) -> Dict[str, Any]:
+        """Get HITL evaluation metrics."""
+        metrics = self.hitl_metrics
+        total = metrics['total_escalations']
+        
+        return {
+            'total_escalations': total,
+            'acceptance_rate': metrics['accepted_recommendations'] / total if total else 0,
+            'override_rate': metrics['overridden_decisions'] / total if total else 0,
+            'avg_review_time_seconds': statistics.mean(metrics['review_times']) if metrics['review_times'] else 0,
+            'avg_trust_score': statistics.mean(metrics['trust_scores']) if metrics['trust_scores'] else 0
+        }
+
+
+# =============================================================================
+# Business & Outcome Evaluations
+# =============================================================================
+
+class BusinessOutcomeEvaluator:
+    """
+    Business & Outcome Evaluation system.
+    
+    Tracks real-world business impact and value creation.
+    """
+    
+    def __init__(self):
+        self.outcome_metrics: Dict[str, List[float]] = defaultdict(list)
+        self.baseline_metrics: Dict[str, float] = {}
+    
+    def set_baseline(self, metric_name: str, baseline_value: float):
+        """Set baseline metric for comparison."""
+        self.baseline_metrics[metric_name] = baseline_value
+    
+    def record_outcome(self,
+                      metric_name: str,
+                      value: float,
+                      metadata: Dict[str, Any] = None):
+        """Record business outcome metric."""
+        self.outcome_metrics[metric_name].append(value)
+    
+    def get_business_impact(self) -> Dict[str, Any]:
+        """Get business impact analysis."""
+        impact = {}
+        
+        for metric_name, values in self.outcome_metrics.items():
+            if not values:
+                continue
+            
+            current_avg = statistics.mean(values)
+            
+            metric_impact = {
+                'current': current_avg,
+                'samples': len(values)
+            }
+            
+            # Compare to baseline if available
+            if metric_name in self.baseline_metrics:
+                baseline = self.baseline_metrics[metric_name]
+                improvement = ((current_avg - baseline) / baseline * 100) if baseline else 0
+                
+                metric_impact['baseline'] = baseline
+                metric_impact['improvement_pct'] = improvement
+            
+            impact[metric_name] = metric_impact
+        
+        return impact
+    
+    def calculate_roi(self,
+                     cost: float,
+                     benefit: float,
+                     time_period_days: int = 30) -> Dict[str, Any]:
+        """Calculate return on investment."""
+        roi = ((benefit - cost) / cost * 100) if cost > 0 else 0
+        
+        return {
+            'cost': cost,
+            'benefit': benefit,
+            'roi_percent': roi,
+            'time_period_days': time_period_days,
+            'daily_benefit': benefit / time_period_days if time_period_days else 0
+        }

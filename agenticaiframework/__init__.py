@@ -67,7 +67,18 @@ from .evaluation_advanced import (
     SecurityRiskScorer,
     ABTestingFramework,
     EvaluationType,
-    EvaluationResult
+    EvaluationResult,
+    # New comprehensive evaluation types
+    ModelQualityEvaluator,
+    TaskEvaluator,
+    ToolInvocationEvaluator,
+    WorkflowEvaluator,
+    MemoryEvaluator,
+    RAGEvaluator,
+    AutonomyEvaluator,
+    PerformanceEvaluator,
+    HITLEvaluator,
+    BusinessOutcomeEvaluator
 )
 
 # Enterprise: Prompt Versioning
@@ -255,6 +266,17 @@ __all__ = [
     "ABTestingFramework",
     "EvaluationType",
     "EvaluationResult",
+    # Comprehensive evaluation types (12 evaluation categories)
+    "ModelQualityEvaluator",
+    "TaskEvaluator",
+    "ToolInvocationEvaluator",
+    "WorkflowEvaluator",
+    "MemoryEvaluator",
+    "RAGEvaluator",
+    "AutonomyEvaluator",
+    "PerformanceEvaluator",
+    "HITLEvaluator",
+    "BusinessOutcomeEvaluator",
     
     # ========================================================================
     # Enterprise: Prompt Versioning
