@@ -266,17 +266,19 @@ __all__ = [
     "ABTestingFramework",
     "EvaluationType",
     "EvaluationResult",
-    # Comprehensive evaluation types (12 evaluation categories)
-    "ModelQualityEvaluator",
-    "TaskEvaluator",
-    "ToolInvocationEvaluator",
-    "WorkflowEvaluator",
-    "MemoryEvaluator",
-    "RAGEvaluator",
-    "AutonomyEvaluator",
-    "PerformanceEvaluator",
-    "HITLEvaluator",
-    "BusinessOutcomeEvaluator",
+    # Comprehensive 12-Tier Evaluation Framework
+    "ModelQualityEvaluator",           # Level 1: Model-level quality assessment
+    "TaskEvaluator",                   # Level 2: Task/skill-level evaluation
+    "ToolInvocationEvaluator",         # Level 3: Tool & API invocation tracking
+    "WorkflowEvaluator",               # Level 4: Workflow orchestration
+    "MemoryEvaluator",                 # Level 5: Memory & context evaluation
+    "RAGEvaluator",                    # Level 6: RAG (Retrieval-Augmented Generation)
+    "AutonomyEvaluator",               # Level 7-8: Autonomy & planning
+    "PerformanceEvaluator",            # Level 9: Performance & scalability
+    "HITLEvaluator",                   # Level 11: Human-in-the-loop
+    "BusinessOutcomeEvaluator",        # Level 12: Business outcomes & ROI
+    # Supporting evaluation classes
+    "CanaryDeploymentManager",
     
     # ========================================================================
     # Enterprise: Prompt Versioning
