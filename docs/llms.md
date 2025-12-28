@@ -6,10 +6,49 @@ tags:
   - AI
 ---
 
-# LLMs Module
+# 🧠 LLMs Module
 
-## Overview
-The `llms` module in the AgenticAI Framework provides enterprise-grade integration with Large Language Models (LLMs) featuring reliability patterns, monitoring, and intelligent fallback mechanisms. It abstracts away the complexity of model management while providing advanced features like circuit breakers, retry logic, response caching, and performance tracking.
+<div class="annotate" markdown>
+
+**Enterprise-grade LLM integration with reliability patterns**
+
+Connect to 10+ LLM providers with intelligent fallbacks and monitoring
+
+</div>
+
+## 🎯 Quick Navigation
+
+<div class="grid cards" markdown>
+
+-   :material-robot:{ .lg } **Supported Models**
+    
+    OpenAI, Anthropic, Azure, and more
+    
+    [:octicons-arrow-right-24: View Models](#supported-models)
+
+-   :material-shield-check:{ .lg } **Reliability**
+    
+    Circuit breakers and retry logic
+    
+    [:octicons-arrow-right-24: Learn More](#reliability-patterns)
+
+-   :material-cached:{ .lg } **Caching**
+    
+    Response caching for performance
+    
+    [:octicons-arrow-right-24: Configure](#caching)
+
+-   :material-book-open:{ .lg } **Examples**
+    
+    Integration patterns
+    
+    [:octicons-arrow-right-24: View Examples](#examples)
+
+</div>
+
+## 📖 Overview
+
+The `llms` module provides enterprise-grade integration with Large Language Models (LLMs) featuring reliability patterns, monitoring, and intelligent fallback mechanisms. It abstracts away the complexity of model management while providing advanced features like circuit breakers, retry logic, response caching, and performance tracking.
 
 
 ## :art: High-Level Design (HLD)

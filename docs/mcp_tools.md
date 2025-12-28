@@ -6,10 +6,100 @@ tags:
   - protocol
 ---
 
-# MCP Tools Module
+# 🔧 MCP Tools Module
 
-## Overview
-The `mcp_tools` module in the AgenticAI Framework provides integration with Model Context Protocol (MCP) tools, enabling AI agents to interact with external systems, APIs, and resources in a standardized way. It allows developers to extend agent capabilities by adding custom tools that can be invoked dynamically.
+<div class="annotate" markdown>
+
+**Model Context Protocol integration for external systems**
+
+Extend agent capabilities with standardized tool interfaces
+
+</div>
+
+## 🎯 Quick Navigation
+
+<div class="grid cards" markdown>
+
+-   :material-toolbox:{ .lg } **Tool Registry**
+    
+    Register and manage tools
+    
+    [:octicons-arrow-right-24: Learn More](#tool-registry)
+
+-   :material-creation:{ .lg } **Create Tools**
+    
+    Build custom MCP tools
+    
+    [:octicons-arrow-right-24: Create](#creating-tools)
+
+-   :material-api:{ .lg } **Integrations**
+    
+    Connect to external APIs
+    
+    [:octicons-arrow-right-24: Integrate](#integrations)
+
+-   :material-book-open:{ .lg } **Examples**
+    
+    Tool implementation patterns
+    
+    [:octicons-arrow-right-24: View Examples](#examples)
+
+</div>
+
+## 📖 Overview
+
+!!! abstract "What is MCP?"
+    
+    Model Context Protocol (MCP) provides a standardized way for AI agents to interact with external systems, APIs, and resources. The MCP Tools module enables dynamic tool discovery and execution.
+
+<div class="grid" markdown>
+
+:material-puzzle:{ .lg } **Tool Definition**
+:   Create reusable tool interfaces
+
+:material-database:{ .lg } **Tool Registry**
+:   Centralized tool management
+
+:material-play:{ .lg } **Dynamic Execution**
+:   Runtime tool invocation
+
+:material-shield-check:{ .lg } **Validation**
+:   Input/output validation
+
+</div>
+
+## 🏛️ MCP Architecture
+
+```mermaid
+graph TB
+    subgraph "Agents"
+        A1[Agent 1]
+        A2[Agent 2]
+        AN[Agent N]
+    end
+    
+    subgraph "MCP Layer"
+        REG[Tool Registry<br/>📚 Registry]
+        EXE[Tool Executor<br/>▶️ Executor]
+        VAL[Validator<br/>✔️ Validator]
+    end
+    
+    subgraph "External Tools"
+        API[APIs<br/>🌐 Weather, News]
+        DB[Databases<br/>📦 SQL, NoSQL]
+        SYS[System<br/>💻 File, Process]
+        CUSTOM[Custom Tools<br/>🔧 Domain-Specific]
+    end
+    
+    A1 & A2 & AN --> REG
+    REG --> EXE
+    EXE --> VAL
+    VAL --> API & DB & SYS & CUSTOM
+    
+    style REG fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    style EXE fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style VAL fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+```
 
 ## Key Classes and Functions
 - **MCPTool** — Base class for defining a new MCP tool.

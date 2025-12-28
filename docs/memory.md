@@ -6,11 +6,47 @@ tags:
   - retrieval
 ---
 
-# Memory Module
+# 💾 Memory Module
 
-The Memory module provides sophisticated memory management capabilities for AI agents, enabling them to store, retrieve, and organize information across different time scales and contexts. This module supports various memory types, persistence mechanisms, and intelligent retrieval strategies.
+<div class="annotate" markdown>
 
-## Overview
+**Sophisticated memory management for intelligent agents**
+
+Store, retrieve, and organize information across time and context
+
+</div>
+
+## 🎯 Quick Navigation
+
+<div class="grid cards" markdown>
+
+-   :material-memory:{ .lg } **Memory Types**
+    
+    Short-term and long-term storage
+    
+    [:octicons-arrow-right-24: Learn More](#memory-types)
+
+-   :material-database:{ .lg } **Storage Backends**
+    
+    Redis, PostgreSQL, Vector DBs
+    
+    [:octicons-arrow-right-24: Configure](#storage-backends)
+
+-   :material-magnify:{ .lg } **Retrieval**
+    
+    Semantic search and filtering
+    
+    [:octicons-arrow-right-24: Retrieve](#retrieval-strategies)
+
+-   :material-code-tags:{ .lg } **Examples**
+    
+    Implementation patterns
+    
+    [:octicons-arrow-right-24: View Examples](#examples)
+
+</div>
+
+## 📖 Overview
 
 The Memory module enables agents to:
 

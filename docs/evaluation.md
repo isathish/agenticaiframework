@@ -6,17 +6,51 @@ tags:
   - quality-assurance
 ---
 
-# Evaluation Framework
+# 📊 Evaluation Framework
 
-Complete guide to the AgenticAI Framework evaluation system, providing comprehensive assessment capabilities from model-level intelligence to business outcomes.
+<div class="annotate" markdown>
 
+**Comprehensive 12-tier evaluation system**
 
-## Overview
+Assess model quality, performance, safety, and business outcomes
 
-The AgenticAI Framework includes a **comprehensive 12-tier evaluation system** covering every aspect of agentic AI applications.
+</div>
 
-!!! info "Complete Evaluation Framework"
-    This documentation provides the full implementation guide for the evaluation system. For additional implementation details, see the [Testing Guide](TESTING.md).
+## 🎯 Quick Navigation
+
+<div class="grid cards" markdown>
+
+-   :material-brain:{ .lg } **Model Quality**
+    
+    LLM hallucination and reasoning
+    
+    [:octicons-arrow-right-24: Evaluate](#model-quality-evaluation)
+
+-   :material-speedometer:{ .lg } **Performance**
+    
+    Latency and throughput metrics
+    
+    [:octicons-arrow-right-24: Monitor](#performance-evaluation)
+
+-   :material-shield-check:{ .lg } **Safety**
+    
+    Guardrails and compliance
+    
+    [:octicons-arrow-right-24: Assess](#safety-evaluation)
+
+-   :material-chart-line:{ .lg } **Business**
+    
+    ROI and impact metrics
+    
+    [:octicons-arrow-right-24: Measure](#business-outcomes)
+
+</div>
+
+## 📖 Overview
+
+!!! abstract "12-Tier Evaluation System"
+    
+    The AgenticAI Framework includes a comprehensive 12-tier evaluation system covering every aspect of agentic AI applications - from model-level intelligence to business outcomes.
 
 <div class="grid cards" markdown>
 

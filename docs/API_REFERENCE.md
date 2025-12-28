@@ -6,9 +6,57 @@ tags:
   - modules
 ---
 
-# API Reference
+# 📖 API Reference
 
-Complete API reference for the AgenticAI Framework.
+<div class="annotate" markdown>
+
+**Complete API documentation for all modules**
+
+Detailed reference for classes, methods, and functions
+
+</div>
+
+## 🎯 Quick Navigation
+
+<div class="grid cards" markdown>
+
+-   :material-robot:{ .lg } **Agents**
+    
+    Agent classes and methods
+    
+    [:octicons-arrow-right-24: View](#agenticaiframeworkagents)
+
+-   :material-checkbox-marked:{ .lg } **Tasks**
+    
+    Task management API
+    
+    [:octicons-arrow-right-24: View](#agenticaiframeworktasks)
+
+-   :material-memory:{ .lg } **Memory**
+    
+    Memory system API
+    
+    [:octicons-arrow-right-24: View](#agenticaiframeworkmemory)
+
+-   :material-brain:{ .lg } **LLMs**
+    
+    LLM integration API
+    
+    [:octicons-arrow-right-24: View](#agenticaiframeworkllms)
+
+-   :material-shield-check:{ .lg } **Guardrails**
+    
+    Safety and validation API
+    
+    [:octicons-arrow-right-24: View](#agenticaiframeworkguardrails)
+
+-   :material-database:{ .lg } **Knowledge**
+    
+    Knowledge base API
+    
+    [:octicons-arrow-right-24: View](#agenticaiframeworkknowledge)
+
+</div>
 
 
 ## Module Overview

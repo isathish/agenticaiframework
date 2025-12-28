@@ -6,14 +6,45 @@ tags:
   - scheduling
 ---
 
-# :material-checkbox-marked-circle: Tasks Module
+# ✅ Tasks Module
 
 <div class="annotate" markdown>
 
-The Tasks module provides a comprehensive framework for defining, scheduling, and executing work units within the AgenticAI Framework. It enables sophisticated workflow management, task coordination, and progress tracking for AI agents.
+**Comprehensive task orchestration and workflow management**
+
+Define, schedule, and execute work units with precision
 
 </div>
 
+## 🎯 Quick Navigation
+
+<div class="grid cards" markdown>
+
+-   :material-rocket-launch:{ .lg } **Quick Start**
+    
+    Create your first task
+    
+    [:octicons-arrow-right-24: Get Started](#creating-a-task)
+
+-   :material-cog:{ .lg } **Configuration**
+    
+    Task settings and options
+    
+    [:octicons-arrow-right-24: Configure](#task-configuration)
+
+-   :material-chart-line:{ .lg } **Execution**
+    
+    Run and monitor tasks
+    
+    [:octicons-arrow-right-24: Execute](#task-execution)
+
+-   :material-book-open:{ .lg } **Examples**
+    
+    Real-world patterns
+    
+    [:octicons-arrow-right-24: View Examples](#examples)
+
+</div>
 
 ## :sparkles: Overview
 

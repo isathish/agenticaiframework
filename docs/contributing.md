@@ -8,6 +8,44 @@ tags:
 
 # 🤝 Contributing to AgenticAI Framework
 
+<div class="annotate" markdown>
+
+**Join our community of contributors**
+
+Help us build the future of AI agent frameworks
+
+</div>
+
+## 🎯 Quick Navigation
+
+<div class="grid cards" markdown>
+
+-   :material-bug:{ .lg } **Report Bugs**
+    
+    Found an issue? Let us know
+    
+    [:octicons-arrow-right-24: Report](#report-bugs)
+
+-   :material-lightbulb:{ .lg } **Suggest Features**
+    
+    Have an idea? Share it
+    
+    [:octicons-arrow-right-24: Suggest](#suggest-features)
+
+-   :material-code-braces:{ .lg } **Submit Code**
+    
+    Contribute code changes
+    
+    [:octicons-arrow-right-24: Contribute](#pull-request-process)
+
+-   :material-book-edit:{ .lg } **Improve Docs**
+    
+    Enhance documentation
+    
+    [:octicons-arrow-right-24: Write](#improve-documentation)
+
+</div>
+
 <div align="center">
 
 [![Contributors](https://img.shields.io/github/contributors/isathish/agenticaiframework)](https://github.com/isathish/agenticaiframework/graphs/contributors)

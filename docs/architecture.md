@@ -6,14 +6,45 @@ tags:
   - system-design
 ---
 
-# :building_construction: Architecture Guide
+# 🏛️ Architecture Guide
 
 <div class="annotate" markdown>
 
-Comprehensive architectural overview of AgenticAI Framework with High-Level Design (HLD) and Low-Level Design (LLD) diagrams.
+**Comprehensive architectural overview**
+
+Understand the design and structure of AgenticAI Framework
 
 </div>
 
+## 🎯 Quick Navigation
+
+<div class="grid cards" markdown>
+
+-   :material-layers:{ .lg } **System Layers**
+    
+    5-layer architecture
+    
+    [:octicons-arrow-right-24: Explore](#high-level-design-hld)
+
+-   :material-vector-triangle:{ .lg } **Components**
+    
+    Core building blocks
+    
+    [:octicons-arrow-right-24: View](#core-components)
+
+-   :material-chart-timeline:{ .lg } **Data Flow**
+    
+    Request lifecycle
+    
+    [:octicons-arrow-right-24: Understand](#data-flow)
+
+-   :material-chart-box:{ .lg } **Diagrams**
+    
+    Visual architecture
+    
+    [:octicons-arrow-right-24: View All](diagrams.md)
+
+</div>
 
 ## :sparkles: Overview
 

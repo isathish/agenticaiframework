@@ -8,11 +8,41 @@ tags:
 
 # ❓ Frequently Asked Questions (FAQ)
 
-<div align="center">
+<div class="annotate" markdown>
 
-[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](https://github.com/isathish/agenticaiframework)
-[![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://isathish.github.io/agenticaiframework/)
-[![Community](https://img.shields.io/badge/Community-Active-success.svg)](https://github.com/isathish/agenticaiframework/discussions)
+**Quick answers to common questions**
+
+Find solutions and learn best practices
+
+</div>
+
+## 🎯 Quick Navigation
+
+<div class="grid cards" markdown>
+
+-   :material-information:{ .lg } **General**
+    
+    About the framework
+    
+    [:octicons-arrow-right-24: Learn More](#general-questions)
+
+-   :material-rocket-launch:{ .lg } **Getting Started**
+    
+    Installation and setup
+    
+    [:octicons-arrow-right-24: Get Started](#getting-started)
+
+-   :material-bug:{ .lg } **Troubleshooting**
+    
+    Common issues and fixes
+    
+    [:octicons-arrow-right-24: Fix Issues](#troubleshooting)
+
+-   :material-code-tags:{ .lg } **Usage**
+    
+    How-to questions
+    
+    [:octicons-arrow-right-24: Learn How](#usage-questions)
 
 </div>
 

@@ -8,11 +8,41 @@ tags:
 
 # 🔌 Integration Patterns
 
-<div align="center">
+<div class="annotate" markdown>
 
-[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](https://github.com/isathish/agenticaiframework)
-[![Integrations](https://img.shields.io/badge/Integrations-Ready-success.svg)](https://github.com/isathish/agenticaiframework)
-[![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://isathish.github.io/agenticaiframework/)
+**Connect to external systems and services**
+
+Comprehensive integration guide for APIs, databases, and message queues
+
+</div>
+
+## 🎯 Quick Navigation
+
+<div class="grid cards" markdown>
+
+-   :material-api:{ .lg } **REST APIs**
+    
+    HTTP/REST integration patterns
+    
+    [:octicons-arrow-right-24: Integrate](#rest-api-integration)
+
+-   :material-database:{ .lg } **Databases**
+    
+    SQL and NoSQL connections
+    
+    [:octicons-arrow-right-24: Connect](#database-integration)
+
+-   :material-message:{ .lg } **Message Queues**
+    
+    Kafka, RabbitMQ integration
+    
+    [:octicons-arrow-right-24: Setup](#message-queue-integration)
+
+-   :material-cloud:{ .lg } **Cloud Services**
+    
+    AWS, Azure, GCP integration
+    
+    [:octicons-arrow-right-24: Deploy](#cloud-integration)
 
 </div>
 

@@ -8,11 +8,41 @@ tags:
 
 # 💬 Communication Module
 
-<div align="center">
+<div class="annotate" markdown>
 
-[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](https://github.com/isathish/agenticaiframework)
-[![Communication](https://img.shields.io/badge/Communication-Multi--Protocol-success.svg)](https://github.com/isathish/agenticaiframework)
-[![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://isathish.github.io/agenticaiframework/)
+**Flexible messaging system for agent-to-agent communication**
+
+Multiple protocols and communication patterns
+
+</div>
+
+## 🎯 Quick Navigation
+
+<div class="grid cards" markdown>
+
+-   :material-message:{ .lg } **Messaging**
+    
+    Point-to-point communication
+    
+    [:octicons-arrow-right-24: Learn More](#point-to-point)
+
+-   :material-broadcast:{ .lg } **Pub/Sub**
+    
+    Topic-based messaging
+    
+    [:octicons-arrow-right-24: Configure](#publish-subscribe)
+
+-   :material-swap-horizontal:{ .lg } **Request/Reply**
+    
+    Synchronous communication
+    
+    [:octicons-arrow-right-24: Implement](#request-reply)
+
+-   :material-book-open:{ .lg } **Examples**
+    
+    Communication patterns
+    
+    [:octicons-arrow-right-24: View Examples](#examples)
 
 </div>
 

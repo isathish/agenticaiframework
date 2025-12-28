@@ -6,14 +6,45 @@ tags:
   - guide
 ---
 
-# :rocket: Quick Start Guide
+# 🚀 Quick Start Guide
 
 <div class="annotate" markdown>
 
-Get up and running with AgenticAI Framework in just **5 minutes**! This guide will walk you through creating your first intelligent agent.
+**Get started in 5 minutes**
+
+Create your first intelligent agent
 
 </div>
 
+## 🎯 Quick Navigation
+
+<div class="grid cards" markdown>
+
+-   :material-download:{ .lg } **Install**
+    
+    Set up the framework
+    
+    [:octicons-arrow-right-24: Install](#installation)
+
+-   :material-rocket-launch:{ .lg } **First Agent**
+    
+    Create your first agent
+    
+    [:octicons-arrow-right-24: Create](#your-first-agent)
+
+-   :material-cog:{ .lg } **Configuration**
+    
+    Configure your setup
+    
+    [:octicons-arrow-right-24: Configure](#configuration)
+
+-   :material-book-open:{ .lg } **Next Steps**
+    
+    What to learn next
+    
+    [:octicons-arrow-right-24: Continue](#next-steps)
+
+</div>
 
 ## :clipboard: Prerequisites
 

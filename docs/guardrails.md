@@ -6,11 +6,67 @@ tags:
   - compliance
 ---
 
-# Guardrails Module
+# 🛡️ Guardrails Module
 
-## Overview
+<div class="annotate" markdown>
 
-The `guardrails` module in the AgenticAI Framework enforces safety, compliance, and quality constraints on AI-generated outputs. It ensures that responses adhere to predefined rules, ethical guidelines, and domain-specific requirements before being delivered to the end user.
+**Enforce safety, compliance, and quality constraints**
+
+Protect your AI applications with intelligent validation and content moderation
+
+</div>
+
+## 🎯 Quick Navigation
+
+<div class="grid cards" markdown>
+
+-   :material-shield-check:{ .lg } **Safety Rules**
+    
+    Content moderation and filtering
+    
+    [:octicons-arrow-right-24: Configure](#safety-guardrails)
+
+-   :material-scale-balance:{ .lg } **Compliance**
+    
+    Regulatory and policy checks
+    
+    [:octicons-arrow-right-24: Learn More](#compliance-guardrails)
+
+-   :material-quality-high:{ .lg } **Quality**
+    
+    Output validation and scoring
+    
+    [:octicons-arrow-right-24: Validate](#quality-guardrails)
+
+-   :material-book-open:{ .lg } **Examples**
+    
+    Implementation patterns
+    
+    [:octicons-arrow-right-24: View Examples](#examples)
+
+</div>
+
+## 📖 Overview
+
+!!! abstract "What are Guardrails?"
+    
+    Guardrails enforce safety, compliance, and quality constraints on AI-generated outputs, ensuring responses adhere to predefined rules, ethical guidelines, and domain-specific requirements.
+
+<div class="grid" markdown>
+
+:material-shield-alert:{ .lg } **Input Validation**
+:   Check user inputs before processing
+
+:material-filter:{ .lg } **Content Filtering**
+:   Remove harmful or inappropriate content
+
+:material-gavel:{ .lg } **Policy Enforcement**
+:   Ensure compliance with regulations
+
+:material-check-circle:{ .lg } **Output Verification**
+:   Validate AI responses before delivery
+
+</div>
 
 ## Core Components
 

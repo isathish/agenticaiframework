@@ -6,14 +6,45 @@ tags:
   - guide
 ---
 
-# :star: Best Practices Guide
+# ⭐ Best Practices Guide
 
 <div class="annotate" markdown>
 
-Production-ready patterns and expert recommendations for building scalable, reliable AI agent applications with AgenticAI Framework.
+**Production-ready patterns and expert recommendations**
+
+Build scalable, reliable AI agent applications
 
 </div>
 
+## 🎯 Quick Navigation
+
+<div class="grid cards" markdown>
+
+-   :material-eye:{ .lg } **Observability**
+    
+    Monitoring and logging patterns
+    
+    [:octicons-arrow-right-24: Learn More](#design-for-observability)
+
+-   :material-alert-circle:{ .lg } **Error Handling**
+    
+    Graceful failure management
+    
+    [:octicons-arrow-right-24: View Patterns](#implement-proper-error-handling)
+
+-   :material-speedometer:{ .lg } **Performance**
+    
+    Optimization techniques
+    
+    [:octicons-arrow-right-24: Optimize](#performance-optimization)
+
+-   :material-shield-check:{ .lg } **Security**
+    
+    Safety and compliance
+    
+    [:octicons-arrow-right-24: Secure](#security-best-practices)
+
+</div>
 
 ## :bulb: General Principles
 

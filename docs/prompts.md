@@ -5,11 +5,67 @@ tags:
   - prompt-engineering
 ---
 
-# Prompts Module
+# 📝 Prompts Module
 
-## Overview
+<div class="annotate" markdown>
 
-The `prompts` module in the AgenticAI Framework provides comprehensive prompt management with security features, version control, and safe rendering for Large Language Models (LLMs).
+**Comprehensive prompt management with security and versioning**
+
+Create, manage, and render safe prompts for LLMs
+
+</div>
+
+## 🎯 Quick Navigation
+
+<div class="grid cards" markdown>
+
+-   :material-file-document-edit:{ .lg } **Templates**
+    
+    Create reusable prompt templates
+    
+    [:octicons-arrow-right-24: Create](#prompt-templates)
+
+-   :material-shield-lock:{ .lg } **Security**
+    
+    Injection detection and sanitization
+    
+    [:octicons-arrow-right-24: Secure](#security-features)
+
+-   :material-source-branch:{ .lg } **Versioning**
+    
+    Track prompt versions
+    
+    [:octicons-arrow-right-24: Manage](#version-control)
+
+-   :material-book-open:{ .lg } **Examples**
+    
+    Prompt engineering patterns
+    
+    [:octicons-arrow-right-24: View Examples](#examples)
+
+</div>
+
+## 📖 Overview
+
+!!! abstract "What is the Prompts Module?"
+    
+    The Prompts module provides comprehensive prompt management with security features, version control, and safe rendering for Large Language Models (LLMs).
+
+<div class="grid" markdown>
+
+:material-code-braces:{ .lg } **Template Variables**
+:   Dynamic placeholder substitution
+
+:material-shield-alert:{ .lg } **Injection Prevention**
+:   Detect and block prompt injections
+
+:material-tag-multiple:{ .lg } **Metadata Support**
+:   Tags, descriptions, and versioning
+
+:material-history:{ .lg } **Version History**
+:   Track prompt changes over time
+
+</div>
 
 ## Core Components
 
