@@ -1264,6 +1264,98 @@ class ModelQualityEvaluator:
                 }
         
         return summary
+    
+    # Convenience methods for granular evaluation
+    def evaluate_hallucination(self, 
+                              text: str, 
+                              is_hallucination: bool, 
+                              confidence: float = 1.0) -> Dict[str, Any]:
+        """
+        Evaluate text for hallucination.
+        
+        Args:
+            text: The text to evaluate
+            is_hallucination: Whether the text is a hallucination
+            confidence: Confidence score (0-1)
+            
+        Returns:
+            Evaluation result dictionary
+        """
+        result = {
+            'text': text,
+            'is_hallucination': is_hallucination,
+            'confidence': confidence,
+            'timestamp': time.time()
+        }
+        return result
+    
+    def evaluate_reasoning(self,
+                          query: str,
+                          reasoning: str,
+                          answer: str,
+                          correct: bool) -> Dict[str, Any]:
+        """
+        Evaluate reasoning quality.
+        
+        Args:
+            query: The input query
+            reasoning: The reasoning process
+            answer: The final answer
+            correct: Whether the reasoning/answer is correct
+            
+        Returns:
+            Evaluation result dictionary
+        """
+        result = {
+            'query': query,
+            'reasoning': reasoning,
+            'answer': answer,
+            'correct': correct,
+            'timestamp': time.time()
+        }
+        return result
+    
+    def evaluate_token_efficiency(self,
+                                  response: str,
+                                  token_count: int,
+                                  quality_score: float) -> Dict[str, Any]:
+        """
+        Evaluate token efficiency.
+        
+        Args:
+            response: The model response
+            token_count: Number of tokens used
+            quality_score: Quality score of the response (0-1)
+            
+        Returns:
+            Evaluation result dictionary
+        """
+        result = {
+            'response': response,
+            'token_count': token_count,
+            'quality_score': quality_score,
+            'efficiency': quality_score / token_count if token_count > 0 else 0,
+            'timestamp': time.time()
+        }
+        return result
+    
+    def get_quality_metrics(self) -> Dict[str, Any]:
+        """
+        Get overall quality metrics across all models.
+        
+        Returns:
+            Aggregate metrics dictionary
+        """
+        all_metrics = {
+            'total_models': len(self.model_metrics),
+            'total_evaluations': sum(m['evaluations'] for m in self.model_metrics.values()),
+            'models': {}
+        }
+        
+        for model_name in self.model_metrics:
+            all_metrics['models'][model_name] = self.get_model_summary(model_name)
+        
+        return all_metrics
 
 
 # =============================================================================
@@ -1568,6 +1660,56 @@ class WorkflowEvaluator:
             }
         
         return summary
+    
+    # Convenience methods for easier API usage
+    def record_workflow_execution(self,
+                                  workflow_name: str,
+                                  success: bool = True,
+                                  deadlock: bool = False,
+                                  metadata: Dict[str, Any] = None) -> str:
+        """
+        Record a complete workflow execution (convenience wrapper).
+        
+        Args:
+            workflow_name: Name of the workflow
+            success: Whether the workflow completed successfully
+            deadlock: Whether the workflow encountered a deadlock
+            metadata: Additional metadata
+            
+        Returns:
+            Workflow ID
+        """
+        workflow_id = self.start_workflow(workflow_name)
+        if metadata:
+            self.record_step(workflow_id, "execution", success=success, metadata=metadata)
+        self.complete_workflow(workflow_id, success=success, deadlock=deadlock)
+        return workflow_id
+    
+    def record_agent_handoff(self,
+                            workflow_id: str,
+                            from_agent: str,
+                            to_agent: str,
+                            metadata: Dict[str, Any] = None):
+        """
+        Record an agent handoff in a workflow.
+        
+        Args:
+            workflow_id: ID of the workflow
+            from_agent: Name of the agent handing off
+            to_agent: Name of the agent receiving handoff
+            metadata: Additional metadata
+        """
+        handoff_metadata = metadata or {}
+        handoff_metadata['from_agent'] = from_agent
+        handoff_metadata['to_agent'] = to_agent
+        
+        self.record_step(
+            workflow_id,
+            step_name=f"handoff_{from_agent}_to_{to_agent}",
+            agent_name=to_agent,
+            success=True,
+            metadata=handoff_metadata
+        )
 
 
 # =============================================================================
@@ -1671,6 +1813,41 @@ class MemoryEvaluator:
             'avg_precision': statistics.mean(metrics['context_precision_scores']) if metrics['context_precision_scores'] else 0,
             'memory_errors': metrics['memory_overwrite_errors']
         }
+    
+    # Convenience methods for easier API usage
+    def evaluate_retrieval(self,
+                          query: str,
+                          retrieved_memories: List[Dict[str, Any]],
+                          relevant_memories: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Evaluate memory retrieval (alias for evaluate_memory_retrieval).
+        
+        Args:
+            query: The query used for retrieval
+            retrieved_memories: Memories retrieved by the system
+            relevant_memories: Ground truth relevant memories
+            
+        Returns:
+            Evaluation result dictionary
+        """
+        return self.evaluate_memory_retrieval(
+            query=query,
+            retrieved_items=retrieved_memories,
+            relevant_items=relevant_memories
+        )
+    
+    def record_stale_data_access(self, memory_data: Dict[str, Any]):
+        """
+        Record access to stale data.
+        
+        Args:
+            memory_data: The stale memory that was accessed
+        """
+        self.memory_metrics['stale_data_usage'] += 1
+    
+    def record_overwrite_error(self):
+        """Record a memory overwrite error."""
+        self.record_memory_error('overwrite')
 
 
 # =============================================================================
@@ -1801,6 +1978,97 @@ class RAGEvaluator:
             'avg_retrieval_recall': statistics.mean(metrics['recall_scores']) if metrics['recall_scores'] else 0,
             'avg_faithfulness': statistics.mean(metrics['faithfulness_scores']) if metrics['faithfulness_scores'] else 0,
             'avg_groundedness': statistics.mean(metrics['groundedness_scores']) if metrics['groundedness_scores'] else 0
+        }
+    
+    # Convenience methods for granular evaluation
+    def evaluate_retrieval(self,
+                          query: str,
+                          retrieved_docs: List[Dict[str, Any]],
+                          relevant_docs: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Evaluate retrieval quality.
+        
+        Args:
+            query: The search query
+            retrieved_docs: Documents retrieved by the system
+            relevant_docs: Ground truth relevant documents
+            
+        Returns:
+            Retrieval evaluation with precision and recall
+        """
+        precision = self._calculate_retrieval_precision(retrieved_docs, relevant_docs)
+        recall = self._calculate_retrieval_recall(retrieved_docs, relevant_docs)
+        
+        return {
+            'query': query,
+            'precision': precision,
+            'recall': recall,
+            'f1_score': 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0,
+            'num_retrieved': len(retrieved_docs),
+            'num_relevant': len(relevant_docs),
+            'timestamp': time.time()
+        }
+    
+    def evaluate_faithfulness(self,
+                             answer: str,
+                             retrieved_docs: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Evaluate answer faithfulness to retrieved documents.
+        
+        Args:
+            answer: The generated answer
+            retrieved_docs: The source documents
+            
+        Returns:
+            Faithfulness evaluation result
+        """
+        faithfulness = self._assess_faithfulness(answer, retrieved_docs)
+        
+        return {
+            'answer': answer,
+            'faithfulness_score': faithfulness,
+            'num_docs': len(retrieved_docs),
+            'timestamp': time.time()
+        }
+    
+    def evaluate_groundedness(self,
+                             answer: str,
+                             retrieved_docs: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Evaluate answer groundedness (lack of hallucination).
+        
+        Args:
+            answer: The generated answer
+            retrieved_docs: The source documents
+            
+        Returns:
+            Groundedness evaluation result
+        """
+        groundedness = self._assess_groundedness(answer, retrieved_docs)
+        
+        return {
+            'answer': answer,
+            'groundedness_score': groundedness,
+            'num_docs': len(retrieved_docs),
+            'timestamp': time.time()
+        }
+    
+    def check_citations(self, answer: str) -> Dict[str, Any]:
+        """
+        Check if answer contains citations.
+        
+        Args:
+            answer: The generated answer
+            
+        Returns:
+            Citation check result
+        """
+        has_citations = self._has_citations(answer)
+        
+        return {
+            'answer': answer,
+            'has_citations': has_citations,
+            'timestamp': time.time()
         }
 
 
@@ -1955,6 +2223,28 @@ class PerformanceEvaluator:
             'latency_p99_ms': sorted_latencies[int(len(sorted_latencies) * 0.99)],
             'latency_max_ms': max(self.latencies)
         }
+    
+    # Convenience method for easier API usage
+    def record_execution(self,
+                        execution_id: str,
+                        duration_ms: float,
+                        success: bool = True,
+                        metadata: Dict[str, Any] = None):
+        """
+        Record execution performance (alias for record_request).
+        
+        Args:
+            execution_id: Unique ID for the execution
+            duration_ms: Duration in milliseconds
+            success: Whether the execution succeeded
+            metadata: Additional metadata
+        """
+        self.record_request(
+            request_id=execution_id,
+            latency_ms=duration_ms,
+            success=success,
+            metadata=metadata
+        )
 
 
 # =============================================================================
