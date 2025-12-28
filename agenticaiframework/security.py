@@ -12,13 +12,15 @@ Provides comprehensive security features including:
 """
 
 import re
+import logging
 import time
-import hashlib
 import json
-from typing import Any, Dict, List, Optional, Callable, Set
+from typing import Any, Dict, List, Callable, Set
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime
 import uuid
+
+logger = logging.getLogger(__name__)
 
 
 class PromptInjectionDetector:
@@ -393,7 +395,7 @@ class AuditLogger:
     
     def export_logs(self, filepath: str):
         """Export logs to a JSON file."""
-        with open(filepath, 'w') as f:
+        with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(self.logs, f, indent=2)
             
     def clear_logs(self):

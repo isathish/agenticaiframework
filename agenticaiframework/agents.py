@@ -11,10 +11,14 @@ Provides:
 
 import uuid
 import time
-from typing import Any, Dict, List, Optional, Callable, Tuple
+import logging
+from typing import Any, Dict, List, Optional, Callable
 from collections import deque
 from datetime import datetime
-import json
+
+from .exceptions import AgentExecutionError  # noqa: F401 - exported for library users
+
+logger = logging.getLogger(__name__)
 
 
 class ContextManager:
@@ -260,9 +264,13 @@ class Agent:
             
             return result
             
-        except Exception as e:
+        except (TypeError, ValueError, KeyError, AttributeError) as e:
             self.performance_metrics['failed_tasks'] += 1
             self._log_error(f"Task execution failed: {str(e)}", e)
+            return None
+        except Exception as e:  # noqa: BLE001 - Catch-all for unknown errors
+            self.performance_metrics['failed_tasks'] += 1
+            self._log_error(f"Task execution failed with unexpected error: {str(e)}", e)
             return None
             
         finally:
@@ -308,7 +316,12 @@ class Agent:
 
     def _log(self, message: str):
         """Log a message."""
+        logger.info("[Agent:%s] %s", self.name, message)
         print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [Agent:{self.name}] {message}")
+    
+    def log(self, message: str):
+        """Public method to log a message."""
+        self._log(message)
 
 
 class AgentManager:
@@ -363,7 +376,7 @@ class AgentManager:
         """
         self.manager_metrics['total_broadcasts'] += 1
         for agent in self.agents.values():
-            agent._log(f"Broadcast message: {message}")
+            agent.log(f"Broadcast message: {message}")
             agent.add_context(f"Broadcast: {message}", importance=importance)
     
     def get_agent_by_name(self, name: str) -> Optional[Agent]:

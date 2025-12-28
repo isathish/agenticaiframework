@@ -11,10 +11,15 @@ Provides:
 """
 
 from typing import Dict, Any, List, Callable, Optional
+import logging
 import uuid
 import time
 from datetime import datetime
 from collections import defaultdict
+
+from .exceptions import GuardrailViolationError  # noqa: F401 - exported for library users
+
+logger = logging.getLogger(__name__)
 
 
 class Guardrail:
@@ -70,7 +75,7 @@ class Guardrail:
             
             return is_valid
             
-        except Exception as e:
+        except (TypeError, ValueError, AttributeError) as e:
             # Fail closed - treat exceptions as validation failures
             self.violation_count += 1
             self.last_violation = {
@@ -78,6 +83,16 @@ class Guardrail:
                 'error': str(e),
                 'severity': 'critical'
             }
+            logger.warning("Guardrail '%s' validation error: %s", self.name, e)
+            return False
+        except Exception as e:  # noqa: BLE001 - Fail closed for unknown errors
+            self.violation_count += 1
+            self.last_violation = {
+                'timestamp': datetime.now().isoformat(),
+                'error': str(e),
+                'severity': 'critical'
+            }
+            logger.exception("Unexpected error in guardrail '%s'", self.name)
             return False
     
     def get_stats(self) -> Dict[str, Any]:
@@ -203,8 +218,12 @@ class GuardrailManager:
                 if guardrail.id in self.remediation_actions:
                     try:
                         self.remediation_actions[guardrail.id](data, violation)
-                    except Exception as e:
+                    except (TypeError, ValueError, RuntimeError) as e:
                         self._log(f"Remediation action failed: {e}")
+                        logger.error("Remediation action failed for guardrail %s: %s", guardrail.id, e)
+                    except Exception as e:  # noqa: BLE001 - Log but continue for unknown errors
+                        self._log(f"Remediation action failed with unexpected error: {e}")
+                        logger.exception("Unexpected remediation error for guardrail %s", guardrail.id)
                 
                 # Fail fast if requested
                 if fail_fast:

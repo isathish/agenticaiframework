@@ -10,10 +10,15 @@ Provides:
 """
 
 from typing import Any, Dict, List, Optional
+import logging
 import uuid
 import time
 import re
 from datetime import datetime
+
+from .exceptions import PromptRenderError
+
+logger = logging.getLogger(__name__)
 
 
 class Prompt:
@@ -73,7 +78,10 @@ class Prompt:
         try:
             rendered = self.template.format(**kwargs)
         except KeyError as e:
-            raise ValueError(f"Missing required variable: {e}")
+            raise PromptRenderError(
+                message=f"Missing required variable: {e}",
+                missing_variable=str(e).strip("'")
+            ) from e
         
         # Add defensive prompting if requested
         if use_defensive and self.enable_security:
@@ -317,8 +325,15 @@ class PromptManager:
             
             return result
             
-        except Exception as e:
+        except PromptRenderError:
+            raise
+        except (TypeError, ValueError, KeyError) as e:
             self._log(f"Error rendering prompt {prompt_id}: {e}")
+            logger.warning("Prompt %s render failed: %s", prompt_id, e)
+            return None
+        except Exception as e:  # noqa: BLE001 - Log but don't crash
+            self._log(f"Unexpected error rendering prompt {prompt_id}: {e}")
+            logger.exception("Unexpected error rendering prompt %s", prompt_id)
             return None
     
     def scan_for_vulnerabilities(self) -> Dict[str, List[str]]:

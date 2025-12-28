@@ -1,5 +1,9 @@
 from typing import Callable, List
+from concurrent.futures import ThreadPoolExecutor
+import logging
 import time
+
+logger = logging.getLogger(__name__)
 
 
 class Process:
@@ -25,7 +29,6 @@ class Process:
             for task_callable, args, kwargs in self.tasks:
                 results.append(task_callable(*args, **kwargs))
         elif self.strategy == "parallel":
-            from concurrent.futures import ThreadPoolExecutor
             with ThreadPoolExecutor() as executor:
                 futures = [executor.submit(task_callable, *args, **kwargs) for task_callable, args, kwargs in self.tasks]
                 results = [f.result() for f in futures]
@@ -34,7 +37,6 @@ class Process:
             half = len(self.tasks) // 2
             for task_callable, args, kwargs in self.tasks[:half]:
                 results.append(task_callable(*args, **kwargs))
-            from concurrent.futures import ThreadPoolExecutor
             with ThreadPoolExecutor() as executor:
                 futures = [executor.submit(task_callable, *args, **kwargs) for task_callable, args, kwargs in self.tasks[half:]]
                 results.extend([f.result() for f in futures])

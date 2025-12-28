@@ -1,5 +1,8 @@
 from typing import Dict, Any
+import logging
 import time
+
+logger = logging.getLogger(__name__)
 
 
 class ConfigurationManager:

@@ -12,10 +12,14 @@ Provides:
 """
 
 from typing import Dict, Any, Callable, Optional, List
+import logging
 import time
-from datetime import datetime
 from collections import defaultdict
 import hashlib
+
+from .exceptions import CircuitBreakerOpenError, ModelInferenceError  # noqa: F401 - exported for library users
+
+logger = logging.getLogger(__name__)
 
 
 class CircuitBreaker:
@@ -39,7 +43,9 @@ class CircuitBreaker:
                 self.state = "half-open"
                 self.failure_count = 0
             else:
-                raise Exception("Circuit breaker is OPEN")
+                raise CircuitBreakerOpenError(
+                    recovery_timeout=self.recovery_timeout
+                )
         
         try:
             result = func(*args, **kwargs)
@@ -173,7 +179,7 @@ class LLMManager:
             cache_key = self._get_cache_key(prompt, kwargs)
             if cache_key in self.cache:
                 self.metrics['cache_hits'] += 1
-                self._log(f"Cache hit for prompt")
+                self._log("Cache hit for prompt")
                 return self.cache[cache_key]
         
         # Try active model with fallback chain
@@ -231,7 +237,11 @@ class LLMManager:
                 
                 return result
                 
-            except Exception as e:
+            except CircuitBreakerOpenError:
+                stats['failures'] += 1
+                self._log(f"Circuit breaker OPEN for model '{model_name}'")
+                return None
+            except (TypeError, ValueError, KeyError, AttributeError, RuntimeError) as e:
                 stats['failures'] += 1
                 self.metrics['total_retries'] += 1
                 
@@ -242,6 +252,12 @@ class LLMManager:
                     time.sleep(wait_time)
                 else:
                     self._log(f"All {self.max_retries} attempts failed for model '{model_name}': {e}")
+            except Exception as e:  # noqa: BLE001 - Catch-all for unknown inference errors
+                stats['failures'] += 1
+                self.metrics['total_retries'] += 1
+                self._log(f"Unexpected error for model '{model_name}': {e}")
+                if attempt >= self.max_retries - 1:
+                    break
         
         return None
     

@@ -25,8 +25,52 @@ from .security import (
     AuditLogger,
     SecurityManager
 )
+from .exceptions import (
+    # Base exception
+    AgenticAIError,
+    # Circuit breaker exceptions
+    CircuitBreakerError,
+    CircuitBreakerOpenError,
+    # Rate limiting exceptions
+    RateLimitError,
+    RateLimitExceededError,
+    # Security exceptions
+    SecurityError,
+    InjectionDetectedError,
+    ContentFilteredError,
+    # Validation exceptions
+    ValidationError,
+    GuardrailViolationError,
+    PromptRenderError,
+    # Task exceptions
+    TaskError,
+    TaskExecutionError,
+    TaskNotFoundError,
+    # Agent exceptions
+    AgentError,
+    AgentNotFoundError,
+    AgentExecutionError,
+    # LLM exceptions
+    LLMError,
+    ModelNotFoundError,
+    ModelInferenceError,
+    # Memory exceptions
+    AgenticMemoryError,
+    MemoryExportError,
+    # Knowledge exceptions
+    KnowledgeError,
+    KnowledgeRetrievalError,
+    # Communication exceptions
+    CommunicationError,
+    ProtocolError,
+    ProtocolNotFoundError,
+    # Evaluation exceptions
+    EvaluationError,
+    CriterionEvaluationError,
+)
 
 __all__ = [
+    # Core components
     "Agent", "AgentManager", "ContextManager",
     "Prompt", "PromptManager",
     "Process",
@@ -41,10 +85,52 @@ __all__ = [
     "MemoryManager", "MemoryEntry",
     "Hub",
     "ConfigurationManager",
+    # Security components
     "PromptInjectionDetector",
     "InputValidator",
     "RateLimiter",
     "ContentFilter",
     "AuditLogger",
-    "SecurityManager"
+    "SecurityManager",
+    # Exceptions - Base
+    "AgenticAIError",
+    # Exceptions - Circuit breaker
+    "CircuitBreakerError",
+    "CircuitBreakerOpenError",
+    # Exceptions - Rate limiting
+    "RateLimitError",
+    "RateLimitExceededError",
+    # Exceptions - Security
+    "SecurityError",
+    "InjectionDetectedError",
+    "ContentFilteredError",
+    # Exceptions - Validation
+    "ValidationError",
+    "GuardrailViolationError",
+    "PromptRenderError",
+    # Exceptions - Task
+    "TaskError",
+    "TaskExecutionError",
+    "TaskNotFoundError",
+    # Exceptions - Agent
+    "AgentError",
+    "AgentNotFoundError",
+    "AgentExecutionError",
+    # Exceptions - LLM
+    "LLMError",
+    "ModelNotFoundError",
+    "ModelInferenceError",
+    # Exceptions - Memory
+    "AgenticMemoryError",
+    "MemoryExportError",
+    # Exceptions - Knowledge
+    "KnowledgeError",
+    "KnowledgeRetrievalError",
+    # Exceptions - Communication
+    "CommunicationError",
+    "ProtocolError",
+    "ProtocolNotFoundError",
+    # Exceptions - Evaluation
+    "EvaluationError",
+    "CriterionEvaluationError",
 ]

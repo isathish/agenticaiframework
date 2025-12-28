@@ -11,10 +11,13 @@ Provides:
 """
 
 from typing import Dict, Any, Optional, List
+import logging
 import time
 from datetime import datetime, timedelta
 from collections import OrderedDict
 import json
+
+logger = logging.getLogger(__name__)
 
 
 class MemoryEntry:
@@ -338,7 +341,7 @@ class MemoryManager:
         if memory_type == "external" or memory_type is None:
             data['external'] = [entry.to_dict() for entry in self.external.values()]
         
-        with open(filepath, 'w') as f:
+        with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2)
         
         self._log(f"Exported memory to {filepath}")

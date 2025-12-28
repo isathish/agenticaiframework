@@ -2,6 +2,7 @@
 
 import pytest
 from agenticaiframework.prompts import Prompt, PromptManager
+from agenticaiframework.exceptions import PromptRenderError
 
 
 class TestPromptRenderCoverage:
@@ -14,8 +15,8 @@ class TestPromptRenderCoverage:
         try:
             # Missing 'age' variable
             prompt.render(name="Alice")
-            assert False, "Should have raised ValueError"
-        except ValueError as e:
+            assert False, "Should have raised PromptRenderError"
+        except PromptRenderError as e:
             assert "Missing required variable" in str(e)
     
     def test_render_with_defensive(self):

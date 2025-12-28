@@ -1,5 +1,10 @@
 from typing import Dict, Any, Callable
+import logging
 import time
+
+from .exceptions import ProtocolError, ProtocolNotFoundError  # noqa: F401 - exported for library users
+
+logger = logging.getLogger(__name__)
 
 
 class CommunicationManager:
@@ -19,8 +24,12 @@ class CommunicationManager:
         if protocol in self.protocols:
             try:
                 return self.protocols[protocol](data)
-            except Exception as e:
+            except (TypeError, ValueError, ConnectionError, TimeoutError) as e:
                 self._log(f"Error sending data via '{protocol}': {e}")
+                logger.warning("Protocol '%s' communication failed: %s", protocol, e)
+            except Exception as e:  # noqa: BLE001 - Log but don't crash
+                self._log(f"Unexpected error sending data via '{protocol}': {e}")
+                logger.exception("Unexpected error in protocol '%s'", protocol)
         else:
             self._log(f"Protocol '{protocol}' not found")
         return None

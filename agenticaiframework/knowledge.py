@@ -1,5 +1,10 @@
 from typing import List, Dict, Any, Callable
+import logging
 import time
+
+from .exceptions import KnowledgeRetrievalError  # noqa: F401 - exported for library users
+
+logger = logging.getLogger(__name__)
 
 
 class KnowledgeRetriever:
@@ -28,8 +33,12 @@ class KnowledgeRetriever:
                 source_results = fn(query)
                 results.extend(source_results)
                 self._log(f"Retrieved {len(source_results)} items from source '{name}'")
-            except Exception as e:
+            except (TypeError, ValueError, KeyError, ConnectionError) as e:
                 self._log(f"Error retrieving from source '{name}': {e}")
+                logger.warning("Knowledge retrieval from '%s' failed: %s", name, e)
+            except Exception as e:  # noqa: BLE001 - Continue with other sources
+                self._log(f"Unexpected error retrieving from source '{name}': {e}")
+                logger.exception("Unexpected error in knowledge source '%s'", name)
 
         self.cache[query] = results
         return results

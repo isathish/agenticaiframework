@@ -1,6 +1,11 @@
 from typing import Any, Dict, List, Callable, Optional
+import logging
 import uuid
 import time
+
+from .exceptions import TaskExecutionError  # noqa: F401 - exported for library users
+
+logger = logging.getLogger(__name__)
 
 
 class Task:
@@ -21,9 +26,14 @@ class Task:
             self.result = self.executor(**self.inputs)
             self.status = "completed"
             self._log(f"Task '{self.name}' completed successfully")
-        except Exception as e:
+        except (TypeError, ValueError, KeyError, AttributeError) as e:
             self.status = "failed"
             self._log(f"Task '{self.name}' failed: {e}")
+            logger.error("Task '%s' failed with error: %s", self.name, e)
+        except Exception as e:  # noqa: BLE001 - Catch-all for unknown task errors
+            self.status = "failed"
+            self._log(f"Task '{self.name}' failed with unexpected error: {e}")
+            logger.exception("Unexpected error in task '%s'", self.name)
         return self.result
 
     def _log(self, message: str):

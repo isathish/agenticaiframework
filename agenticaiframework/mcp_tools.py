@@ -1,6 +1,9 @@
 from typing import Any, Dict, List, Callable, Optional
+import logging
 import uuid
 import time
+
+logger = logging.getLogger(__name__)
 
 
 class MCPTool:
