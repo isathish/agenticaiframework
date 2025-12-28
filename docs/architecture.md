@@ -1,3 +1,11 @@
+---
+tags:
+  - architecture
+  - design
+  - overview
+  - system-design
+---
+
 # :building_construction: Architecture Guide
 
 <div class="annotate" markdown>

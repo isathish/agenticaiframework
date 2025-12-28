@@ -1,7 +1,47 @@
-# Agentic AI Framework - Examples
+---
+tags:
+  - examples
+  - tutorials
+  - code-samples
+  - learning
+---
 
-This document contains runnable examples for various features of the `agenticaiframework` package.  
-Each example is aligned with the actual API and uses the `agenticaiframework` namespace for imports.
+# 📚 Code Examples Collection
+
+<div class="annotate" markdown>
+
+Runnable examples for every feature of the AgenticAI Framework. Copy, paste, and run!
+
+</div>
+
+!!! tip "Quick Start"
+    All examples use the `agenticaiframework` namespace and are production-ready. Each example is self-contained and can be run independently.
+
+## 🎯 Example Categories
+
+<div class="grid cards" markdown>
+
+-   :material-robot:{ .lg } **Basic Examples**
+    
+    Core functionality
+    
+    [:octicons-arrow-right-24: View](#basic-examples)
+
+-   :material-cog-multiple:{ .lg } **Advanced Patterns**
+    
+    Production use cases
+    
+    [:octicons-arrow-right-24: View](#advanced-patterns)
+
+-   :material-application:{ .lg } **Complete Apps**
+    
+    Full applications
+    
+    [:octicons-arrow-right-24: View](examples/full_examples_index.md)
+
+</div>
+
+## Basic Examples
 
 
 ## 1. Agents Example

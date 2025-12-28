@@ -1,3 +1,11 @@
+---
+tags:
+  - integration
+  - external-services
+  - APIs
+  - patterns
+---
+
 # 🔌 Integration Patterns
 
 <div align="center">

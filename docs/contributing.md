@@ -1,10 +1,18 @@
+---
+tags:
+  - contributing
+  - development
+  - community
+  - guide
+---
+
 # 🤝 Contributing to AgenticAI Framework
 
 <div align="center">
 
 [![Contributors](https://img.shields.io/github/contributors/isathish/agenticaiframework)](https://github.com/isathish/agenticaiframework/graphs/contributors)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/isathish/agenticaiframework/pulls)
-[![Code of Conduct](https://img.shields.io/badge/Code%20of%20Conduct-2.1-blue.svg)](CODE_OF_CONDUCT.md)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/isathish/agenticaiframework/blob/main/LICENSE)
 
 </div>
 
@@ -16,7 +24,7 @@ Thank you for your interest in contributing to AgenticAI Framework! This documen
 
 ## 📋 Table of Contents
 
-- [Code of Conduct](#code-of-conduct)
+- [Community Guidelines](#community-guidelines)
 - [Ways to Contribute](#ways-to-contribute)
 - [Getting Started](#getting-started)
 - [Development Setup](#development-setup)
@@ -28,9 +36,17 @@ Thank you for your interest in contributing to AgenticAI Framework! This documen
 - [Community](#community)
 
 
-## 📜 Code of Conduct
+## 📜 Community Guidelines
 
-This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [conduct@agenticai.dev](mailto:conduct@agenticai.dev).
+We are committed to providing a welcoming and inclusive environment for all contributors. By participating in this project, you agree to:
+
+- Be respectful and professional in all interactions
+- Provide constructive feedback
+- Accept constructive criticism gracefully
+- Focus on what is best for the community
+- Show empathy towards other community members
+
+Please report any unacceptable behavior to the maintainers.
 
 
 ## 🎯 Ways to Contribute
@@ -516,7 +532,7 @@ mkdocs serve
 
 Contributors are recognized:
 
-- Listed in [CONTRIBUTORS.md](CONTRIBUTORS.md)
+- Recognition in our documentation and release notes
 - Mentioned in release notes
 - Featured in documentation
 - Hall of Fame for top contributors

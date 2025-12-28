@@ -1,3 +1,11 @@
+---
+tags:
+  - llms
+  - language-models
+  - core-modules
+  - AI
+---
+
 # LLMs Module
 
 ## Overview

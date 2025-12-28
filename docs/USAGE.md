@@ -1,19 +1,55 @@
-<!-- PROJECT LOGO -->
-<br />
+---
+tags:
+  - usage
+  - guide
+  - getting-started
+  - tutorial
+---
+
+# 📖 Usage Guide
+
 <div align="center">
-  <a href="https://isathish.github.io/agenticaiframework/">
-    <img src="https://img.shields.io/pypi/v/agenticaiframework?color=blue&label=PyPI%20Version&logo=python&logoColor=white" alt="PyPI Version">
-  </a>
-  <a href="https://pypi.org/project/agenticaiframework/">
-    <img src="https://img.shields.io/pypi/dm/agenticaiframework?color=green&label=Downloads&logo=python&logoColor=white" alt="Downloads">
-  </a>
-  <a href="https://github.com/isathish/agenticaiframework/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/isathish/agenticaiframework/python-package.yml?branch=main&label=Build&logo=github" alt="Build Status">
-  </a>
-  <a href="https://isathish.github.io/agenticaiframework/">
-    <img src="https://img.shields.io/badge/Documentation-Online-blue?logo=readthedocs&logoColor=white" alt="Documentation">
-  </a>
+
+**Complete guide to using AgenticAI Framework**
+
+[![PyPI Version](https://img.shields.io/pypi/v/agenticaiframework?color=blue&label=PyPI&logo=python&logoColor=white)](https://pypi.org/project/agenticaiframework/)
+[![Downloads](https://img.shields.io/pypi/dm/agenticaiframework?color=green&label=Downloads&logo=python&logoColor=white)](https://pypi.org/project/agenticaiframework/)
+[![Build](https://img.shields.io/github/actions/workflow/status/isathish/agenticaiframework/python-package.yml?branch=main&label=Build&logo=github)](https://github.com/isathish/agenticaiframework/actions)
+[![Documentation](https://img.shields.io/badge/Documentation-Online-blue?logo=readthedocs&logoColor=white)](https://isathish.github.io/agenticaiframework/)
+
 </div>
+
+## 🚀 Quick Navigation
+
+<div class="grid cards" markdown>
+
+-   :material-package-variant:{ .lg } **Installation**
+    
+    Get started in minutes
+    
+    [:octicons-arrow-right-24: Install](#installation)
+
+-   :material-code-braces:{ .lg } **Quick Start**
+    
+    Your first agent
+    
+    [:octicons-arrow-right-24: Start Coding](#basic-usage)
+
+-   :material-school:{ .lg } **Examples**
+    
+    25+ working examples
+    
+    [:octicons-arrow-right-24: View Examples](examples/full_examples_index.md)
+
+-   :material-api:{ .lg } **API Reference**
+    
+    Complete documentation
+    
+    [:octicons-arrow-right-24: API Docs](API_REFERENCE.md)
+
+</div>
+
+## 📦 Installation
 
 
 ## 11. Advanced Usage Patterns

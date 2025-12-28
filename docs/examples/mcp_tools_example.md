@@ -1,3 +1,11 @@
+---
+tags:
+  - example
+  - mcp-tools
+  - integration
+  - tutorial
+---
+
 # MCP Tools Integration Example
 
 This guide provides a **professional, step-by-step walkthrough** for creating, registering, and executing a custom MCP (Model Context Protocol) tool using the `MCPToolManager` and `MCPTool` classes from the `agenticaiframework` package.  

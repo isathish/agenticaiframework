@@ -4,6 +4,8 @@
 
 **A comprehensive Python SDK for building intelligent agentic applications**
 
+<p class="hero-subtitle">Enterprise-ready • Developer-friendly • Production-tested</p>
+
 [:octicons-rocket-24: Get Started](quick-start.md){ .md-button .md-button--primary }
 [:octicons-download-24: Install](USAGE.md){ .md-button }
 [:octicons-mark-github-16: GitHub](https://github.com/isathish/agenticaiframework){ .md-button }
@@ -13,10 +15,16 @@
   <a href="https://pypi.org/project/agenticaiframework/"><img src="https://img.shields.io/pypi/dm/agenticaiframework?color=green&label=Downloads&logo=python" alt="Downloads"></a>
   <a href="https://github.com/isathish/agenticaiframework/actions"><img src="https://img.shields.io/github/actions/workflow/status/isathish/agenticaiframework/python-package.yml?branch=main&label=Build&logo=github" alt="Build Status"></a>
   <a href="https://github.com/isathish/agenticaiframework"><img src="https://img.shields.io/github/license/isathish/agenticaiframework?color=blue" alt="License"></a>
+  <a href="https://github.com/isathish/agenticaiframework"><img src="https://img.shields.io/github/stars/isathish/agenticaiframework?style=social" alt="GitHub Stars"></a>
 </p>
 
+!!! success "Latest Release: v1.2.3"
+    🎉 New features: Enhanced evaluation framework, Improved monitoring, Better error handling
+    [:octicons-arrow-right-24: See What's New](changelog.md)
 
 </div>
+
+---
 
 ## :sparkles: Why Choose AgenticAI Framework?
 
@@ -210,35 +218,66 @@ AgenticAI Framework empowers developers, researchers, and enterprises to create 
 
 <div class="annotate" markdown>
 
+!!! abstract "System Components"
+    Modular architecture with clear separation of concerns
+
 ```mermaid
 graph TB
-    A[Agent Manager] --> B[Agent 1]
-    A --> C[Agent 2]
-    A --> D[Agent N]
+    subgraph "🎯 Application Layer"
+        USER[User/Application]
+    end
     
-    B --> E[Task Manager]
-    C --> E
-    D --> E
+    subgraph "🤖 Agent Layer"
+        AM[Agent Manager]
+        A1[Agent 1]
+        A2[Agent 2]
+        AN[Agent N]
+    end
     
-    E --> F[Process Engine]
-    F --> G[LLM Manager]
-    F --> H[Memory Manager]
-    F --> I[Knowledge Retriever]
+    subgraph "📋 Execution Layer"
+        TM[Task Manager]
+        PE[Process Engine]
+    end
     
-    J[Monitoring System] --> A
-    J --> E
-    J --> F
+    subgraph "🧠 Intelligence Layer"
+        LLM[LLM Manager]
+        MEM[Memory Manager]
+        KB[Knowledge Retriever]
+    end
     
-    K[Guardrail Manager] --> G
-    K --> H
-    K --> I
+    subgraph "🔒 Control Layer"
+        GM[Guardrail Manager]
+        EVAL[Evaluation System]
+    end
     
-    style A fill:#4051b5
-    style J fill:#00c853
-    style K fill:#ff6d00
+    subgraph "📊 Infrastructure Layer"
+        MON[Monitoring System]
+        LOG[Logging]
+        CACHE[Cache]
+    end
+    
+    USER -->|Requests| AM
+    AM -->|Orchestrates| A1 & A2 & AN
+    A1 & A2 & AN -->|Execute via| TM
+    TM -->|Manages| PE
+    PE -->|Uses| LLM & MEM & KB
+    GM -->|Validates| LLM & MEM & KB
+    EVAL -->|Assesses| PE
+    MON -->|Observes| AM & TM & PE
+    LOG -.->|Records| AM & TM & PE
+    CACHE -.->|Optimizes| LLM & KB
+    
+    style USER fill:#e1f5ff,stroke:#01579b,stroke-width:3px
+    style AM fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    style LLM fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    style GM fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
+    style MON fill:#fce4ec,stroke:#880e4f,stroke-width:2px
 ```
 
 </div>
+
+[:octicons-arrow-right-24: Detailed Architecture Guide](architecture.md){ .md-button }
+[:octicons-arrow-right-24: View All Diagrams](diagrams.md){ .md-button }
 
 ### :gear: Core Components
 

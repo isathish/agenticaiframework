@@ -1,3 +1,11 @@
+---
+tags:
+  - API
+  - reference
+  - documentation
+  - modules
+---
+
 # API Reference
 
 Complete API reference for the AgenticAI Framework.

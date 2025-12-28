@@ -1,3 +1,11 @@
+---
+tags:
+  - knowledge
+  - RAG
+  - vector-search
+  - retrieval
+---
+
 # Knowledge Module
 
 ## Overview

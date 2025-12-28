@@ -1,3 +1,29 @@
+---
+tags:
+  - example
+  - customer-support
+  - chatbot
+  - advanced
+---
+
+# Customer Support Bot Example
+
+This example demonstrates building an automated customer support bot using the AgenticAI Framework.
+
+## Overview
+
+The customer support bot combines LLMs, guardrails, and monitoring to provide helpful, policy-compliant responses to customer inquiries.
+
+## Key Features
+
+- Polite and professional responses
+- Guardrails for data privacy
+- Real-time monitoring
+- Context-aware assistance
+
+## Code
+
+```python
 from agenticaiframework.agents import Agent
 from agenticaiframework.tasks import Task
 from agenticaiframework.llms import LLMManager

@@ -1,3 +1,11 @@
+---
+tags:
+  - example
+  - monitoring
+  - observability
+  - tutorial
+---
+
 # Monitoring System Example
 
 This guide provides a **professional, step-by-step walkthrough** for using the `MonitoringSystem` in the `agenticaiframework` package to log events and record metrics.  

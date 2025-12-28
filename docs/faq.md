@@ -1,3 +1,11 @@
+---
+tags:
+  - FAQ
+  - help
+  - troubleshooting
+  - questions
+---
+
 # ❓ Frequently Asked Questions (FAQ)
 
 <div align="center">

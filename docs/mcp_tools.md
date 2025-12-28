@@ -1,3 +1,11 @@
+---
+tags:
+  - mcp-tools
+  - tools
+  - integration
+  - protocol
+---
+
 # MCP Tools Module
 
 ## Overview

@@ -1,3 +1,11 @@
+---
+tags:
+  - evaluation
+  - testing
+  - metrics
+  - quality-assurance
+---
+
 # Evaluation Framework
 
 Complete guide to the AgenticAI Framework evaluation system, providing comprehensive assessment capabilities from model-level intelligence to business outcomes.
@@ -5,7 +13,10 @@ Complete guide to the AgenticAI Framework evaluation system, providing comprehen
 
 ## Overview
 
-The AgenticAI Framework includes a **comprehensive 12-tier evaluation system** covering every aspect of agentic AI applications:
+The AgenticAI Framework includes a **comprehensive 12-tier evaluation system** covering every aspect of agentic AI applications.
+
+!!! info "Complete Evaluation Framework"
+    This documentation provides the full implementation guide for the evaluation system. For additional implementation details, see the [Testing Guide](TESTING.md).
 
 <div class="grid cards" markdown>
 
@@ -898,6 +909,8 @@ Perform regular comprehensive audits across all evaluation levels.
 
 ## Additional Resources
 
-- [EVALUATION_FRAMEWORK.md](../EVALUATION_FRAMEWORK.md) - Detailed implementation guide
-- [EVALUATION_IMPLEMENTATION_SUMMARY.md](../EVALUATION_IMPLEMENTATION_SUMMARY.md) - Complete implementation summary
-- [Test Suite](../tests/test_all_evaluation_types.py) - Comprehensive test examples
+## 📚 Additional Resources
+
+- [Testing Guide](TESTING.md) - Test implementation examples
+- [Best Practices](best-practices.md) - Evaluation best practices
+- [Examples](examples/evaluation_example.md) - Complete evaluation examples

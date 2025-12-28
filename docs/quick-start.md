@@ -1,3 +1,11 @@
+---
+tags:
+  - getting-started
+  - tutorial
+  - quickstart
+  - guide
+---
+
 # :rocket: Quick Start Guide
 
 <div class="annotate" markdown>

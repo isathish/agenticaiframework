@@ -1,3 +1,11 @@
+---
+tags:
+  - memory
+  - core-modules
+  - storage
+  - retrieval
+---
+
 # Memory Module
 
 The Memory module provides sophisticated memory management capabilities for AI agents, enabling them to store, retrieve, and organize information across different time scales and contexts. This module supports various memory types, persistence mechanisms, and intelligent retrieval strategies.

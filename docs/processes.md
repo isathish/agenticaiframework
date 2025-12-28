@@ -1,3 +1,11 @@
+---
+tags:
+  - processes
+  - workflows
+  - orchestration
+  - multi-agent
+---
+
 # AgenticAI Framework — Processes Module Documentation
 
 ## Overview

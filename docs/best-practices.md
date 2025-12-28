@@ -1,3 +1,11 @@
+---
+tags:
+  - best-practices
+  - patterns
+  - recommendations
+  - guide
+---
+
 # :star: Best Practices Guide
 
 <div class="annotate" markdown>

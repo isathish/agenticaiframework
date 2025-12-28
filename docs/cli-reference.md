@@ -1,3 +1,11 @@
+---
+tags:
+  - CLI
+  - reference
+  - commands
+  - tools
+---
+
 # 💻 CLI Reference
 
 <div align="center">

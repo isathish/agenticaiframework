@@ -1,3 +1,10 @@
+---
+tags:
+  - deployment
+  - production
+  - operations
+  - guide
+---
 # 🚢 Deployment Guide
 
 <div align="center">

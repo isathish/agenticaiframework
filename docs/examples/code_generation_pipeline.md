@@ -1,3 +1,22 @@
+---
+tags:
+  - example
+  - code-generation
+  - advanced
+  - workflow
+---
+
+# Code Generation Pipeline Example
+
+This example demonstrates a complete code generation and evaluation pipeline using multiple framework components.
+
+## Overview
+
+This pipeline combines LLMs, guardrails, monitoring, and evaluation to create a robust code generation system.
+
+## Code
+
+```python
 from agenticaiframework.agents import Agent
 from agenticaiframework.tasks import Task
 from agenticaiframework.llms import LLMManager
@@ -28,6 +47,31 @@ if __name__ == "__main__":
         name="FibonacciCodeGen",
         objective="Generate a Python function that calculates the nth Fibonacci number using memoization.",
         executor=lambda: llm.generate("Write a Python function for nth Fibonacci number using memoization.")
+    )
+
+    # Execute and evaluate
+    result = code_agent.execute_task(code_task)
+    evaluation = evaluator.evaluate(result)
+    
+    print(f"Generated Code: {result}")
+    print(f"Evaluation: {evaluation}")
+```
+
+## Key Components
+
+- **LLMManager**: Manages language model integration
+- **Guardrails**: Ensures code quality and security
+- **Monitor**: Tracks performance metrics
+- **Evaluator**: Assesses code quality
+
+## Expected Output
+
+The pipeline will:
+1. Generate code using the LLM
+2. Apply guardrails for validation
+3. Monitor execution
+4. Evaluate the generated code
+5. Return results with metrics
     )
 
     # Run task

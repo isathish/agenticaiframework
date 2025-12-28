@@ -1,3 +1,11 @@
+---
+tags:
+  - hub
+  - agent-marketplace
+  - sharing
+  - community
+---
+
 # AgenticAI Framework — Hub Module Documentation
 
 ## Overview

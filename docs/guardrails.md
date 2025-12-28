@@ -1,3 +1,11 @@
+---
+tags:
+  - guardrails
+  - safety
+  - security
+  - compliance
+---
+
 # Guardrails Module
 
 ## Overview

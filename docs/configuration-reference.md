@@ -1,3 +1,11 @@
+---
+tags:
+  - configuration
+  - reference
+  - settings
+  - setup
+---
+
 # ⚙️ Configuration Reference
 
 <div align="center">

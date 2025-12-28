@@ -1,3 +1,11 @@
+---
+tags:
+  - security
+  - privacy
+  - compliance
+  - best-practices
+---
+
 # Security Module
 
 The Security module provides comprehensive security features for AI agents, including prompt injection detection, input validation, rate limiting, content filtering, and audit logging.

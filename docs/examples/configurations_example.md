@@ -1,3 +1,11 @@
+---
+tags:
+  - example
+  - configuration
+  - setup
+  - basic
+---
+
 # Configuration Management Example
 
 This guide provides a **professional, step-by-step walkthrough** for using the `ConfigManager` in the `agenticaiframework` package to set, retrieve, and manage configuration values.  

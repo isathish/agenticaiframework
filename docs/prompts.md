@@ -1,3 +1,10 @@
+---
+tags:
+  - prompts
+  - templates
+  - prompt-engineering
+---
+
 # Prompts Module
 
 ## Overview

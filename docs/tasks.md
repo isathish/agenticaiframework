@@ -1,3 +1,11 @@
+---
+tags:
+  - tasks
+  - core-modules
+  - workflow
+  - scheduling
+---
+
 # :material-checkbox-marked-circle: Tasks Module
 
 <div class="annotate" markdown>

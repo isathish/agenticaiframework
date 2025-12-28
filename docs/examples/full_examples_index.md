@@ -1,6 +1,40 @@
+---
+tags:
+  - examples
+  - index
+  - overview
+---
+
 # Full Examples Index
 
 This document lists **all available examples** in the `examples/` directory, covering every major module and feature of the framework.
+
+!!! tip "Quick Navigation"
+    Use this index to quickly find examples for specific framework components. Each example is self-contained and includes detailed explanations.
+
+## 📚 Example Categories
+
+<div class="grid cards" markdown>
+
+-   :material-robot:{ .lg } **Basic Examples**
+    
+    Fundamental usage patterns for core modules
+    
+    Simple examples to get started quickly
+
+-   :material-cog:{ .lg } **Manager Classes**
+    
+    Advanced management and orchestration
+    
+    Enterprise-grade component managers
+
+-   :material-rocket:{ .lg } **Use Cases**
+    
+    Complete real-world applications
+    
+    Production-ready implementations
+
+</div>
 
 ## Agent Management
 - [Agent Manager Example](agent_manager_example.md)
@@ -54,26 +88,14 @@ This document lists **all available examples** in the `examples/` directory, cov
 
 ## Evaluation
 - [Evaluation Example](evaluation_example.md)
-- [Processes Example](processes_example.md)
-- [Advanced Process Example](process_advanced_example.md)
-- [Communication Example](communication_example.md)
-- [Hub Example](hub_example.md)
-- [Knowledge Example](knowledge_example.md)
-- [Knowledge Retrieval Example](knowledge_retrieval.md)
-- [MCP Tools Manager Example](mcp_tools_manager_example.md)
-- [Monitoring System Example](monitoring_system_example.md)
-- [Memory Manager Example](memory_manager_example.md)
-- [Guardrail Manager Example](guardrail_manager_example.md)
-- [LLM Manager Example](llm_manager_example.md)
+
+## Advanced Use Cases
+
+### Code Generation
 - [Code Generation Pipeline Example](code_generation_pipeline.md)
+
+### Customer Support
 - [Customer Support Bot Example](customer_support_bot.md)
+
+### Research
 - [Research Agent Example](research_agent.md)
-
-## Code Generation
-- [Code Generation Pipeline Example](examples/code_generation_pipeline.md)
-
-## Customer Support
-- [Customer Support Bot Example](examples/customer_support_bot.md)
-
-## Research
-- [Research Agent Example](examples/research_agent.md)

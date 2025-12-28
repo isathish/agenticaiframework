@@ -142,7 +142,6 @@ plugins:
     - en
 - tags:
     enabled: true
-    tags_file: tags.md
 - mkdocstrings:
     handlers:
       python:
@@ -196,6 +195,8 @@ nav:
 - 🚀 Getting Started:
   - Installation & Setup: USAGE.md
   - Quick Start Guide: quick-start.md
+  - ✨ Feature Overview: features.md
+  - ⚖️ Framework Comparison: comparison.md
   - Configuration Guide: CONFIGURATION.md
   - Architecture Overview: architecture.md
   - 🎨 Architecture Diagrams: diagrams.md

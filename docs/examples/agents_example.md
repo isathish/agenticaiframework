@@ -1,3 +1,11 @@
+---
+tags:
+  - example
+  - agents
+  - basic
+  - tutorial
+---
+
 # Agent Management Example
 
 This guide provides a **professional, step-by-step walkthrough** for creating, registering, and controlling an agent using the `AgentManager` and `Agent` classes from the `agenticaiframework` package.  

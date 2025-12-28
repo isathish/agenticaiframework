@@ -1,3 +1,11 @@
+---
+tags:
+  - communication
+  - protocols
+  - messaging
+  - core-modules
+---
+
 # 💬 Communication Module
 
 <div align="center">

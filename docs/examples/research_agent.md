@@ -1,3 +1,29 @@
+---
+tags:
+  - example
+  - research
+  - analysis
+  - advanced
+---
+
+# Research Agent Example
+
+This example demonstrates building an AI research agent that can investigate topics and provide cited summaries.
+
+## Overview
+
+The research agent uses LLMs with guardrails to ensure factual, well-cited responses to research questions.
+
+## Key Features
+
+- Comprehensive research capabilities
+- Source citation requirements
+- Content safety guardrails
+- Performance monitoring
+
+## Code
+
+```python
 from agenticaiframework.agents import Agent
 from agenticaiframework.tasks import Task
 from agenticaiframework.llms import LLMManager

@@ -1,3 +1,11 @@
+---
+tags:
+  - agents
+  - core-modules
+  - architecture
+  - API
+---
+
 # :robot: Agents Module
 
 <div class="annotate" markdown>

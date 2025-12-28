@@ -1,3 +1,11 @@
+---
+tags:
+  - example
+  - prompts
+  - templates
+  - basic
+---
+
 # Prompt Rendering Example
 
 This guide provides a **professional, step-by-step walkthrough** for using the `Prompt` class in the `agenticaiframework` package to create and render dynamic text templates.  

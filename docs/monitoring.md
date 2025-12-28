@@ -1,3 +1,11 @@
+---
+tags:
+  - monitoring
+  - observability
+  - metrics
+  - logging
+---
+
 # Monitoring Module
 
 ## Overview
