@@ -523,8 +523,9 @@ classDiagram
     AgentManager "1" --> "*" Agent: manages
     Agent "1" --> "1" ContextManager: uses
     Agent "1" --> "*" Task: executes
-    AgentManager "1" --> "*" Task: queues
-```agents in the system.
+    AgentManager "1" --> "*" Task: queues agents in the system.
+```
+
 
 #### Agent Lifecycle State Machine
 
