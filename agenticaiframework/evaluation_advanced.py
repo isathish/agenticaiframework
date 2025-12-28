@@ -2165,6 +2165,29 @@ class AutonomyEvaluator:
             'goal_drift_rate': metrics['goal_drift_incidents'] / total if total else 0,
             'avg_plan_optimality': statistics.mean(metrics['plan_optimality_scores']) if metrics['plan_optimality_scores'] else 0
         }
+    
+    # Convenience method for easier API usage
+    def evaluate_plan_optimality(self,
+                                 plan_steps: List[str],
+                                 optimal_steps: List[str]) -> Dict[str, Any]:
+        """
+        Evaluate plan optimality (convenience wrapper).
+        
+        Args:
+            plan_steps: The actual plan steps
+            optimal_steps: The optimal plan steps
+            
+        Returns:
+            Optimality evaluation result
+        """
+        optimality = self._calculate_plan_optimality(plan_steps, optimal_steps)
+        
+        return {
+            'optimality': optimality,
+            'actual_steps': len(plan_steps),
+            'optimal_steps': len(optimal_steps),
+            'timestamp': time.time()
+        }
 
 
 # =============================================================================
