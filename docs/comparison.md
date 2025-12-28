@@ -101,21 +101,48 @@ Make an informed decision for your AI project
 ## 🎭 Use Case Fit
 
 ```mermaid
-quadrantChart
-    title Framework Suitability by Use Case
-    x-axis Simple --> Complex
-    y-axis Single Agent --> Multi-Agent
-    quadrant-1 Enterprise Systems
-    quadrant-2 Agent Teams
-    quadrant-3 Basic Chatbots
-    quadrant-4 Complex Workflows
+graph TB
+    subgraph "Framework Positioning"
+        SIMPLE[Simple Use Cases]
+        COMPLEX[Complex Use Cases]
+        SINGLE[Single Agent]
+        MULTI[Multi-Agent]
+    end
     
-    AgenticAI: [0.7, 0.8]
-    LangChain: [0.5, 0.4]
-    AutoGen: [0.8, 0.7]
-    CrewAI: [0.4, 0.7]
-    Haystack: [0.6, 0.3]
+    subgraph "Frameworks"
+        AGENTIC[AgenticAI<br/>🟢 Complex + Multi-Agent<br/>Enterprise Systems]
+        LANG[LangChain<br/>🔵 Simple + Single<br/>Basic Chatbots]
+        AUTO[AutoGen<br/>🟠 Complex + Multi-Agent<br/>Research & Code Gen]
+        CREW[CrewAI<br/>🟪 Simple + Multi-Agent<br/>Agent Teams]
+        HAY[Haystack<br/>🔵 Moderate + Single<br/>Document Search]
+    end
+    
+    COMPLEX --> AGENTIC
+    MULTI --> AGENTIC
+    SIMPLE --> LANG
+    SINGLE --> LANG
+    COMPLEX --> AUTO
+    MULTI --> AUTO
+    SIMPLE --> CREW
+    MULTI --> CREW
+    SINGLE --> HAY
+    
+    style AGENTIC fill:#e8f5e9,stroke:#388e3c,stroke-width:3px
+    style AUTO fill:#fff3e0,stroke:#f57c00
+    style CREW fill:#f3e5f5,stroke:#7b1fa2
+    style LANG fill:#e3f2fd,stroke:#1976d2
+    style HAY fill:#fce4ec,stroke:#c2185b
 ```
+
+!!! abstract "Framework Comparison Summary"
+    
+    | Framework | Best For | Complexity | Multi-Agent |
+    |-----------|----------|------------|-------------|
+    | **AgenticAI** | Enterprise systems, production scale | High | ✅ Native |
+    | **LangChain** | General-purpose LLM apps, RAG | Medium | ⚠️ Limited |
+    | **AutoGen** | Research, conversational agents | High | ✅ Yes |
+    | **CrewAI** | Simple role-based teams | Low-Medium | ✅ Yes |
+    | **Haystack** | Document search, Q&A | Medium | ❌ No |
 
 ## 💡 When to Choose Each Framework
 

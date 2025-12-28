@@ -290,22 +290,45 @@ graph TB
 ## 🎯 Use Case Fit
 
 ```mermaid
-quadrantChart
-    title Framework Suitability Matrix
-    x-axis Low Complexity --> High Complexity
-    y-axis Single Agent --> Multi-Agent
-    quadrant-1 Enterprise Apps
-    quadrant-2 AI Assistants
-    quadrant-3 Simple Chatbots
-    quadrant-4 Agent Teams
+graph TB
+    subgraph "Complexity & Agent Architecture"
+        SIMPLE_SINGLE[Simple + Single Agent<br/>💬 Simple Chatbots]
+        SIMPLE_MULTI[Simple + Multi-Agent<br/>👥 Customer Support]
+        COMPLEX_SINGLE[Complex + Single Agent<br/>📊 Data Analysis]
+        COMPLEX_MULTI[Complex + Multi-Agent<br/>🏭 Enterprise Apps]
+    end
     
-    Customer Support: [0.3, 0.6]
-    Code Generation: [0.6, 0.4]
-    Research Agent: [0.7, 0.8]
-    Content Creation: [0.4, 0.5]
-    Data Analysis: [0.8, 0.7]
-    Workflow Automation: [0.9, 0.9]
+    subgraph "Use Cases"
+        UC1[💬 Customer Support<br/>Moderate Complexity<br/>Multi-Agent]
+        UC2[💻 Code Generation<br/>Moderate Complexity<br/>Single Agent]
+        UC3[🔍 Research Agent<br/>High Complexity<br/>Multi-Agent]
+        UC4[✍️ Content Creation<br/>Moderate Complexity<br/>Single Agent]
+        UC5[📊 Data Analysis<br/>High Complexity<br/>Single Agent]
+        UC6[⚙️ Workflow Automation<br/>High Complexity<br/>Multi-Agent]
+    end
+    
+    SIMPLE_MULTI -.-> UC1
+    SIMPLE_SINGLE -.-> UC2
+    COMPLEX_MULTI -.-> UC3
+    SIMPLE_SINGLE -.-> UC4
+    COMPLEX_SINGLE -.-> UC5
+    COMPLEX_MULTI -.-> UC6
+    
+    style SIMPLE_SINGLE fill:#e3f2fd,stroke:#1976d2
+    style SIMPLE_MULTI fill:#f3e5f5,stroke:#7b1fa2
+    style COMPLEX_SINGLE fill:#fff3e0,stroke:#f57c00
+    style COMPLEX_MULTI fill:#e8f5e9,stroke:#388e3c,stroke-width:3px
+    style UC3 fill:#ffebee,stroke:#c62828
+    style UC6 fill:#e8f5e9,stroke:#388e3c
 ```
+
+!!! tip "Framework Suitability"
+    
+    AgenticAI Framework is **ideal for**:
+    
+    - ✅ **High Complexity**: Research agents, data analysis, workflow automation
+    - ✅ **Multi-Agent Systems**: Enterprise apps, team coordination, complex workflows
+    - ✅ **Production Scale**: When reliability and monitoring are critical
 
 ## 📋 Checklist: Right Fit for You?
 
