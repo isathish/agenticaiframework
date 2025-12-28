@@ -190,6 +190,96 @@ AgenticAI Framework is built around **13 core modules** that work together seaml
 
 ---
 
+## 🏢 Enterprise Features (NEW in v1.1.0)
+
+AgenticAI Framework now includes **21 enterprise-grade features** for production deployments:
+
+### 📊 **Observability & Metrics**
+| Feature | Description |
+|---------|-------------|
+| **Agent Step Tracing** | Distributed tracing with span hierarchy and context propagation |
+| **Latency Metrics** | Percentile-based latency tracking (P50, P95, P99) |
+
+### 🔍 **Evaluation & Testing**
+| Feature | Description |
+|---------|-------------|
+| **Offline Evaluation** | Batch testing with test datasets and regression detection |
+| **Online Evaluation** | Real-time production monitoring with alerting |
+| **Cost vs Quality Scoring** | Token cost tracking with quality-adjusted metrics |
+| **Security Risk Scoring** | Input/output risk assessment and PII detection |
+| **A/B Testing Framework** | Experiment management with statistical significance |
+
+### 📝 **Prompt Management**
+| Feature | Description |
+|---------|-------------|
+| **Prompt Versioning** | Semantic versioning with draft→active→deprecated workflow |
+| **Prompt Library** | Reusable components with template inheritance |
+
+### 🚀 **CI/CD & Deployment**
+| Feature | Description |
+|---------|-------------|
+| **Agent CI Pipelines** | Build, test, evaluate, and deploy stages |
+| **Canary Deployments** | Gradual rollouts with automatic rollback |
+
+### 🎨 **Visual Tools APIs**
+| Feature | Description |
+|---------|-------------|
+| **Agent Builder** | Component library and blueprint management |
+| **Workflow Designer** | Visual workflow design with node/edge management |
+| **Admin Console** | User management, configuration, and dashboards |
+
+### 🔗 **Integrations**
+| Feature | Description |
+|---------|-------------|
+| **ITSM (ServiceNow)** | Incident management and change requests |
+| **Dev Tools (GitHub, ADO)** | Issues, PRs, pipelines integration |
+| **Data Platforms** | Snowflake and Databricks connectors |
+| **Webhooks** | Incoming/outgoing webhook management |
+
+### 🏗️ **Infrastructure**
+| Feature | Description |
+|---------|-------------|
+| **Serverless Execution** | Function deployment with auto-scaling |
+| **Multi-Region Support** | Geographic load balancing and failover |
+| **Tenant Isolation** | Multi-tenant resource isolation and quotas |
+
+### 🔐 **Compliance & Governance**
+| Feature | Description |
+|---------|-------------|
+| **Audit Trails** | Tamper-evident logging with hash chain integrity |
+| **Policy Enforcement** | Rule-based policies with pattern matching |
+| **Data Masking** | PII detection with multiple masking strategies |
+
+```python
+# Example: Enterprise Features
+from agenticaiframework import (
+    tracer, latency_metrics,  # Tracing
+    OfflineEvaluator, ABTestingFramework,  # Evaluation
+    prompt_version_manager, prompt_library,  # Versioning
+    audit_trail, policy_engine, data_masking,  # Compliance
+    multi_region_manager, tenant_manager,  # Infrastructure
+)
+
+# Distributed tracing
+with tracer.trace("agent_execution") as span:
+    span.set_attribute("agent_id", "agent_001")
+    latency_metrics.record("llm_call", 0.45)
+
+# Audit trail with integrity
+audit_trail.log_event(
+    event_type="data_access",
+    actor="user_123",
+    resource="customer_data",
+    action="query"
+)
+
+# Data masking
+text = "Contact john@example.com"
+masked = data_masking.mask_pii(text)  # "Contact [EMAIL_REDACTED]"
+```
+
+---
+
 ## 📦 Installation
 
 ### Quick Installation
