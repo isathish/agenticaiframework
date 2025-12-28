@@ -121,7 +121,18 @@ markdown_extensions:
 - pymdownx.keys
 - pymdownx.smartsymbols
 - pymdownx.emoji:
-    emoj:
+    emoji_index: !!python/name:material.extensions.emoji.twemoji ""
+    emoji_generator: !!python/name:material.extensions.emoji.to_svg ""
+- pymdownx.tasklist:
+    custom_checkbox: true
+- toc:
+    permalink: true
+    permalink_title: Anchor link to this section
+    toc_depth: 3
+
+# Plugins
+plugins:
+- search:
     separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
     lang:
     - en
