@@ -10,10 +10,10 @@ def read_requirements(filename):
 
 setup(
     name="agenticaiframework",
-    version="1.1.1",
+    version="1.2.0",
     author="Sathishkumar Nagarajan",
     author_email="mail@sathishkumarnagarajan.com",
-    description="AgenticAI - A Python SDK for building agentic applications with advanced orchestration, monitoring, and multimodal capabilities.",
+    description="AgenticAI - A Python SDK for building agentic applications with comprehensive 12-tier evaluation, advanced orchestration, monitoring, and enterprise capabilities.",
     long_description=open("README.md", encoding='utf-8').read() if __import__("os").path.exists("README.md") else "",
     long_description_content_type="text/markdown",
     url="https://github.com/isathish/agenticaiframework",

@@ -70,20 +70,34 @@ AgenticAI Framework is built around **13 core modules** that work together seaml
 - **Compliance monitoring** with audit trails and reporting
 - **Violation tracking** with comprehensive analytics
 
-### 🔐 **Security** - Enterprise-Grade Security (NEW)
+### 🔐 **Security** - Enterprise-Grade Security
 - **Prompt injection detection** with 15+ attack patterns
 - **Input validation** and sanitization
 - **Rate limiting** per user/session
 - **Content filtering** with customizable rules
 - **Audit logging** with comprehensive event tracking
-- **Security metrics** and reportingd caching
-- **Response validation** and quality assurance
+- **Security metrics** and reporting
 
 ### 🛡️ **Guardrails** - Safety and Compliance
 - **Content filtering** with customizable validation rules
 - **Policy enforcement** for ethical AI behavior
 - **Security validation** to prevent prompt injection and data leakage
 - **Compliance monitoring** with audit trails and reporting
+- **Violation tracking** with comprehensive analytics
+
+### 📊 **Evaluation** - Comprehensive 12-Tier Assessment (NEW)
+- **Model Quality**: Hallucination detection, reasoning assessment, token efficiency
+- **Task Success**: Success rates, retry tracking, completion monitoring
+- **Tool Performance**: API call tracking, parameter validation, latency monitoring
+- **Workflow Orchestration**: Multi-agent coordination, handoff tracking, deadlock detection
+- **Memory Quality**: Context precision/recall, stale data detection
+- **RAG Evaluation**: Retrieval quality, faithfulness, groundedness, citations
+- **Safety Scoring**: Security risk assessment, PII detection, policy compliance
+- **Autonomy Assessment**: Plan optimality, replanning, human intervention tracking
+- **Performance Monitoring**: Latency percentiles (P50/P95/P99), throughput, stability
+- **Cost Tracking**: Token usage, cost per request, budget optimization
+- **HITL Metrics**: Acceptance rates, review time, trust scoring
+- **Business Outcomes**: ROI calculation, impact metrics, value assessment
 
 ### 📊 **Monitoring** - Comprehensive Observability
 - **Real-time metrics** collection and analysis
@@ -203,11 +217,20 @@ AgenticAI Framework now includes **21 enterprise-grade features** for production
 ### 🔍 **Evaluation & Testing**
 | Feature | Description |
 |---------|-------------|
-| **Offline Evaluation** | Batch testing with test datasets and regression detection |
-| **Online Evaluation** | Real-time production monitoring with alerting |
-| **Cost vs Quality Scoring** | Token cost tracking with quality-adjusted metrics |
-| **Security Risk Scoring** | Input/output risk assessment and PII detection |
+| **Model Quality Evaluation** | Hallucination detection, reasoning assessment, token efficiency |
+| **Task & Skill Evaluation** | Success rates, retry tracking, completion percentages |
+| **Tool & API Evaluation** | Tool invocation tracking, parameter validation, latency monitoring |
+| **Workflow Evaluation** | Multi-agent orchestration, handoff tracking, deadlock detection |
+| **Memory & Context Evaluation** | Context precision/recall, stale data detection, quality scoring |
+| **RAG Evaluation** | Retrieval quality, faithfulness, groundedness, citation accuracy |
+| **Autonomy & Planning** | Plan optimality, replanning tracking, human intervention |
+| **Performance & Scalability** | Latency percentiles (P50/P95/P99), throughput, stability |
+| **Cost & FinOps** | Token usage tracking, cost per request, budget optimization |
+| **Human-in-the-Loop** | Acceptance rates, override tracking, trust scoring |
+| **Business Outcomes** | ROI calculation, baseline comparison, impact metrics |
+| **Security Risk Scoring** | Input/output risk assessment, PII detection, policy compliance |
 | **A/B Testing Framework** | Experiment management with statistical significance |
+| **Canary Deployments** | Gradual rollouts with automatic rollback |
 
 ### 📝 **Prompt Management**
 | Feature | Description |
@@ -633,12 +656,13 @@ pytest tests/ --cov=agenticaiframework --cov-report=html
 ```
 
 ### Test Coverage ✅
-**Total: 80.06% coverage achieved with 166 passing tests**
+**Total: 72% coverage achieved with 430 passing tests**
 
 #### Module Coverage:
+- **Evaluation (Advanced)**: 92% ✅ - Comprehensive 12-tier evaluation framework
+- **Evaluation (Basic)**: 87% ✅ - Core evaluation system
 - **Communication**: 100% ✅ - Full coverage of all communication protocols
 - **Configurations**: 100% ✅ - Complete configuration management coverage
-- **Evaluation**: 100% ✅ - Full evaluation system coverage
 - **Processes**: 97% ✅ - Comprehensive workflow orchestration
 - **Knowledge**: 94% ✅ - Knowledge base operations
 - **Hub**: 85% ✅ - Agent hub and coordination
@@ -649,17 +673,20 @@ pytest tests/ --cov=agenticaiframework --cov-report=html
 - **Prompts**: 67% - Template system with security features
 - **Guardrails**: 62% - Priority-based validation and enforcement
 - **Memory**: 56% - Multi-tier memory with TTL and consolidation
-- **Security**: 27% - Injection detection, validation, rate limiting (newly added)
+- **Security**: 27% - Injection detection, validation, rate limiting
 
 #### Test Categories:
 - **Core Functionality**: 93 tests covering basic operations
 - **Advanced Features**: 45 tests for context engineering, memory, and workflows
-- **Security & Safety**: 18 tests for injection protection and guardrails
+- **Evaluation Framework**: 127 tests for all 12 evaluation types
+- **Enterprise Features**: 80 tests for compliance, integrations, visual tools
+- **Security & Safety**: 85 tests for injection protection and guardrails
 - **Edge Cases**: 10 tests for error handling and exceptions
 
 ### Quality Metrics
-- **Test Coverage**: 80.06% across 14 modules (166 passing tests) ✅
+- **Test Coverage**: 72% across 14+ modules (430 passing tests) ✅
 - **Code Quality**: Production-ready with comprehensive testing
+- **Evaluation**: Industry-leading 12-tier evaluation framework
 - **Security**: Prompt injection detection, content filtering, and rate limiting
 - **Performance**: Circuit breakers, caching, and retry mechanisms
 - **Reliability**: Robust error handling and recovery

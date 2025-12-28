@@ -72,6 +72,9 @@ AgenticAI Framework empowers developers, researchers, and enterprises to create 
 :octicons-graph-24:{ .lg } **Full Observability**
 :   Comprehensive monitoring, logging, and metrics out of the box
 
+:octicons-checklist-24:{ .lg } **12-Tier Evaluation**
+:   Industry-leading evaluation from model quality to business outcomes
+
 :octicons-plug-24:{ .lg } **Highly Extensible**
 :   Easy integration with existing systems and tools via MCP protocol
 
@@ -746,7 +749,8 @@ pytest tests/ -m "not slow"    # Fast tests only
 |--------|----------|
 | communication.py | 100% ✅ |
 | configurations.py | 100% ✅ |
-| evaluation.py | 100% ✅ |
+| evaluation.py | 87% ✅ |
+| evaluation_advanced.py | 92% ✅ |
 | processes.py | 97% |
 | knowledge.py | 94% |
 | monitoring.py | 86% |

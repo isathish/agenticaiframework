@@ -59,13 +59,94 @@ Complete API reference for the AgenticAI Framework.
 
 ### agenticaiframework.evaluation
 
-**Classes:**
-- `EvaluationSystem()` – Evaluation and scoring
+**Basic Evaluation:**
+- `EvaluationSystem()` – Core evaluation and scoring
+- `define_criterion(name, evaluator_fn)` – Define evaluation metric
+- `evaluate(data)` – Evaluate data against criteria
+- `get_results()` – Get evaluation results
 
-**Methods:**
-- `define_metric(name, evaluator_fn)` – Define evaluation metric
-- `evaluate(data)` – Evaluate data against metrics
-- `get_metrics()` – Get defined metrics
+**Comprehensive 12-Tier Evaluation Framework:**
+
+**Level 1 - Model Quality:**
+- `ModelQualityEvaluator(threshold)` – LLM quality assessment
+  - `evaluate_hallucination(text, is_hallucination, confidence)` – Detect hallucinations
+  - `evaluate_reasoning(query, reasoning, answer, correct)` – Assess reasoning quality
+  - `evaluate_token_efficiency(response, token_count, quality_score)` – Token efficiency
+  - `get_quality_metrics()` – Get model quality metrics
+
+**Level 2 - Task & Skill:**
+- `TaskEvaluator()` – Task execution assessment
+  - `record_task_execution(task_id, success, retries, duration)` – Track task execution
+  - `get_task_metrics()` – Get task success metrics
+
+**Level 3 - Tool & API:**
+- `ToolInvocationEvaluator()` – Tool call monitoring
+  - `record_tool_call(tool_name, params, success, latency, error)` – Track tool invocations
+  - `get_tool_metrics()` – Get tool performance metrics
+
+**Level 4 - Workflow:**
+- `WorkflowEvaluator()` – Multi-agent orchestration
+  - `record_workflow_execution(workflow_id, steps, handoffs, completed)` – Track workflows
+  - `record_agent_handoff(from_agent, to_agent, success)` – Monitor handoffs
+  - `detect_deadlock(workflow_id, max_wait_time)` – Detect deadlocks
+  - `get_workflow_metrics()` – Get workflow metrics
+
+**Level 5 - Memory & Context:**
+- `MemoryEvaluator()` – Memory quality assessment
+  - `evaluate_retrieval(retrieved, relevant, total_relevant)` – Assess retrieval quality
+  - `record_stale_data_access(key, age_days)` – Track stale data
+  - `record_overwrite_error(key, error_type)` – Monitor overwrites
+  - `get_memory_metrics()` – Get memory metrics
+
+**Level 6 - RAG:**
+- `RAGEvaluator()` – Retrieval-augmented generation assessment
+  - `evaluate_retrieval(retrieved, relevant, total_relevant)` – Retrieval quality
+  - `evaluate_faithfulness(answer, context, score)` – Faithfulness to source
+  - `evaluate_groundedness(answer, citations, grounded)` – Groundedness check
+  - `check_citation_accuracy(answer, citations, accurate)` – Citation accuracy
+  - `get_rag_metrics()` – Get RAG metrics
+
+**Level 7 - Safety:**
+- `SecurityRiskScorer(max_risk_score, pii_detection_enabled)` – Security assessment
+  - `evaluate(data)` – Assess security risks
+  - `get_scoring_history(limit)` – Get scoring history
+
+**Level 8 - Autonomy:**
+- `AutonomyEvaluator()` – Autonomy and planning assessment
+  - `evaluate_plan_optimality(plan_id, steps, optimal_steps, quality_score)` – Plan quality
+  - `record_replanning_event(task_id, reason, success)` – Track replanning
+  - `record_human_intervention(task_id, reason, accepted)` – Monitor interventions
+  - `detect_goal_drift(original_goal, current_state, drift_detected)` – Goal drift
+  - `get_autonomy_metrics()` – Get autonomy metrics
+
+**Level 9 - Performance:**
+- `PerformanceEvaluator()` – Performance and scalability
+  - `record_execution(operation, latency, success)` – Track performance
+  - `get_performance_metrics()` – Get performance metrics (P50/P95/P99)
+
+**Level 10 - Cost:**
+- `CostQualityScorer(max_cost_per_request, quality_threshold)` – Cost analysis
+  - `evaluate(data)` – Evaluate cost vs quality
+  - `get_scoring_history(limit)` – Get cost history
+
+**Level 11 - HITL:**
+- `HITLEvaluator()` – Human-in-the-loop assessment
+  - `record_review(decision_id, accepted, review_time, overridden)` – Track reviews
+  - `record_override(decision_id, original_decision, human_decision, reason)` – Monitor overrides
+  - `record_trust_signal(decision_id, feedback, confidence)` – Trust signals
+  - `get_hitl_metrics()` – Get HITL metrics
+
+**Level 12 - Business:**
+- `BusinessOutcomeEvaluator()` – Business outcome assessment
+  - `set_baseline(metric, value)` – Establish baselines
+  - `record_outcome(metric, value, cost, revenue)` – Track business outcomes
+  - `get_business_metrics()` – Get business metrics
+
+**Advanced Evaluation:**
+- `OfflineEvaluator(test_dataset, evaluators)` – Batch offline evaluation
+- `OnlineEvaluator(evaluators, alert_config)` – Real-time online evaluation
+- `ABTestingFramework()` – A/B testing and experimentation
+- `CanaryDeploymentManager()` – Canary deployment evaluation
 
 ### agenticaiframework.guardrails
 

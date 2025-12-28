@@ -147,7 +147,8 @@ nav:
   - 💬 Communication: communication.md
   - 📊 Monitoring: monitoring.md
   - 🛡️ Guardrails: guardrails.md
-  - 🔧 MCP Tools: mcp_tools.md
+  - "\udcc8 Evaluation": evaluation.md
+  - "\ud83d� MCP Tools": mcp_tools.md
   - 📝 Prompts: prompts.md
   - 🌐 Hub: hub.md
 - 📖 Examples & Tutorials:
