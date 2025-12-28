@@ -2,7 +2,6 @@
 
 Complete guide to the AgenticAI Framework evaluation system, providing comprehensive assessment capabilities from model-level intelligence to business outcomes.
 
----
 
 ## Overview
 
@@ -60,7 +59,6 @@ The AgenticAI Framework includes a **comprehensive 12-tier evaluation system** c
 
 </div>
 
----
 
 ## Installation
 
@@ -70,7 +68,6 @@ The evaluation framework is included in the core AgenticAI Framework:
 pip install agenticaiframework
 ```
 
----
 
 ## Evaluation Hierarchy
 
@@ -136,7 +133,6 @@ pip install agenticaiframework
 └─────────────────────────────────────────────────────────┘
 ```
 
----
 
 ## Level 1: Model Quality Evaluation
 
@@ -185,7 +181,6 @@ print(f"Token efficiency: {metrics['avg_token_efficiency']:.2f}")
 - Token efficiency and cost optimization
 - Response coherence assessment
 
----
 
 ## Level 2: Task & Skill Evaluation
 
@@ -228,7 +223,6 @@ print(f"Total tasks: {metrics['total_tasks']}")
 - Task duration statistics
 - Error pattern analysis
 
----
 
 ## Level 3: Tool & API Invocation
 
@@ -271,7 +265,6 @@ print(f"Most used: {metrics['most_used_tool']}")
 - Average latency per tool
 - Error pattern detection
 
----
 
 ## Level 4: Workflow Orchestration
 
@@ -320,7 +313,6 @@ print(f"Deadlocks detected: {metrics['deadlock_count']}")
 - Deadlock detection
 - Average execution time
 
----
 
 ## Level 5: Memory & Context
 
@@ -366,7 +358,6 @@ print(f"Stale accesses: {metrics['stale_data_accesses']}")
 - Memory overwrite errors
 - Context quality scores
 
----
 
 ## Level 6: RAG (Retrieval-Augmented Generation)
 
@@ -421,7 +412,6 @@ print(f"Citation accuracy: {metrics['citation_accuracy']:.2%}")
 - Groundedness verification
 - Citation accuracy
 
----
 
 ## Level 7: Safety & Guardrails
 
@@ -458,7 +448,6 @@ history = scorer.get_scoring_history(limit=10)
 - Policy compliance rates
 - Injection attempt detection
 
----
 
 ## Level 8: Autonomy & Planning
 
@@ -514,7 +503,6 @@ print(f"Intervention rate: {metrics['intervention_rate']:.2%}")
 - Human intervention rates
 - Goal drift detection
 
----
 
 ## Level 9: Performance & Scalability
 
@@ -550,7 +538,6 @@ print(f"Failure rate: {metrics['failure_rate']:.2%}")
 - Concurrency monitoring
 - Throughput analysis
 
----
 
 ## Level 10: Cost & FinOps
 
@@ -591,7 +578,6 @@ print(f"Total cost: ${total_cost:.2f}")
 - Budget alerts
 - Quality-adjusted cost
 
----
 
 ## Level 11: Human-in-the-Loop
 
@@ -642,7 +628,6 @@ print(f"Trust score: {metrics['trust_score']:.2f}")
 - Review time monitoring
 - Trust score calculation
 
----
 
 ## Level 12: Business Outcomes
 
@@ -695,7 +680,6 @@ print(f"Revenue: ${metrics['total_revenue']:.2f}")
 - Impact metrics
 - Value assessment
 
----
 
 ## Complete Evaluation Pipeline
 
@@ -876,7 +860,6 @@ for level, metrics_data in metrics.items():
         print(f"  {key}: {value}")
 ```
 
----
 
 ## Best Practices
 
@@ -904,7 +887,6 @@ Set up automated alerts for critical metrics exceeding thresholds.
 ### 8. **Regular Audits**
 Perform regular comprehensive audits across all evaluation levels.
 
----
 
 ## Next Steps
 
@@ -913,7 +895,6 @@ Perform regular comprehensive audits across all evaluation levels.
 - :octicons-rocket-24: [Quick Start](quick-start.md) - Get started guide
 - :octicons-shield-check-24: [Best Practices](best-practices.md) - Production patterns
 
----
 
 ## Additional Resources
 

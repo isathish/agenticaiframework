@@ -6,7 +6,6 @@ The Tasks module provides a comprehensive framework for defining, scheduling, an
 
 </div>
 
----
 
 ## :sparkles: Overview
 
@@ -36,7 +35,6 @@ The Tasks module provides a comprehensive framework for defining, scheduling, an
 
 </div>
 
----
 
 ## :gear: Core Components
 
@@ -95,7 +93,6 @@ def add_dependency(task_name: str) -> None
 def remove_dependency(task_name: str) -> None
 ```
 
----
 
 ## :art: Low-Level Design (LLD)
 

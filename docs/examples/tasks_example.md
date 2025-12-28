@@ -3,7 +3,6 @@
 This guide provides a **professional, step-by-step walkthrough** for creating, registering, and executing a custom task using the `TaskManager` and `Task` classes from the `agenticaiframework` package.  
 It is intended for developers who want to define reusable, modular units of work for their agents.
 
----
 
 ## Prerequisites & Configuration
 
@@ -11,7 +10,6 @@ It is intended for developers who want to define reusable, modular units of work
 - **No additional configuration** is required for this example.
 - **Python Version**: Compatible with Python 3.8+.
 
----
 
 ## Code
 
@@ -43,7 +41,6 @@ if __name__ == "__main__":
     print("Retrieved Task:", retrieved_task.name)
 ```
 
----
 
 ## Step-by-Step Execution
 
@@ -73,13 +70,11 @@ if __name__ == "__main__":
 
 > **Best Practice:** Keep tasks focused on a single responsibility to make them easier to test and reuse.
 
----
 
 ## Expected Input
 
 No user input is required; the script uses hardcoded values for demonstration purposes. In production, task parameters could be dynamically generated from user input, workflows, or other runtime data.
 
----
 
 ## Expected Output
 
@@ -92,7 +87,6 @@ Registered Tasks: ['AdditionTask']
 Retrieved Task: AdditionTask
 ```
 
----
 
 ## How to Run
 

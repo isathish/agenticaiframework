@@ -6,7 +6,6 @@ Comprehensive architectural overview of AgenticAI Framework with High-Level Desi
 
 </div>
 
----
 
 ## :sparkles: Overview
 
@@ -37,8 +36,6 @@ Comprehensive architectural overview of AgenticAI Framework with High-Level Desi
 :   Horizontal and vertical scaling capabilities
 
 </div>
-
----
 
 ## :art: High-Level Design (HLD)
 
@@ -122,9 +119,61 @@ graph TB
 
 ### Component Interaction Diagram
 
-!!! example "Request Flow"
+!!! example "Request Flow Through the System"
     
-    How a typical request flows through the system:
+    This sequence diagram demonstrates how a **typical user request flows through all layers** of the AgenticAI Framework, showcasing the interaction between components.
+    
+    **Request Flow Steps:**
+    
+    1. **User Submits Request** (Step 1-2)
+       - User sends request through API
+       - API validates and routes to Agent Manager
+    
+    2. **Agent Assignment** (Step 3-4)
+       - Agent Manager selects appropriate agent based on capabilities
+       - Agent receives task assignment
+       - Task created in Task Manager queue
+    
+    3. **Input Validation** (Step 5-6)
+       - Guardrails validates user input for safety
+       - Checks for malicious content, PII, policy violations
+       - Returns validation result (pass/fail)
+    
+    4. **Context Retrieval** (Step 7-8)
+       - Task Manager queries Memory for relevant historical data
+       - Retrieves past interactions, user preferences, learned patterns
+       - Provides context for better response generation
+    
+    5. **Response Generation** (Step 9-12)
+       - LLM Manager called to generate response
+       - Before returning, output passes through Guardrails
+       - Guardrails ensures response is safe, compliant, and appropriate
+       - Approved output returned to Task Manager
+    
+    6. **Result Storage & Monitoring** (Step 13-14)
+       - Generated response stored in Memory for future context
+       - Metrics logged to Monitoring system:
+         - Latency, token usage, cost
+         - Agent performance, success rate
+         - Resource utilization
+    
+    7. **Response Return** (Step 15-18)
+       - Task marked as complete
+       - Agent reports status to Agent Manager
+       - Response flows back through API
+       - User receives final result
+    
+    **Continuous Monitoring:**
+    - All operations continuously observed by Monitoring system
+    - Real-time metrics, alerts, and health checks
+    - Full traceability for debugging and optimization
+    
+    **Key Principles:**
+    - \ud83d\udd12 **Security First**: Guardrails validate at input and output
+    - \ud83d\udcbe **Context-Aware**: Memory provides historical context
+    - \ud83d\udcca **Observable**: Every step monitored and logged
+    - \ud83d\udd04 **Asynchronous**: Non-blocking operations where possible
+    - \ud83d\udee1\ufe0f **Resilient**: Error handling at every layer
 
 ```mermaid
 sequenceDiagram
@@ -166,6 +215,70 @@ sequenceDiagram
 ```
 
 ### Data Flow Architecture
+
+!!! info "End-to-End Data Processing Pipeline"
+    
+    This flowchart illustrates how **data flows from input to output** through various processing stages and storage layers.
+    
+    **Input Stage:**
+    - \ud83d\udc65 **User Input**: Direct user requests via UI/API
+    - \ud83c\udf10 **External Data**: Third-party APIs, webhooks, integrations
+    
+    **Processing Pipeline:**
+    
+    1. **Input Validation**
+       - Schema validation
+       - Type checking
+       - Sanitization
+       - Security scanning
+    
+    2. **Context Enrichment**
+       - Add user profile data
+       - Inject relevant historical context
+       - Append system state
+    
+    3. **Task Processing**
+       - Execute business logic
+       - Coordinate with other services
+       - Apply transformations
+    
+    4. **Response Generation**
+       - LLM invocation
+       - Template rendering
+       - Data formatting
+    
+    5. **Output Filtering**
+       - PII masking
+       - Content moderation
+       - Quality checks
+    
+    **Storage Layers:**
+    
+    - **Cache Layer**: Hot data for <1ms access
+      - Active sessions
+      - Frequently accessed data
+      - LLM response cache
+    
+    - **Short-term Memory**: Fast access (1-10ms)
+      - Recent interactions
+      - Session state
+      - Temporary results
+    
+    - **Long-term Storage**: Persistent data (10-100ms)
+      - User profiles
+      - Historical records
+      - Audit trail
+    
+    **Output Channels:**
+    - \u2705 **User Response**: Primary output to user
+    - \ud83d\udcdd **Audit Logs**: Compliance and security tracking
+    - \ud83d\udcca **Metrics**: Performance and business analytics
+    
+    **Data Flow Guarantees:**
+    - \ud83d\udd12 All sensitive data encrypted in transit and at rest
+    - \ud83d\udcbe All state changes persisted to durable storage
+    - \ud83d\udcdd All operations logged for audit trail
+    - \ud83d\udd04 Failed operations automatically retried with exponential backoff
 
 ```mermaid
 flowchart LR
@@ -305,7 +418,6 @@ graph TB
     class PROM,GRAF,ELK monitor
 ```
 
----
 
 ## :gear: Core Components
 

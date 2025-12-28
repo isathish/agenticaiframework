@@ -1,12 +1,14 @@
 site_name: AgenticAI Framework
-site_description: A comprehensive Python SDK for building intelligent agentic applications with advanced orchestration and monitoring
+site_description: Enterprise-grade Python SDK for building intelligent agentic AI applications with advanced orchestration, monitoring, and multi-agent collaboration
+site_author: AgenticAI Framework Contributors
 site_url: https://isathish.github.io/agenticaiframework/
 repo_url: https://github.com/isathish/agenticaiframework
 repo_name: isathish/agenticaiframework
 edit_uri: edit/main/docs/
 
 # Copyright
-copyright: Copyright &copy; 2024 AgenticAI Framework Contributors
+copyright: >
+  Copyright &copy; 2024-2025 AgenticAI Framework Contributors<br/> <a href="#__consent">Change cookie settings</a>
 
 # Theme Configuration
 theme:
@@ -46,10 +48,13 @@ theme:
   - navigation.sections
   - navigation.expand
   - navigation.path
+  - navigation.prune
   - navigation.top
   - navigation.indexes
   - navigation.footer
   - navigation.tracking
+  - navigation.instant
+  - navigation.instant.progress
   # Search
   - search.highlight
   - search.share
@@ -57,6 +62,7 @@ theme:
   # Content
   - content.code.copy
   - content.code.annotate
+  - content.code.select
   - content.tabs.link
   - content.tooltips
   - content.action.edit
@@ -66,6 +72,13 @@ theme:
   - toc.integrate
   # Announce
   - announce.dismiss
+
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+  logo: assets/agenticaiframework.png
+  favicon: assets/favicon.png
 
 # Extensions
 markdown_extensions:
@@ -108,18 +121,10 @@ markdown_extensions:
 - pymdownx.keys
 - pymdownx.smartsymbols
 - pymdownx.emoji:
-    emoji_index: !!python/name:material.extensions.emoji.twemoji ""
-    emoji_generator: !!python/name:material.extensions.emoji.to_svg ""
-- pymdownx.tasklist:
-    custom_checkbox: true
-- toc:
-    permalink: true
-    permalink_title: Anchor link to this section
-    toc_depth: 3
-
-# Plugins
-plugins:
-- search
+    emoj:
+    separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+    lang:
+    - en
 - mkdocstrings:
     handlers:
       python:
@@ -127,14 +132,49 @@ plugins:
           show_source: false
           show_root_heading: true
           show_if_no_docstring: true
+          docstring_style: google
+          docstring_section_style: table
+          merge_init_into_class: true
+          show_signature_annotations: true
+          separate_signature: true
+          members_order: source
+          group_by_category: true
+          show_category_heading: true
+          show_symbol_type_heading: true
+          show_symbol_type_toc: true
+- git-revision-date-localized:
+    enable_creation_date: true
+    type: timeago
+- minify:
+    minify_html: true
+    minify_js: true
+    minify_css: true
+    htmlmin_opts:
+      remove_comments: true
+    cache_safe: true
+- glightbox:
+    touchNavigation: true
+    loop: false
+    effect: zoom
+    slide_effect: slide
+    width: 100%
+    height: auto
+    zoomable: true
+    draggable: true
+    skip_classes:
+    - custom-skip-class-name
+    auto_caption: false
+    caption_position: bottom
 
 # Navigation Structure
 nav:
-- 🏠 Home: index.md
+- 🏠 Home:
+  - Welcome: index.md
+  - What's New: changelog.md
 - 🚀 Getting Started:
   - Installation & Setup: USAGE.md
   - Quick Start Guide: quick-start.md
-  - Configuration: CONFIGURATION.md
+  - Configuration Guide: CONFIGURATION.md
   - Architecture Overview: architecture.md
   - 🎨 Architecture Diagrams: diagrams.md
 - 📦 Core Modules:
@@ -147,8 +187,8 @@ nav:
   - 💬 Communication: communication.md
   - 📊 Monitoring: monitoring.md
   - 🛡️ Guardrails: guardrails.md
-  - "\udcc8 Evaluation": evaluation.md
-  - "\ud83d� MCP Tools": mcp_tools.md
+  - 📈 Evaluation: evaluation.md
+  - 🔧 MCP Tools: mcp_tools.md
   - 📝 Prompts: prompts.md
   - 🌐 Hub: hub.md
 - 📖 Examples & Tutorials:
@@ -187,10 +227,10 @@ nav:
   - 🐛 Troubleshooting: TROUBLESHOOTING.md
   - ❓ FAQ: faq.md
   - 🤝 Contributing: contributing.md
-  - 📝 Changelog: changelog.md
 - 🧪 Development:
   - Testing Guide: TESTING.md
   - Release Automation: RELEASE_AUTOMATION.md
+  - Documentation Improvements: DOCUMENTATION_IMPROVEMENTS.md
 
 # Extra CSS and JavaScript
 extra_css:
@@ -212,10 +252,27 @@ extra:
   - icon: fontawesome/solid/book
     link: https://isathish.github.io/agenticaiframework/
     name: Documentation
+  - icon: fontawesome/brands/twitter
+    link: https://twitter.com/agenticai
+    name: Twitter
+  - icon: fontawesome/brands/discord
+    link: https://discord.gg/agenticai
+    name: Discord Community
   version:
     provider: mike
     default: latest
+  generator: false
+  consent:
+    title: Cookie consent
+    description: >-
+      We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make our documentation better.
+    actions:
+    - accept
+    - reject
+    - manage
   analytics:
+    provider: google
+    property: !ENV GOOGLE_ANALYTICS_KEY
     feedback:
       title: Was this page helpful?
       ratings:
@@ -223,9 +280,12 @@ extra:
         name: This page was helpful
         data: 1
         note: >-
-          Thanks for your feedback!
+          Thanks for your feedback! 🎉
       - icon: material/emoticon-sad-outline
         name: This page could be improved
         data: 0
         note: >-
-          Thanks for your feedback! Help us improve by <a href="https://github.com/isathish/agenticaiframework/issues/new" target="_blank" rel="noopener">opening an issue</a>.
+          Thanks for your feedback! Help us improve by  <a href="https://github.com/isathish/agenticaiframework/issues/new?template=documentation.md" target="_blank" rel="noopener">opening an issue</a>.
+  status:
+    new: Recently added
+    deprecated: Deprecated

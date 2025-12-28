@@ -274,7 +274,6 @@ graph TB
 - Cloud platform integrations (AWS, Azure, GCP)
 - Third-party service connectors
 
----
 
 ## 🏢 Enterprise Features 
 
@@ -419,7 +418,6 @@ pip install -r requirements-docs.txt
 pip install -r requirements-docs.txt
 ```
 
----
 
 ## ⚡ Quick Start Examples
 
@@ -827,7 +825,6 @@ pytest tests/test_agents_coverage.py -v        # Agent & context tests
 - **Performance**: Circuit breakers, caching, and retry mechanisms
 - **Reliability**: Robust error handling and recovery
 
----
 
 ## 🤝 Community & Support
 
@@ -850,7 +847,6 @@ We welcome contributions from the community! Ways to contribute:
 - **Q3 2025**: Advanced ML/AI integrations and self-healing capabilities
 - **Q4 2025**: Enterprise security, compliance features, and plugin marketplace
 
----
 
 <div align="center">
 
@@ -858,13 +854,11 @@ We welcome contributions from the community! Ways to contribute:
 
 **MIT License** - See [LICENSE](LICENSE) file for details
 
----
 
 ### 🌟 Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=isathish/agenticaiframework&type=Date)](https://star-history.com/#isathish/agenticaiframework&Date)
 
----
 
 ## 🙏 Acknowledgments
 
@@ -880,7 +874,6 @@ We welcome contributions from the community! Ways to contribute:
 
 **[⬆ Back to Top](#agenticai-framework)**
 
----
 
 <sub>© 2025 AgenticAI Framework. All rights reserved. | [Documentation](https://isathish.github.io/agenticaiframework/) | [GitHub](https://github.com/isathish/agenticaiframework) | [PyPI](https://pypi.org/project/agenticaiframework/)</sub>
 

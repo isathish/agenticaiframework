@@ -57,7 +57,6 @@ cat > "$OUTPUT_FILE" << EOF
 **Release Date**: $(date +%Y-%m-%d)
 **Previous Version**: $PREVIOUS_TAG
 
----
 
 ## 📊 Overview
 
@@ -70,7 +69,6 @@ This release includes:
 - **$(wc -l < "$TEMP_DIR/docs.txt")** documentation updates
 - **$(wc -l < "$TEMP_DIR/contributors.txt")** contributors
 
----
 
 EOF
 
@@ -81,7 +79,6 @@ if [ -s "$TEMP_DIR/breaking.txt" ]; then
 
 $(cat "$TEMP_DIR/breaking.txt" | cut -d'|' -f2 | sed 's/^/- /')
 
----
 
 EOF
 fi
@@ -156,7 +153,6 @@ Thank you to all contributors who made this release possible:
 
 $(cat "$TEMP_DIR/contributors.txt" | sed 's/^/- @/' | sed 's/ //g')
 
----
 
 ## 📦 Installation
 
@@ -170,7 +166,6 @@ Or upgrade from a previous version:
 pip install --upgrade agenticaiframework
 \`\`\`
 
----
 
 ## 📖 Documentation
 
@@ -179,7 +174,6 @@ pip install --upgrade agenticaiframework
 - [Quick Start Guide](https://isathish.github.io/agenticaiframework/quick-start/)
 - [Examples](https://isathish.github.io/agenticaiframework/EXAMPLES/)
 
----
 
 **Full Changelog**: [\`$PREVIOUS_TAG...$NEW_TAG\`](https://github.com/isathish/agenticaiframework/compare/$PREVIOUS_TAG...$NEW_TAG)
 EOF

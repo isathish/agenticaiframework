@@ -3,7 +3,6 @@
 ## Overview
 The `llms` module in the AgenticAI Framework provides enterprise-grade integration with Large Language Models (LLMs) featuring reliability patterns, monitoring, and intelligent fallback mechanisms. It abstracts away the complexity of model management while providing advanced features like circuit breakers, retry logic, response caching, and performance tracking.
 
----
 
 ## :art: High-Level Design (HLD)
 
@@ -69,7 +68,6 @@ graph TB
     style M1 fill:#2196f3
 ```
 
----
 
 ## :gear: Key Classes
 
@@ -153,7 +151,6 @@ stateDiagram-v2
     end note
 ```
 
----
 
 ## :wrench: Low-Level Design (LLD)
 

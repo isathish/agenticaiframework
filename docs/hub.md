@@ -3,7 +3,6 @@
 ## Overview
 The `hub` module acts as the central registry for agents, tools, and processes in the AgenticAI Framework. It enables dynamic registration, retrieval, and management of these components, allowing for flexible and modular system design.
 
----
 
 ## Key Functions
 
@@ -19,7 +18,6 @@ The `hub` module acts as the central registry for agents, tools, and processes i
 - `register_process(name, func)` — Register a process function.
 - `get_process(name)` — Retrieve a registered process function.
 
----
 
 ## Example Usage
 
@@ -49,7 +47,6 @@ tool = get_tool("word_count")
 print(tool("This is a test sentence."))
 ```
 
----
 
 ## Use Cases
 
@@ -57,7 +54,6 @@ print(tool("This is a test sentence."))
 - **Tool Sharing** — Share tools between multiple agents.
 - **Process Orchestration** — Centralize process definitions for reuse.
 
----
 
 ## Best Practices
 
@@ -65,7 +61,6 @@ print(tool("This is a test sentence."))
 - Register components during application initialization.
 - Keep tools and processes stateless for easier reuse.
 
----
 
 ## Related Documentation
 - [Agents Module](agents.md)

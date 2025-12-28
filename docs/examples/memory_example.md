@@ -2,7 +2,6 @@
 
 This guide provides a **professional, step-by-step walkthrough** of using the `MemoryManager` in the `agenticaiframework` package to efficiently store, retrieve, inspect, and clear different types of memory. It is designed for developers building intelligent agents that require persistent or temporary state management.
 
----
 
 ## Prerequisites & Configuration
 
@@ -10,7 +9,6 @@ This guide provides a **professional, step-by-step walkthrough** of using the `M
 - **No additional configuration** is required for this example.
 - **Python Version**: Compatible with Python 3.8+.
 
----
 
 ## Code
 
@@ -39,7 +37,6 @@ if __name__ == "__main__":
     print("Memory cleared. Keys now:", list(memory.short_term.keys()) + list(memory.long_term.keys()) + list(memory.external.keys()))
 ```
 
----
 
 ## Step-by-Step Execution
 
@@ -63,13 +60,11 @@ if __name__ == "__main__":
 
 > **Best Practice:** Always clear sensitive data from memory after use to prevent leaks in long-running applications.
 
----
 
 ## Expected Input
 
 No user input is required; the script uses hardcoded values for demonstration purposes. In production, these values could come from user interactions, API calls, or other runtime events.
 
----
 
 ## Expected Output
 
@@ -85,7 +80,6 @@ Stored Keys: ['user_name', 'last_query']
 Memory cleared. Keys now: []
 ```
 
----
 
 ## How to Run
 

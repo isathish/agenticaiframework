@@ -6,7 +6,6 @@ Production-ready patterns and expert recommendations for building scalable, reli
 
 </div>
 
----
 
 ## :bulb: General Principles
 
@@ -875,7 +874,5 @@ def update_security_patterns():
     for pattern in patterns:
         detector.add_pattern(pattern['regex'], pattern['severity'])
 ```
-
----
 
 These best practices will help you build robust, secure, scalable, and maintainable applications with AgenticAI Framework. Remember to adapt these patterns to your specific use case and requirements.

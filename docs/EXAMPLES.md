@@ -3,7 +3,6 @@
 This document contains runnable examples for various features of the `agenticaiframework` package.  
 Each example is aligned with the actual API and uses the `agenticaiframework` namespace for imports.
 
----
 
 ## 1. Agents Example
 
@@ -26,7 +25,6 @@ if __name__ == "__main__":
     print("Retrieved Agent:", retrieved_agent.name)
 ```
 
----
 
 ## 2. Tasks Example
 
@@ -51,7 +49,6 @@ if __name__ == "__main__":
     print("Retrieved Task:", retrieved_task.name)
 ```
 
----
 
 ## 3. LLMs Example
 
@@ -68,7 +65,6 @@ if __name__ == "__main__":
     print("Available Models:", list(llm_manager.models.keys()))
 ```
 
----
 
 ## 4. Guardrails Example
 
@@ -83,7 +79,6 @@ if __name__ == "__main__":
     print("Non-Compliant Output Valid:", guardrail_manager.validate("This contains badword."))
 ```
 
----
 
 ## 5. Memory Example
 
@@ -108,7 +103,6 @@ if __name__ == "__main__":
     print("Memory cleared. Keys now:", list(memory.short_term.keys()) + list(memory.long_term.keys()) + list(memory.external.keys()))
 ```
 
----
 
 ## 6. MCP Tools Example
 
@@ -129,7 +123,6 @@ if __name__ == "__main__":
     print("Tool Execution Result:", result)
 ```
 
----
 
 ## 7. Monitoring Example
 
@@ -149,7 +142,6 @@ if __name__ == "__main__":
     print("Logged Metrics:", monitor.metrics)
 ```
 
----
 
 ## 8. Prompts Example
 
@@ -165,7 +157,6 @@ if __name__ == "__main__":
     print("Rendered Prompt:", rendered_prompt)
 ```
 
----
 
 ## 9. Configurations Example
 
@@ -178,7 +169,6 @@ if __name__ == "__main__":
     print("API Key:", config.get("api_key"))
 ```
 
----
 
 **Usage:**  
 Run any example with:

@@ -15,7 +15,6 @@
   </a>
 </div>
 
----
 
 ## 10. Performance Issues
 
@@ -25,7 +24,6 @@
 - Use caching for repeated computations.
 - Profile the code to identify bottlenecks.
 
----
 
 ## 11. Deployment Problems
 
@@ -35,7 +33,6 @@
 - Ensure all dependencies are installed.
 - Verify network access for external APIs.
 
----
 
 ## 12. Memory Leaks
 
@@ -45,7 +42,6 @@
 - Use persistent storage for large datasets.
 - Monitor memory usage with `monitoring.py`.
 
----
 
 ## 13. Debugging Tips for Complex Workflows
 
@@ -53,7 +49,6 @@
 - Use verbose logging.
 - Test each component in isolation.
 
----
 
 ## 14. Getting Community Support
 
@@ -64,7 +59,6 @@
 
 This guide lists common issues you may encounter when using **AgenticAI** and how to resolve them.
 
----
 
 ## 1. Installation Issues
 
@@ -79,7 +73,6 @@ pip install agenticaiframework
 pip install .
 ```
 
----
 
 ## 2. API Key Errors
 
@@ -91,7 +84,6 @@ pip install .
 export AGENTICAI_API_KEY=your_api_key_here
 ```
 
----
 
 ## 3. Agent Not Found
 
@@ -100,7 +92,6 @@ export AGENTICAI_API_KEY=your_api_key_here
 - Ensure the agent is registered in `hub.py` using `register_agent()`.
 - Check for typos in the agent name.
 
----
 
 ## 4. Tool Not Found
 
@@ -109,7 +100,6 @@ export AGENTICAI_API_KEY=your_api_key_here
 - Ensure the tool is registered in `hub.py` using `register_tool()`.
 - Verify the tool name matches exactly.
 
----
 
 ## 5. LLM Provider Errors
 
@@ -118,7 +108,6 @@ export AGENTICAI_API_KEY=your_api_key_here
 - Check `llm_provider` in configuration.
 - Ensure the provider is implemented in `llms.py`.
 
----
 
 ## 6. Memory Issues
 
@@ -127,7 +116,6 @@ export AGENTICAI_API_KEY=your_api_key_here
 - Check the configured memory backend.
 - For persistent storage, implement a custom backend.
 
----
 
 ## 7. Process Execution Errors
 
@@ -136,7 +124,6 @@ export AGENTICAI_API_KEY=your_api_key_here
 - Ensure the process is defined in `processes.py`.
 - Verify the process name is correct.
 
----
 
 ## 8. Debugging Tips
 
@@ -147,7 +134,6 @@ export AGENTICAI_API_KEY=your_api_key_here
 pytest -v
 ```
 
----
 
 ## 9. Getting Help
 

@@ -3,7 +3,6 @@
 This guide provides a **professional, step-by-step walkthrough** for registering, setting, and using a language model with the `LLMManager` in the `agenticaiframework` package.  
 It is intended for developers integrating custom or third-party LLMs into their applications.
 
----
 
 ## Prerequisites & Configuration
 
@@ -11,7 +10,6 @@ It is intended for developers integrating custom or third-party LLMs into their 
 - **No additional configuration** is required for this example.
 - **Python Version**: Compatible with Python 3.8+.
 
----
 
 ## Code
 
@@ -34,7 +32,6 @@ if __name__ == "__main__":
     print("Available Models:", list(llm_manager.models.keys()))
 ```
 
----
 
 ## Step-by-Step Execution
 
@@ -60,13 +57,11 @@ if __name__ == "__main__":
 
 > **Best Practice:** Wrap third-party LLM APIs in a callable function to standardize the interface for `LLMManager`.
 
----
 
 ## Expected Input
 
 No user input is required; the script uses hardcoded values for demonstration purposes. In production, prompts could be dynamically generated from user input, workflows, or other runtime data.
 
----
 
 ## Expected Output
 
@@ -77,7 +72,6 @@ Generated Text: [Demo LLM Response to: Explain the concept of machine learning i
 Available Models: ['demo-llm']
 ```
 
----
 
 ## How to Run
 

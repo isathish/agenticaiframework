@@ -3,7 +3,6 @@
 This guide provides a **professional, step-by-step walkthrough** for using the `ConfigManager` in the `agenticaiframework` package to set, retrieve, and manage configuration values.  
 It is intended for developers who need a centralized way to handle application settings and environment-specific parameters.
 
----
 
 ## Prerequisites & Configuration
 
@@ -11,7 +10,6 @@ It is intended for developers who need a centralized way to handle application s
 - **No additional configuration** is required for this example.
 - **Python Version**: Compatible with Python 3.8+.
 
----
 
 ## Code
 
@@ -28,7 +26,6 @@ if __name__ == "__main__":
     print("API Key:", config.get("api_key"))
 ```
 
----
 
 ## Step-by-Step Execution
 
@@ -49,13 +46,11 @@ if __name__ == "__main__":
 
 > **Best Practice:** Store sensitive configuration values (e.g., API keys) in environment variables or secure vaults, and load them into `ConfigManager` at runtime.
 
----
 
 ## Expected Input
 
 No user input is required; the script uses hardcoded values for demonstration purposes. In production, configuration values could be loaded from environment variables, configuration files, or remote configuration services.
 
----
 
 ## Expected Output
 
@@ -63,7 +58,6 @@ No user input is required; the script uses hardcoded values for demonstration pu
 API Key: 123456
 ```
 
----
 
 ## How to Run
 

@@ -15,7 +15,6 @@
   </a>
 </div>
 
----
 
 ## 11. Advanced Usage Patterns
 
@@ -67,7 +66,6 @@ weather_agent = WeatherAgent(name="WeatherBot", role="weather", capabilities=["d
 print(weather_agent.act("New York"))
 ```
 
----
 
 ## 12. Deployment Scenarios
 
@@ -88,7 +86,6 @@ CMD ["python", "main.py"]
 ### Cloud Deployment
 Deploy to AWS Lambda, Google Cloud Functions, or Azure Functions by packaging the code and dependencies.
 
----
 
 ## 13. Security Considerations
 
@@ -97,7 +94,6 @@ Deploy to AWS Lambda, Google Cloud Functions, or Azure Functions by packaging th
 - Store API keys securely using environment variables or secret managers.
 - Limit network access for agents running in untrusted environments.
 
----
 
 ## 14. Performance Optimization
 
@@ -106,7 +102,6 @@ Deploy to AWS Lambda, Google Cloud Functions, or Azure Functions by packaging th
 - Use batch processing for large datasets.
 - Profile and monitor agent performance using `monitoring.py`.
 
----
 
 ## 15. Troubleshooting Complex Workflows
 
@@ -114,7 +109,6 @@ Deploy to AWS Lambda, Google Cloud Functions, or Azure Functions by packaging th
 - Break down workflows into smaller steps for easier debugging.
 - Use `pytest -v` for verbose test output.
 
----
 
 ## 16. Contributing to AgenticAI
 
@@ -124,7 +118,6 @@ We welcome contributions!
 3. Implement your changes with tests.  
 4. Submit a pull request.  
 
----
 
 ## 17. Additional Resources
 
@@ -137,7 +130,6 @@ We welcome contributions!
 
 This guide explains how to install, configure, and use the **AgenticAI** package with practical examples.
 
----
 
 ## 1. Installation
 
@@ -155,7 +147,6 @@ cd AgenticAI
 pip install .
 ```
 
----
 
 ## 2. Basic Usage
 
@@ -175,7 +166,6 @@ agent = get_agent("echo")
 print(agent.act("Hello World"))
 ```
 
----
 
 ## 3. Using Built-in Agents
 
@@ -189,7 +179,6 @@ response = agent.act("Summarize this text.")
 print(response)
 ```
 
----
 
 ## 4. Configuring the System
 
@@ -202,7 +191,6 @@ set_config("llm_provider", "openai")
 set_config("api_key", "your_api_key_here")
 ```
 
----
 
 ## 5. Using Tools
 
@@ -214,7 +202,6 @@ result = sentiment_tool("I love this product!")
 print(result)
 ```
 
----
 
 ## 6. Running Processes
 
@@ -225,7 +212,6 @@ result = run_process("data_analysis", {"dataset": "data.csv"})
 print(result)
 ```
 
----
 
 ## 7. Memory Usage
 
@@ -237,7 +223,6 @@ mem.store("user_name", "Alice")
 print(mem.retrieve("user_name"))
 ```
 
----
 
 ## 8. Example Workflow
 
@@ -253,7 +238,6 @@ response = agent.act(f"Summarize the sentiment: {analysis}")
 print(response)
 ```
 
----
 
 ## 9. Testing
 
@@ -263,7 +247,6 @@ Run tests with:
 pytest
 ```
 
----
 
 ## 10. Additional Resources
 

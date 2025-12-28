@@ -3,7 +3,6 @@
 This guide provides a **professional, step-by-step walkthrough** for adding and validating guardrails using the `GuardrailManager` in the `agenticaiframework` package.  
 It is intended for developers who want to enforce content safety, compliance, or quality rules in AI-generated outputs.
 
----
 
 ## Prerequisites & Configuration
 
@@ -11,7 +10,6 @@ It is intended for developers who want to enforce content safety, compliance, or
 - **No additional configuration** is required for this example.
 - **Python Version**: Compatible with Python 3.8+.
 
----
 
 ## Code
 
@@ -29,7 +27,6 @@ if __name__ == "__main__":
     print("Non-Compliant Output Valid:", guardrail_manager.validate("This contains badword."))
 ```
 
----
 
 ## Step-by-Step Execution
 
@@ -52,13 +49,11 @@ if __name__ == "__main__":
 
 > **Best Practice:** Keep guardrail functions efficient and deterministic to avoid performance bottlenecks in production.
 
----
 
 ## Expected Input
 
 No user input is required; the script uses hardcoded values for demonstration purposes. In production, guardrails could be dynamically loaded from configuration files or policy management systems.
 
----
 
 ## Expected Output
 
@@ -67,7 +62,6 @@ Compliant Output Valid: True
 Non-Compliant Output Valid: False
 ```
 
----
 
 ## How to Run
 

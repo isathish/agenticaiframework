@@ -6,7 +6,6 @@ Get up and running with AgenticAI Framework in just **5 minutes**! This guide wi
 
 </div>
 
----
 
 ## :clipboard: Prerequisites
 
@@ -16,7 +15,6 @@ Get up and running with AgenticAI Framework in just **5 minutes**! This guide wi
     - :material-package: **pip**: Python package manager
     - :material-clock-fast: **5 minutes**: That's all it takes!
 
----
 
 ## :package: Installation
 
@@ -44,7 +42,6 @@ Get up and running with AgenticAI Framework in just **5 minutes**! This guide wi
     python -c "import agenticaiframework; print(agenticaiframework.__version__)"
     ```
 
----
 
 ## :zap: Your First Agent
 

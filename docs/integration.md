@@ -8,13 +8,11 @@
 
 </div>
 
----
 
 ## 📊 Overview
 
 This guide demonstrates various integration patterns for connecting AgenticAI Framework with external systems, APIs, databases, and services.
 
----
 
 ## 🎯 Integration Architecture
 
@@ -62,7 +60,6 @@ graph TB
     style REST fill:#ff9800
 ```
 
----
 
 ## 🌐 REST API Integration
 
@@ -186,7 +183,6 @@ async def main():
         })
 ```
 
----
 
 ## 🔗 GraphQL Integration
 
@@ -249,7 +245,6 @@ new_user = await graphql_client.mutate(mutation, variables={
 })
 ```
 
----
 
 ## 🗄️ Database Integration
 
@@ -497,7 +492,6 @@ class CachedAgent(Agent):
         return data
 ```
 
----
 
 ## 📨 Message Queue Integration
 
@@ -640,7 +634,6 @@ async def process_task(task):
 await rabbitmq.consume("task_queue", process_task)
 ```
 
----
 
 ## 🔔 Webhook Integration
 
@@ -747,7 +740,6 @@ await webhook_manager.send_webhook(
 )
 ```
 
----
 
 ## 📚 Related Documentation
 
@@ -756,7 +748,6 @@ await webhook_manager.send_webhook(
 - [Security](security.md) - Security best practices
 - [Best Practices](best-practices.md) - Development guidelines
 
----
 
 <div align="center">
 

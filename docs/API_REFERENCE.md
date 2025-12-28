@@ -2,7 +2,6 @@
 
 Complete API reference for the AgenticAI Framework.
 
----
 
 ## Module Overview
 
@@ -324,7 +323,6 @@ Complete API reference for the AgenticAI Framework.
 - `run_all()` – Run all tasks
 - `list_tasks()` – List tasks
 
----
 
 ## 7. Advanced Usage Examples
 
@@ -365,8 +363,6 @@ def greet():
 print(run_process(greet))
 ```
 
----
-
 ## 8. Notes on API Stability
 
 - Public APIs follow semantic versioning.
@@ -375,9 +371,6 @@ print(run_process(greet))
 
 This document provides a reference for the main classes, functions, and modules in **AgenticAI**.
 
----
-
-## 1. Modules Overview
 
 - **agenticaiframework.agents** – Agent base classes and implementations.
 - **agenticaiframework.communication** – Communication utilities.
@@ -394,10 +387,7 @@ This document provides a reference for the main classes, functions, and modules 
 - **agenticaiframework.prompts** – Prompt templates.
 - **agenticaiframework.tasks** – Task management.
 
----
-
 ## 2. Core Classes
-
 ### `Agent`
 **Location:** `agenticaiframework.agents`
 
@@ -406,57 +396,39 @@ This document provides a reference for the main classes, functions, and modules 
 - `observe(data)` – Observe environment or input.
 - `plan()` – Plan next steps.
 
----
-
-### `Memory`
 **Location:** `agenticaiframework.memory`
-
 **Methods:**
 - `store(key, value)` – Store a value.
 - `retrieve(key)` – Retrieve a value.
 - `clear()` – Clear memory.
 
----
 
-### `Hub`
 **Location:** `agenticaiframework.hub`
 
-**Functions:**
 - `register_agent(name, cls)` – Register an agent.
 - `get_agent(name)` – Retrieve an agent instance.
 - `register_tool(name, func)` – Register a tool.
 - `get_tool(name)` – Retrieve a tool.
 
----
-
 ## 3. Utility Functions
-
 ### `set_config(key, value)`
 **Location:** `agenticaiframework.configurations`
-
 Set a configuration value.
 
----
 
 ### `run_process(name, params)`
 **Location:** `agenticaiframework.processes`
-
 Run a registered process.
-
----
 
 ## 4. Example Usage
 
 ```python
-from agenticaiframework.hub import get_agent
 
 agent = get_agent("default_agent")
 print(agent.act("Hello"))
 ```
 
----
 
-## 5. Notes
 
 - All public APIs are subject to semantic versioning.
 - Internal APIs may change without notice.

@@ -6,7 +6,6 @@ The Agents module is the cornerstone of the AgenticAI Framework, providing the f
 
 </div>
 
----
 
 ## :sparkles: Overview
 
@@ -36,7 +35,6 @@ The Agents module is the cornerstone of the AgenticAI Framework, providing the f
 
 </div>
 
----
 
 ## :gear: Core Components
 
@@ -77,7 +75,6 @@ The `Agent` class is the base implementation for all agent types in the framewor
 | `memory` | List | Agent's memory storage |
 | `version` | str | Agent version |
 
----
 
 ## :art: Low-Level Design (LLD)
 
@@ -381,7 +378,6 @@ flowchart TB
     style STORE fill:#ff9800
 ```
 
----
 
 ## :rocket: Creating Agents
 
@@ -447,7 +443,6 @@ graph LR
     style A3 fill:#ff9800
 ```
 
----
 
 ### :material-star-circle: Specialized Agent Types
 
@@ -959,7 +954,6 @@ class DebuggableAgent(Agent):
 This comprehensive guide covers the Agents module's core functionality, advanced features, and best practices for building robust agentic applications.
 5. **Execution** — Perform actions until stopped.
 
----
 
 ## Best Practices
 
@@ -967,7 +961,6 @@ This comprehensive guide covers the Agents module's core functionality, advanced
 - Use guardrails to enforce safety and compliance.
 - Leverage the `hub` module to register and retrieve agents dynamically.
 
----
 
 ## Related Documentation
 - [Hub Module](hub.md)

@@ -89,7 +89,6 @@ def backup_memory(name: str, backup_path: str) -> None
 def restore_memory(name: str, backup_path: str) -> None
 ```
 
----
 
 ## :art: Low-Level Design (LLD)
 
@@ -1443,7 +1442,6 @@ This comprehensive Memory module documentation provides all the tools and patter
             f.write(str(self.data))
 ```
 
----
 
 ## Best Practices
 
@@ -1451,7 +1449,6 @@ This comprehensive Memory module documentation provides all the tools and patter
 - Use persistent storage for long-running agents or when data must survive restarts.
 - Avoid storing sensitive data unless encrypted.
 
----
 
 ## Related Documentation
 - [Agents Module](agents.md)

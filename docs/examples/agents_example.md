@@ -3,7 +3,6 @@
 This guide provides a **professional, step-by-step walkthrough** for creating, registering, and controlling an agent using the `AgentManager` and `Agent` classes from the `agenticaiframework` package.  
 It is intended for developers building intelligent systems that require autonomous or semi-autonomous agents.
 
----
 
 ## Prerequisites & Configuration
 
@@ -11,7 +10,6 @@ It is intended for developers building intelligent systems that require autonomo
 - **No additional configuration** is required for this example.
 - **Python Version**: Compatible with Python 3.8+.
 
----
 
 ## Code
 
@@ -39,7 +37,6 @@ if __name__ == "__main__":
     print("Retrieved Agent:", retrieved_agent.name)
 ```
 
----
 
 ## Step-by-Step Execution
 
@@ -66,13 +63,11 @@ if __name__ == "__main__":
 
 > **Best Practice:** Assign meaningful names to agents to make debugging and monitoring easier.
 
----
 
 ## Expected Input
 
 No user input is required; the script uses hardcoded values for demonstration purposes. In production, agent names and behaviors could be dynamically configured based on application needs.
 
----
 
 ## Expected Output
 
@@ -85,7 +80,6 @@ Registered Agents: ['ExampleAgent']
 Retrieved Agent: ExampleAgent
 ```
 
----
 
 ## How to Run
 

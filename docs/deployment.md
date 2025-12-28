@@ -9,13 +9,11 @@
 
 </div>
 
----
 
 ## 📊 Overview
 
 This comprehensive guide covers deploying AgenticAI Framework applications across various environments, from local development to production-scale cloud deployments.
 
----
 
 ## 🎯 Deployment Options
 
@@ -53,7 +51,6 @@ graph TB
     style SERVERLESS fill:#ff9800
 ```
 
----
 
 ## 🐳 Docker Deployment
 
@@ -230,7 +227,6 @@ docker-compose down
 docker-compose down -v
 ```
 
----
 
 ## ☸️ Kubernetes Deployment
 
@@ -408,7 +404,6 @@ kubectl delete -f kubernetes/
 helm uninstall agenticai
 ```
 
----
 
 ## ☁️ Cloud Platform Deployments
 
@@ -611,7 +606,6 @@ kubectl expose deployment agenticai-deployment \
   --target-port 8000
 ```
 
----
 
 ## 🔐 Security Configuration
 
@@ -656,7 +650,6 @@ def get_gcp_secret(project_id: str, secret_id: str):
     return response.payload.data.decode('UTF-8')
 ```
 
----
 
 ## 📊 Monitoring & Health Checks
 
@@ -733,7 +726,6 @@ def log_structured(level: str, message: str, **kwargs):
 log_structured("INFO", "Agent started", agent_id="agent_001", task="analysis")
 ```
 
----
 
 ## 🔄 CI/CD Pipeline
 
@@ -790,7 +782,6 @@ jobs:
         kubectl-version: 'latest'
 ```
 
----
 
 ## 📚 Related Documentation
 
@@ -800,7 +791,6 @@ jobs:
 - [Security](security.md) - Security best practices
 - [Best Practices](best-practices.md) - Development guidelines
 
----
 
 <div align="center">
 

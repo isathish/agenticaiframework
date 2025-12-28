@@ -3,7 +3,6 @@
 ## Overview
 The `processes` module defines and manages workflows for agents. It supports both synchronous and asynchronous execution, enabling flexible orchestration of tasks.
 
----
 
 ## Key Functions
 
@@ -13,7 +12,6 @@ Run a registered process by name with the given parameters.
 ### `run_process_async(func)`
 Run a process asynchronously, useful for I/O-bound or long-running tasks.
 
----
 
 ## Example Usage
 
@@ -40,7 +38,6 @@ result = asyncio.run(run_process_async(async_task))
 print(result)
 ```
 
----
 
 ## Use Cases
 
@@ -48,7 +45,6 @@ print(result)
 - **Parallel Execution** — Run multiple processes concurrently.
 - **Background Tasks** — Offload long-running tasks to asynchronous processes.
 
----
 
 ## Best Practices
 
@@ -56,7 +52,6 @@ print(result)
 - Avoid blocking operations in asynchronous processes.
 - Use descriptive names for registered processes.
 
----
 
 ## Related Documentation
 - [Hub Module](hub.md)

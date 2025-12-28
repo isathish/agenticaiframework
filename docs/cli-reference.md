@@ -8,13 +8,11 @@
 
 </div>
 
----
 
 ## 📊 Overview
 
 Complete command-line interface (CLI) reference for AgenticAI Framework. This guide covers all CLI commands, options, and usage examples for managing agents, tasks, and configurations.
 
----
 
 ## 🚀 Installation
 
@@ -29,7 +27,6 @@ agenticai --version
 agenticai --help
 ```
 
----
 
 ## 📖 Global Options
 
@@ -60,8 +57,6 @@ agenticai --verbose agent create --name my_agent
 # JSON output
 agenticai --output json agent list
 ```
-
----
 
 ## 🤖 Agent Commands
 
@@ -230,9 +225,6 @@ agenticai agent delete agent_001
 agenticai agent delete agent_001 --confirm
 ```
 
----
-
-## ✅ Task Commands
 
 ### `agenticai task create`
 
@@ -367,10 +359,6 @@ agenticai task retry <task_id>
 agenticai task retry task_001
 ```
 
----
-
-## 💾 Memory Commands
-
 ### `agenticai memory store`
 
 Store data in memory.
@@ -495,10 +483,6 @@ agenticai memory clear
 agenticai memory clear --confirm
 ```
 
----
-
-## 🧠 LLM Commands
-
 ### `agenticai llm generate`
 
 Generate text using LLM.
@@ -555,11 +539,6 @@ agenticai llm models
 agenticai llm models --provider openai
 ```
 
----
-
-## 📊 Monitoring Commands
-
-### `agenticai monitor status`
 
 Show system status.
 
@@ -641,12 +620,8 @@ agenticai monitor logs --level ERROR --follow
 agenticai monitor logs --agent agent_001 --follow
 ```
 
----
-
 ## ⚙️ Config Commands
-
 ### `agenticai config show`
-
 Show current configuration.
 
 ```bash
@@ -720,11 +695,7 @@ agenticai config validate
 agenticai config validate --config staging-config.yaml
 ```
 
----
 
-## 🧪 Test Commands
-
-### `agenticai test run`
 
 Run test suite.
 
@@ -771,12 +742,7 @@ agenticai test benchmark
 agenticai test benchmark --suite performance
 ```
 
----
-
-## 🔧 Utility Commands
-
 ### `agenticai init`
-
 Initialize a new project.
 
 ```bash
@@ -844,11 +810,7 @@ agenticai version
 agenticai version --full
 ```
 
----
 
-## 📝 Examples
-
-### Complete Workflow Example
 
 ```bash
 # 1. Initialize project
@@ -894,12 +856,8 @@ agenticai agent list --format json | jq '.[] | .id'
 agenticai agent list --format json | jq -r '.[] | .id' | xargs -I {} agenticai agent stop {}
 ```
 
----
 
 ## 🔗 Shell Completion
-
-Enable shell auto-completion:
-
 ```bash
 # Bash
 agenticai --install-completion bash
@@ -913,19 +871,10 @@ source ~/.zshrc
 agenticai --install-completion fish
 ```
 
----
-
 ## 📚 Related Documentation
 
-- [Configuration Reference](configuration-reference.md) - Configuration options
-- [API Reference](API_REFERENCE.md) - Python API
-- [Quick Start](quick-start.md) - Getting started guide
 - [Examples](EXAMPLES.md) - Code examples
 
----
 
-<div align="center">
 
 **[⬆ Back to Top](#-cli-reference)**
-
-</div>

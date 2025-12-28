@@ -8,13 +8,11 @@
 
 </div>
 
----
 
 ## 📊 Overview
 
 The Communication module provides a flexible, protocol-based messaging system for agent-to-agent and agent-to-system communication. It supports multiple communication patterns and protocols.
 
----
 
 ## 🎯 Communication Architecture
 
@@ -59,7 +57,6 @@ graph TB
     style P2P fill:#ff9800
 ```
 
----
 
 ## 🚀 Quick Start
 
@@ -88,7 +85,6 @@ protocols = comm.list_protocols()
 print(f"Available protocols: {protocols}")
 ```
 
----
 
 ## 📖 Core API
 
@@ -161,8 +157,6 @@ Get list of all registered protocols.
 protocols = comm.list_protocols()
 # Returns: ['http', 'websocket', 'custom']
 ```
-
----
 
 ## 🔄 Communication Patterns
 
@@ -376,9 +370,6 @@ broadcast.broadcast({
 })
 ```
 
----
-
-## 🔌 Protocol Implementations
 
 ### HTTP Protocol
 
@@ -525,10 +516,6 @@ def rabbitmq_protocol_handler(data):
 comm.register_protocol("rabbitmq", rabbitmq_protocol_handler)
 ```
 
----
-
-## 🎯 Best Practices
-
 ### 1. Error Handling
 
 ```python
@@ -616,11 +603,6 @@ async def main():
     print(result)
 ```
 
----
-
-## 📊 Sequence Diagrams
-
-### Agent Communication Flow
 
 ```mermaid
 sequenceDiagram
@@ -646,19 +628,8 @@ sequenceDiagram
     end
 ```
 
----
-
 ## 📚 Related Documentation
-
-- [Agents Module](agents.md) - Agent implementation
-- [Tasks Module](tasks.md) - Task management
 - [Integration Patterns](integration.md) - External integrations
 - [Best Practices](best-practices.md) - Development guidelines
 
----
 
-<div align="center">
-
-**[⬆ Back to Top](#-communication-module)**
-
-</div>

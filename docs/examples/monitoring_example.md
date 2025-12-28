@@ -3,7 +3,6 @@
 This guide provides a **professional, step-by-step walkthrough** for using the `MonitoringSystem` in the `agenticaiframework` package to log events and record metrics.  
 It is intended for developers who want to track agent activities, performance, and operational metrics in real-time.
 
----
 
 ## Prerequisites & Configuration
 
@@ -11,7 +10,6 @@ It is intended for developers who want to track agent activities, performance, a
 - **No additional configuration** is required for this example.
 - **Python Version**: Compatible with Python 3.8+.
 
----
 
 ## Code
 
@@ -34,7 +32,6 @@ if __name__ == "__main__":
     print("Logged Metrics:", monitor.metrics)
 ```
 
----
 
 ## Step-by-Step Execution
 
@@ -59,13 +56,11 @@ if __name__ == "__main__":
 
 > **Best Practice:** Use consistent naming conventions for events and metrics to simplify analysis and reporting.
 
----
 
 ## Expected Input
 
 No user input is required; the script uses hardcoded values for demonstration purposes. In production, events and metrics could be generated dynamically from agent activities, API calls, or system monitoring hooks.
 
----
 
 ## Expected Output
 
@@ -78,7 +73,6 @@ Logged Events: [{'type': 'AgentStarted', 'details': {'agent_name': 'ExampleAgent
 Logged Metrics: {'ResponseTime': 1.23, 'Accuracy': 0.98}
 ```
 
----
 
 ## How to Run
 

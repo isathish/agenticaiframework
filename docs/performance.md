@@ -8,13 +8,11 @@
 
 </div>
 
----
 
 ## 📊 Overview
 
 This guide provides comprehensive strategies for optimizing the performance of your AgenticAI Framework applications. Learn how to maximize throughput, minimize latency, and efficiently scale your agent-based systems.
 
----
 
 ## 🎯 Performance Metrics
 
@@ -66,7 +64,6 @@ graph TB
 | **Success Rate** | > 99% | > 99.9% | < 98% |
 | **Error Rate** | < 1% | < 0.1% | > 2% |
 
----
 
 ## 🚀 Agent Performance Optimization
 
@@ -159,7 +156,6 @@ context_mgr.add_context(
 optimized = context_mgr.get_context_summary()
 ```
 
----
 
 ## 🧠 LLM Performance Optimization
 
@@ -282,7 +278,6 @@ async for token in stream_llm_response("Explain quantum computing"):
     print(token, end="", flush=True)
 ```
 
----
 
 ## 💾 Memory System Optimization
 
@@ -361,7 +356,6 @@ def cleanup_stale_memories():
 schedule.every().day.at("02:00").do(cleanup_stale_memories)
 ```
 
----
 
 ## 📚 Knowledge Base Optimization
 
@@ -410,7 +404,6 @@ results = knowledge_base.search(
 )
 ```
 
----
 
 ## 🔧 System-Level Optimizations
 
@@ -469,7 +462,6 @@ with Pool(processes=8) as pool:
     results = pool.map(cpu_intensive_task, large_dataset)
 ```
 
----
 
 ## 📈 Monitoring & Profiling
 
@@ -557,7 +549,6 @@ def memory_intensive_function():
 memory_intensive_function()
 ```
 
----
 
 ## 🎯 Performance Optimization Flowchart
 
@@ -607,7 +598,6 @@ graph TB
     style DOCUMENT fill:#2196f3
 ```
 
----
 
 ## 🏆 Best Practices Summary
 
@@ -637,7 +627,6 @@ graph TB
 9. **Don't Batch Too Large**: Memory pressure and timeouts
 10. **Don't Ignore Errors**: Silent failures degrade performance
 
----
 
 ## 📚 Related Documentation
 
@@ -647,7 +636,6 @@ graph TB
 - [Best Practices](best-practices.md) - Development guidelines
 - [Troubleshooting](TROUBLESHOOTING.md) - Common issues
 
----
 
 ## 📞 Performance Support
 
@@ -657,7 +645,6 @@ For performance-related questions:
 - **Discussions**: [Performance optimization discussions](https://github.com/isathish/agenticaiframework/discussions)
 - **Documentation**: [Complete guides](https://isathish.github.io/agenticaiframework/)
 
----
 
 <div align="center">
 

@@ -3,7 +3,6 @@
 This guide provides a **professional, step-by-step walkthrough** for using the `Prompt` class in the `agenticaiframework` package to create and render dynamic text templates.  
 It is intended for developers building AI-driven applications that require flexible, parameterized prompt generation.
 
----
 
 ## Prerequisites & Configuration
 
@@ -11,7 +10,6 @@ It is intended for developers building AI-driven applications that require flexi
 - **No additional configuration** is required for this example.
 - **Python Version**: Compatible with Python 3.8+.
 
----
 
 ## Code
 
@@ -29,7 +27,6 @@ if __name__ == "__main__":
     print("Rendered Prompt:", rendered_prompt)
 ```
 
----
 
 ## Step-by-Step Execution
 
@@ -47,13 +44,11 @@ if __name__ == "__main__":
 
 > **Best Practice:** Keep prompt templates clear and concise, and use descriptive placeholder names to improve maintainability.
 
----
 
 ## Expected Input
 
 No user input is required; the script uses hardcoded values for demonstration purposes. In production, placeholder values could be dynamically generated from user input, database queries, or API responses.
 
----
 
 ## Expected Output
 
@@ -61,7 +56,6 @@ No user input is required; the script uses hardcoded values for demonstration pu
 Rendered Prompt: Write a short paragraph summary about artificial intelligence.
 ```
 
----
 
 ## How to Run
 

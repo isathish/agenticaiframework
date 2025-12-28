@@ -15,7 +15,6 @@
   </a>
 </div>
 
----
 
 ## 9. Environment-Specific Configurations
 
@@ -43,7 +42,6 @@ for key, value in CONFIG.items():
     set_config(key, value)
 ```
 
----
 
 ## 10. Dynamic Configuration Updates
 
@@ -56,7 +54,6 @@ set_config("log_level", "DEBUG")
 print(get_config("log_level"))  # Output: DEBUG
 ```
 
----
 
 ## 11. Configuration Validation
 
@@ -69,7 +66,6 @@ def validate_config():
         raise ValueError("API key is missing!")
 ```
 
----
 
 ## 12. Secrets Management
 
@@ -92,8 +88,6 @@ def get_secret(secret_name):
     return json.loads(response["SecretString"])
 ```
 
----
-
 ## 13. Best Practices for Configuration
 
 - Keep configuration files out of version control if they contain secrets.
@@ -103,8 +97,6 @@ def get_secret(secret_name):
 
 This document explains how to configure **AgenticAI** for different environments and use cases.
 
----
-
 ## 1. Configuration Methods
 
 You can configure AgenticAI in three ways:
@@ -112,8 +104,6 @@ You can configure AgenticAI in three ways:
 1. **Programmatically** – Using `set_config()` from `agenticaiframework.configurations`.
 2. **Configuration File** – Editing `configurations.py`.
 3. **Environment Variables** – Setting variables before running your application.
-
----
 
 ## 2. Common Configuration Keys
 
@@ -125,9 +115,7 @@ You can configure AgenticAI in three ways:
 | `log_level` | Logging verbosity | `"INFO"` |
 | `default_agent` | Default agent name | `"default_agent"` |
 
----
 
-## 3. Programmatic Configuration
 
 ```python
 from agenticaiframework.configurations import set_config
@@ -137,20 +125,14 @@ set_config("api_key", "your_api_key_here")
 set_config("memory_backend", "in_memory")
 ```
 
----
-
 ## 4. Using Environment Variables
-
 ```bash
 export AGENTICAI_LLM_PROVIDER=openai
 export AGENTICAI_API_KEY=your_api_key_here
 ```
 
----
 
-## 5. Configuration File
 
-Edit `agenticaiframework/configurations.py`:
 
 ```python
 CONFIG = {
@@ -162,7 +144,6 @@ CONFIG = {
 }
 ```
 
----
 
 ## 6. Advanced Configuration
 
@@ -170,7 +151,6 @@ CONFIG = {
 - **Custom Memory Backends** – Implement a new backend in `memory.py` and set it in config.
 - **Logging** – Adjust `log_level` to `"DEBUG"` for detailed logs.
 
----
 
 ## 7. Verifying Configuration
 
@@ -180,7 +160,6 @@ from agenticaiframework.configurations import get_config
 print(get_config("llm_provider"))
 ```
 
----
 
 ## 8. Best Practices
 

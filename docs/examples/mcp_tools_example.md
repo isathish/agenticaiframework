@@ -3,7 +3,6 @@
 This guide provides a **professional, step-by-step walkthrough** for creating, registering, and executing a custom MCP (Model Context Protocol) tool using the `MCPToolManager` and `MCPTool` classes from the `agenticaiframework` package.  
 It is intended for developers who want to extend their agent's capabilities with modular, reusable tools.
 
----
 
 ## Prerequisites & Configuration
 
@@ -11,7 +10,6 @@ It is intended for developers who want to extend their agent's capabilities with
 - **No additional configuration** is required for this example.
 - **Python Version**: Compatible with Python 3.8+.
 
----
 
 ## Code
 
@@ -36,7 +34,6 @@ if __name__ == "__main__":
     print("Tool Execution Result:", result)
 ```
 
----
 
 ## Step-by-Step Execution
 
@@ -66,13 +63,11 @@ if __name__ == "__main__":
 
 > **Best Practice:** Keep tool functions small and focused on a single responsibility for better maintainability.
 
----
 
 ## Expected Input
 
 No user input is required; the script uses hardcoded values for demonstration purposes. In production, arguments could be dynamically generated from user input, API responses, or other runtime data.
 
----
 
 ## Expected Output
 
@@ -83,7 +78,6 @@ Available Tools: ['greet']
 Tool Execution Result: Hello, Alice! Welcome to MCP Tools.
 ```
 
----
 
 ## How to Run
 

@@ -15,7 +15,6 @@
   <a href="https://github.com/isathish/agenticaiframework"><img src="https://img.shields.io/github/license/isathish/agenticaiframework?color=blue" alt="License"></a>
 </p>
 
----
 
 </div>
 
@@ -27,32 +26,28 @@ AgenticAI Framework empowers developers, researchers, and enterprises to create 
 
 -   :material-rocket-launch:{ .lg .middle } __Enterprise-Ready__
 
-    ---
-
+    
     Production-ready framework with built-in security, monitoring, and scalability features for mission-critical applications.
 
     [:octicons-arrow-right-24: Learn more](best-practices.md)
 
 -   :material-code-braces:{ .lg .middle } __Developer-Friendly__
 
-    ---
-
+    
     Intuitive APIs and comprehensive documentation make building AI agents effortless. Get started in minutes.
 
     [:octicons-arrow-right-24: Quick Start](quick-start.md)
 
 -   :material-puzzle:{ .lg .middle } __Flexible Architecture__
 
-    ---
-
+    
     Modular design allows you to mix and match components based on your needs. Extend with ease.
 
     [:octicons-arrow-right-24: Architecture](architecture.md)
 
 -   :material-lightning-bolt:{ .lg .middle } __High Performance__
 
-    ---
-
+    
     Optimized for both single-agent and multi-agent scenarios with built-in async support and caching.
 
     [:octicons-arrow-right-24: Performance](performance.md)
@@ -86,7 +81,6 @@ AgenticAI Framework empowers developers, researchers, and enterprises to create 
 
 </div>
 
----
 
 ## :package: Installation
 
@@ -126,7 +120,6 @@ AgenticAI Framework empowers developers, researchers, and enterprises to create 
     - :fontawesome-solid-desktop: **OS**: Windows, macOS, Linux
     - :fontawesome-solid-memory: **Memory**: Minimum 2GB RAM (4GB+ recommended)
 
----
 
 ## :zap: Quick Start
 
@@ -212,7 +205,6 @@ AgenticAI Framework empowers developers, researchers, and enterprises to create 
 
     [:octicons-arrow-right-24: Advanced Examples](EXAMPLES.md)
 
----
 
 ## :building_construction: Core Architecture
 
@@ -254,8 +246,7 @@ graph TB
 
 -   :material-robot:{ .lg .middle } __Agents__
 
-    ---
-
+    
     Core AI entities with role-based capabilities
     
     - Configurable behaviors
@@ -266,8 +257,7 @@ graph TB
 
 -   :material-checkbox-marked-circle:{ .lg .middle } __Tasks__
 
-    ---
-
+    
     Discrete work units with clear objectives
     
     - Async execution
@@ -278,8 +268,7 @@ graph TB
 
 -   :material-cog-sync:{ .lg .middle } __Processes__
 
-    ---
-
+    
     Workflow orchestration and coordination
     
     - Sequential pipelines
@@ -290,8 +279,7 @@ graph TB
 
 -   :material-brain:{ .lg .middle } __LLMs__
 
-    ---
-
+    
     Language model integration layer
     
     - Multi-provider support
@@ -302,8 +290,7 @@ graph TB
 
 -   :material-database:{ .lg .middle } __Memory__
 
-    ---
-
+    
     Sophisticated data persistence
     
     - Short-term memory
@@ -314,8 +301,7 @@ graph TB
 
 -   :material-book-open:{ .lg .middle } __Knowledge__
 
-    ---
-
+    
     Information retrieval system
     
     - Vector search
@@ -326,8 +312,7 @@ graph TB
 
 -   :material-shield-check:{ .lg .middle } __Guardrails__
 
-    ---
-
+    
     Safety and compliance layer
     
     - Input validation
@@ -338,8 +323,7 @@ graph TB
 
 -   :material-chart-line:{ .lg .middle } __Monitoring__
 
-    ---
-
+    
     Full observability stack
     
     - Metrics collection
@@ -350,7 +334,6 @@ graph TB
 
 </div>
 
----
 
 ## :material-lightbulb-on: Use Cases
 
@@ -358,32 +341,28 @@ graph TB
 
 -   :material-office-building:{ .lg } __Enterprise Applications__
 
-    ---
-
+    
     - **Customer Support**: Intelligent chatbots with escalation
     - **Document Processing**: Automated analysis and summarization
     - **Business Intelligence**: Data analysis and reporting
 
 -   :material-flask:{ .lg } __Research & Development__
 
-    ---
-
+    
     - **Research Assistants**: Literature review and synthesis
     - **Data Science**: Automated ML workflows
     - **Experiment Management**: Hypothesis testing
 
 -   :material-code-tags:{ .lg } __Software Development__
 
-    ---
-
+    
     - **Code Generation**: Automated programming assistance
     - **Testing & QA**: Intelligent test case generation
     - **DevOps**: Deployment and monitoring automation
 
 -   :material-school:{ .lg } __Education & Training__
 
-    ---
-
+    
     - **Personalized Tutoring**: Adaptive learning systems
     - **Content Creation**: Automated curriculum generation
     - **Assessment Tools**: Intelligent grading and feedback
@@ -392,7 +371,6 @@ graph TB
 
 [:octicons-arrow-right-24: More Examples](EXAMPLES.md){ .md-button }
 
----
 
 ## 📚 Key Concepts
 
@@ -481,7 +459,6 @@ else:
     log_security_event(result['issues'])
 ```
 
----
 
 ## 🔧 Configuration
 
@@ -505,7 +482,6 @@ config.set_config("LLM", {
 })
 ```
 
----
 
 ## 📊 Monitoring & Observability
 
@@ -526,7 +502,6 @@ metrics = monitor.get_metrics()
 events = monitor.get_events()
 ```
 
----
 
 ## 🛡️ Security Features
 
@@ -536,7 +511,6 @@ events = monitor.get_events()
 - **Audit Logging**: Comprehensive activity tracking
 - **Encryption**: Data protection in transit and at rest
 
----
 
 ## 🚀 Performance Optimization
 
@@ -555,7 +529,6 @@ events = monitor.get_events()
 - **Resource Monitoring**: Built-in performance tracking
 - **Auto-scaling**: Dynamic agent provisioning based on load
 
----
 
 ## 🔗 Integrations
 
@@ -582,7 +555,6 @@ events = monitor.get_events()
 - Elasticsearch (search and analytics)
 - Vector databases (Pinecone, Weaviate, Chroma)
 
----
 
 ## 📖 Documentation
 
@@ -594,7 +566,6 @@ events = monitor.get_events()
 | [Best Practices](best-practices.md) | Production deployment guidelines |
 | [Troubleshooting](TROUBLESHOOTING.md) | Common issues and solutions |
 
----
 
 ## 🤝 Community & Support
 
@@ -603,13 +574,11 @@ events = monitor.get_events()
 - **Documentation**: [Complete guides and API reference](https://isathish.github.io/agenticaiframework/)
 - **PyPI**: [Package distribution](https://pypi.org/project/agenticaiframework/)
 
----
 
 ## 📜 License
 
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/isathish/agenticaiframework/blob/main/LICENSE) file for details.
 
----
 
 ## 🙏 Acknowledgments
 
@@ -634,7 +603,6 @@ manager.register_agent(agent)
 agent.start()
 ```
 
----
 
 ## 📚 Core Concepts
 
@@ -694,7 +662,6 @@ def no_sensitive_data(input_text):
 add_guardrail(no_sensitive_data)
 ```
 
----
 
 ## 🛠 Configuration
 
@@ -709,7 +676,6 @@ from agenticaiframework.configurations import set_config
 set_config("max_concurrent_tasks", 5)
 ```
 
----
 
 ## 🔌 Integrations
 
@@ -720,7 +686,6 @@ AgenticAI Framework supports:
 - **Knowledge Retrieval** – Integrate with vector databases and search engines.
 - **MCP Tools** – Extend capabilities with Model Context Protocol integrations.
 
----
 
 ## 🧪 Testing
 
@@ -757,7 +722,6 @@ pytest tests/ -m "not slow"    # Fast tests only
 
 For detailed testing guide, see [Testing Guide](TESTING.md).
 
----
 
 ## 📄 Documentation Sections
 
@@ -772,7 +736,6 @@ For detailed testing guide, see [Testing Guide](TESTING.md).
 - [Extending the Framework](EXTENDING.md) - Customization guide
 - [Troubleshooting](TROUBLESHOOTING.md) - Common issues and solutions
 
----
 
 ## 📘 Advanced Topics
 
@@ -818,7 +781,6 @@ kb.add_document("doc1", "This is a sample document.")
 print(kb.search("sample"))
 ```
 
----
 
 ## 📊 Performance Tips
 
@@ -827,7 +789,6 @@ print(kb.search("sample"))
 - Cache frequently used data in memory.
 - Use guardrails to prevent invalid or unsafe operations.
 
----
 
 ## 🤝 Contributing
 
@@ -837,7 +798,6 @@ We welcome contributions!
 3. Submit a pull request.  
 4. Ensure all tests pass before submission.
 
----
 
 ## 📜 License
 

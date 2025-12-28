@@ -15,7 +15,6 @@
   </a>
 </div>
 
----
 
 ## 9. Creating Custom Communication Protocols
 
@@ -38,7 +37,6 @@ class MQTTCommunication:
         self.client.on_message = lambda client, userdata, msg: callback(msg.payload.decode())
 ```
 
----
 
 ## 10. Adding New Process Types
 
@@ -53,7 +51,6 @@ def conditional_process(condition, process_a, process_b):
         return process_b()
 ```
 
----
 
 ## 11. Extending Knowledge Base
 
@@ -70,7 +67,6 @@ class CustomKnowledgeBase:
         return [v for k, v in self.data.items() if query.lower() in v.lower()]
 ```
 
----
 
 ## 12. Advanced Guardrails
 
@@ -88,7 +84,6 @@ def profanity_filter(input_data):
 add_guardrail(profanity_filter)
 ```
 
----
 
 ## 13. Packaging Extensions
 
@@ -96,7 +91,6 @@ add_guardrail(profanity_filter)
 - Add `__init__.py` to make it importable.
 - Document your extension in `EXTENDING.md`.
 
----
 
 ## 14. Testing Extensions
 
@@ -107,7 +101,6 @@ add_guardrail(profanity_filter)
 
 This guide explains how to extend the **AgenticAI** package to add new capabilities, integrate with external systems, and customize its behavior.
 
----
 
 ## 1. Understanding the Architecture
 
@@ -128,7 +121,6 @@ AgenticAI is organized into several core modules:
 - **prompts.py** – Stores and manages prompt templates.
 - **tasks.py** – Defines and manages tasks.
 
----
 
 ## 2. Adding a New Agent
 
@@ -149,7 +141,6 @@ class MyCustomAgent(Agent):
 register_agent("my_custom_agent", MyCustomAgent)
 ```
 
----
 
 ## 3. Adding a New Tool
 
@@ -168,7 +159,6 @@ def sentiment_analysis_tool(text):
 register_tool("sentiment_analysis", sentiment_analysis_tool)
 ```
 
----
 
 ## 4. Extending Memory
 
@@ -178,7 +168,6 @@ To add a new memory backend:
 2. Implement methods like `store()`, `retrieve()`, and `clear()`.
 3. Update configuration to use the new backend.
 
----
 
 ## 5. Extending LLM Integrations
 
@@ -188,7 +177,6 @@ To integrate a new LLM provider:
 2. Implement the `generate()` method.
 3. Update configuration to select the new provider.
 
----
 
 ## 6. Adding Guardrails
 
@@ -198,7 +186,6 @@ To add new safety checks:
 2. Ensure it runs before agent actions.
 3. Register it in the guardrail pipeline.
 
----
 
 ## 7. Testing Extensions
 
@@ -208,7 +195,6 @@ To add new safety checks:
 pytest
 ```
 
----
 
 ## 8. Best Practices
 

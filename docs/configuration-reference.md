@@ -8,13 +8,11 @@
 
 </div>
 
----
 
 ## 📊 Overview
 
 Complete reference for all configuration options in AgenticAI Framework. This guide covers environment variables, configuration files, runtime settings, and best practices.
 
----
 
 ## 🎯 Configuration Hierarchy
 
@@ -54,7 +52,6 @@ graph TB
     style AGENTS fill:#ff9800
 ```
 
----
 
 ## 📁 Configuration Files
 
@@ -243,7 +240,6 @@ security:
   enable_authorization: true
 ```
 
----
 
 ## 🌍 Environment Variables
 
@@ -308,7 +304,6 @@ config = {
 }
 ```
 
----
 
 ## 🔧 Configuration Manager API
 
@@ -354,7 +349,6 @@ exists = config_manager.has_config("AppSettings")
 value = config_manager.get_config("Missing", default={"key": "value"})
 ```
 
----
 
 ## 📋 Configuration Options Reference
 
@@ -458,8 +452,6 @@ value = config_manager.get_config("Missing", default={"key": "value"})
 | `bias_threshold` | float | 0.8 | Bias detection threshold |
 | `custom_rules` | list | [] | Custom validation rules |
 
----
-
 ## 🎨 Configuration Examples
 
 ### Development Configuration
@@ -539,9 +531,6 @@ config.set_config("high_performance", {
 })
 ```
 
----
-
-## 🔐 Secrets Management
 
 ### Using Environment Variables
 
@@ -584,9 +573,6 @@ def get_gcp_secret(project_id, secret_id):
     return response.payload.data.decode('UTF-8')
 ```
 
----
-
-## ✅ Configuration Validation
 
 ```python
 from pydantic import BaseModel, Field, validator
@@ -610,19 +596,12 @@ except ValidationError as e:
     print(f"Configuration error: {e}")
 ```
 
----
-
 ## 📚 Related Documentation
-
-- [Configuration Guide](CONFIGURATION.md) - Detailed configuration guide
 - [Deployment](deployment.md) - Production deployment
 - [Security](security.md) - Security best practices
 - [Best Practices](best-practices.md) - Development guidelines
 
 ---
-
 <div align="center">
-
-**[⬆ Back to Top](#-configuration-reference)**
 
 </div>
