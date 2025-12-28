@@ -77,8 +77,10 @@ theme:
     text: Roboto
     code: Roboto Mono
 
-  logo: assets/agenticaiframework.png
-  favicon: assets/favicon.png
+  icon:
+    logo: material/robot-outline
+  # logo: assets/agenticaiframework.png
+  # favicon: assets/favicon.png
 
 # Extensions
 markdown_extensions:
