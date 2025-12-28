@@ -1832,8 +1832,8 @@ class MemoryEvaluator:
         """
         return self.evaluate_memory_retrieval(
             query=query,
-            retrieved_items=retrieved_memories,
-            relevant_items=relevant_memories
+            retrieved_memories=retrieved_memories,
+            relevant_memories=relevant_memories
         )
     
     def record_stale_data_access(self, memory_data: Dict[str, Any]):
