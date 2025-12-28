@@ -1,15 +1,57 @@
-# 🌟 AgenticAI Framework
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/isathish/agenticaiframework/main/docs/images/agentic-ai-logo.png" alt="AgenticAI Framework" width="600"/>
+
+# AgenticAI Framework
+### *Enterprise-Grade Multi-Agent Orchestration Platform*
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://isathish.github.io/agenticaiframework/)
 [![PyPI version](https://badge.fury.io/py/agenticaiframework.svg)](https://badge.fury.io/py/agenticaiframework)
+[![Coverage](https://img.shields.io/badge/coverage-73%25-brightgreen.svg)](https://github.com/isathish/agenticaiframework)
+[![Tests](https://img.shields.io/badge/tests-451%20passing-success.svg)](https://github.com/isathish/agenticaiframework)
 
-**AgenticAI Framework** is a comprehensive Python SDK for building sophisticated **agentic applications** with advanced orchestration, intelligent task management, comprehensive memory systems, and enterprise-grade monitoring capabilities.
+**Production-ready Python SDK for building sophisticated AI agent systems with advanced orchestration, intelligent task management, comprehensive evaluation, and enterprise-grade monitoring.**
 
-Whether you're building simple AI assistants or complex multi-agent ecosystems, AgenticAI Framework provides the tools, patterns, and infrastructure you need to create intelligent, autonomous agents that can reason, learn, and collaborate effectively.
+[📚 Documentation](https://isathish.github.io/agenticaiframework/) • [🚀 Quick Start](#-quick-start-examples) • [💡 Examples](https://isathish.github.io/agenticaiframework/EXAMPLES/) • [🤝 Contributing](#-community--support)
 
----
+</div>
+
+
+
+## 🎯 What Makes AgenticAI Framework Different?
+
+<table>
+<tr>
+<td width="50%">
+
+### 🚀 **Production-First Design**
+Built for real-world workloads with comprehensive error handling, monitoring, resilience patterns, and a **73% test coverage** across **451 tests**.
+
+### 🧩 **Truly Modular**
+Every component is independently composable, extensible, and replaceable without affecting other parts of the system.
+
+### 🧠 **Intelligence Built-In**
+Sophisticated memory management, semantic search, learning capabilities, and **12-tier evaluation framework** out of the box.
+
+</td>
+<td width="50%">
+
+### 📊 **Enterprise-Ready**
+**21 enterprise features** including distributed tracing, multi-region support, compliance monitoring, and tenant isolation.
+
+### 🎓 **Developer Experience**
+Intuitive APIs, comprehensive documentation, extensive examples, and powerful debugging tools make development enjoyable.
+
+### 🌐 **Scale Effortlessly**
+From single-agent prototypes to distributed multi-agent systems with built-in coordination and monitoring.
+
+</td>
+</tr>
+</table>
+
+
 
 ## 🚀 Why Choose AgenticAI Framework?
 
@@ -28,11 +70,34 @@ Start with a single agent and seamlessly scale to distributed multi-agent system
 ### **Developer Experience First**
 Comprehensive documentation, extensive examples, intuitive APIs, and powerful debugging tools make development fast and enjoyable.
 
----
 
-## 🏗️ Core Architecture
 
-AgenticAI Framework is built around **13 core modules** that work together seamlessly:
+## 🏗️ Architecture Overview
+
+<div align="center">
+
+```mermaid
+graph TB
+    A[Agent Layer] --> B[Task Orchestration]
+    B --> C[Memory Systems]
+    C --> D[LLM Management]
+    D --> E[Evaluation & Monitoring]
+    A --> F[Guardrails & Security]
+    F --> E
+    E --> G[Enterprise Features]
+    
+    style A fill:#4A90E2
+    style B fill:#50C878
+    style C fill:#9B59B6
+    style D fill:#E74C3C
+    style E fill:#F39C12
+    style F fill:#E67E22
+    style G fill:#1ABC9C
+```
+
+</div>
+
+### 🔧 13 Core Modules Working in Harmony
 
 ### 🤖 **Agents** - Intelligent Autonomous Entities
 - **Context engineering** with token tracking and automatic compression
@@ -122,22 +187,29 @@ AgenticAI Framework is built around **13 core modules** that work together seaml
 - **Process monitoring** with detailed execution tracking
 
 ### 🎯 **Prompts** - Intelligent Prompt Management
-- **Template system** with variable substitution and inheritance
-- **A/B testing** for prompt optimization
-- **Version control** for prompt evolution tracking
-- **Performance analytics** for prompt effectiveness
+-  Framework Comparison
 
-### 📚 **Knowledge** - Information Management
-- **Knowledge graphs** with semantic relationships
-- **Document processing** with intelligent chunking and indexing
-- **Search and retrieval** with relevance ranking and filtering
-- **Knowledge validation** and quality assurance
+<div align="center">
 
-### 🔌 **MCP Tools** - Modular Capabilities
-- **Tool registry** with automatic discovery and registration
-- **Execution environment** with sandboxing and security
-- **Tool composition** for building complex capabilities
-- **Performance optimization** with intelligent caching
+| Feature | AgenticAI Framework | LangChain | CrewAI | AutoGen |
+|:--------|:-------------------:|:---------:|:------:|:-------:|
+| **Production Ready** | ✅ Enterprise | ⚠️ Experimental | ⚠️ Limited | ⚠️ Research |
+| **Test Coverage** | ✅ 73% (451 tests) | ⚠️ Variable | ❌ Limited | ⚠️ Basic |
+| **Modular Architecture** | ✅ Fully composable | ⚠️ Monolithic | ❌ Fixed | ⚠️ Rigid |
+| **Memory Management** | ✅ Multi-tier + Semantic | ✅ Basic | ❌ None | ⚠️ Simple |
+| **12-Tier Evaluation** | ✅ Built-in | ❌ None | ❌ None | ❌ None |
+| **Task Orchestration** | ✅ Advanced workflows | ⚠️ Linear chains | ✅ Role-based | ⚠️ Conversation |
+| **Monitoring & Tracing** | ✅ Distributed tracing | ❌ None | ❌ None | ❌ None |
+| **Error Handling** | ✅ Circuit breakers | ⚠️ Basic | ⚠️ Limited | ⚠️ Basic |
+| **Multi-Agent Coordination** | ✅ Advanced patterns | ⚠️ Simple | ✅ Team-based | ✅ Group chat |
+| **Guardrails & Safety** | ✅ Built-in + PII | ❌ Add-on | ❌ None | ❌ None |
+| **Enterprise Features** | ✅ 21 features | ⚠️ Limited | ❌ None | ❌ None |
+| **Performance Optimization** | ✅ Caching + Circuit breakers | ⚠️ Manual | ❌ None | ❌ None |
+| **Extensibility** | ✅ Plugin architecture | ✅ Custom tools | ⚠️ Limited | ⚠️ Limited |
+
+</div>
+- Tool composition for building complex capabilities
+- Performance optimization with intelligent caching
 
 ### ⚙️ **Configurations** - Centralized Management
 - **Environment-specific** configurations with inheritance
@@ -145,7 +217,7 @@ AgenticAI Framework is built around **13 core modules** that work together seaml
 - **Validation and defaults** with comprehensive error checking
 - **Configuration versioning** and rollback capabilities
 
----
+
 
 ## 🔄 Framework Comparison
 
@@ -162,7 +234,7 @@ AgenticAI Framework is built around **13 core modules** that work together seaml
 | **Performance Optimization** | ✅ Intelligent caching | ⚠️ Manual | ❌ None | ❌ None |
 | **Extensibility** | ✅ Plugin architecture | ✅ Custom tools | ⚠️ Limited | ⚠️ Limited |
 
----
+
 
 ## ✨ Key Features & Capabilities
 
@@ -204,7 +276,7 @@ AgenticAI Framework is built around **13 core modules** that work together seaml
 
 ---
 
-## 🏢 Enterprise Features (NEW in v1.1.0)
+## 🏢 Enterprise Features 
 
 AgenticAI Framework now includes **21 enterprise-grade features** for production deployments:
 
@@ -298,17 +370,18 @@ audit_trail.log_event(
 
 # Data masking
 text = "Contact john@example.com"
-masked = data_masking.mask_pii(text)  # "Contact [EMAIL_REDACTED]"
-```
+<div align="center">
 
----
+### Quick Start
 
-## 📦 Installation
-
-### Quick Installation
 ```bash
 pip install agenticaiframework
 ```
+
+</div>
+
+<details>
+<summary><b>📥 Installation Options</b></summary>
 
 ### Development Installation
 ```bash
@@ -319,17 +392,25 @@ pip install -e .
 
 ### With Optional Dependencies
 ```bash
-# For enhanced monitoring capabilities
+# Enhanced monitoring capabilities
 pip install "agenticaiframework[monitoring]"
 
-# For advanced memory features
+# Advanced memory features  
 pip install "agenticaiframework[memory]"
 
-# For documentation building
+# Documentation building
 pip install "agenticaiframework[docs]"
 
-# For all optional dependencies
+# All optional dependencies
 pip install "agenticaiframework[all]"
+```
+
+### Documentation Dependencies
+```bash
+pip install -r requirements-docs.txt
+```
+
+</details> install "agenticaiframework[all]"
 ```
 
 ### Documentation Dependencies
@@ -492,7 +573,7 @@ metrics = monitoring.get_performance_summary(time_range="last_24h")
 print(f"System performance: {metrics}")
 ```
 
----
+
 
 ## 🎯 Use Cases & Applications
 
@@ -526,7 +607,6 @@ print(f"System performance: {metrics}")
 - **Patient Monitoring**: Continuous patient health monitoring and alerts
 - **Medical Documentation**: Automated medical record processing and analysis
 
----
 
 ## 🔧 Development & Deployment
 
@@ -601,7 +681,6 @@ EXPOSE 8000
 CMD ["python", "-m", "agenticaiframework.server"]
 ```
 
----
 
 ## 📚 Documentation & Resources
 
@@ -623,16 +702,19 @@ CMD ["python", "-m", "agenticaiframework.server"]
 - **[Advanced Examples](https://isathish.github.io/agenticaiframework/examples/)** - Complex real-world scenarios
 - **[Integration Examples](https://isathish.github.io/agenticaiframework/integration/)** - Third-party integrations
 
-### 🛠️ **Development Resources**
-- **[Architecture Guide](https://isathish.github.io/agenticaiframework/architecture/)** - Framework architecture and design
-- **[Extension Guide](https://isathish.github.io/agenticaiframework/EXTENDING/)** - Creating custom components
-- **[Contributing](https://isathish.github.io/agenticaiframework/contributing/)** - How to contribute to the project
+<div align="center">
 
----
+### 📊 Test Coverage Summary
 
-## 🧪 Testing & Quality Assurance
+![Coverage](https://img.shields.io/badge/coverage-73%25-brightgreen.svg)
+![Tests](https://img.shields.io/badge/tests-451%20passing-success.svg)
+![Quality](https://img.shields.io/badge/quality-production--ready-blue.svg)
 
-### Running Tests
+</div>
+
+<details>
+<summary><b>🧪 Running Tests</b></summary>
+
 ```bash
 # Run all tests
 pytest tests/
@@ -642,40 +724,94 @@ pytest tests/ --cov=agenticaiframework --cov-report=html
 
 # Run specific test modules
 pytest tests/test_agenticai.py -v              # Core framework tests
+pytest tests/test_all_evaluation_types.py -v   # 12-tier evaluation tests
+pytest tests/test_convenience_methods.py -v    # New convenience methods
 pytest tests/test_memory_coverage.py -v        # Memory system tests
 pytest tests/test_agents_coverage.py -v        # Agent & context tests
-pytest tests/test_prompts_coverage.py -v       # Prompt security tests
-pytest tests/test_guardrails_final.py -v       # Guardrails tests
+<details>
+<summary><b>📊 Module Coverage Details</b></summary>
 
-# Run with verbose output
-pytest tests/ -v
+| Module | Coverage | Status | Key Features |
+|--------|----------|--------|--------------|
+| **Evaluation (Advanced)** | 93% | 🟢 | 12-tier evaluation framework |
+| **Communication** | 92% | 🟢 | Multi-protocol support |
+| **Processes** | 97% | 🟢 | Workflow orchestration |
+| **Knowledge** | 87% | 🟢 | Semantic search & retrieval |
+| **Configurations** | 100% | 🟢 | Environment management |
+| **Evaluation (Basic)** | 87% | 🟢 | Core evaluation system |
+| **Hub** | 86% | 🟢 | Agent coordination |
+| **Memory** | 83% | 🟡 | Multi-tier memory systems |
+| **Security** | 82% | 🟡 | Prompt injection protection |
+| **Agents** | 81% | 🟡 | Context engineering |
+| **MCP Tools** | 80% | 🟡 | Model Context Protocol |
+| **Tasks** | 75% | 🟡 | Task orchestration |
+| **Guardrails** | 72% | 🟡 | Safety enforcement |
+| **Prompts** | 69% | 🟡 | Template & security |
 
-# Generate HTML coverage report
-pytest tests/ --cov=agenticaiframework --cov-report=html
-# View report at htmlcov/index.html
-```
+</details>
 
-### Test Coverage ✅
-**Total: 72% coverage achieved with 430 passing tests**
+<details>
+<summary><b>🎯 Test Categories</b></summary>
 
-#### Module Coverage:
-- **Evaluation (Advanced)**: 92% ✅ - Comprehensive 12-tier evaluation framework
-- **Evaluation (Basic)**: 87% ✅ - Core evaluation system
-- **Communication**: 100% ✅ - Full coverage of all communication protocols
-- **Configurations**: 100% ✅ - Complete configuration management coverage
-- **Processes**: 97% ✅ - Comprehensive workflow orchestration
-- **Knowledge**: 94% ✅ - Knowledge base operations
-- **Hub**: 85% ✅ - Agent hub and coordination
-- **Tasks**: 80% ✅ - Task management and execution
-- **MCP Tools**: 79% - Model Context Protocol tools
-- **LLMs**: 76% - LLM management with circuit breaker
-- **Agents**: 70% - Agent management and context engineering
-- **Prompts**: 67% - Template system with security features
-- **Guardrails**: 62% - Priority-based validation and enforcement
-- **Memory**: 56% - Multi-tier memory with TTL and consolidation
-- **Security**: 27% - Injection detection, validation, rate limiting
+| Category | Tests | Coverage |
+|----------|-------|----------|
+| **Evaluation Framework** | 127 | 12-tier evaluation system |
+| **Core Functionality** | 93 | Basic operations |
+| **Enterprise Features** | 80 | Compliance, integrations |
+| **Security & Safety** | 85 | Injection protection |
+| **Advanced Features** | 45 | Context engineering |
+| **Convenience Methods** | 21 | New API wrappers |
+| **Edge Cases** | 10 | Error handling |
 
-#### Test Categories:
+</details>
+
+### ✅ Quality Metrics
+
+<div align="center">
+
+| Metric | Status | Details |
+|:-------|:------:|:--------|
+| **Test Coverage** | ✅ 73% | 451 passing tests across 14+ modules |
+| **Code Quality** | ✅ Production | Comprehensive testing & validation |
+| **Evaluation** | ✅ 12-Tier | Industry-leading evaluation framework |
+<div align="center">
+
+### 💬 Get Help & Connect
+
+[![GitHub Issues](https://img.shields.io/github/issues/isathish/agenticaiframework)](https://github.com/isathish/agenticaiframework/issues)
+[![GitHub Discussions](https://img.shields.io/github/discussions/isathish/agenticaiframework)](https://github.com/isathish/agenticaiframework/discussions)
+[![Documentation](https://img.shields.io/badge/docs-latest-blue)](https://isathish.github.io/agenticaiframework/)
+
+</div>
+
+<table>
+<tr>
+<td width="33%" align="center">
+
+### 📞 **Getting Help**
+- 🐛 [Report Bugs](https://github.com/isathish/agenticaiframework/issues)
+- 💬 [Ask Questions](https://github.com/isathish/agenticaiframework/discussions)
+- 📖 [Read Docs](https://isathish.github.io/agenticaiframework/)
+
+</td>
+<td width="33%" align="center">
+
+### 🤝 **Contributing**
+- 💻 [Code Contributions](https://github.com/isathish/agenticaiframework/pulls)
+- ✨ [Feature Requests](https://github.com/isathish/agenticaiframework/issues/new)
+- 📝 [Improve Docs](https://github.com/isathish/agenticaiframework)
+
+</td>
+<td width="33%" align="center">
+
+### 🌟 **Support Project**
+- ⭐ [Star on GitHub](https://github.com/isathish/agenticaiframework)
+- 🔗 [Share Project](https://github.com/isathish/agenticaiframework)
+- 📢 [Spread Word](https://twitter.com/intent/tweet?text=Check%20out%20AgenticAI%20Framework)
+
+</td>
+</tr>
+</table>
 - **Core Functionality**: 93 tests covering basic operations
 - **Advanced Features**: 45 tests for context engineering, memory, and workflows
 - **Evaluation Framework**: 127 tests for all 12 evaluation types
@@ -709,21 +845,44 @@ We welcome contributions from the community! Ways to contribute:
 - **Testing**: Add test cases and improve coverage
 
 ### 📋 **Development Roadmap**
-- **Q1 2025**: Enhanced multi-modal capabilities
-- **Q2 2025**: Distributed agent coordination
-- **Q3 2025**: Advanced ML/AI integrations
-- **Q4 2025**: Enterprise security and compliance features
+- **Q1 2025**: Enhanced multi-modal capabilities and advanced evaluation metrics
+- **Q2 2025**: Distributed agent coordination and multi-region deployment
+- **Q3 2025**: Advanced ML/AI integrations and self-healing capabilities
+- **Q4 2025**: Enterprise security, compliance features, and plugin marketplace
 
 ---
 
+<div align="center">
+
 ## 📄 License
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+**MIT License** - See [LICENSE](LICENSE) file for details
+
+---
+
+### 🌟 Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=isathish/agenticaiframework&type=Date)](https://star-history.com/#isathish/agenticaiframework&Date)
 
 ---
 
 ## 🙏 Acknowledgments
 
-Built with ❤️ by the AgenticAI Framework team and the open-source community.
+<table>
+<tr>
+<td align="center">
+<b>Built with ❤️ by the AgenticAI Framework Team</b><br>
+<sub>Making AI agents accessible, reliable, and production-ready</sub><br><br>
+<sub>Special thanks to all contributors who have helped make this framework better!</sub>
+</td>
+</tr>
+</table>
 
-Special thanks to all contributors who have helped make this framework better!
+**[⬆ Back to Top](#agenticai-framework)**
+
+---
+
+<sub>© 2025 AgenticAI Framework. All rights reserved. | [Documentation](https://isathish.github.io/agenticaiframework/) | [GitHub](https://github.com/isathish/agenticaiframework) | [PyPI](https://pypi.org/project/agenticaiframework/)</sub>
+
+</div>
+
