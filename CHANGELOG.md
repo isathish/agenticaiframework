@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v1.1.1](https://github.com/isathish/agenticaiframework/releases/tag/v1.1.1) - 2025-12-28
+
+<small>[Compare with v1.0.41](https://github.com/isathish/agenticaiframework/compare/v1.0.41...v1.1.1)</small>
+
+### Added
+
+- Add comprehensive evaluation tests for AgenticAI Framework ([b899825](https://github.com/isathish/agenticaiframework/commit/b8998251aa6d78ae01ead97b36c0c2ffd71a2519) by isathish).
+
 ## [v1.0.41](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.41) - 2025-12-28
 
 <small>[Compare with v1.0.40](https://github.com/isathish/agenticaiframework/compare/v1.0.40...v1.0.41)</small>
