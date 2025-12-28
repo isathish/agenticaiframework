@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v1.2.1](https://github.com/isathish/agenticaiframework/releases/tag/v1.2.1) - 2025-12-28
+
+<small>[Compare with v1.1.1](https://github.com/isathish/agenticaiframework/compare/v1.1.1...v1.2.1)</small>
+
+### Added
+
+- Add communication module and configuration reference documentation ([909f652](https://github.com/isathish/agenticaiframework/commit/909f65240af2560c89b4922406291fca6613d477) by isathish).
+- Add integration and performance optimization documentation ([7c4d4b1](https://github.com/isathish/agenticaiframework/commit/7c4d4b15199b97b4c9012ad9e2684a9e00bf251a) by isathish).
+- Add comprehensive tests for all evaluation types in the Agentic AI framework ([da4e97e](https://github.com/isathish/agenticaiframework/commit/da4e97eaf6eed3b4a8262a6cc054f716b4bf27bf) by isathish).
+
+### Fixed
+
+- fix: Correct parameter names in MemoryEvaluator's evaluate_memory_retrieval method ([67e9884](https://github.com/isathish/agenticaiframework/commit/67e9884f86486f820db2a247df6bd96a8bf0f717) by isathish).
+
 ## [v1.1.1](https://github.com/isathish/agenticaiframework/releases/tag/v1.1.1) - 2025-12-28
 
 <small>[Compare with v1.0.41](https://github.com/isathish/agenticaiframework/compare/v1.0.41...v1.1.1)</small>
