@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v1.2.4](https://github.com/isathish/agenticaiframework/releases/tag/v1.2.4) - 2025-12-28
+
+<small>[Compare with v1.2.3](https://github.com/isathish/agenticaiframework/compare/v1.2.3...v1.2.4)</small>
+
+### Fixed
+
+- fix: update logo reference in README and add emoji to title ([79fe458](https://github.com/isathish/agenticaiframework/commit/79fe458fd43f80feabd1aaa6cdd75593712d0399) by isathish).
+
 ## [v1.2.3](https://github.com/isathish/agenticaiframework/releases/tag/v1.2.3) - 2025-12-28
 
 <small>[Compare with v1.2.2](https://github.com/isathish/agenticaiframework/compare/v1.2.2...v1.2.3)</small>
