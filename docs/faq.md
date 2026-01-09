@@ -429,7 +429,7 @@ agent = Agent(name="test", memory=mock_memory)
 
 ### What's the test coverage?
 
-Current coverage: **73%**
+Current coverage: **66%**
 
 Run tests:
 ```bash

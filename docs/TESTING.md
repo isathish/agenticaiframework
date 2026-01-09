@@ -11,7 +11,7 @@ Comprehensive testing strategies and best practices for building reliable AI age
 
 !!! success "Test Coverage"
     
-    The AgenticAI Framework maintains **84%+ test coverage** with **210+ tests** ensuring reliability and quality.
+    The AgenticAI Framework maintains **66% test coverage** with **1036+ tests** ensuring reliability and quality.
 
 <div class="grid" markdown>
 
@@ -597,23 +597,25 @@ jobs:
 
 ### Current Coverage
 
-**Total Coverage: 80.06%**
+**Total Coverage: 66%** (1036 passing tests)
 
 - **communication.py**: 100% ✅
 - **configurations.py**: 100% ✅
 - **evaluation.py**: 100% ✅
-- **processes.py**: 97%
+- **processes.py**: 100% ✅
+- **integrations.py**: 95% ✅
 - **knowledge.py**: 94%
 - **monitoring.py**: 86%
 - **hub.py**: 85%
 - **agents.py**: 83%
 - **memory.py**: 82%
+- **evaluation_advanced.py**: 81%
 - **tasks.py**: 80%
 - **mcp_tools.py**: 79%
-- **llms.py**: 76%
+- **guardrails.py**: 75%
 - **security.py**: 74%
-- **guardrails.py**: 72%
 - **prompts.py**: 71%
+- **llms.py**: 60%
 
 ## Best Practices
 

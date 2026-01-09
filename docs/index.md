@@ -728,7 +728,7 @@ AgenticAI Framework supports:
 
 ## 🧪 Testing
 
-AgenticAI Framework includes comprehensive test coverage (80%+) to ensure reliability.
+AgenticAI Framework includes comprehensive test coverage (66%, 1036 tests) to ensure reliability.
 
 ### Running Tests
 
@@ -747,17 +747,20 @@ pytest tests/ -m "not slow"    # Fast tests only
 
 ### Test Coverage
 
-**Current Coverage: 80.06%** (166 passing tests)
+**Current Coverage: 66%** (1036 passing tests)
 
 | Module | Coverage |
 |--------|----------|
 | communication.py | 100% ✅ |
 | configurations.py | 100% ✅ |
-| evaluation.py | 87% ✅ |
-| evaluation_advanced.py | 92% ✅ |
-| processes.py | 97% |
+| evaluation.py | 100% ✅ |
+| evaluation_advanced.py | 81% ✅ |
+| processes.py | 100% ✅ |
 | knowledge.py | 94% |
 | monitoring.py | 86% |
+| guardrails.py | 75% |
+| llms.py | 60% |
+| integrations.py | 95% |
 
 For detailed testing guide, see [Testing Guide](TESTING.md).
 

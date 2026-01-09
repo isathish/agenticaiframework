@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [Unreleased]
+
+### Added
+
+- Add comprehensive test suite expanding coverage from 54% to 66% (1036 tests)
+- Add test_communication_module.py - CommunicationManager tests
+- Add test_processes_module.py - Process class and orchestration tests
+- Add test_evaluation_drift.py - PromptDriftDetector tests (35 tests)
+- Add test_orchestration_supervisor.py - AgentSupervisor tests (35 tests)
+- Add test_llms_router.py - ModelRouter and capability-based routing tests (21 tests)
+- Add test_guardrails_policies.py - Policy framework and enforcement tests (39 tests)
+- Add test_integrations_base.py - BaseIntegration and plugin system tests (16 tests)
+
+### Changed
+
+- Update documentation with accurate test coverage statistics (66%, 1036 tests)
+- Update README.md badges and quality metrics
+- Update docs/TESTING.md module coverage table
+- Update docs/faq.md and docs/index.md with current statistics
+
 ## [v1.2.8](https://github.com/isathish/agenticaiframework/releases/tag/v1.2.8) - 2026-01-09
 
 <small>[Compare with v1.2.7](https://github.com/isathish/agenticaiframework/compare/v1.2.7...v1.2.8)</small>
