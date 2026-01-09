@@ -98,6 +98,83 @@ from .llms import (
 )
 from .communication import CommunicationManager
 from .memory import MemoryManager, MemoryEntry, MemoryStats, memory_manager
+
+# Tools Framework (35+ tools across 4 categories)
+from .tools import (
+    # Base classes
+    BaseTool,
+    AsyncBaseTool,
+    ToolResult,
+    ToolConfig,
+    ToolStatus,
+    # Registry & Discovery
+    ToolCategory,
+    ToolMetadata,
+    ToolRegistry,
+    tool_registry,
+    register_tool,
+    # Executor
+    ExecutionContext,
+    ExecutionPlan,
+    ToolExecutor,
+    tool_executor,
+    # Agent Integration
+    AgentToolBinding,
+    AgentToolManager,
+    agent_tool_manager,
+    # MCP Compatibility
+    MCPToolAdapter,
+    MCPBridge,
+    LegacyMCPToolWrapper,
+    wrap_mcp_tool,
+    convert_to_mcp,
+    mcp_bridge,
+    # File & Document Tools
+    FileReadTool,
+    FileWriteTool,
+    DirectoryReadTool,
+    OCRTool,
+    PDFTextWritingTool,
+    PDFRAGSearchTool,
+    DOCXRAGSearchTool,
+    MDXRAGSearchTool,
+    XMLRAGSearchTool,
+    TXTRAGSearchTool,
+    JSONRAGSearchTool,
+    CSVRAGSearchTool,
+    DirectoryRAGSearchTool,
+    # Web Scraping Tools
+    ScrapeWebsiteTool,
+    ScrapeElementTool,
+    ScrapflyScrapeWebsiteTool,
+    SeleniumScraperTool,
+    ScrapegraphScrapeTool,
+    SpiderScraperTool,
+    BrowserbaseWebLoaderTool,
+    HyperbrowserLoadTool,
+    StagehandTool,
+    FirecrawlCrawlWebsiteTool,
+    FirecrawlScrapeWebsiteTool,
+    OxylabsScraperTool,
+    BrightDataTool,
+    # Database Tools
+    MySQLRAGSearchTool,
+    PostgreSQLRAGSearchTool,
+    SnowflakeSearchTool,
+    NL2SQLTool,
+    QdrantVectorSearchTool,
+    WeaviateVectorSearchTool,
+    MongoDBVectorSearchTool,
+    SingleStoreSearchTool,
+    # AI/ML Tools
+    DALLETool,
+    VisionTool,
+    AIMindTool,
+    LlamaIndexTool,
+    LangChainTool,
+    RAGTool,
+    CodeInterpreterTool,
+)
 from .hub import Hub
 from .configurations import ConfigurationManager
 
@@ -295,6 +372,83 @@ __all__ = [
     "MemoryManager", "MemoryEntry",
     "Hub",
     "ConfigurationManager",
+    
+    # ========================================================================
+    # Tools Framework (35+ Tools)
+    # ========================================================================
+    # Base classes
+    "BaseTool",
+    "AsyncBaseTool",
+    "ToolResult",
+    "ToolConfig",
+    "ToolStatus",
+    # Tool Registry & Discovery
+    "ToolCategory",
+    "ToolMetadata",
+    "ToolRegistry",
+    "tool_registry",
+    "register_tool",
+    # Tool Executor
+    "ExecutionContext",
+    "ExecutionPlan",
+    "ToolExecutor",
+    "tool_executor",
+    # Agent-Tool Integration
+    "AgentToolBinding",
+    "AgentToolManager",
+    "agent_tool_manager",
+    # MCP Compatibility
+    "MCPToolAdapter",
+    "MCPBridge",
+    "LegacyMCPToolWrapper",
+    "wrap_mcp_tool",
+    "convert_to_mcp",
+    "mcp_bridge",
+    # File & Document Tools
+    "FileReadTool",
+    "FileWriteTool",
+    "DirectoryReadTool",
+    "OCRTool",
+    "PDFTextWritingTool",
+    "PDFRAGSearchTool",
+    "DOCXRAGSearchTool",
+    "MDXRAGSearchTool",
+    "XMLRAGSearchTool",
+    "TXTRAGSearchTool",
+    "JSONRAGSearchTool",
+    "CSVRAGSearchTool",
+    "DirectoryRAGSearchTool",
+    # Web Scraping Tools
+    "ScrapeWebsiteTool",
+    "ScrapeElementTool",
+    "ScrapflyScrapeWebsiteTool",
+    "SeleniumScraperTool",
+    "ScrapegraphScrapeTool",
+    "SpiderScraperTool",
+    "BrowserbaseWebLoaderTool",
+    "HyperbrowserLoadTool",
+    "StagehandTool",
+    "FirecrawlCrawlWebsiteTool",
+    "FirecrawlScrapeWebsiteTool",
+    "OxylabsScraperTool",
+    "BrightDataTool",
+    # Database Tools
+    "MySQLRAGSearchTool",
+    "PostgreSQLRAGSearchTool",
+    "SnowflakeSearchTool",
+    "NL2SQLTool",
+    "QdrantVectorSearchTool",
+    "WeaviateVectorSearchTool",
+    "MongoDBVectorSearchTool",
+    "SingleStoreSearchTool",
+    # AI/ML Tools
+    "DALLETool",
+    "VisionTool",
+    "AIMindTool",
+    "LlamaIndexTool",
+    "LangChainTool",
+    "RAGTool",
+    "CodeInterpreterTool",
     
     # ========================================================================
     # ACE - Agentic Context Engine
