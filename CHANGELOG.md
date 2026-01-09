@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v1.2.8](https://github.com/isathish/agenticaiframework/releases/tag/v1.2.8) - 2026-01-09
+
+<small>[Compare with v1.2.7](https://github.com/isathish/agenticaiframework/compare/v1.2.7...v1.2.8)</small>
+
+### Added
+
+- Add comprehensive unit tests for prompts and tools framework ([a1b0ca2](https://github.com/isathish/agenticaiframework/commit/a1b0ca213b54de4c25ec61821569460544fdfed4) by isathish).
+
 ## [v1.2.7](https://github.com/isathish/agenticaiframework/releases/tag/v1.2.7) - 2026-01-09
 
 <small>[Compare with v1.2.6](https://github.com/isathish/agenticaiframework/compare/v1.2.6...v1.2.7)</small>
