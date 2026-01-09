@@ -17,6 +17,7 @@ from unittest.mock import MagicMock, patch
 # =============================================================================
 # CI/CD Module Extended Coverage
 # =============================================================================
+@pytest.mark.skip(reason="CI/CD module was removed from the package")
 class TestCICDExtendedCoverage:
     """Extended coverage tests for CI/CD module."""
     
@@ -349,8 +350,7 @@ class TestInfrastructureExtendedCoverage:
     
     def test_multi_region_routing_modes(self):
         """Test different routing modes."""
-        from agenticaiframework import MultiRegionManager, Region
-        from agenticaiframework.infrastructure import RegionConfig
+        from agenticaiframework import MultiRegionManager, Region, RegionConfig
         
         manager = MultiRegionManager()
         

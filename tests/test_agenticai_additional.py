@@ -2,13 +2,13 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from agenticaiframework.communication import CommunicationManager
-from agenticaiframework.configurations import ConfigurationManager
-from agenticaiframework.evaluation import EvaluationSystem
-from agenticaiframework.guardrails import Guardrail, GuardrailManager
-from agenticaiframework.hub import Hub
-from agenticaiframework.knowledge import KnowledgeRetriever
-from agenticaiframework.llms import LLMManager
+from agenticaiframework import CommunicationManager
+from agenticaiframework import ConfigurationManager
+from agenticaiframework import EvaluationSystem
+from agenticaiframework import Guardrail, GuardrailManager
+from agenticaiframework import Hub
+from agenticaiframework import KnowledgeRetriever
+from agenticaiframework import LLMManager
 
 def test_register_and_list_protocols(capsys):
     cm = CommunicationManager()
@@ -177,9 +177,9 @@ def test_llm_manager_with_exception(capsys):
 
 
 # Additional tests to improve coverage for mcp_tools, memory, and monitoring
-from agenticaiframework.mcp_tools import MCPToolManager, MCPTool
-from agenticaiframework.memory import MemoryManager
-from agenticaiframework.monitoring import MonitoringSystem
+from agenticaiframework import MCPToolManager, MCPTool
+from agenticaiframework import MemoryManager
+from agenticaiframework import MonitoringSystem
 
 def test_mcp_tool_manager_register_invoke_list(capsys):
     tm = MCPToolManager()

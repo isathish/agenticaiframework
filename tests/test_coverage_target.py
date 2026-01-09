@@ -1,12 +1,12 @@
 """Targeted tests for specific uncovered lines to reach 80%"""
 
 import pytest
-from agenticaiframework.agents import Agent, ContextManager
-from agenticaiframework.guardrails import Guardrail, GuardrailManager
-from agenticaiframework.prompts import Prompt, PromptManager
-from agenticaiframework.llms import LLMManager, CircuitBreaker
-from agenticaiframework.memory import MemoryManager
-from agenticaiframework.communication import CommunicationManager
+from agenticaiframework import Agent, ContextManager
+from agenticaiframework import Guardrail, GuardrailManager
+from agenticaiframework import Prompt, PromptManager
+from agenticaiframework import LLMManager, CircuitBreaker
+from agenticaiframework import MemoryManager
+from agenticaiframework import CommunicationManager
 
 
 class TestAgentsUncovered:

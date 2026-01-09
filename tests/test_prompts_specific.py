@@ -1,8 +1,8 @@
 """Targeted tests for specific uncovered lines in prompts.py"""
 
 import pytest
-from agenticaiframework.prompts import Prompt, PromptManager
-from agenticaiframework.exceptions import PromptRenderError
+from agenticaiframework import Prompt, PromptManager
+from agenticaiframework import PromptRenderError
 
 
 class TestPromptRenderCoverage:

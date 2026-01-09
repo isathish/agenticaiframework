@@ -5,9 +5,9 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from agenticaiframework.guardrails import Guardrail, GuardrailManager
-from agenticaiframework.prompts import Prompt, PromptManager
-from agenticaiframework.security import (
+from agenticaiframework import Guardrail, GuardrailManager
+from agenticaiframework import Prompt, PromptManager
+from agenticaiframework import (
     PromptInjectionDetector,
     InputValidator,
     RateLimiter,
@@ -15,7 +15,7 @@ from agenticaiframework.security import (
     AuditLogger,
     SecurityManager
 )
-from agenticaiframework.llms import LLMManager, CircuitBreaker
+from agenticaiframework import LLMManager, CircuitBreaker
 import time
 
 

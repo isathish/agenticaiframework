@@ -5,11 +5,11 @@ Focuses on security, memory, agents, prompts, and guardrails modules.
 
 import pytest
 import time
-from agenticaiframework.security import PromptInjectionDetector, InputValidator, RateLimiter, ContentFilter, AuditLogger, SecurityManager
-from agenticaiframework.memory import MemoryEntry, MemoryManager
-from agenticaiframework.agents import ContextManager, Agent
-from agenticaiframework.prompts import Prompt, PromptManager
-from agenticaiframework.guardrails import Guardrail, GuardrailManager
+from agenticaiframework import PromptInjectionDetector, InputValidator, RateLimiter, ContentFilter, AuditLogger, SecurityManager
+from agenticaiframework import MemoryEntry, MemoryManager
+from agenticaiframework import ContextManager, Agent
+from agenticaiframework import Prompt, PromptManager
+from agenticaiframework import Guardrail, GuardrailManager
 
 
 class TestPromptInjectionDetector:

@@ -8,11 +8,7 @@ Enterprise Features:
 - Cost vs Quality Scoring
 - Security Risk Scoring
 - Prompt Versioning
-- Agent CI Pipelines
 - Canary/A/B Testing
-- Agent Builder UI API
-- Workflow Designer API
-- Admin Console API
 - ITSM Integration (ServiceNow)
 - Dev Tools (GitHub, Azure DevOps)
 - Serverless Execution
@@ -23,33 +19,108 @@ Enterprise Features:
 - Data Masking
 """
 
-# Core components
-from .agents import Agent, AgentManager, ContextManager
+# Core components (modular imports)
+from .core import Agent, AgentManager
+
+# ACE - Agentic Context Engine (modular imports)
+from .context import (
+    ContextManager,
+    ContextType,
+    ContextPriority,
+    ContextRetrievalStrategy,
+    ContextItem,
+    SemanticContextIndex,
+    ContextWindow,
+    ContextCompressionStrategy
+)
+
+# Agent Orchestration Framework (modular imports)
+from .orchestration import (
+    OrchestrationPattern,
+    SupervisionStrategy,
+    AgentRole,
+    AgentState,
+    TaskAssignment,
+    AgentHandoff,
+    SupervisionConfig,
+    AgentSupervisor,
+    TeamRole,
+    AgentTeam,
+    OrchestrationEngine,
+    orchestration_engine
+)
 from .prompts import Prompt, PromptManager
 from .processes import Process
 from .tasks import Task, TaskManager
 from .mcp_tools import MCPTool, MCPToolManager
 from .monitoring import MonitoringSystem
-from .guardrails import Guardrail, GuardrailManager
-from .evaluation import EvaluationSystem
+
+# Guardrails (modular imports)
+from .guardrails import (
+    Guardrail, 
+    GuardrailManager,
+    # Guardrail types and enums
+    GuardrailType,
+    GuardrailSeverity,
+    GuardrailAction,
+    GuardrailViolation,
+    GuardrailRule,
+    # Specialized guardrails
+    SemanticGuardrail,
+    ContentSafetyGuardrail,
+    OutputFormatGuardrail,
+    ChainOfThoughtGuardrail,
+    ToolUseGuardrail,
+    GuardrailPipeline,
+    # Agent Policies
+    PolicyScope,
+    PolicyEnforcement,
+    AgentPolicy,
+    BehaviorPolicy,
+    ResourcePolicy,
+    SafetyPolicy,
+    AgentPolicyManager,
+    # Global instances
+    guardrail_manager,
+    agent_policy_manager,
+    default_safety_policy
+)
+from .evaluation_base import EvaluationSystem
 from .knowledge import KnowledgeRetriever
-from .llms import LLMManager, CircuitBreaker
+from .llms import (
+    LLMManager, 
+    CircuitBreaker,
+    ModelTier,
+    ModelCapability,
+    ModelConfig,
+    ModelRouter,
+    MODEL_REGISTRY
+)
 from .communication import CommunicationManager
-from .memory import MemoryManager, MemoryEntry
+from .memory import MemoryManager, MemoryEntry, MemoryStats, memory_manager
 from .hub import Hub
 from .configurations import ConfigurationManager
 
-# Security components
+# Security components (modular imports)
 from .security import (
     PromptInjectionDetector,
     InputValidator,
     RateLimiter,
+    TieredRateLimiter,
     ContentFilter,
+    ProfanityFilter,
+    PIIFilter,
     AuditLogger,
-    SecurityManager
+    SecurityManager,
+    security_manager,
+    injection_detector,
+    input_validator,
+    rate_limiter,
+    content_filter,
+    audit_logger
 )
 
-# Enterprise: Tracing & Metrics
+# Enterprise: Tracing & Metrics (modular imports)
 from .tracing import (
     AgentStepTracer,
     LatencyMetrics,
@@ -59,68 +130,74 @@ from .tracing import (
     latency_metrics
 )
 
-# Enterprise: Advanced Evaluation
-from .evaluation_advanced import (
-    OfflineEvaluator,
-    OnlineEvaluator,
-    CostQualityScorer,
-    SecurityRiskScorer,
-    ABTestingFramework,
+# Enterprise: Advanced Evaluation (modular imports)
+from .evaluation import (
+    # Types
     EvaluationType,
     EvaluationResult,
-    # New comprehensive evaluation types
+    # Core evaluators
+    OfflineEvaluator,
+    OnlineEvaluator,
+    # Quality and cost
+    CostQualityScorer,
+    SecurityRiskScorer,
+    # Testing frameworks
+    ABTestingFramework,
+    CanaryDeploymentManager,
+    # Model evaluation
     ModelQualityEvaluator,
+    ModelTierEvaluator,
+    model_tier_evaluator,
+    # Task and tool evaluation
     TaskEvaluator,
     ToolInvocationEvaluator,
+    # System evaluation
     WorkflowEvaluator,
     MemoryEvaluator,
     RAGEvaluator,
+    # Autonomy and performance
     AutonomyEvaluator,
     PerformanceEvaluator,
+    # Human and business
     HITLEvaluator,
-    BusinessOutcomeEvaluator
+    BusinessOutcomeEvaluator,
+    # Drift detection
+    DriftType,
+    DriftSeverity,
+    DriftAlert,
+    PromptDriftDetector,
+    prompt_drift_detector,
 )
 
-# Enterprise: Prompt Versioning
+# Enterprise: Prompt Versioning (modular imports)
 from .prompt_versioning import (
     PromptVersionManager,
     PromptLibrary,
     PromptVersion,
     PromptStatus,
+    PromptAuditEntry,
     prompt_version_manager,
     prompt_library
 )
 
-# Enterprise: CI/CD
-from .ci_cd import (
-    AgentCIPipeline,
-    AgentTestRunner,
-    DeploymentManager,
-    ReleaseManager,
-    PipelineStage,
-    PipelineStatus,
-    StageType,
-    create_agent_pipeline,
-    test_runner,
-    deployment_manager,
-    release_manager
-)
-
-# Enterprise: Infrastructure
+# Enterprise: Infrastructure (modular imports)
 from .infrastructure import (
     MultiRegionManager,
     TenantManager,
     ServerlessExecutor,
     DistributedCoordinator,
     Region,
+    RegionConfig,
     Tenant,
+    ServerlessFunction,
+    FunctionInvocation,
     multi_region_manager,
     tenant_manager,
     serverless_executor,
     distributed_coordinator
 )
 
-# Enterprise: Compliance & Governance
+# Enterprise: Compliance & Governance (modular imports)
 from .compliance import (
     AuditTrailManager,
     PolicyEngine,
@@ -140,7 +217,7 @@ from .compliance import (
     mask_output
 )
 
-# Enterprise: Integrations
+# Enterprise: Integrations (modular imports)
 from .integrations import (
     IntegrationManager,
     WebhookManager,
@@ -153,23 +230,6 @@ from .integrations import (
     IntegrationStatus,
     integration_manager,
     webhook_manager
-)
-
-# Enterprise: Visual Tools
-from .visual_tools import (
-    AgentBuilder,
-    WorkflowDesigner,
-    AdminConsole,
-    ComponentType,
-    ComponentDefinition,
-    AgentBlueprint,
-    WorkflowNode,
-    WorkflowEdge,
-    WorkflowDefinition,
-    NodeType,
-    agent_builder,
-    workflow_designer,
-    admin_console
 )
 
 # Exceptions
@@ -237,6 +297,71 @@ __all__ = [
     "ConfigurationManager",
     
     # ========================================================================
+    # ACE - Agentic Context Engine
+    # ========================================================================
+    "ContextType",                     # Context type classification
+    "ContextPriority",                 # Priority levels for retention
+    "ContextRetrievalStrategy",        # Retrieval strategies
+    "ContextItem",                     # Rich context item
+    "SemanticContextIndex",            # Semantic similarity index
+    "ContextWindow",                   # Sliding window management
+    "ContextCompressionStrategy",      # Compression strategies
+    
+    # ========================================================================
+    # Agent Orchestration Framework
+    # ========================================================================
+    "OrchestrationPattern",            # Orchestration patterns
+    "SupervisionStrategy",             # Supervision strategies
+    "AgentRole",                       # Roles agents can play
+    "AgentState",                      # Extended agent states
+    "TaskAssignment",                  # Task assignment tracking
+    "AgentHandoff",                    # Handoff between agents
+    "SupervisionConfig",               # Supervision configuration
+    "AgentSupervisor",                 # Hierarchical supervisor
+    "TeamRole",                        # Team role definition
+    "AgentTeam",                       # Coordinated agent team
+    "OrchestrationEngine",             # Central orchestration engine
+    "orchestration_engine",            # Global orchestration engine
+    
+    # ========================================================================
+    # Enhanced Guardrails
+    # ========================================================================
+    "GuardrailType",                   # Types of guardrails
+    "GuardrailSeverity",               # Severity levels
+    "GuardrailAction",                 # Actions on violation
+    "GuardrailViolation",              # Violation details
+    "GuardrailRule",                   # Rule within guardrail
+    "SemanticGuardrail",               # Semantic validation
+    "ContentSafetyGuardrail",          # Content safety checks
+    "OutputFormatGuardrail",           # Output format validation
+    "ChainOfThoughtGuardrail",         # CoT reasoning validation
+    "ToolUseGuardrail",                # Tool invocation validation
+    "GuardrailPipeline",               # Pipeline for chaining guardrails
+    
+    # ========================================================================
+    # Agent Policy Framework
+    # ========================================================================
+    "PolicyScope",                     # Policy application scope
+    "PolicyEnforcement",               # Enforcement strictness
+    "AgentPolicy",                     # Policy definition
+    "BehaviorPolicy",                  # Agent behavior constraints
+    "ResourcePolicy",                  # Resource access control
+    "SafetyPolicy",                    # Safety constraints
+    "AgentPolicyManager",              # Centralized policy management
+    "guardrail_manager",               # Global guardrail manager
+    "agent_policy_manager",            # Global policy manager
+    "default_safety_policy",           # Default safety policy
+    
+    # ========================================================================
+    # SLM/RLM Model Support (2026)
+    # ========================================================================
+    "ModelTier",              # Model tier classification (SLM, MLM, LLM, RLM)
+    "ModelCapability",        # Model capability flags
+    "ModelConfig",            # Model configuration
+    "ModelRouter",            # Intelligent model routing
+    "MODEL_REGISTRY",         # Pre-configured model definitions
+    
+    # ========================================================================
     # Security Components
     # ========================================================================
     "PromptInjectionDetector",
@@ -281,6 +406,21 @@ __all__ = [
     "CanaryDeploymentManager",
     
     # ========================================================================
+    # Enterprise: Prompt Drift Detection
+    # ========================================================================
+    "PromptDriftDetector",             # Detects prompt effectiveness degradation
+    "DriftType",                       # Types of drift (quality, latency, cost, etc.)
+    "DriftSeverity",                   # Alert severity levels
+    "DriftAlert",                      # Drift alert dataclass
+    "prompt_drift_detector",           # Global instance
+    
+    # ========================================================================
+    # Enterprise: Model Tier Evaluation (SLM/RLM)
+    # ========================================================================
+    "ModelTierEvaluator",              # Tier-specific model evaluation
+    "model_tier_evaluator",            # Global instance
+    
+    # ========================================================================
     # Enterprise: Prompt Versioning
     # ========================================================================
     "PromptVersionManager",
@@ -289,21 +429,6 @@ __all__ = [
     "PromptStatus",
     "prompt_version_manager",
     "prompt_library",
-    
-    # ========================================================================
-    # Enterprise: CI/CD
-    # ========================================================================
-    "AgentCIPipeline",
-    "AgentTestRunner",
-    "DeploymentManager",
-    "ReleaseManager",
-    "PipelineStage",
-    "PipelineStatus",
-    "StageType",
-    "create_agent_pipeline",
-    "test_runner",
-    "deployment_manager",
-    "release_manager",
     
     # ========================================================================
     # Enterprise: Infrastructure
@@ -353,23 +478,6 @@ __all__ = [
     "IntegrationStatus",
     "integration_manager",
     "webhook_manager",
-    
-    # ========================================================================
-    # Enterprise: Visual Tools
-    # ========================================================================
-    "AgentBuilder",
-    "WorkflowDesigner",
-    "AdminConsole",
-    "ComponentType",
-    "ComponentDefinition",
-    "AgentBlueprint",
-    "WorkflowNode",
-    "WorkflowEdge",
-    "WorkflowDefinition",
-    "NodeType",
-    "agent_builder",
-    "workflow_designer",
-    "admin_console",
     
     # ========================================================================
     # Exceptions

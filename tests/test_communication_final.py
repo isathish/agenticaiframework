@@ -1,7 +1,7 @@
 """Final coverage push tests - targeting communication.py uncovered lines"""
 
 import pytest
-from agenticaiframework.communication import CommunicationManager
+from agenticaiframework import CommunicationManager
 
 
 class TestCommunicationFinal:

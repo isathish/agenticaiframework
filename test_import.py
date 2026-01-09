@@ -19,11 +19,7 @@ try:
         ('CostQualityScorer', 'Cost vs Quality'),
         ('SecurityRiskScorer', 'Security Risk'),
         ('PromptVersionManager', 'Prompt Versioning'),
-        ('AgentCIPipeline', 'Agent CI Pipelines'),
         ('ABTestingFramework', 'A/B Testing'),
-        ('AgentBuilder', 'Agent Builder UI'),
-        ('WorkflowDesigner', 'Workflow Designer'),
-        ('AdminConsole', 'Admin Console'),
         ('ServiceNowIntegration', 'ITSM (ServiceNow)'),
         ('GitHubIntegration', 'GitHub Integration'),
         ('AzureDevOpsIntegration', 'Azure DevOps Integration'),
@@ -44,11 +40,9 @@ try:
     print("\nGlobal instances:")
     instances = [
         'tracer', 'latency_metrics', 'prompt_version_manager', 'prompt_library',
-        'test_runner', 'deployment_manager', 'release_manager',
         'multi_region_manager', 'tenant_manager', 'serverless_executor',
         'audit_trail', 'policy_engine', 'data_masking',
         'integration_manager', 'webhook_manager',
-        'agent_builder', 'workflow_designer', 'admin_console'
     ]
     
     for inst in instances:

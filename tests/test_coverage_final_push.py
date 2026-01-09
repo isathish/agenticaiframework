@@ -1,10 +1,10 @@
 """Final push tests to reach 80% coverage - targeting memory, guardrails, prompts, agents"""
 
 import pytest
-from agenticaiframework.memory import MemoryManager, MemoryEntry
-from agenticaiframework.guardrails import Guardrail, GuardrailManager
-from agenticaiframework.prompts import Prompt, PromptManager
-from agenticaiframework.agents import Agent, ContextManager
+from agenticaiframework import MemoryManager, MemoryEntry
+from agenticaiframework import Guardrail, GuardrailManager
+from agenticaiframework import Prompt, PromptManager
+from agenticaiframework import Agent, ContextManager
 from datetime import datetime, timedelta
 import time
 

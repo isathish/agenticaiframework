@@ -1,10 +1,10 @@
 import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from agenticaiframework.agents import Agent, AgentManager
-from agenticaiframework.prompts import Prompt, PromptManager
-from agenticaiframework.processes import Process
-from agenticaiframework.tasks import Task, TaskManager
+from agenticaiframework import Agent, AgentManager
+from agenticaiframework import Prompt, PromptManager
+from agenticaiframework import Process
+from agenticaiframework import Task, TaskManager
 
 def sample_task(x, y):
     return x + y

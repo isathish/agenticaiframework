@@ -1,9 +1,9 @@
 """Additional tests to push over 80% coverage threshold"""
 
 import pytest
-from agenticaiframework.guardrails import Guardrail, GuardrailManager
-from agenticaiframework.prompts import Prompt, PromptManager
-from agenticaiframework.communication import CommunicationManager
+from agenticaiframework import Guardrail, GuardrailManager
+from agenticaiframework import Prompt, PromptManager
+from agenticaiframework import CommunicationManager
 
 
 class TestGuardrailsCoverage:

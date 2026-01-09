@@ -17,7 +17,7 @@ class TestTracingModuleFull:
     
     def test_span_creation_and_attributes(self):
         """Test span creation with attributes."""
-        from agenticaiframework.tracing import Span
+        from agenticaiframework import Span
         
         span = Span(
             span_id="span_001",
@@ -52,7 +52,7 @@ class TestTracingModuleFull:
     
     def test_span_duration(self):
         """Test span duration calculation."""
-        from agenticaiframework.tracing import Span
+        from agenticaiframework import Span
         
         start = time.time()
         span = Span(
@@ -71,7 +71,7 @@ class TestTracingModuleFull:
     
     def test_span_context(self):
         """Test SpanContext."""
-        from agenticaiframework.tracing import SpanContext
+        from agenticaiframework import SpanContext
         
         ctx = SpanContext(
             trace_id="trace_003",
@@ -443,7 +443,7 @@ class TestComplianceModuleFull:
         
         integrity = manager.verify_integrity()
         assert integrity["valid"] is True
-        assert integrity["checked"] == 3
+        assert integrity["events_checked"] == 3
     
     def test_audit_trail_report(self):
         """Test generating compliance report."""
@@ -549,7 +549,7 @@ class TestComplianceModuleFull:
     
     def test_audit_action_decorator(self):
         """Test audit_action decorator."""
-        from agenticaiframework.compliance import audit_action, AuditEventType
+        from agenticaiframework import audit_action, AuditEventType
         
         # Just verify the decorator exists and is callable
         assert callable(audit_action)
@@ -577,6 +577,7 @@ class TestComplianceModuleFull:
 # =============================================================================
 # Test CI/CD Module - Full Coverage
 # =============================================================================
+@pytest.mark.skip(reason="CI/CD module was removed from the package")
 class TestCICDModuleFull:
     """Comprehensive tests for CI/CD functionality."""
     
@@ -692,7 +693,7 @@ class TestInfrastructureModuleFull:
     def test_multi_region_manager(self):
         """Test multi-region manager."""
         from agenticaiframework import MultiRegionManager, Region
-        from agenticaiframework.infrastructure import RegionConfig
+        from agenticaiframework import RegionConfig
         
         manager = MultiRegionManager()
         
@@ -840,6 +841,7 @@ class TestIntegrationsModuleFull:
 # =============================================================================
 # Test Visual Tools Module - Full Coverage
 # =============================================================================
+@pytest.mark.skip(reason="Visual tools module was removed from the package")
 class TestVisualToolsModuleFull:
     """Comprehensive tests for visual tools functionality."""
     
@@ -952,6 +954,7 @@ class TestEnterpriseModulesImport:
         assert prompt_version_manager is not None
         assert prompt_library is not None
     
+    @pytest.mark.skip(reason="CI/CD module was removed from the package")
     def test_ci_cd_imports(self):
         """Test CI/CD module imports."""
         from agenticaiframework import (
@@ -997,6 +1000,7 @@ class TestEnterpriseModulesImport:
         assert integration_manager is not None
         assert webhook_manager is not None
     
+    @pytest.mark.skip(reason="Visual tools module was removed from the package")
     def test_visual_tools_imports(self):
         """Test visual tools module imports."""
         from agenticaiframework import (
@@ -1032,16 +1036,12 @@ class TestEnterpriseExports:
             "SecurityRiskScorer", "ABTestingFramework",
             # Versioning
             "PromptVersionManager", "PromptLibrary",
-            # CI/CD
-            "AgentCIPipeline", "AgentTestRunner", "DeploymentManager",
             # Infrastructure
             "MultiRegionManager", "TenantManager", "ServerlessExecutor",
             # Compliance
             "AuditTrailManager", "PolicyEngine", "DataMaskingEngine",
             # Integrations
             "ServiceNowIntegration", "GitHubIntegration", "AzureDevOpsIntegration",
-            # Visual Tools
-            "AgentBuilder", "WorkflowDesigner", "AdminConsole",
         ]
         
         for export in enterprise_exports:

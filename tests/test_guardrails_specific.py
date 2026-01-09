@@ -1,7 +1,7 @@
 """Targeted tests for guardrails.py uncovered lines"""
 
 import pytest
-from agenticaiframework.guardrails import Guardrail, GuardrailManager
+from agenticaiframework import Guardrail, GuardrailManager
 
 
 class TestGuardrailExceptionHandling:

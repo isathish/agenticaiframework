@@ -1,8 +1,8 @@
 """Ultra-targeted tests to cross the 80% threshold"""
 
 import pytest
-from agenticaiframework.guardrails import Guardrail, GuardrailManager
-from agenticaiframework.prompts import Prompt, PromptManager
+from agenticaiframework import Guardrail, GuardrailManager
+from agenticaiframework import Prompt, PromptManager
 
 
 class TestGuardrailsFinalPush:
