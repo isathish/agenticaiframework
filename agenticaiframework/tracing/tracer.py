@@ -217,6 +217,38 @@ class AgentStepTracer:
         """Get all spans for a trace."""
         return [span.to_dict() for span in self.traces.get(trace_id, [])]
     
+    def list_traces(self, limit: int = 100) -> List[Dict[str, Any]]:
+        """List recent traces with summary information."""
+        result = []
+        trace_ids = list(self.traces.keys())[-limit:]  # Get most recent
+        
+        for trace_id in reversed(trace_ids):  # Most recent first
+            spans = self.traces.get(trace_id, [])
+            if not spans:
+                continue
+            
+            root_span = next((s for s in spans if s.parent_span_id is None), spans[0])
+            
+            # Calculate total duration
+            min_start = min(s.start_time for s in spans)
+            max_end = max(s.end_time or s.start_time for s in spans)
+            duration_ms = int((max_end - min_start) * 1000)
+            
+            # Determine overall status
+            has_error = any(s.status == "ERROR" for s in spans)
+            
+            result.append({
+                "trace_id": trace_id,
+                "operation": root_span.name,
+                "status": "error" if has_error else "success",
+                "start_time": root_span.start_time,
+                "duration_ms": duration_ms,
+                "spans_count": len(spans),
+                "metadata": root_span.attributes,
+            })
+        
+        return result
+
     def get_trace_tree(self, trace_id: str) -> Dict[str, Any]:
         """Get trace as a hierarchical tree."""
         spans = self.traces.get(trace_id, [])
