@@ -6,6 +6,20 @@ import pytest
 from unittest.mock import Mock, patch, MagicMock
 from queue import Queue, Empty
 import json
+import sys
+
+# Check if optional dependencies are available
+try:
+    import requests
+    HAS_REQUESTS = True
+except ImportError:
+    HAS_REQUESTS = False
+
+try:
+    import paho.mqtt.client
+    HAS_PAHO = True
+except ImportError:
+    HAS_PAHO = False
 
 
 class TestProtocolType:
@@ -313,51 +327,52 @@ class TestHTTPProtocol:
         
         assert protocol.base_url == "https://example.com:443"
     
-    @patch('requests.Session')
-    def test_http_connect_success(self, mock_session_class):
+    @pytest.mark.skipif(not HAS_REQUESTS, reason="requests module not installed")
+    def test_http_connect_success(self):
         """Test successful HTTP connection."""
         from agenticaiframework.communication.protocols import HTTPProtocol
         
-        mock_session = Mock()
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_session.get.return_value = mock_response
-        mock_session_class.return_value = mock_session
-        
-        protocol = HTTPProtocol()
-        result = protocol.connect()
-        
-        assert result == True
-        assert protocol.is_connected == True
+        with patch('agenticaiframework.communication.protocols.requests.Session') as mock_session_class:
+            mock_session = Mock()
+            mock_response = Mock()
+            mock_response.status_code = 200
+            mock_session.get.return_value = mock_response
+            mock_session_class.return_value = mock_session
+            
+            protocol = HTTPProtocol()
+            result = protocol.connect()
+            
+            assert result == True
+            assert protocol.is_connected == True
     
-    @patch('requests.Session')
-    def test_http_connect_with_auth_token(self, mock_session_class):
+    @pytest.mark.skipif(not HAS_REQUESTS, reason="requests module not installed")
+    def test_http_connect_with_auth_token(self):
         """Test HTTP connect with auth token."""
         from agenticaiframework.communication.protocols import HTTPProtocol, ProtocolConfig, ProtocolType
         
-        mock_session = Mock()
-        mock_session.headers = {}
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_session.get.return_value = mock_response
-        mock_session_class.return_value = mock_session
-        
-        config = ProtocolConfig(
-            protocol_type=ProtocolType.HTTP,
-            auth_token="test-token"
-        )
-        protocol = HTTPProtocol(config=config)
-        protocol.connect()
-        
-        assert "Authorization" in mock_session.headers
+        with patch('agenticaiframework.communication.protocols.requests.Session') as mock_session_class:
+            mock_session = Mock()
+            mock_session.headers = {}
+            mock_response = Mock()
+            mock_response.status_code = 200
+            mock_session.get.return_value = mock_response
+            mock_session_class.return_value = mock_session
+            
+            config = ProtocolConfig(
+                protocol_type=ProtocolType.HTTP,
+                auth_token="test-token"
+            )
+            protocol = HTTPProtocol(config=config)
+            protocol.connect()
+            
+            assert "Authorization" in mock_session.headers
     
-    @patch('requests.Session')
-    def test_http_disconnect(self, mock_session_class):
+    @pytest.mark.skipif(not HAS_REQUESTS, reason="requests module not installed")
+    def test_http_disconnect(self):
         """Test HTTP disconnect."""
         from agenticaiframework.communication.protocols import HTTPProtocol
         
         mock_session = Mock()
-        mock_session_class.return_value = mock_session
         
         protocol = HTTPProtocol()
         protocol._session = mock_session
@@ -369,8 +384,8 @@ class TestHTTPProtocol:
         assert protocol.is_connected == False
         mock_session.close.assert_called_once()
     
-    @patch('requests.Session')
-    def test_http_send_not_connected(self, mock_session_class):
+    @pytest.mark.skipif(not HAS_REQUESTS, reason="requests module not installed")
+    def test_http_send_not_connected(self):
         """Test send when not connected."""
         from agenticaiframework.communication.protocols import HTTPProtocol
         
@@ -380,8 +395,8 @@ class TestHTTPProtocol:
         
         assert "error" in result
     
-    @patch('requests.Session')
-    def test_http_send_success(self, mock_session_class):
+    @pytest.mark.skipif(not HAS_REQUESTS, reason="requests module not installed")
+    def test_http_send_success(self):
         """Test successful send."""
         from agenticaiframework.communication.protocols import HTTPProtocol
         
@@ -390,7 +405,6 @@ class TestHTTPProtocol:
         mock_response.status_code = 200
         mock_response.json.return_value = {"result": "success"}
         mock_session.post.return_value = mock_response
-        mock_session_class.return_value = mock_session
         
         protocol = HTTPProtocol()
         protocol._session = mock_session
@@ -399,8 +413,8 @@ class TestHTTPProtocol:
         
         assert result == {"result": "success"}
     
-    @patch('requests.Session')
-    def test_http_send_error_status(self, mock_session_class):
+    @pytest.mark.skipif(not HAS_REQUESTS, reason="requests module not installed")
+    def test_http_send_error_status(self):
         """Test send with error status code."""
         from agenticaiframework.communication.protocols import HTTPProtocol
         
@@ -409,7 +423,6 @@ class TestHTTPProtocol:
         mock_response.status_code = 500
         mock_response.text = "Internal Server Error"
         mock_session.post.return_value = mock_response
-        mock_session_class.return_value = mock_session
         
         protocol = HTTPProtocol()
         protocol._session = mock_session
@@ -419,8 +432,8 @@ class TestHTTPProtocol:
         
         assert "error" in result
     
-    @patch('requests.Session')
-    def test_http_receive(self, mock_session_class):
+    @pytest.mark.skipif(not HAS_REQUESTS, reason="requests module not installed")
+    def test_http_receive(self):
         """Test HTTP receive."""
         from agenticaiframework.communication.protocols import HTTPProtocol
         
@@ -429,7 +442,6 @@ class TestHTTPProtocol:
         mock_response.status_code = 200
         mock_response.json.return_value = {"message": "hello"}
         mock_session.get.return_value = mock_response
-        mock_session_class.return_value = mock_session
         
         protocol = HTTPProtocol()
         protocol._session = mock_session
@@ -438,8 +450,8 @@ class TestHTTPProtocol:
         
         assert result == {"message": "hello"}
     
-    @patch('requests.Session')
-    def test_http_receive_not_connected(self, mock_session_class):
+    @pytest.mark.skipif(not HAS_REQUESTS, reason="requests module not installed")
+    def test_http_receive_not_connected(self):
         """Test receive when not connected."""
         from agenticaiframework.communication.protocols import HTTPProtocol
         
@@ -449,8 +461,8 @@ class TestHTTPProtocol:
         
         assert result is None
     
-    @patch('requests.Session')
-    def test_http_get_method(self, mock_session_class):
+    @pytest.mark.skipif(not HAS_REQUESTS, reason="requests module not installed")
+    def test_http_get_method(self):
         """Test HTTP GET method."""
         from agenticaiframework.communication.protocols import HTTPProtocol
         
@@ -459,7 +471,6 @@ class TestHTTPProtocol:
         mock_response.status_code = 200
         mock_response.json.return_value = {"data": "value"}
         mock_session.get.return_value = mock_response
-        mock_session_class.return_value = mock_session
         
         protocol = HTTPProtocol()
         protocol._session = mock_session
@@ -468,8 +479,8 @@ class TestHTTPProtocol:
         
         assert result == {"data": "value"}
     
-    @patch('requests.Session')
-    def test_http_get_not_connected(self, mock_session_class):
+    @pytest.mark.skipif(not HAS_REQUESTS, reason="requests module not installed")
+    def test_http_get_not_connected(self):
         """Test GET when not connected."""
         from agenticaiframework.communication.protocols import HTTPProtocol
         
@@ -515,27 +526,27 @@ class TestSSEProtocol:
         
         assert protocol.base_url == "http://example.com:8080"
     
-    @patch('requests.Session')
-    def test_sse_connect_success(self, mock_session_class):
+    @pytest.mark.skipif(not HAS_REQUESTS, reason="requests module not installed")
+    def test_sse_connect_success(self):
         """Test successful SSE connection."""
         from agenticaiframework.communication.protocols import SSEProtocol
         
-        mock_session = Mock()
-        mock_session_class.return_value = mock_session
-        
-        protocol = SSEProtocol()
-        result = protocol.connect()
-        
-        assert result == True
-        assert protocol.is_connected == True
+        with patch('agenticaiframework.communication.protocols.requests.Session') as mock_session_class:
+            mock_session = Mock()
+            mock_session_class.return_value = mock_session
+            
+            protocol = SSEProtocol()
+            result = protocol.connect()
+            
+            assert result == True
+            assert protocol.is_connected == True
     
-    @patch('requests.Session')
-    def test_sse_disconnect(self, mock_session_class):
+    @pytest.mark.skipif(not HAS_REQUESTS, reason="requests module not installed")
+    def test_sse_disconnect(self):
         """Test SSE disconnect."""
         from agenticaiframework.communication.protocols import SSEProtocol
         
         mock_session = Mock()
-        mock_session_class.return_value = mock_session
         
         protocol = SSEProtocol()
         protocol._session = mock_session
@@ -546,8 +557,8 @@ class TestSSEProtocol:
         assert result == True
         assert protocol.is_connected == False
     
-    @patch('requests.Session')
-    def test_sse_send(self, mock_session_class):
+    @pytest.mark.skipif(not HAS_REQUESTS, reason="requests module not installed")
+    def test_sse_send(self):
         """Test SSE send."""
         from agenticaiframework.communication.protocols import SSEProtocol
         
@@ -556,7 +567,6 @@ class TestSSEProtocol:
         mock_response.status_code = 200
         mock_response.json.return_value = {"ack": True}
         mock_session.post.return_value = mock_response
-        mock_session_class.return_value = mock_session
         
         protocol = SSEProtocol()
         protocol._session = mock_session
@@ -652,8 +662,8 @@ class TestMQTTProtocol:
         
         assert "error" in result
     
-    @patch('paho.mqtt.client.Client')
-    def test_mqtt_send_success(self, mock_client_class):
+    @pytest.mark.skipif(not HAS_PAHO, reason="paho-mqtt module not installed")
+    def test_mqtt_send_success(self):
         """Test successful MQTT send."""
         from agenticaiframework.communication.protocols import MQTTProtocol
         
@@ -661,7 +671,6 @@ class TestMQTTProtocol:
         mock_result = Mock()
         mock_result.mid = 123
         mock_client.publish.return_value = mock_result
-        mock_client_class.return_value = mock_client
         
         protocol = MQTTProtocol()
         protocol._client = mock_client
@@ -706,13 +715,12 @@ class TestMQTTProtocol:
         
         assert result == False
     
-    @patch('paho.mqtt.client.Client')
-    def test_mqtt_subscribe_success(self, mock_client_class):
+    @pytest.mark.skipif(not HAS_PAHO, reason="paho-mqtt module not installed")
+    def test_mqtt_subscribe_success(self):
         """Test successful subscribe."""
         from agenticaiframework.communication.protocols import MQTTProtocol
         
         mock_client = Mock()
-        mock_client_class.return_value = mock_client
         
         protocol = MQTTProtocol()
         protocol._client = mock_client
@@ -732,13 +740,12 @@ class TestMQTTProtocol:
         
         assert result == False
     
-    @patch('paho.mqtt.client.Client')
-    def test_mqtt_unsubscribe_success(self, mock_client_class):
+    @pytest.mark.skipif(not HAS_PAHO, reason="paho-mqtt module not installed")
+    def test_mqtt_unsubscribe_success(self):
         """Test successful unsubscribe."""
         from agenticaiframework.communication.protocols import MQTTProtocol
         
         mock_client = Mock()
-        mock_client_class.return_value = mock_client
         
         protocol = MQTTProtocol()
         protocol._client = mock_client
@@ -749,8 +756,8 @@ class TestMQTTProtocol:
         assert result == True
         assert "topic/test" not in protocol._subscriptions
     
-    @patch('paho.mqtt.client.Client')
-    def test_mqtt_on_connect_success(self, mock_client_class):
+    @pytest.mark.skipif(not HAS_PAHO, reason="paho-mqtt module not installed")
+    def test_mqtt_on_connect_success(self):
         """Test _on_connect callback success."""
         from agenticaiframework.communication.protocols import MQTTProtocol
         
@@ -762,8 +769,8 @@ class TestMQTTProtocol:
         
         assert protocol.is_connected == True
     
-    @patch('paho.mqtt.client.Client')
-    def test_mqtt_on_connect_failure(self, mock_client_class):
+    @pytest.mark.skipif(not HAS_PAHO, reason="paho-mqtt module not installed")
+    def test_mqtt_on_connect_failure(self):
         """Test _on_connect callback failure."""
         from agenticaiframework.communication.protocols import MQTTProtocol
         
@@ -774,8 +781,8 @@ class TestMQTTProtocol:
         
         # Should not set is_connected = True on failure
     
-    @patch('paho.mqtt.client.Client')
-    def test_mqtt_on_message(self, mock_client_class):
+    @pytest.mark.skipif(not HAS_PAHO, reason="paho-mqtt module not installed")
+    def test_mqtt_on_message(self):
         """Test _on_message callback."""
         from agenticaiframework.communication.protocols import MQTTProtocol
         
@@ -792,8 +799,8 @@ class TestMQTTProtocol:
         assert msg["topic"] == "test/topic"
         assert msg["payload"]["data"] == "hello"
     
-    @patch('paho.mqtt.client.Client')
-    def test_mqtt_on_message_invalid_json(self, mock_client_class):
+    @pytest.mark.skipif(not HAS_PAHO, reason="paho-mqtt module not installed")
+    def test_mqtt_on_message_invalid_json(self):
         """Test _on_message with invalid JSON."""
         from agenticaiframework.communication.protocols import MQTTProtocol
         
@@ -806,8 +813,8 @@ class TestMQTTProtocol:
         # Should not raise
         protocol._on_message(None, None, mock_msg)
     
-    @patch('paho.mqtt.client.Client')
-    def test_mqtt_on_disconnect(self, mock_client_class):
+    @pytest.mark.skipif(not HAS_PAHO, reason="paho-mqtt module not installed")
+    def test_mqtt_on_disconnect(self):
         """Test _on_disconnect callback."""
         from agenticaiframework.communication.protocols import MQTTProtocol
         
@@ -853,14 +860,13 @@ class TestProtocolConfigFromInit:
 class TestProtocolRetry:
     """Test protocol retry logic."""
     
-    @patch('requests.Session')
-    def test_http_send_retries_on_exception(self, mock_session_class):
+    @pytest.mark.skipif(not HAS_REQUESTS, reason="requests module not installed")
+    def test_http_send_retries_on_exception(self):
         """Test HTTP send retries on exception."""
         from agenticaiframework.communication.protocols import HTTPProtocol
         
         mock_session = Mock()
         mock_session.post.side_effect = [Exception("error1"), Exception("error2")]
-        mock_session_class.return_value = mock_session
         
         protocol = HTTPProtocol()
         protocol._session = mock_session
