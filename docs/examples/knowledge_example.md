@@ -1,3 +1,13 @@
+---
+tags:
+  - examples
+  - knowledge
+  - retrieval
+---
+
+# Knowledge Retriever Example
+
+```python
 from agenticaiframework.knowledge import KnowledgeRetriever
 
 # Example: Using the KnowledgeRetriever
@@ -23,3 +33,5 @@ if __name__ == "__main__":
     results = retriever.retrieve(query)
 
     print(f"Knowledge results for '{query}':", results)
+
+```

@@ -24,25 +24,25 @@ Track, log, and analyze performance with comprehensive monitoring
     
     Performance and usage tracking
     
-    [:octicons-arrow-right-24: View Metrics](#metrics-collection)
+    [:octicons-arrow-right-24: View Metrics](#key-classes-and-functions)
 
 -   :material-text-box:{ .lg } **Logging**
     
     Structured event logging
     
-    [:octicons-arrow-right-24: Configure](#event-logging)
+    [:octicons-arrow-right-24: Configure](#example-usage)
 
 -   :material-bell-alert:{ .lg } **Alerts**
     
     Automated alerting system
     
-    [:octicons-arrow-right-24: Setup](#alerts)
+    [:octicons-arrow-right-24: Setup](#best-practices)
 
 -   :material-chart-timeline:{ .lg } **Tracing**
     
     Distributed tracing
     
-    [:octicons-arrow-right-24: Learn More](#distributed-tracing)
+    [:octicons-arrow-right-24: Learn More](#monitoring-architecture)
 
 </div>
 

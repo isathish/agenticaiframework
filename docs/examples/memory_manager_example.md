@@ -1,3 +1,13 @@
+---
+tags:
+  - examples
+  - memory
+  - storage
+---
+
+# Memory Manager Example
+
+```python
 from agenticaiframework.memory import MemoryManager
 
 # Example: Using the MemoryManager
@@ -20,3 +30,5 @@ if __name__ == "__main__":
     # Retrieve and display memory entries
     print("User Name:", memory_manager.retrieve("user_name"))
     print("Last Login:", memory_manager.retrieve("last_login"))
+
+```

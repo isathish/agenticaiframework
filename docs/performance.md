@@ -24,25 +24,25 @@ From microseconds to enterprise scale
     
     P50, P95, P99 optimization
     
-    [:octicons-arrow-right-24: Reduce Latency](#latency-optimization)
+    [:octicons-arrow-right-24: Reduce Latency](#llm-performance-optimization)
 
 -   :material-memory:{ .lg } **Memory**
     
     Efficient resource usage
     
-    [:octicons-arrow-right-24: Optimize Memory](#memory-optimization)
+    [:octicons-arrow-right-24: Optimize Memory](#memory-system-optimization)
 
 -   :material-chart-line:{ .lg } **Throughput**
     
     Requests per second
     
-    [:octicons-arrow-right-24: Increase Throughput](#throughput-optimization)
+    [:octicons-arrow-right-24: Increase Throughput](#agent-performance-optimization)
 
 -   :material-scale-balance:{ .lg } **Scalability**
     
     Horizontal and vertical
     
-    [:octicons-arrow-right-24: Scale Better](#scaling-strategies)
+    [:octicons-arrow-right-24: Scale Better](#system-level-optimizations)
 
 </div>
 
@@ -53,7 +53,7 @@ From microseconds to enterprise scale
 
 <div align="center">
 
-[![Version](https://img.shields.io/badge/version-1.2.10-blue.svg)](https://github.com/isathish/agenticaiframework)
+[![Version](https://img.shields.io/badge/version-1.2.11-blue.svg)](https://github.com/isathish/agenticaiframework)
 [![Performance](https://img.shields.io/badge/Performance-Optimized-success.svg)](https://github.com/isathish/agenticaiframework)
 [![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://isathish.github.io/agenticaiframework/)
 

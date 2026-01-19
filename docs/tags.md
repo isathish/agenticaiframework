@@ -1,3 +1,10 @@
+---
+tags:
+  - tags
+  - navigation
+  - index
+---
+
 # Tags
 
 Browse documentation by topics and categories:

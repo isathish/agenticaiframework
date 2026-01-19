@@ -10,7 +10,7 @@ tags:
 
 <div align="center">
 
-[![Version](https://img.shields.io/badge/version-1.2.10-blue.svg)](https://github.com/isathish/agenticaiframework)
+[![Version](https://img.shields.io/badge/version-1.2.11-blue.svg)](https://github.com/isathish/agenticaiframework)
 [![CLI](https://img.shields.io/badge/CLI-Command--Line-success.svg)](https://github.com/isathish/agenticaiframework)
 [![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://isathish.github.io/agenticaiframework/)
 
@@ -885,4 +885,4 @@ agenticai --install-completion fish
 
 
 
-**[⬆ Back to Top](#-cli-reference)**
+**[⬆ Back to Top](#cli-reference)**

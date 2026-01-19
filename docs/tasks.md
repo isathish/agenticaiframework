@@ -24,25 +24,25 @@ Define, schedule, and execute work units with precision
     
     Create your first task
     
-    [:octicons-arrow-right-24: Get Started](#creating-a-task)
+    [:octicons-arrow-right-24: Get Started](#creating-and-managing-tasks)
 
 -   :material-cog:{ .lg } **Configuration**
     
     Task settings and options
     
-    [:octicons-arrow-right-24: Configure](#task-configuration)
+    [:octicons-arrow-right-24: Configure](#core-components)
 
 -   :material-chart-line:{ .lg } **Execution**
     
     Run and monitor tasks
     
-    [:octicons-arrow-right-24: Execute](#task-execution)
+    [:octicons-arrow-right-24: Execute](#workflow-management)
 
 -   :material-book-open:{ .lg } **Examples**
     
     Real-world patterns
     
-    [:octicons-arrow-right-24: View Examples](#examples)
+    [:octicons-arrow-right-24: View Examples](#integration-with-other-modules)
 
 </div>
 

@@ -1,3 +1,13 @@
+---
+tags:
+  - examples
+  - hub
+  - services
+---
+
+# Hub Example
+
+```python
 from agenticaiframework.hub import Hub
 
 # Example: Using the Hub
@@ -29,3 +39,5 @@ if __name__ == "__main__":
         print("Service Output:", service())
     else:
         print("Service not found.")
+
+```

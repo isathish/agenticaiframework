@@ -42,7 +42,7 @@ Comprehensive integration guide for APIs, databases, and message queues
     
     AWS, Azure, GCP integration
     
-    [:octicons-arrow-right-24: Deploy](#cloud-integration)
+    [:octicons-arrow-right-24: Deploy](#integration-architecture)
 
 </div>
 

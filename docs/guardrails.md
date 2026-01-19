@@ -24,25 +24,25 @@ Protect your AI applications with intelligent validation and content moderation
     
     Content moderation and filtering
     
-    [:octicons-arrow-right-24: Configure](#safety-guardrails)
+    [:octicons-arrow-right-24: Configure](#core-components)
 
 -   :material-scale-balance:{ .lg } **Compliance**
     
     Regulatory and policy checks
     
-    [:octicons-arrow-right-24: Learn More](#compliance-guardrails)
+    [:octicons-arrow-right-24: Learn More](#overview)
 
 -   :material-quality-high:{ .lg } **Quality**
     
     Output validation and scoring
     
-    [:octicons-arrow-right-24: Validate](#quality-guardrails)
+    [:octicons-arrow-right-24: Validate](#best-practices)
 
 -   :material-book-open:{ .lg } **Examples**
     
     Implementation patterns
     
-    [:octicons-arrow-right-24: View Examples](#examples)
+    [:octicons-arrow-right-24: View Examples](#use-cases)
 
 </div>
 

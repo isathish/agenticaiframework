@@ -1,3 +1,10 @@
+---
+tags:
+  - home
+  - overview
+  - getting-started
+---
+
 <div align="center" markdown>
 
 # :robot: AgenticAI Framework
@@ -18,8 +25,8 @@
   <a href="https://github.com/isathish/agenticaiframework"><img src="https://img.shields.io/github/stars/isathish/agenticaiframework?style=social" alt="GitHub Stars"></a>
 </p>
 
-!!! success "Latest Release: v1.2.10"
-    🎉 New features: Comprehensive unit tests for tools framework, Enhanced prompts testing, Improved documentation
+!!! success "Latest Release: v1.2.11"
+    🎉 New features: Documentation improvements, Enhanced testing, Updated examples
     [:octicons-arrow-right-24: See What's New](changelog.md)
 
 </div>

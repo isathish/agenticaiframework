@@ -1,3 +1,13 @@
+---
+tags:
+  - examples
+  - evaluation
+  - assessment
+---
+
+# Evaluation System Example
+
+```python
 from agenticaiframework.evaluation import EvaluationSystem
 
 # Example: Using the EvaluationSystem
@@ -26,3 +36,5 @@ if __name__ == "__main__":
     results = evaluator.evaluate(sample_output)
 
     print("Evaluation Results:", results)
+
+```

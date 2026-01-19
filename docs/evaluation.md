@@ -24,25 +24,25 @@ Assess model quality, performance, safety, and business outcomes
     
     LLM hallucination and reasoning
     
-    [:octicons-arrow-right-24: Evaluate](#model-quality-evaluation)
+    [:octicons-arrow-right-24: Evaluate](#level-1-model-quality-evaluation)
 
 -   :material-speedometer:{ .lg } **Performance**
     
     Latency and throughput metrics
     
-    [:octicons-arrow-right-24: Monitor](#performance-evaluation)
+    [:octicons-arrow-right-24: Monitor](#level-9-performance-scalability)
 
 -   :material-shield-check:{ .lg } **Safety**
     
     Guardrails and compliance
     
-    [:octicons-arrow-right-24: Assess](#safety-evaluation)
+    [:octicons-arrow-right-24: Assess](#level-7-safety-guardrails)
 
 -   :material-chart-line:{ .lg } **Business**
     
     ROI and impact metrics
     
-    [:octicons-arrow-right-24: Measure](#business-outcomes)
+    [:octicons-arrow-right-24: Measure](#level-12-business-outcomes)
 
 </div>
 

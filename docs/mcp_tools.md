@@ -24,25 +24,25 @@ Extend agent capabilities with standardized tool interfaces
     
     Register and manage tools
     
-    [:octicons-arrow-right-24: Learn More](#tool-registry)
+    [:octicons-arrow-right-24: Learn More](#key-classes-and-functions)
 
 -   :material-creation:{ .lg } **Create Tools**
     
     Build custom MCP tools
     
-    [:octicons-arrow-right-24: Create](#creating-tools)
+    [:octicons-arrow-right-24: Create](#example-usage)
 
 -   :material-api:{ .lg } **Integrations**
     
     Connect to external APIs
     
-    [:octicons-arrow-right-24: Integrate](#integrations)
+    [:octicons-arrow-right-24: Integrate](#mcp-architecture)
 
 -   :material-book-open:{ .lg } **Examples**
     
     Tool implementation patterns
     
-    [:octicons-arrow-right-24: View Examples](#examples)
+    [:octicons-arrow-right-24: View Examples](#use-cases)
 
 </div>
 

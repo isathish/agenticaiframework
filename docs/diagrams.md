@@ -1,3 +1,11 @@
+---
+tags:
+  - diagrams
+  - architecture
+  - mermaid
+  - visualization
+---
+
 # :art: Architecture Diagrams Reference
 
 <div class="annotate" markdown>

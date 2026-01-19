@@ -1,3 +1,14 @@
+---
+tags:
+  - examples
+  - processes
+  - workflows
+  - advanced
+---
+
+# Advanced Process Example
+
+```python
 from agenticaiframework.processes import Process
 
 # Example: Advanced Process usage with Tasks
@@ -31,3 +42,5 @@ if __name__ == "__main__":
 
     # Execute the process
     process.execute()
+
+```
