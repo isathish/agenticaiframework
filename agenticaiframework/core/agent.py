@@ -1420,6 +1420,447 @@ class Agent:
         self._log("Policy engine attached")
         return self
     
+    # ========================================================================
+    # REMOTE AGENT COMMUNICATION
+    # ========================================================================
+    
+    def connect_remote(
+        self,
+        agent_id: str,
+        url: Optional[str] = None,
+        protocol: str = "http",
+        host: str = "localhost",
+        port: int = 8080,
+        path: str = "/agent",
+        auth_token: Optional[str] = None,
+    ) -> 'Agent':
+        """
+        Connect to a remote agent for communication.
+        
+        Args:
+            agent_id: Identifier for the remote agent
+            url: Full URL (parses host/port/protocol)
+            protocol: 'http', 'https', 'sse', 'mqtt', 'websocket'
+            host: Agent host
+            port: Agent port
+            path: API path
+            auth_token: Authentication token
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> agent.connect_remote("analyzer", url="https://analyzer.example.com/agent")
+            >>> agent.connect_remote("iot-bot", protocol="mqtt", host="mqtt.example.com")
+        """
+        from ..communication import AgentCommunicationManager, ProtocolType
+        
+        # Get or create communication manager
+        if 'comm_manager' not in self.config:
+            self.config['comm_manager'] = AgentCommunicationManager(agent_id=self.id)
+        
+        manager = self.config['comm_manager']
+        
+        # Map protocol string to enum
+        protocol_map = {
+            'http': ProtocolType.HTTP,
+            'https': ProtocolType.HTTPS,
+            'sse': ProtocolType.SSE,
+            'mqtt': ProtocolType.MQTT,
+            'websocket': ProtocolType.WEBSOCKET,
+            'ws': ProtocolType.WEBSOCKET,
+            'stdio': ProtocolType.STDIO,
+        }
+        proto_type = protocol_map.get(protocol.lower(), ProtocolType.HTTP)
+        
+        manager.register_agent(
+            agent_id=agent_id,
+            url=url,
+            protocol=proto_type,
+            host=host,
+            port=port,
+            path=path,
+            auth_token=auth_token,
+        )
+        
+        self._log(f"Connected to remote agent: {agent_id}")
+        return self
+    
+    def send_to_agent(
+        self,
+        agent_id: str,
+        message: Union[str, Dict[str, Any]],
+        context: Optional[Dict[str, Any]] = None,
+        timeout: float = 30.0,
+    ) -> Dict[str, Any]:
+        """
+        Send a message to a remote or local agent.
+        
+        Args:
+            agent_id: Target agent identifier
+            message: Message content (prompt or structured data)
+            context: Additional context to send
+            timeout: Response timeout
+            
+        Returns:
+            Agent response
+            
+        Example:
+            >>> response = agent.send_to_agent("analyzer", "Analyze this data")
+            >>> response = agent.send_to_agent("coder", {"task": "refactor", "code": code})
+        """
+        if 'comm_manager' not in self.config:
+            return {"error": f"No agents connected. Use connect_remote() first."}
+        
+        manager = self.config['comm_manager']
+        return manager.send(agent_id, message, context, timeout)
+    
+    def stream_from_agent(
+        self,
+        agent_id: str,
+        message: Union[str, Dict[str, Any]],
+        context: Optional[Dict[str, Any]] = None,
+    ):
+        """
+        Stream response from a remote agent.
+        
+        Args:
+            agent_id: Target agent identifier
+            message: Message content
+            context: Additional context
+            
+        Yields:
+            Response chunks
+            
+        Example:
+            >>> for chunk in agent.stream_from_agent("writer", "Write a story"):
+            ...     print(chunk, end="")
+        """
+        if 'comm_manager' not in self.config:
+            yield {"error": "No agents connected"}
+            return
+        
+        manager = self.config['comm_manager']
+        for chunk in manager.stream(agent_id, message, context):
+            yield chunk
+    
+    def broadcast_to_agents(
+        self,
+        message: Union[str, Dict[str, Any]],
+        context: Optional[Dict[str, Any]] = None,
+        exclude: Optional[List[str]] = None,
+    ) -> Dict[str, Any]:
+        """
+        Broadcast a message to all connected agents.
+        
+        Args:
+            message: Message content
+            context: Additional context
+            exclude: Agent IDs to exclude
+            
+        Returns:
+            Responses from all agents
+        """
+        if 'comm_manager' not in self.config:
+            return {"error": "No agents connected"}
+        
+        manager = self.config['comm_manager']
+        return manager.broadcast(message, context, exclude)
+    
+    def as_server(
+        self,
+        framework: str = "flask",
+        host: str = "0.0.0.0",
+        port: int = 8080,
+    ):
+        """
+        Expose this agent as a remote service.
+        
+        Args:
+            framework: 'flask' or 'fastapi'
+            host: Server host
+            port: Server port
+            
+        Returns:
+            Web application instance (Flask or FastAPI)
+            
+        Example:
+            >>> # Flask
+            >>> app = agent.as_server("flask")
+            >>> app.run(port=8080)
+            
+            >>> # FastAPI
+            >>> app = agent.as_server("fastapi")
+            >>> uvicorn.run(app, port=8080)
+        """
+        from ..communication import RemoteAgentServer
+        
+        server = RemoteAgentServer(self, agent_id=self.id)
+        
+        if framework.lower() == "fastapi":
+            return server.create_fastapi_app()
+        else:
+            return server.create_flask_app()
+    
+    # ========================================================================
+    # KNOWLEDGE BASE BUILDING
+    # ========================================================================
+    
+    def create_knowledge_from(
+        self,
+        sources: Union[str, List[str]],
+        embedding_provider: str = "openai",
+        embedding_model: Optional[str] = None,
+        **kwargs,
+    ) -> 'Agent':
+        """
+        Create knowledge base from various sources.
+        
+        Sources can be:
+        - File paths: "docs/manual.pdf", "data/info.txt"
+        - URLs: "https://example.com/article"
+        - Web search: "search:machine learning best practices"
+        - API: "api:https://api.example.com/data"
+        
+        Args:
+            sources: Source or list of sources
+            embedding_provider: 'openai', 'azure', 'huggingface', 'cohere'
+            embedding_model: Specific model name
+            **kwargs: Additional options for loaders
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> agent.create_knowledge_from([
+            ...     "docs/manual.pdf",
+            ...     "https://example.com/docs",
+            ...     "search:best practices",
+            ... ])
+        """
+        from ..knowledge import KnowledgeBuilder
+        
+        # Get or create knowledge builder
+        if 'knowledge_builder' not in self.config:
+            self.config['knowledge_builder'] = KnowledgeBuilder(
+                embedding_provider=embedding_provider,
+                embedding_model=embedding_model,
+            )
+        
+        builder = self.config['knowledge_builder']
+        
+        # Normalize to list
+        if isinstance(sources, str):
+            sources = [sources]
+        
+        # Add each source
+        for source in sources:
+            try:
+                builder.add(source, **kwargs)
+            except Exception as e:
+                self._log(f"Failed to add source {source}: {e}")
+        
+        self._log(f"Added {len(sources)} sources to knowledge base")
+        return self
+    
+    def add_knowledge_from_web_search(
+        self,
+        query: str,
+        num_results: int = 5,
+        fetch_content: bool = True,
+    ) -> 'Agent':
+        """
+        Add knowledge from web search results.
+        
+        Args:
+            query: Search query
+            num_results: Number of search results
+            fetch_content: Whether to fetch full page content
+            
+        Returns:
+            Self for chaining
+        """
+        from ..knowledge import KnowledgeBuilder
+        
+        if 'knowledge_builder' not in self.config:
+            self.config['knowledge_builder'] = KnowledgeBuilder()
+        
+        builder = self.config['knowledge_builder']
+        builder.add_from_web_search(query, num_results, fetch_content)
+        
+        self._log(f"Added web search results for: {query}")
+        return self
+    
+    def add_knowledge_from_api(
+        self,
+        url: str,
+        method: str = "GET",
+        headers: Optional[Dict] = None,
+        data: Optional[Dict] = None,
+        json_path: Optional[str] = None,
+    ) -> 'Agent':
+        """
+        Add knowledge from an API endpoint.
+        
+        Args:
+            url: API URL
+            method: HTTP method
+            headers: Request headers
+            data: Request body
+            json_path: JSON path to extract (e.g., "data.items")
+            
+        Returns:
+            Self for chaining
+        """
+        from ..knowledge import KnowledgeBuilder
+        
+        if 'knowledge_builder' not in self.config:
+            self.config['knowledge_builder'] = KnowledgeBuilder()
+        
+        builder = self.config['knowledge_builder']
+        builder.add_from_api(url, method, headers, data, json_path)
+        
+        self._log(f"Added API data from: {url}")
+        return self
+    
+    def add_knowledge_from_image(
+        self,
+        image_path: str,
+        ocr_provider: str = "openai_vision",
+        vision_prompt: Optional[str] = None,
+    ) -> 'Agent':
+        """
+        Add knowledge from an image using OCR or vision models.
+        
+        Args:
+            image_path: Path to image file
+            ocr_provider: 'pytesseract' or 'openai_vision'
+            vision_prompt: Custom prompt for vision model
+            
+        Returns:
+            Self for chaining
+        """
+        from ..knowledge import KnowledgeBuilder
+        
+        if 'knowledge_builder' not in self.config:
+            self.config['knowledge_builder'] = KnowledgeBuilder()
+        
+        builder = self.config['knowledge_builder']
+        builder.add_from_image(image_path, ocr_provider, vision_prompt)
+        
+        self._log(f"Added image content from: {image_path}")
+        return self
+    
+    def get_knowledge_embeddings(self) -> List[Any]:
+        """
+        Get embeddings from built knowledge base.
+        
+        Returns:
+            List of EmbeddingOutput objects ready for vector database
+            
+        Example:
+            >>> embeddings = agent.get_knowledge_embeddings()
+            >>> for emb in embeddings:
+            ...     # Store in Qdrant
+            ...     qdrant_client.upsert(emb.to_qdrant_point())
+            ...     # Or Pinecone
+            ...     pinecone_index.upsert([emb.to_pinecone_vector()])
+        """
+        if 'knowledge_builder' not in self.config:
+            return []
+        
+        builder = self.config['knowledge_builder']
+        return builder.get_embeddings()
+    
+    def store_knowledge_in_vector_db(
+        self,
+        db_type: str = "memory",
+        collection_name: str = "knowledge",
+        **db_config,
+    ) -> 'Agent':
+        """
+        Store knowledge embeddings in a vector database.
+        
+        Args:
+            db_type: 'qdrant', 'pinecone', 'chroma', 'memory'
+            collection_name: Collection/index name
+            **db_config: Database-specific configuration
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> agent.create_knowledge_from(["docs/"])
+            >>> agent.store_knowledge_in_vector_db(
+            ...     db_type="qdrant",
+            ...     host="localhost",
+            ...     port=6333,
+            ...     collection_name="my_knowledge"
+            ... )
+        """
+        from ..knowledge import UnifiedVectorDBTool
+        
+        embeddings = self.get_knowledge_embeddings()
+        if not embeddings:
+            self._log("No embeddings to store")
+            return self
+        
+        # Create vector DB tool
+        db_tool = UnifiedVectorDBTool(
+            db_type=db_type,
+            collection_name=collection_name,
+            **db_config,
+        )
+        
+        # Insert embeddings
+        vectors = [e.embedding for e in embeddings]
+        ids = [e.id for e in embeddings]
+        payloads = [{"content": e.content, **e.metadata} for e in embeddings]
+        
+        result = db_tool.insert(vectors, ids, payloads)
+        
+        if result.success:
+            self._log(f"Stored {len(embeddings)} embeddings in {db_type}")
+            # Store reference to DB tool for queries
+            self.config['vector_db'] = db_tool
+        else:
+            self._log(f"Failed to store embeddings: {result.error}")
+        
+        return self
+    
+    def search_knowledge(
+        self,
+        query: str,
+        limit: int = 5,
+    ) -> List[Dict[str, Any]]:
+        """
+        Search knowledge base using semantic similarity.
+        
+        Args:
+            query: Search query
+            limit: Number of results
+            
+        Returns:
+            List of matching documents with scores
+        """
+        if 'vector_db' not in self.config:
+            return []
+        
+        # Generate query embedding
+        if 'knowledge_builder' not in self.config:
+            return []
+        
+        builder = self.config['knowledge_builder']
+        query_embedding = builder.embedding.embed(query)
+        
+        # Search
+        db = self.config['vector_db']
+        result = db.search(query_embedding, limit)
+        
+        if result.success:
+            return result.result.get("matches", [])
+        return []
+
     def _log_error(self, message: str, exception: Optional[Exception] = None) -> None:
         """Log an error with details."""
         error_entry = {

@@ -120,7 +120,34 @@ from .guardrails import (
     default_safety_policy
 )
 from .evaluation_base import EvaluationSystem
-from .knowledge import KnowledgeRetriever
+# Knowledge - Retriever, Builder, and Vector DB
+from .knowledge import (
+    # Legacy retriever
+    KnowledgeRetriever,
+    # Knowledge Builder
+    KnowledgeBuilder,
+    SourceType,
+    KnowledgeChunk,
+    EmbeddingOutput,
+    # Embedding Providers
+    EmbeddingProvider,
+    OpenAIEmbedding,
+    AzureOpenAIEmbedding,
+    HuggingFaceEmbedding,
+    CohereEmbedding,
+    # Source Loaders
+    SourceLoader,
+    TextLoader,
+    PDFLoader,
+    ImageLoader,
+    WebLoader,
+    WebSearchLoader,
+    APILoader,
+    # Vector DB
+    VectorDBType,
+    UnifiedVectorDBTool,
+    create_vector_db_tool,
+)
 from .llms import (
     LLMManager, 
     CircuitBreaker,
@@ -131,6 +158,29 @@ from .llms import (
     MODEL_REGISTRY
 )
 from .communication import CommunicationManager
+# Multi-Protocol Communication (new)
+from .communication import (
+    # Protocol Types
+    ProtocolType,
+    ProtocolConfig,
+    # Protocols
+    CommunicationProtocol,
+    STDIOProtocol,
+    HTTPProtocol,
+    SSEProtocol,
+    MQTTProtocol,
+    WebSocketProtocol,
+    # Channel & Messages
+    AgentChannel,
+    AgentMessage,
+    MessageType,
+    # Remote Agent
+    RemoteAgentClient,
+    RemoteAgentServer,
+    AgentEndpoint,
+    # Manager
+    AgentCommunicationManager,
+)
 from .memory import MemoryManager, MemoryEntry, MemoryStats, memory_manager
 
 # Tools Framework (35+ tools across 4 categories)
@@ -416,6 +466,56 @@ __all__ = [
     "MemoryManager", "MemoryEntry",
     "Hub",
     "ConfigurationManager",
+    
+    # ========================================================================
+    # Multi-Protocol Communication (NEW)
+    # ========================================================================
+    # Protocol Types
+    "ProtocolType",
+    "ProtocolConfig",
+    # Protocol Implementations
+    "CommunicationProtocol",
+    "STDIOProtocol",
+    "HTTPProtocol",
+    "SSEProtocol",
+    "MQTTProtocol",
+    "WebSocketProtocol",
+    # Messages
+    "AgentChannel",
+    "AgentMessage",
+    "MessageType",
+    # Remote Agent
+    "RemoteAgentClient",
+    "RemoteAgentServer",
+    "AgentEndpoint",
+    "AgentCommunicationManager",
+    
+    # ========================================================================
+    # Knowledge Builder & Vector DB (NEW)
+    # ========================================================================
+    # Knowledge Builder
+    "KnowledgeBuilder",
+    "SourceType",
+    "KnowledgeChunk",
+    "EmbeddingOutput",
+    # Embedding Providers
+    "EmbeddingProvider",
+    "OpenAIEmbedding",
+    "AzureOpenAIEmbedding",
+    "HuggingFaceEmbedding",
+    "CohereEmbedding",
+    # Source Loaders
+    "SourceLoader",
+    "TextLoader",
+    "PDFLoader",
+    "ImageLoader",
+    "WebLoader",
+    "WebSearchLoader",
+    "APILoader",
+    # Vector DB
+    "VectorDBType",
+    "UnifiedVectorDBTool",
+    "create_vector_db_tool",
     
     # ========================================================================
     # Tools Framework (35+ Tools)
