@@ -1,673 +1,757 @@
 ---
-tags:
-  - communication
-  - protocols
-  - messaging
-  - core-modules
+title: Communication Protocols
+description: 6 communication protocols for connecting agents - HTTP, WebSocket, SSE, MQTT, gRPC, STDIO
 ---
 
-# 💬 Communication Module
+# 📡 Communication Protocols
 
-<div class="annotate" markdown>
+AgenticAI Framework supports **6 communication protocols** for connecting agents to external services, each other, and client applications.
 
-**Flexible messaging system for agent-to-agent communication**
+---
 
-Multiple protocols and communication patterns
-
-</div>
-
-## 🎯 Quick Navigation
+## 🎯 Protocol Overview
 
 <div class="grid cards" markdown>
 
--   :material-message:{ .lg } **Messaging**
-    
-    Point-to-point communication
-    
-    [:octicons-arrow-right-24: Learn More](#1-point-to-point-communication)
+-   :globe_with_meridians:{ .lg } **HTTP**
 
--   :material-broadcast:{ .lg } **Pub/Sub**
-    
-    Topic-based messaging
-    
-    [:octicons-arrow-right-24: Configure](#2-publish-subscribe-pattern)
+    ---
 
--   :material-swap-horizontal:{ .lg } **Request/Reply**
-    
-    Synchronous communication
-    
-    [:octicons-arrow-right-24: Implement](#3-request-reply-pattern)
+    REST API communication for standard web services
 
--   :material-book-open:{ .lg } **Examples**
-    
-    Communication patterns
-    
-    [:octicons-arrow-right-24: View Examples](#related-documentation)
+    [:octicons-arrow-right-24: Learn HTTP](#http-protocol)
+
+-   :zap:{ .lg } **WebSocket**
+
+    ---
+
+    Real-time bidirectional communication
+
+    [:octicons-arrow-right-24: Learn WebSocket](#websocket-protocol)
+
+-   :satellite:{ .lg } **SSE**
+
+    ---
+
+    Server-Sent Events for streaming responses
+
+    [:octicons-arrow-right-24: Learn SSE](#sse-protocol)
+
+-   :envelope:{ .lg } **MQTT**
+
+    ---
+
+    Lightweight IoT message queuing
+
+    [:octicons-arrow-right-24: Learn MQTT](#mqtt-protocol)
+
+-   :rocket:{ .lg } **gRPC**
+
+    ---
+
+    High-performance RPC with Protocol Buffers
+
+    [:octicons-arrow-right-24: Learn gRPC](#grpc-protocol)
+
+-   :computer:{ .lg } **STDIO**
+
+    ---
+
+    Standard input/output for process communication
+
+    [:octicons-arrow-right-24: Learn STDIO](#stdio-protocol)
 
 </div>
 
+---
 
-## 📊 Overview
+## 📊 Protocol Comparison
 
-The Communication module provides a flexible, protocol-based messaging system for agent-to-agent and agent-to-system communication. It supports multiple communication patterns and protocols.
+| Protocol | Pattern | Best For | Latency | Streaming |
+|----------|---------|----------|---------|-----------|
+| **HTTP** | Request-Response | REST APIs, webhooks | Medium | No |
+| **WebSocket** | Bidirectional | Real-time chat, live updates | Low | Yes |
+| **SSE** | Server-Push | Streaming responses, notifications | Low | Yes |
+| **MQTT** | Pub-Sub | IoT, sensor data, events | Low | Yes |
+| **gRPC** | RPC | Microservices, high-throughput | Very Low | Yes |
+| **STDIO** | Pipes | CLI tools, local processes | Minimal | Yes |
 
+---
 
-## 🎯 Communication Architecture
+## HTTP Protocol
 
-```mermaid
-graph TB
-    subgraph "Communication Patterns"
-        P2P[Point-to-Point<br/>Direct Messaging]
-        PUBSUB[Publish-Subscribe<br/>Topic-based]
-        REQREP[Request-Reply<br/>Synchronous]
-        BROADCAST[Broadcast<br/>One-to-Many]
-    end
-    
-    subgraph "Communication Manager"
-        MANAGER[Communication Manager]
-        PROTOCOLS[Protocol Registry]
-        HANDLERS[Message Handlers]
-    end
-    
-    subgraph "Agents"
-        A1[Agent 1]
-        A2[Agent 2]
-        A3[Agent 3]
-        A4[Agent N]
-    end
-    
-    A1 & A2 & A3 & A4 --> MANAGER
-    MANAGER --> PROTOCOLS
-    PROTOCOLS --> HANDLERS
-    
-    HANDLERS --> P2P
-    HANDLERS --> PUBSUB
-    HANDLERS --> REQREP
-    HANDLERS --> BROADCAST
-    
-    P2P -.message.-> A2
-    PUBSUB -.topic.-> A2 & A3
-    REQREP -.request.-> A3
-    BROADCAST -.broadcast.-> A1 & A2 & A3 & A4
-    
-    style MANAGER fill:#4caf50
-    style PROTOCOLS fill:#2196f3
-    style P2P fill:#ff9800
-```
-
-
-## 🚀 Quick Start
+The HTTP client provides robust REST API communication with connection pooling, retry logic, and authentication support.
 
 ### Basic Usage
 
 ```python
-from agenticaiframework.communication import CommunicationManager
+from agenticaiframework.communication import HTTPClient
 
-# Initialize communication manager
-comm = CommunicationManager()
-
-# Register a simple protocol
-def http_handler(data):
-    """HTTP communication protocol"""
-    print(f"Sending via HTTP: {data}")
-    return {"status": "sent", "protocol": "http"}
-
-comm.register_protocol("http", http_handler)
-
-# Send message
-result = comm.send("http", {"message": "Hello from Agent 1"})
-print(result)
-
-# List available protocols
-protocols = comm.list_protocols()
-print(f"Available protocols: {protocols}")
+# Simple request
+async with HTTPClient() as client:
+    response = await client.get("https://api.example.com/data")
+    data = response.json()
+    print(data)
 ```
 
-
-## 📖 Core API
-
-### CommunicationManager
-
-Main class for managing communication between agents and systems.
-
-#### Methods
-
-##### `register_protocol(name: str, handler_fn: Callable)`
-
-Register a communication protocol with a handler function.
+### Request Methods
 
 ```python
-def custom_protocol_handler(data):
-    """Custom protocol implementation"""
-    # Process data
-    processed_data = process(data)
-    # Send via custom channel
-    send_custom(processed_data)
-    return {"status": "success"}
-
-comm.register_protocol("custom", custom_protocol_handler)
-```
-
-##### `register_handler(handler_fn: Callable, name: str = None)`
-
-Alternative method for registering handlers (alias for `register_protocol`).
-
-```python
-def my_handler(data):
-    return {"received": data}
-
-# Auto-generate name
-comm.register_handler(my_handler)
-
-# Or specify name
-comm.register_handler(my_handler, name="my_protocol")
-```
-
-##### `send(protocol: str, data: Any) -> Any`
-
-Send data using a specific protocol.
-
-```python
-response = comm.send("http", {
-    "to": "agent_2",
-    "message": "Process this data",
-    "priority": "high"
-})
-```
-
-##### `send_message(message: Any, protocol: str = None) -> Any`
-
-Send a message using specified protocol or first available protocol.
-
-```python
-# Use specific protocol
-result = comm.send_message({"data": "value"}, protocol="http")
-
-# Use first available protocol
-result = comm.send_message({"data": "value"})
-```
-
-##### `list_protocols() -> List[str]`
-
-Get list of all registered protocols.
-
-```python
-protocols = comm.list_protocols()
-# Returns: ['http', 'websocket', 'custom']
-```
-
-## 🔄 Communication Patterns
-
-### 1. Point-to-Point Communication
-
-Direct messaging between two agents.
-
-```python
-from agenticaiframework.agents import Agent
-from agenticaiframework.communication import CommunicationManager
-
-class CommunicatingAgent(Agent):
-    """Agent with communication capabilities"""
-    
-    def __init__(self, name: str, comm_manager: CommunicationManager):
-        super().__init__(name=name, role="communicator", capabilities=["messaging"])
-        self.comm = comm_manager
-    
-    def send_to_agent(self, target_agent: str, message: dict):
-        """Send message to specific agent"""
-        return self.comm.send("p2p", {
-            "from": self.name,
-            "to": target_agent,
-            "message": message,
-            "timestamp": time.time()
-        })
-
-# Setup
-comm = CommunicationManager()
-
-def p2p_handler(data):
-    """Handle point-to-point messages"""
-    sender = data.get("from")
-    recipient = data.get("to")
-    message = data.get("message")
-    
-    print(f"{sender} → {recipient}: {message}")
-    
-    # Route to recipient
-    # ...
-    
-    return {"delivered": True}
-
-comm.register_protocol("p2p", p2p_handler)
-
-# Usage
-agent1 = CommunicatingAgent("agent_1", comm)
-agent1.send_to_agent("agent_2", {"task": "analyze_data"})
-```
-
-### 2. Publish-Subscribe Pattern
-
-Topic-based messaging for one-to-many communication.
-
-```python
-class PubSubCommunicationManager(CommunicationManager):
-    """Communication manager with pub-sub support"""
-    
-    def __init__(self):
-        super().__init__()
-        self.subscribers = {}  # topic -> [handlers]
-    
-    def subscribe(self, topic: str, handler: Callable):
-        """Subscribe to a topic"""
-        if topic not in self.subscribers:
-            self.subscribers[topic] = []
-        self.subscribers[topic].append(handler)
-    
-    def publish(self, topic: str, message: Any):
-        """Publish message to topic"""
-        if topic in self.subscribers:
-            for handler in self.subscribers[topic]:
-                try:
-                    handler(message)
-                except Exception as e:
-                    print(f"Error in subscriber: {e}")
-    
-    def unsubscribe(self, topic: str, handler: Callable):
-        """Unsubscribe from topic"""
-        if topic in self.subscribers:
-            self.subscribers[topic].remove(handler)
-
-# Usage
-pubsub = PubSubCommunicationManager()
-
-# Define subscribers
-def agent1_handler(message):
-    print(f"Agent1 received: {message}")
-
-def agent2_handler(message):
-    print(f"Agent2 received: {message}")
-
-# Subscribe to topics
-pubsub.subscribe("task_updates", agent1_handler)
-pubsub.subscribe("task_updates", agent2_handler)
-
-# Publish message
-pubsub.publish("task_updates", {
-    "task_id": "task_001",
-    "status": "completed"
-})
-```
-
-### 3. Request-Reply Pattern
-
-Synchronous request-response communication.
-
-```python
-import asyncio
-from typing import Dict
-
-class RequestReplyManager(CommunicationManager):
-    """Communication manager with request-reply support"""
-    
-    def __init__(self):
-        super().__init__()
-        self.pending_requests = {}
-    
-    async def request(self, target: str, message: dict, timeout: int = 30) -> dict:
-        """Send request and wait for reply"""
-        request_id = str(uuid.uuid4())
-        
-        # Create future for reply
-        future = asyncio.Future()
-        self.pending_requests[request_id] = future
-        
-        # Send request
-        self.send("request", {
-            "request_id": request_id,
-            "target": target,
-            "message": message
-        })
-        
-        # Wait for reply with timeout
-        try:
-            reply = await asyncio.wait_for(future, timeout=timeout)
-            return reply
-        except asyncio.TimeoutError:
-            del self.pending_requests[request_id]
-            raise TimeoutError(f"Request {request_id} timed out")
-    
-    def reply(self, request_id: str, response: dict):
-        """Send reply to request"""
-        if request_id in self.pending_requests:
-            future = self.pending_requests[request_id]
-            if not future.done():
-                future.set_result(response)
-            del self.pending_requests[request_id]
-
-# Usage
-req_rep = RequestReplyManager()
-
-# Register request handler
-def handle_request(data):
-    request_id = data["request_id"]
-    message = data["message"]
-    
-    # Process request
-    result = process_request(message)
-    
-    # Send reply
-    req_rep.reply(request_id, {"result": result})
-
-req_rep.register_protocol("request", handle_request)
-
-# Send request and wait for reply
-async def main():
-    response = await req_rep.request(
-        target="data_agent",
-        message={"action": "fetch_data", "id": "123"}
-    )
-    print(f"Response: {response}")
-```
-
-### 4. Broadcast Pattern
-
-Send message to all agents.
-
-```python
-class BroadcastManager(CommunicationManager):
-    """Communication manager with broadcast support"""
-    
-    def __init__(self):
-        super().__init__()
-        self.listeners = []
-    
-    def register_listener(self, handler: Callable):
-        """Register broadcast listener"""
-        self.listeners.append(handler)
-    
-    def broadcast(self, message: Any):
-        """Broadcast message to all listeners"""
-        for listener in self.listeners:
-            try:
-                listener(message)
-            except Exception as e:
-                print(f"Error broadcasting to listener: {e}")
-
-# Usage
-broadcast = BroadcastManager()
-
-# Register listeners
-broadcast.register_listener(lambda msg: print(f"Agent1: {msg}"))
-broadcast.register_listener(lambda msg: print(f"Agent2: {msg}"))
-broadcast.register_listener(lambda msg: print(f"Agent3: {msg}"))
-
-# Broadcast message
-broadcast.broadcast({
-    "type": "system_alert",
-    "message": "System maintenance in 10 minutes"
-})
-```
-
-
-### HTTP Protocol
-
-```python
-import requests
-
-def http_protocol_handler(data):
-    """HTTP REST API protocol"""
-    url = data.get("url")
-    method = data.get("method", "POST")
-    payload = data.get("payload")
-    
-    try:
-        if method == "GET":
-            response = requests.get(url, params=payload)
-        elif method == "POST":
-            response = requests.post(url, json=payload)
-        elif method == "PUT":
-            response = requests.put(url, json=payload)
-        else:
-            return {"error": "Unsupported method"}
-        
-        return {
-            "status_code": response.status_code,
-            "data": response.json()
-        }
-    except Exception as e:
-        return {"error": str(e)}
-
-comm.register_protocol("http", http_protocol_handler)
-
-# Usage
-result = comm.send("http", {
-    "url": "https://api.example.com/agents",
-    "method": "POST",
-    "payload": {"agent_id": "agent_001", "status": "active"}
-})
-```
-
-### WebSocket Protocol
-
-```python
-import websockets
-import asyncio
-import json
-
-class WebSocketProtocol:
-    """WebSocket communication protocol"""
-    
-    def __init__(self, uri: str):
-        self.uri = uri
-        self.connection = None
-    
-    async def connect(self):
-        """Establish WebSocket connection"""
-        self.connection = await websockets.connect(self.uri)
-    
-    async def send(self, data: dict):
-        """Send data over WebSocket"""
-        if not self.connection:
-            await self.connect()
-        
-        await self.connection.send(json.dumps(data))
-        response = await self.connection.recv()
-        return json.loads(response)
-    
-    async def close(self):
-        """Close WebSocket connection"""
-        if self.connection:
-            await self.connection.close()
-
-# Usage
-ws_protocol = WebSocketProtocol("ws://localhost:8765")
-
-async def websocket_handler(data):
-    """WebSocket protocol handler"""
-    return await ws_protocol.send(data)
-
-# Register protocol
-comm.register_protocol("websocket", websocket_handler)
-```
-
-### gRPC Protocol
-
-```python
-import grpc
-from concurrent import futures
-
-# Define gRPC service (from .proto file)
-class AgentServicer:
-    """gRPC service implementation"""
-    
-    def SendMessage(self, request, context):
-        """Handle incoming gRPC message"""
-        print(f"Received: {request.message}")
-        return MessageResponse(status="received")
-
-def grpc_protocol_handler(data):
-    """gRPC communication protocol"""
-    channel = grpc.insecure_channel('localhost:50051')
-    stub = AgentServiceStub(channel)
-    
-    request = MessageRequest(
-        sender=data.get("from"),
-        recipient=data.get("to"),
-        message=data.get("message")
+async with HTTPClient() as client:
+    # GET request
+    response = await client.get(
+        "https://api.example.com/users",
+        params={"limit": 10, "offset": 0}
     )
     
-    response = stub.SendMessage(request)
-    return {"status": response.status}
-
-comm.register_protocol("grpc", grpc_protocol_handler)
+    # POST request with JSON body
+    response = await client.post(
+        "https://api.example.com/users",
+        json={"name": "Alice", "email": "alice@example.com"}
+    )
+    
+    # PUT request
+    response = await client.put(
+        "https://api.example.com/users/123",
+        json={"name": "Alice Updated"}
+    )
+    
+    # DELETE request
+    response = await client.delete("https://api.example.com/users/123")
+    
+    # PATCH request
+    response = await client.patch(
+        "https://api.example.com/users/123",
+        json={"status": "active"}
+    )
 ```
 
-### Message Queue Protocol
+### Configuration
 
 ```python
-import pika
+from agenticaiframework.communication import HTTPClient, HTTPConfig
 
-def rabbitmq_protocol_handler(data):
-    """RabbitMQ protocol"""
-    connection = pika.BlockingConnection(
-        pika.ConnectionParameters('localhost')
-    )
-    channel = connection.channel()
+config = HTTPConfig(
+    # Timeouts
+    timeout_seconds=30,
+    connect_timeout=10,
     
-    # Declare queue
-    queue_name = data.get("queue", "agent_messages")
-    channel.queue_declare(queue=queue_name, durable=True)
+    # Retry settings
+    max_retries=3,
+    retry_delay=1.0,
+    retry_backoff=2.0,
+    retry_on_status=[429, 500, 502, 503, 504],
+    
+    # Connection pooling
+    pool_connections=10,
+    pool_maxsize=100,
+    
+    # SSL/TLS
+    verify_ssl=True,
+    cert_path="/path/to/cert.pem"
+)
+
+client = HTTPClient(config=config)
+```
+
+### Authentication
+
+=== "API Key"
+    ```python
+    client = HTTPClient(
+        headers={"X-API-Key": "your-api-key"}
+    )
+    ```
+
+=== "Bearer Token"
+    ```python
+    client = HTTPClient(
+        auth={"type": "bearer", "token": "your-jwt-token"}
+    )
+    ```
+
+=== "Basic Auth"
+    ```python
+    client = HTTPClient(
+        auth={"type": "basic", "username": "user", "password": "pass"}
+    )
+    ```
+
+=== "OAuth2"
+    ```python
+    from agenticaiframework.communication import OAuth2Auth
+    
+    auth = OAuth2Auth(
+        client_id="your-client-id",
+        client_secret="your-secret",
+        token_url="https://auth.example.com/token"
+    )
+    
+    client = HTTPClient(auth=auth)
+    ```
+
+### Response Handling
+
+```python
+async with HTTPClient() as client:
+    response = await client.get("https://api.example.com/data")
+    
+    # Check status
+    if response.is_success:
+        data = response.json()
+    elif response.status_code == 404:
+        print("Resource not found")
+    else:
+        print(f"Error: {response.status_code}")
+    
+    # Access headers
+    content_type = response.headers.get("content-type")
+    
+    # Get raw content
+    text = response.text
+    binary = response.content
+```
+
+---
+
+## WebSocket Protocol
+
+WebSocket provides full-duplex, real-time communication for interactive applications.
+
+### Basic Usage
+
+```python
+from agenticaiframework.communication import WebSocketClient
+
+async with WebSocketClient("wss://api.example.com/ws") as ws:
+    # Send message
+    await ws.send({"type": "subscribe", "channel": "updates"})
+    
+    # Receive messages
+    async for message in ws:
+        print(f"Received: {message}")
+        
+        if message.get("type") == "done":
+            break
+```
+
+### Configuration
+
+```python
+from agenticaiframework.communication import WebSocketClient, WebSocketConfig
+
+config = WebSocketConfig(
+    # Connection settings
+    ping_interval=30,
+    ping_timeout=10,
+    close_timeout=5,
+    
+    # Reconnection
+    auto_reconnect=True,
+    reconnect_delay=1.0,
+    max_reconnect_attempts=5,
+    
+    # Message handling
+    max_message_size=1024 * 1024,  # 1MB
+    compression=True
+)
+
+ws = WebSocketClient("wss://api.example.com/ws", config=config)
+```
+
+### Event Handling
+
+```python
+from agenticaiframework.communication import WebSocketClient
+
+ws = WebSocketClient("wss://api.example.com/ws")
+
+@ws.on("open")
+async def on_open():
+    print("Connection opened")
+    await ws.send({"type": "hello"})
+
+@ws.on("message")
+async def on_message(data):
+    print(f"Received: {data}")
+
+@ws.on("close")
+async def on_close(code, reason):
+    print(f"Connection closed: {code} - {reason}")
+
+@ws.on("error")
+async def on_error(error):
+    print(f"Error: {error}")
+
+# Start connection
+await ws.connect()
+```
+
+### Chat-Style Communication
+
+```python
+async with WebSocketClient("wss://chat.example.com/ws") as ws:
+    # Send chat message
+    await ws.send({
+        "type": "chat",
+        "message": "Hello, how can you help me?",
+        "user_id": "user_123"
+    })
+    
+    # Receive streaming response
+    response_text = ""
+    async for message in ws:
+        if message["type"] == "token":
+            response_text += message["content"]
+            print(message["content"], end="", flush=True)
+        elif message["type"] == "done":
+            break
+    
+    print(f"\nFull response: {response_text}")
+```
+
+---
+
+## SSE Protocol
+
+Server-Sent Events (SSE) provides one-way streaming from server to client, perfect for AI response streaming.
+
+### Basic Usage
+
+```python
+from agenticaiframework.communication import SSEClient
+
+async with SSEClient("https://api.example.com/events") as sse:
+    async for event in sse:
+        print(f"Event: {event.event}")
+        print(f"Data: {event.data}")
+        print(f"ID: {event.id}")
+```
+
+### Configuration
+
+```python
+from agenticaiframework.communication import SSEClient, SSEConfig
+
+config = SSEConfig(
+    # Connection settings
+    timeout_seconds=0,  # No timeout (long-lived)
+    
+    # Reconnection
+    auto_reconnect=True,
+    reconnect_delay=3.0,
+    
+    # Headers
+    headers={"Authorization": "Bearer token"}
+)
+
+sse = SSEClient("https://api.example.com/events", config=config)
+```
+
+### Event Types
+
+```python
+async with SSEClient("https://api.example.com/events") as sse:
+    async for event in sse:
+        if event.event == "message":
+            print(f"Message: {event.data}")
+        elif event.event == "token":
+            print(event.data, end="", flush=True)
+        elif event.event == "error":
+            print(f"Error: {event.data}")
+        elif event.event == "done":
+            print("\nStream completed")
+            break
+```
+
+### Streaming AI Responses
+
+```python
+from agenticaiframework.communication import SSEClient
+
+async def stream_completion(prompt: str):
+    """Stream AI completion tokens."""
+    async with SSEClient(
+        "https://api.example.com/completions",
+        method="POST",
+        json={"prompt": prompt, "stream": True}
+    ) as sse:
+        full_response = ""
+        async for event in sse:
+            if event.event == "token":
+                token = event.data
+                full_response += token
+                yield token
+            elif event.event == "done":
+                break
+        
+        return full_response
+
+# Usage
+async for token in stream_completion("Tell me a story"):
+    print(token, end="", flush=True)
+```
+
+---
+
+## MQTT Protocol
+
+MQTT provides lightweight publish-subscribe messaging, ideal for IoT and event-driven architectures.
+
+### Basic Usage
+
+```python
+from agenticaiframework.communication import MQTTClient
+
+async with MQTTClient("mqtt://broker.example.com:1883") as mqtt:
+    # Subscribe to topic
+    await mqtt.subscribe("agents/+/status")
     
     # Publish message
-    channel.basic_publish(
-        exchange='',
-        routing_key=queue_name,
-        body=json.dumps(data.get("message")),
-        properties=pika.BasicProperties(
-            delivery_mode=2,  # Persistent
-        )
+    await mqtt.publish(
+        topic="agents/agent_01/status",
+        payload={"status": "online", "timestamp": "2024-01-15T10:30:00Z"}
     )
     
-    connection.close()
-    return {"status": "queued"}
-
-comm.register_protocol("rabbitmq", rabbitmq_protocol_handler)
+    # Receive messages
+    async for message in mqtt:
+        print(f"Topic: {message.topic}")
+        print(f"Payload: {message.payload}")
 ```
 
-### 1. Error Handling
+### Configuration
 
 ```python
-def resilient_handler(data):
-    """Protocol handler with error handling"""
-    try:
-        # Validate input
-        if not isinstance(data, dict):
-            raise ValueError("Data must be a dictionary")
-        
-        # Process message
-        result = process_message(data)
-        
-        return {"status": "success", "result": result}
-        
-    except ValueError as e:
-        return {"status": "error", "message": str(e)}
-    except Exception as e:
-        logging.error(f"Unexpected error: {e}")
-        return {"status": "error", "message": "Internal error"}
+from agenticaiframework.communication import MQTTClient, MQTTConfig
 
-comm.register_protocol("resilient", resilient_handler)
+config = MQTTConfig(
+    # Connection
+    host="broker.example.com",
+    port=1883,
+    client_id="agent_client_01",
+    
+    # Authentication
+    username="user",
+    password="password",
+    
+    # TLS/SSL
+    use_tls=True,
+    ca_certs="/path/to/ca.pem",
+    
+    # Quality of Service
+    default_qos=1,  # 0: At most once, 1: At least once, 2: Exactly once
+    
+    # Keep alive
+    keepalive=60,
+    
+    # Clean session
+    clean_session=True
+)
+
+mqtt = MQTTClient(config=config)
 ```
 
-### 2. Message Validation
+### Topic Patterns
 
 ```python
-from pydantic import BaseModel, ValidationError
-
-class Message(BaseModel):
-    sender: str
-    recipient: str
-    content: dict
-    priority: str = "normal"
-
-def validated_handler(data):
-    """Protocol with message validation"""
-    try:
-        # Validate message structure
-        message = Message(**data)
-        
-        # Process validated message
-        return process_validated_message(message)
-        
-    except ValidationError as e:
-        return {"status": "error", "errors": e.errors()}
-
-comm.register_protocol("validated", validated_handler)
+async with MQTTClient(broker_url) as mqtt:
+    # Subscribe to single topic
+    await mqtt.subscribe("agents/agent_01/status")
+    
+    # Subscribe with single-level wildcard (+)
+    await mqtt.subscribe("agents/+/status")  # Any agent's status
+    
+    # Subscribe with multi-level wildcard (#)
+    await mqtt.subscribe("agents/#")  # All agent messages
+    
+    # Multiple subscriptions
+    await mqtt.subscribe([
+        ("agents/+/status", 1),  # QoS 1
+        ("tasks/+/result", 2),   # QoS 2
+    ])
 ```
 
-### 3. Async Communication
+### Message Handling
 
 ```python
-import asyncio
+from agenticaiframework.communication import MQTTClient
 
-class AsyncCommunicationManager(CommunicationManager):
-    """Async communication manager"""
+mqtt = MQTTClient(broker_url)
+
+@mqtt.on_message("agents/+/status")
+async def handle_agent_status(topic, payload):
+    agent_id = topic.split("/")[1]
+    print(f"Agent {agent_id} status: {payload}")
+
+@mqtt.on_message("tasks/+/result")
+async def handle_task_result(topic, payload):
+    task_id = topic.split("/")[1]
+    print(f"Task {task_id} result: {payload}")
+
+await mqtt.connect()
+await mqtt.start_listening()
+```
+
+---
+
+## gRPC Protocol
+
+gRPC provides high-performance RPC communication with Protocol Buffers, ideal for microservices.
+
+### Basic Usage
+
+```python
+from agenticaiframework.communication import GRPCClient
+
+# Connect to gRPC server
+async with GRPCClient("localhost:50051") as client:
+    # Unary RPC
+    response = await client.call(
+        service="AgentService",
+        method="ExecuteTask",
+        request={"task_id": "123", "input": "Process this"}
+    )
+    print(response)
+```
+
+### Configuration
+
+```python
+from agenticaiframework.communication import GRPCClient, GRPCConfig
+
+config = GRPCConfig(
+    # Connection
+    target="localhost:50051",
     
-    async def send_async(self, protocol: str, data: Any) -> Any:
-        """Send data asynchronously"""
-        if protocol in self.protocols:
-            handler = self.protocols[protocol]
-            
-            # Check if handler is async
-            if asyncio.iscoroutinefunction(handler):
-                return await handler(data)
-            else:
-                # Run sync handler in executor
-                loop = asyncio.get_event_loop()
-                return await loop.run_in_executor(None, handler, data)
+    # TLS/SSL
+    secure=True,
+    root_certificates="/path/to/ca.pem",
+    private_key="/path/to/key.pem",
+    certificate_chain="/path/to/cert.pem",
+    
+    # Options
+    max_message_length=4 * 1024 * 1024,  # 4MB
+    compression="gzip",
+    
+    # Timeouts
+    timeout_seconds=30,
+    
+    # Retry
+    max_retries=3,
+    retry_delay=1.0
+)
+
+client = GRPCClient(config=config)
+```
+
+### Streaming RPCs
+
+=== "Server Streaming"
+    ```python
+    async with GRPCClient(target) as client:
+        # Server streams responses
+        async for response in client.stream_call(
+            service="AgentService",
+            method="StreamTokens",
+            request={"prompt": "Tell me a story"}
+        ):
+            print(response["token"], end="", flush=True)
+    ```
+
+=== "Client Streaming"
+    ```python
+    async with GRPCClient(target) as client:
+        # Client streams requests
+        async def generate_chunks():
+            for chunk in data_chunks:
+                yield {"chunk": chunk}
         
-        return None
+        response = await client.stream_send(
+            service="DataService",
+            method="UploadData",
+            requests=generate_chunks()
+        )
+    ```
 
-# Usage
-async def main():
-    async_comm = AsyncCommunicationManager()
-    
-    async def async_handler(data):
-        await asyncio.sleep(1)  # Simulate async operation
-        return {"processed": data}
-    
-    async_comm.register_protocol("async", async_handler)
-    
-    result = await async_comm.send_async("async", {"message": "hello"})
-    print(result)
+=== "Bidirectional Streaming"
+    ```python
+    async with GRPCClient(target) as client:
+        # Both sides stream
+        async def chat_stream():
+            yield {"message": "Hello"}
+            yield {"message": "How are you?"}
+        
+        async for response in client.bidirectional_stream(
+            service="ChatService",
+            method="Chat",
+            requests=chat_stream()
+        ):
+            print(f"Response: {response['message']}")
+    ```
+
+### Service Definition
+
+```python
+# Generate from .proto file
+from agenticaiframework.communication import generate_grpc_client
+
+# Auto-generate client from proto
+client = generate_grpc_client(
+    proto_file="agent_service.proto",
+    target="localhost:50051"
+)
+
+# Use generated methods
+response = await client.AgentService.ExecuteTask(
+    task_id="123",
+    input="Process this"
+)
 ```
 
+---
 
-```mermaid
-sequenceDiagram
-    participant A1 as Agent 1
-    participant CM as Communication<br/>Manager
-    participant PH as Protocol<br/>Handler
-    participant A2 as Agent 2
+## STDIO Protocol
+
+STDIO provides process-based communication through standard input/output, perfect for CLI tools and local integrations.
+
+### Basic Usage
+
+```python
+from agenticaiframework.communication import STDIOClient
+
+# Communicate with subprocess
+async with STDIOClient(
+    command=["python", "worker.py"],
+    working_dir="./workers"
+) as stdio:
+    # Send input
+    await stdio.send({"task": "process", "data": input_data})
     
-    A1->>CM: send("protocol", data)
-    CM->>CM: Validate protocol exists
-    CM->>PH: Execute handler(data)
-    
-    alt Success
-        PH->>A2: Route message
-        A2-->>PH: Process & respond
-        PH-->>CM: Return result
-        CM-->>A1: Return response
-    else Protocol Error
-        PH-->>CM: Error result
-        CM-->>A1: Return error
-    else Protocol Not Found
-        CM-->>A1: Return None
-    end
+    # Receive output
+    response = await stdio.receive()
+    print(response)
 ```
 
-## 📚 Related Documentation
-- [Integration Patterns](integration.md) - External integrations
-- [Best Practices](best-practices.md) - Development guidelines
+### Configuration
 
+```python
+from agenticaiframework.communication import STDIOClient, STDIOConfig
 
+config = STDIOConfig(
+    # Process settings
+    command=["node", "agent.js"],
+    working_dir="./agents",
+    env={"NODE_ENV": "production"},
+    
+    # I/O settings
+    encoding="utf-8",
+    line_buffered=True,
+    
+    # Timeouts
+    startup_timeout=10,
+    response_timeout=60,
+    
+    # Message format
+    message_format="json",  # Options: json, line, raw
+    delimiter="\n"
+)
+
+stdio = STDIOClient(config=config)
+```
+
+### Interactive Mode
+
+```python
+async with STDIOClient(command=["python", "-i"]) as stdio:
+    # Interactive Python session
+    await stdio.send("x = 42")
+    await stdio.send("print(x * 2)")
+    
+    response = await stdio.receive()
+    print(response)  # "84"
+```
+
+### MCP Server Communication
+
+```python
+from agenticaiframework.communication import STDIOClient
+
+# Connect to MCP server
+async with STDIOClient(
+    command=["npx", "@modelcontextprotocol/server-filesystem"],
+    message_format="jsonrpc"
+) as mcp:
+    # Initialize MCP session
+    await mcp.send({
+        "jsonrpc": "2.0",
+        "method": "initialize",
+        "params": {"capabilities": {}},
+        "id": 1
+    })
+    
+    init_response = await mcp.receive()
+    print(f"MCP initialized: {init_response}")
+    
+    # List tools
+    await mcp.send({
+        "jsonrpc": "2.0",
+        "method": "tools/list",
+        "id": 2
+    })
+    
+    tools = await mcp.receive()
+    print(f"Available tools: {tools}")
+```
+
+---
+
+## 🔧 Connection Management
+
+### Connection Pooling
+
+```python
+from agenticaiframework.communication import ConnectionPool
+
+# Create connection pool
+pool = ConnectionPool(
+    protocol="http",
+    max_connections=10,
+    max_connections_per_host=5,
+    connection_timeout=30,
+    idle_timeout=300
+)
+
+# Use pooled connections
+async with pool.get_connection("https://api.example.com") as conn:
+    response = await conn.get("/data")
+```
+
+### Health Checks
+
+```python
+from agenticaiframework.communication import ConnectionManager
+
+manager = ConnectionManager()
+
+# Register connections
+manager.register("api", HTTPClient("https://api.example.com"))
+manager.register("broker", MQTTClient("mqtt://broker.example.com"))
+
+# Health check all connections
+health = await manager.health_check()
+for name, status in health.items():
+    print(f"{name}: {'healthy' if status.is_healthy else 'unhealthy'}")
+```
+
+---
+
+## 📚 API Reference
+
+For complete API documentation, see:
+
+- [HTTPClient API](API_REFERENCE.md#httpclient)
+- [WebSocketClient API](API_REFERENCE.md#websocketclient)
+- [SSEClient API](API_REFERENCE.md#sseclient)
+- [MQTTClient API](API_REFERENCE.md#mqttclient)
+- [GRPCClient API](API_REFERENCE.md#grpcclient)
+- [STDIOClient API](API_REFERENCE.md#stdioclient)

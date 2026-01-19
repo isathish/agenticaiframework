@@ -1,703 +1,1037 @@
 ---
-tags:
-  - tools
-  - automation
-  - integration
-  - file-operations
-  - web-scraping
-  - database
-  - ai-ml
+title: Tools
+description: 35+ built-in tools for search, code execution, file operations, and more
 ---
 
-# 🛠️ Tools Framework
+# 🛠️ Tools
 
-<div class="annotate" markdown>
+AgenticAI Framework includes **35+ production-ready tools** that extend agent capabilities. From web search to code execution, database operations to AI services.
 
-**Comprehensive collection of 35+ tools for AI agents**
+---
 
-Extend agent capabilities with file operations, web scraping, database access, and AI/ML tools
-
-</div>
-
-## 🎯 Quick Navigation
+## 🎯 Tool Categories
 
 <div class="grid cards" markdown>
 
--   :material-file:{ .lg } **File & Document**
-    
-    Read, write, and process documents
-    
-    [:octicons-arrow-right-24: Learn More](#file-document-tools)
+-   :mag:{ .lg } **Search & Information**
 
--   :material-web:{ .lg } **Web Scraping**
-    
-    Extract data from websites
-    
-    [:octicons-arrow-right-24: Explore](#web-scraping-tools)
+    ---
 
--   :material-database:{ .lg } **Database**
-    
-    SQL, NoSQL, and vector search
-    
-    [:octicons-arrow-right-24: Connect](#database-tools)
+    Web search, news, Wikipedia, and more
 
--   :material-robot:{ .lg } **AI/ML**
-    
-    Vision, generation, and RAG
-    
-    [:octicons-arrow-right-24: Integrate](#aiml-tools)
+    [:octicons-arrow-right-24: Browse](#search--information)
+
+-   :computer:{ .lg } **Code & Development**
+
+    ---
+
+    Code execution, analysis, and debugging
+
+    [:octicons-arrow-right-24: Browse](#code--development)
+
+-   :file_folder:{ .lg } **File & Data**
+
+    ---
+
+    File operations, CSV, JSON handling
+
+    [:octicons-arrow-right-24: Browse](#file--data)
+
+-   :floppy_disk:{ .lg } **Database & Storage**
+
+    ---
+
+    SQL, NoSQL, vector stores
+
+    [:octicons-arrow-right-24: Browse](#database--storage)
+
+-   :brain:{ .lg } **AI & ML**
+
+    ---
+
+    Embeddings, image generation, vision
+
+    [:octicons-arrow-right-24: Browse](#ai--ml)
+
+-   :wrench:{ .lg } **Utilities**
+
+    ---
+
+    DateTime, encryption, email, notifications
+
+    [:octicons-arrow-right-24: Browse](#utilities)
 
 </div>
 
-## 📊 Overview
+---
 
-!!! abstract "Tools Framework"
-    
-    The Tools Framework provides a unified interface for agent interactions with external systems, files, databases, and AI services. All tools follow a consistent pattern with validation, error handling, and result formatting.
+## 📊 Tool Overview
 
-### Architecture
+| Category | Tools | Description |
+|----------|-------|-------------|
+| **Search & Information** | 8 | Web search, news, Wikipedia, URL fetching |
+| **Code & Development** | 6 | Python REPL, code analysis, testing |
+| **File & Data** | 6 | File operations, CSV, JSON, text search |
+| **Database & Storage** | 6 | SQL, MongoDB, Redis, vector stores |
+| **AI & ML** | 5 | Embeddings, image gen, STT/TTS, vision |
+| **Utilities** | 6 | DateTime, encryption, email, clipboard |
 
-```mermaid
-graph TB
-    subgraph "Agent Layer"
-        A[Agent]
-        ATM[AgentToolManager]
-    end
-    
-    subgraph "Tools Framework"
-        REG[ToolRegistry]
-        EXE[ToolExecutor]
-        BASE[BaseTool / AsyncBaseTool]
-    end
-    
-    subgraph "Tool Categories"
-        FILE[File & Document<br/>📄 13 tools]
-        WEB[Web Scraping<br/>🌐 13 tools]
-        DB[Database<br/>📦 8 tools]
-        AI[AI/ML<br/>🤖 7 tools]
-    end
-    
-    A --> ATM
-    ATM --> REG
-    REG --> EXE
-    EXE --> BASE
-    BASE --> FILE & WEB & DB & AI
-    
-    style REG fill:#e3f2fd,stroke:#1976d2
-    style EXE fill:#f3e5f5,stroke:#7b1fa2
-```
+---
 
-## 🏗️ Core Components
+## Search & Information
 
-### BaseTool
+### SearchTool
 
-All tools inherit from `BaseTool` (sync) or `AsyncBaseTool` (async):
+Web search using multiple search engines.
 
 ```python
-from agenticaiframework.tools import BaseTool, ToolResult, ToolConfig
+from agenticaiframework.tools import SearchTool
 
-class MyCustomTool(BaseTool):
-    """Custom tool implementation."""
-    
-    name = "my_custom_tool"
-    description = "Performs custom operations"
-    
-    def __init__(self, config: ToolConfig = None):
-        super().__init__(config)
-    
-    def _run(self, input_data: str) -> ToolResult:
-        """Execute the tool."""
-        result = self.process(input_data)
-        return ToolResult(
-            success=True,
-            data=result,
-            message="Operation completed"
-        )
-    
-    def process(self, data: str) -> dict:
-        # Your custom logic here
-        return {"processed": data}
+# Basic usage
+search = SearchTool()
+results = search.run("latest AI news")
+
+# With configuration
+search = SearchTool(
+    engine="google",  # google, bing, duckduckgo, serper
+    max_results=10,
+    include_snippets=True,
+    safe_search=True
+)
+
+results = search.run("machine learning tutorials")
+for result in results:
+    print(f"Title: {result['title']}")
+    print(f"URL: {result['url']}")
+    print(f"Snippet: {result['snippet']}")
 ```
 
-### ToolRegistry
+### NewsSearchTool
 
-Centralized tool management and discovery:
+Search for recent news articles.
 
 ```python
-from agenticaiframework.tools import (
-    ToolRegistry, 
-    tool_registry,
-    register_tool,
-    ToolCategory
+from agenticaiframework.tools import NewsSearchTool
+
+news = NewsSearchTool(
+    sources=["reuters", "bbc", "cnn"],
+    max_results=20,
+    sort_by="date"
 )
 
-# Register a tool
-@register_tool(category=ToolCategory.CUSTOM)
-class DataProcessorTool(BaseTool):
-    name = "data_processor"
-    description = "Processes data"
-    
-    def _run(self, data: str) -> ToolResult:
-        return ToolResult(success=True, data={"processed": data})
-
-# Get all registered tools
-all_tools = tool_registry.list_tools()
-
-# Get tools by category
-file_tools = tool_registry.get_by_category(ToolCategory.FILE_DOCUMENT)
-
-# Get a specific tool
-tool = tool_registry.get_tool("data_processor")
+articles = news.run("artificial intelligence")
+for article in articles:
+    print(f"{article['title']} - {article['source']}")
+    print(f"Published: {article['published_date']}")
 ```
 
-### ToolExecutor
+### WikipediaTool
 
-Execute tools with context and validation:
+Access Wikipedia content.
 
 ```python
-from agenticaiframework.tools import (
-    ToolExecutor,
-    tool_executor,
-    ExecutionContext,
-    ExecutionPlan
+from agenticaiframework.tools import WikipediaTool
+
+wiki = WikipediaTool(
+    language="en",
+    max_chars=5000
 )
 
-# Create execution context
-context = ExecutionContext(
-    agent_id="agent-001",
-    session_id="session-123",
-    metadata={"user": "admin"}
-)
+# Search Wikipedia
+content = wiki.run("Quantum computing")
+print(content)
 
-# Execute a single tool
-result = tool_executor.execute(
-    tool_name="file_read",
-    inputs={"path": "/data/config.json"},
-    context=context
-)
-
-# Execute multiple tools in sequence
-plan = ExecutionPlan(
-    tools=["file_read", "json_parse", "validate_schema"],
-    inputs_chain=True
-)
-results = tool_executor.execute_plan(plan, context)
+# Get specific sections
+content = wiki.run("Quantum computing", sections=["Applications", "History"])
 ```
 
-### AgentToolManager
+### URLFetchTool
 
-Bind tools to agents:
+Fetch and parse web page content.
 
 ```python
-from agenticaiframework.tools import (
-    AgentToolManager,
-    agent_tool_manager,
-    AgentToolBinding
+from agenticaiframework.tools import URLFetchTool
+
+fetcher = URLFetchTool(
+    extract_main_content=True,
+    include_metadata=True,
+    timeout=30
 )
 
-# Bind tools to an agent
-agent_tool_manager.bind_tools(
-    agent_id="data-analyst",
-    tool_names=["file_read", "csv_rag_search", "mysql_search"]
+content = fetcher.run("https://example.com/article")
+print(f"Title: {content['title']}")
+print(f"Text: {content['text'][:500]}...")
+```
+
+### DNSLookupTool
+
+DNS and network lookups.
+
+```python
+from agenticaiframework.tools import DNSLookupTool
+
+dns = DNSLookupTool()
+
+# Lookup domain
+result = dns.run("example.com", record_type="A")
+print(f"IP Addresses: {result['addresses']}")
+
+# MX records
+mx_records = dns.run("example.com", record_type="MX")
+```
+
+### WeatherTool
+
+Get weather information.
+
+```python
+from agenticaiframework.tools import WeatherTool
+
+weather = WeatherTool(provider="openweathermap")
+
+current = weather.run("London, UK")
+print(f"Temperature: {current['temperature']}°C")
+print(f"Conditions: {current['conditions']}")
+
+# Forecast
+forecast = weather.run("London, UK", forecast_days=5)
+```
+
+### TranslationTool
+
+Translate text between languages.
+
+```python
+from agenticaiframework.tools import TranslationTool
+
+translator = TranslationTool(provider="google")
+
+translated = translator.run(
+    text="Hello, how are you?",
+    source_lang="en",
+    target_lang="es"
 )
+print(translated)  # "Hola, ¿cómo estás?"
+```
 
-# Get agent's available tools
-tools = agent_tool_manager.get_agent_tools("data-analyst")
+### ArxivTool
 
-# Check if agent can use a tool
-can_use = agent_tool_manager.can_use_tool("data-analyst", "file_write")
+Search academic papers on arXiv.
+
+```python
+from agenticaiframework.tools import ArxivTool
+
+arxiv = ArxivTool(max_results=10)
+
+papers = arxiv.run("large language models")
+for paper in papers:
+    print(f"Title: {paper['title']}")
+    print(f"Authors: {', '.join(paper['authors'])}")
+    print(f"Abstract: {paper['abstract'][:200]}...")
 ```
 
 ---
 
-## 📄 File & Document Tools
+## Code & Development
+
+### PythonREPLTool
+
+Execute Python code safely.
+
+```python
+from agenticaiframework.tools import PythonREPLTool
+
+python = PythonREPLTool(
+    timeout=30,
+    max_output_length=10000,
+    allowed_imports=["math", "json", "datetime", "pandas", "numpy"]
+)
+
+result = python.run("""
+import math
+import json
+
+data = [1, 2, 3, 4, 5]
+mean = sum(data) / len(data)
+std = math.sqrt(sum((x - mean) ** 2 for x in data) / len(data))
+
+result = {"mean": mean, "std": std}
+print(json.dumps(result, indent=2))
+""")
+print(result)
+```
+
+### ShellTool
+
+Execute shell commands.
+
+```python
+from agenticaiframework.tools import ShellTool
+
+shell = ShellTool(
+    timeout=60,
+    working_dir="/tmp",
+    allowed_commands=["ls", "cat", "grep", "find", "wc"]
+)
+
+result = shell.run("ls -la")
+print(result)
+```
+
+### CodeAnalysisTool
+
+Static code analysis.
+
+```python
+from agenticaiframework.tools import CodeAnalysisTool
+
+analyzer = CodeAnalysisTool(
+    languages=["python", "javascript"],
+    checks=["security", "style", "complexity"]
+)
+
+analysis = analyzer.run(code_content, language="python")
+print(f"Issues found: {len(analysis['issues'])}")
+for issue in analysis['issues']:
+    print(f"  Line {issue['line']}: {issue['message']}")
+```
+
+### TestRunnerTool
+
+Run unit tests.
+
+```python
+from agenticaiframework.tools import TestRunnerTool
+
+runner = TestRunnerTool(
+    framework="pytest",
+    coverage=True
+)
+
+results = runner.run("tests/")
+print(f"Passed: {results['passed']}")
+print(f"Failed: {results['failed']}")
+print(f"Coverage: {results['coverage']}%")
+```
+
+### GitTool
+
+Git operations.
+
+```python
+from agenticaiframework.tools import GitTool
+
+git = GitTool(repo_path="/path/to/repo")
+
+# Get status
+status = git.run("status")
+
+# Get diff
+diff = git.run("diff", args=["HEAD~1"])
+
+# Get log
+log = git.run("log", args=["--oneline", "-10"])
+```
+
+### PackageManagerTool
+
+Manage packages.
+
+```python
+from agenticaiframework.tools import PackageManagerTool
+
+pm = PackageManagerTool(manager="pip")
+
+# Search packages
+results = pm.run("search", package="requests")
+
+# Get package info
+info = pm.run("info", package="pandas")
+print(f"Version: {info['version']}")
+print(f"Dependencies: {info['dependencies']}")
+```
+
+---
+
+## File & Data
 
 ### FileReadTool
 
-Read file contents:
+Read file contents.
 
 ```python
 from agenticaiframework.tools import FileReadTool
 
-tool = FileReadTool()
-result = tool.run(path="/data/document.txt")
-print(result.data)  # File contents
+reader = FileReadTool(
+    allowed_extensions=[".txt", ".py", ".json", ".md", ".csv"],
+    max_file_size=10_000_000  # 10MB
+)
+
+content = reader.run("/path/to/file.txt")
+print(content)
+
+# Read specific lines
+content = reader.run("/path/to/file.txt", start_line=10, end_line=50)
 ```
 
 ### FileWriteTool
 
-Write content to files:
+Write to files.
 
 ```python
 from agenticaiframework.tools import FileWriteTool
 
-tool = FileWriteTool()
-result = tool.run(
-    path="/output/result.txt",
-    content="Analysis complete",
-    mode="w"  # 'w' for write, 'a' for append
+writer = FileWriteTool(
+    allowed_extensions=[".txt", ".json", ".md"],
+    allowed_directories=["/tmp", "/data"]
+)
+
+writer.run(
+    path="/tmp/output.txt",
+    content="Hello, World!",
+    mode="write"  # or "append"
 )
 ```
 
-### DirectoryReadTool
+### DirectoryTool
 
-List directory contents:
+Directory operations.
 
 ```python
-from agenticaiframework.tools import DirectoryReadTool
+from agenticaiframework.tools import DirectoryTool
 
-tool = DirectoryReadTool()
-result = tool.run(
-    path="/data",
-    pattern="*.json",
-    recursive=True
-)
-print(result.data)  # List of matching files
+dir_tool = DirectoryTool()
+
+# List directory
+files = dir_tool.run("list", path="/data")
+for f in files:
+    print(f"{f['name']} - {f['size']} bytes")
+
+# Create directory
+dir_tool.run("create", path="/data/new_folder")
+
+# Search files
+matches = dir_tool.run("search", path="/data", pattern="*.json")
 ```
 
-### OCRTool
+### CSVTool
 
-Extract text from images:
+CSV file operations.
 
 ```python
-from agenticaiframework.tools import OCRTool
+from agenticaiframework.tools import CSVTool
 
-tool = OCRTool()
-result = tool.run(
-    image_path="/images/document.png",
-    language="eng"
+csv = CSVTool()
+
+# Read CSV
+data = csv.run("read", path="/data/sales.csv")
+print(f"Rows: {len(data)}")
+print(f"Columns: {data[0].keys()}")
+
+# Filter CSV
+filtered = csv.run(
+    "filter",
+    path="/data/sales.csv",
+    condition="amount > 1000"
 )
-print(result.data)  # Extracted text
+
+# Aggregate
+summary = csv.run(
+    "aggregate",
+    path="/data/sales.csv",
+    group_by="region",
+    aggregations={"amount": "sum", "quantity": "mean"}
+)
 ```
 
-### PDFTextWritingTool
+### JSONTool
 
-Create PDF documents:
-
-```python
-from agenticaiframework.tools import PDFTextWritingTool
-
-tool = PDFTextWritingTool()
-result = tool.run(
-    output_path="/output/report.pdf",
-    content="# Report\n\nContent here...",
-    title="Monthly Report"
-)
-```
-
-### RAG Search Tools
-
-Search within documents using RAG:
+JSON manipulation.
 
 ```python
-from agenticaiframework.tools import (
-    PDFRAGSearchTool,
-    DOCXRAGSearchTool,
-    JSONRAGSearchTool,
-    CSVRAGSearchTool
-)
+from agenticaiframework.tools import JSONTool
 
-# PDF search
-pdf_tool = PDFRAGSearchTool()
-result = pdf_tool.run(
-    file_path="/docs/manual.pdf",
-    query="installation instructions",
-    top_k=5
-)
+json_tool = JSONTool()
 
-# JSON search
-json_tool = JSONRAGSearchTool()
+# Read JSON
+data = json_tool.run("read", path="/data/config.json")
+
+# Query with JSONPath
 result = json_tool.run(
-    file_path="/data/config.json",
-    query="database settings"
+    "query",
+    data=data,
+    path="$.users[?(@.active==true)].name"
 )
 
-# CSV search
-csv_tool = CSVRAGSearchTool()
-result = csv_tool.run(
-    file_path="/data/sales.csv",
-    query="top performing products"
+# Transform
+transformed = json_tool.run(
+    "transform",
+    data=data,
+    template={"user_names": "$.users[*].name"}
 )
 ```
 
-### Complete File Tools List
+### TextSearchTool
 
-| Tool | Description |
-|------|-------------|
-| `FileReadTool` | Read file contents |
-| `FileWriteTool` | Write content to files |
-| `DirectoryReadTool` | List directory contents |
-| `OCRTool` | Extract text from images |
-| `PDFTextWritingTool` | Create PDF documents |
-| `PDFRAGSearchTool` | Search PDF documents |
-| `DOCXRAGSearchTool` | Search Word documents |
-| `MDXRAGSearchTool` | Search Markdown files |
-| `XMLRAGSearchTool` | Search XML files |
-| `TXTRAGSearchTool` | Search text files |
-| `JSONRAGSearchTool` | Search JSON files |
-| `CSVRAGSearchTool` | Search CSV files |
-| `DirectoryRAGSearchTool` | Search across directories |
+Search text content.
+
+```python
+from agenticaiframework.tools import TextSearchTool
+
+search = TextSearchTool()
+
+# Search in file
+matches = search.run(
+    path="/data/log.txt",
+    pattern="ERROR",
+    context_lines=2
+)
+
+# Regex search
+matches = search.run(
+    path="/data/log.txt",
+    pattern=r"\d{4}-\d{2}-\d{2}",
+    regex=True
+)
+```
 
 ---
 
-## 🌐 Web Scraping Tools
+## Database & Storage
 
-### ScrapeWebsiteTool
+### SQLTool
 
-Basic website scraping:
+SQL database operations.
 
 ```python
-from agenticaiframework.tools import ScrapeWebsiteTool
+from agenticaiframework.tools import SQLTool
 
-tool = ScrapeWebsiteTool()
-result = await tool.run(
-    url="https://example.com",
-    extract_text=True,
-    extract_links=True
+sql = SQLTool(
+    connection_string="postgresql://user:pass@localhost/db"
+)
+
+# Query
+results = sql.run("SELECT * FROM users WHERE active = true LIMIT 10")
+for row in results:
+    print(row)
+
+# With parameters (safe from SQL injection)
+results = sql.run(
+    "SELECT * FROM users WHERE email = :email",
+    params={"email": "alice@example.com"}
 )
 ```
 
-### ScrapeElementTool
+### MongoDBTool
 
-Extract specific elements:
-
-```python
-from agenticaiframework.tools import ScrapeElementTool
-
-tool = ScrapeElementTool()
-result = tool.run(
-    url="https://example.com",
-    selector="div.article-content",
-    attribute="text"
-)
-```
-
-### SeleniumScraperTool
-
-JavaScript-rendered pages:
+MongoDB operations.
 
 ```python
-from agenticaiframework.tools import SeleniumScraperTool
+from agenticaiframework.tools import MongoDBTool
 
-tool = SeleniumScraperTool()
-result = tool.run(
-    url="https://spa-example.com",
-    wait_for="div.loaded-content",
-    timeout=30
-)
-```
-
-### FirecrawlCrawlWebsiteTool
-
-Crawl entire websites:
-
-```python
-from agenticaiframework.tools import FirecrawlCrawlWebsiteTool
-
-tool = FirecrawlCrawlWebsiteTool()
-result = await tool.run(
-    url="https://docs.example.com",
-    max_pages=100,
-    include_patterns=["/api/*", "/guide/*"]
-)
-```
-
-### Complete Web Scraping Tools List
-
-| Tool | Description |
-|------|-------------|
-| `ScrapeWebsiteTool` | Basic async web scraping |
-| `ScrapeElementTool` | Extract specific DOM elements |
-| `ScrapflyScrapeWebsiteTool` | Scrapfly API integration |
-| `SeleniumScraperTool` | Browser automation scraping |
-| `ScrapegraphScrapeTool` | Scrapegraph AI scraping |
-| `SpiderScraperTool` | Spider.cloud integration |
-| `BrowserbaseWebLoaderTool` | Browserbase cloud browsers |
-| `HyperbrowserLoadTool` | Hyperbrowser integration |
-| `StagehandTool` | Stagehand browser automation |
-| `FirecrawlCrawlWebsiteTool` | Website crawling |
-| `FirecrawlScrapeWebsiteTool` | Single page scraping |
-| `OxylabsScraperTool` | Oxylabs proxy scraping |
-| `BrightDataTool` | Bright Data integration |
-
----
-
-## 📦 Database Tools
-
-### SQL Tools
-
-```python
-from agenticaiframework.tools import (
-    MySQLRAGSearchTool,
-    PostgreSQLRAGSearchTool,
-    NL2SQLTool
+mongo = MongoDBTool(
+    connection_string="mongodb://localhost:27017",
+    database="mydb"
 )
 
-# MySQL search
-mysql_tool = MySQLRAGSearchTool()
-result = mysql_tool.run(
-    connection_string="mysql://user:pass@host/db",
-    query="Find customers with orders > $1000"
-)
-
-# PostgreSQL search
-pg_tool = PostgreSQLRAGSearchTool()
-result = pg_tool.run(
-    connection_string="postgresql://user:pass@host/db",
-    query="Recent user activity"
-)
-
-# Natural Language to SQL
-nl2sql = NL2SQLTool()
-result = nl2sql.run(
-    schema="users(id, name, email), orders(id, user_id, total)",
-    natural_query="Show me top 10 customers by order value"
-)
-print(result.data["sql"])  # Generated SQL query
-```
-
-### Vector Search Tools
-
-```python
-from agenticaiframework.tools import (
-    QdrantVectorSearchTool,
-    WeaviateVectorSearchTool,
-    MongoDBVectorSearchTool
-)
-
-# Qdrant vector search
-qdrant = QdrantVectorSearchTool()
-result = qdrant.run(
-    collection="documents",
-    query_vector=[0.1, 0.2, ...],
-    top_k=10
-)
-
-# Weaviate search
-weaviate = WeaviateVectorSearchTool()
-result = weaviate.run(
-    class_name="Document",
-    query="semantic search query",
+# Find documents
+docs = mongo.run(
+    "find",
+    collection="users",
+    query={"status": "active"},
     limit=10
 )
 
-# MongoDB Atlas Vector Search
-mongo = MongoDBVectorSearchTool()
-result = mongo.run(
-    collection="embeddings",
-    query_text="similar documents",
-    num_candidates=100
-)
+# Aggregate
+pipeline = [
+    {"$match": {"status": "active"}},
+    {"$group": {"_id": "$region", "count": {"$sum": 1}}}
+]
+results = mongo.run("aggregate", collection="users", pipeline=pipeline)
 ```
 
-### Data Platform Tools
+### RedisTool
+
+Redis cache operations.
 
 ```python
-from agenticaiframework.tools import (
-    SnowflakeSearchTool,
-    SingleStoreSearchTool
-)
+from agenticaiframework.tools import RedisTool
 
-# Snowflake
-snowflake = SnowflakeSearchTool()
-result = snowflake.run(
-    account="myaccount",
-    query="SELECT * FROM sales WHERE date > '2024-01-01'"
-)
+redis = RedisTool(host="localhost", port=6379)
 
-# SingleStore
-singlestore = SingleStoreSearchTool()
-result = singlestore.run(
-    connection_string="singlestore://...",
-    query="Real-time analytics query"
-)
+# Get/Set
+redis.run("set", key="user:123", value={"name": "Alice"}, ttl=3600)
+value = redis.run("get", key="user:123")
+
+# List operations
+redis.run("push", key="queue", value="task1")
+item = redis.run("pop", key="queue")
 ```
 
-### Complete Database Tools List
+### VectorStoreTool
 
-| Tool | Description |
-|------|-------------|
-| `MySQLRAGSearchTool` | MySQL database search |
-| `PostgreSQLRAGSearchTool` | PostgreSQL search |
-| `SnowflakeSearchTool` | Snowflake data warehouse |
-| `NL2SQLTool` | Natural language to SQL |
-| `QdrantVectorSearchTool` | Qdrant vector database |
-| `WeaviateVectorSearchTool` | Weaviate vector search |
-| `MongoDBVectorSearchTool` | MongoDB Atlas vector search |
-| `SingleStoreSearchTool` | SingleStore database |
+Vector database operations.
+
+```python
+from agenticaiframework.tools import VectorStoreTool
+
+vectors = VectorStoreTool(
+    provider="chromadb",
+    collection="documents"
+)
+
+# Add documents
+vectors.run(
+    "add",
+    documents=["Document 1 content", "Document 2 content"],
+    metadatas=[{"source": "file1"}, {"source": "file2"}]
+)
+
+# Search
+results = vectors.run(
+    "search",
+    query="machine learning",
+    top_k=5
+)
+for result in results:
+    print(f"Score: {result['score']:.3f} - {result['content'][:100]}...")
+```
+
+### S3Tool
+
+AWS S3 operations.
+
+```python
+from agenticaiframework.tools import S3Tool
+
+s3 = S3Tool(bucket="my-bucket")
+
+# List files
+files = s3.run("list", prefix="data/")
+
+# Download
+content = s3.run("download", key="data/file.json")
+
+# Upload
+s3.run("upload", key="data/output.json", content=json.dumps(data))
+```
+
+### ElasticsearchTool
+
+Elasticsearch operations.
+
+```python
+from agenticaiframework.tools import ElasticsearchTool
+
+es = ElasticsearchTool(hosts=["localhost:9200"])
+
+# Search
+results = es.run(
+    "search",
+    index="documents",
+    query={
+        "match": {"content": "machine learning"}
+    }
+)
+
+# Full-text search with filters
+results = es.run(
+    "search",
+    index="documents",
+    query={
+        "bool": {
+            "must": {"match": {"content": "AI"}},
+            "filter": {"term": {"category": "technology"}}
+        }
+    }
+)
+```
 
 ---
 
-## 🤖 AI/ML Tools
+## AI & ML
 
-### DALLETool
+### EmbeddingsTool
 
-Generate images:
+Generate text embeddings.
 
 ```python
-from agenticaiframework.tools import DALLETool
+from agenticaiframework.tools import EmbeddingsTool
 
-tool = DALLETool()
-result = await tool.run(
+embeddings = EmbeddingsTool(
+    provider="openai",
+    model="text-embedding-3-small"
+)
+
+# Single embedding
+vector = embeddings.run("Hello, world!")
+print(f"Dimensions: {len(vector)}")
+
+# Batch embeddings
+vectors = embeddings.run([
+    "First document",
+    "Second document",
+    "Third document"
+])
+```
+
+### ImageGenerationTool
+
+Generate images from text.
+
+```python
+from agenticaiframework.tools import ImageGenerationTool
+
+image_gen = ImageGenerationTool(
+    provider="openai",
+    model="dall-e-3"
+)
+
+# Generate image
+result = image_gen.run(
     prompt="A futuristic city with flying cars",
     size="1024x1024",
     quality="hd"
 )
-print(result.data["image_url"])
+
+# Save image
+with open("city.png", "wb") as f:
+    f.write(result["image_data"])
 ```
 
 ### VisionTool
 
-Analyze images:
+Analyze images.
 
 ```python
 from agenticaiframework.tools import VisionTool
 
-tool = VisionTool()
-result = tool.run(
-    image_path="/images/chart.png",
-    prompt="Describe this chart and extract key data points"
-)
-print(result.data["analysis"])
-```
-
-### RAGTool
-
-Retrieval-Augmented Generation:
-
-```python
-from agenticaiframework.tools import RAGTool
-
-tool = RAGTool()
-result = tool.run(
-    documents=["/docs/manual.pdf", "/docs/faq.md"],
-    query="How do I configure authentication?",
-    top_k=5
-)
-print(result.data["answer"])
-print(result.data["sources"])
-```
-
-### CodeInterpreterTool
-
-Execute code:
-
-```python
-from agenticaiframework.tools import CodeInterpreterTool
-
-tool = CodeInterpreterTool()
-result = tool.run(
-    code="""
-import pandas as pd
-df = pd.read_csv('/data/sales.csv')
-print(df.describe())
-""",
-    language="python",
-    timeout=30
-)
-print(result.data["output"])
-```
-
-### Framework Integration Tools
-
-```python
-from agenticaiframework.tools import (
-    LlamaIndexTool,
-    LangChainTool,
-    AIMindTool
+vision = VisionTool(
+    provider="openai",
+    model="gpt-4-vision-preview"
 )
 
-# LlamaIndex integration
-llama_tool = LlamaIndexTool()
-result = llama_tool.run(
-    index_path="/indexes/knowledge_base",
-    query="What are the main features?"
+# Analyze image
+analysis = vision.run(
+    image_path="/path/to/image.jpg",
+    prompt="Describe this image in detail"
 )
+print(analysis)
 
-# LangChain integration
-langchain_tool = LangChainTool()
-result = langchain_tool.run(
-    chain_type="qa_with_sources",
-    query="Explain the architecture"
+# From URL
+analysis = vision.run(
+    image_url="https://example.com/image.jpg",
+    prompt="What objects are in this image?"
 )
 ```
 
-### Complete AI/ML Tools List
+### SpeechToTextTool
 
-| Tool | Description |
-|------|-------------|
-| `DALLETool` | DALL-E image generation |
-| `VisionTool` | Image analysis and understanding |
-| `AIMindTool` | AI Mind knowledge integration |
-| `LlamaIndexTool` | LlamaIndex RAG integration |
-| `LangChainTool` | LangChain chain execution |
-| `RAGTool` | Generic RAG operations |
-| `CodeInterpreterTool` | Code execution sandbox |
-
----
-
-## 🔌 MCP Compatibility
-
-Bridge legacy MCP tools to the new framework:
+Transcribe audio.
 
 ```python
-from agenticaiframework.tools import (
-    MCPToolAdapter,
-    MCPBridge,
-    wrap_mcp_tool,
-    convert_to_mcp,
-    mcp_bridge
+from agenticaiframework.tools import SpeechToTextTool
+
+stt = SpeechToTextTool(
+    provider="openai",
+    model="whisper-1"
 )
 
-# Wrap an MCP tool
-from some_mcp_library import OldMCPTool
+# Transcribe
+transcript = stt.run("/path/to/audio.wav")
+print(transcript["text"])
+print(f"Language: {transcript['language']}")
+```
 
-wrapped = wrap_mcp_tool(OldMCPTool())
+### TextToSpeechTool
 
-# Convert new tool to MCP format
-mcp_compatible = convert_to_mcp(MyNewTool())
+Generate speech from text.
 
-# Use the bridge
-mcp_bridge.register_legacy_tool(old_tool)
-result = mcp_bridge.execute("old_tool_name", inputs={...})
+```python
+from agenticaiframework.tools import TextToSpeechTool
+
+tts = TextToSpeechTool(
+    provider="openai",
+    voice="nova"
+)
+
+# Generate speech
+audio = tts.run("Hello, how can I help you today?")
+
+# Save audio
+with open("output.mp3", "wb") as f:
+    f.write(audio)
 ```
 
 ---
 
-## 📊 Tool Categories Summary
+## Utilities
 
-| Category | Tools | Description |
-|----------|-------|-------------|
-| **File & Document** | 13 | File I/O, OCR, PDF, document search |
-| **Web Scraping** | 13 | HTTP scraping, browser automation, APIs |
-| **Database** | 8 | SQL, NoSQL, vector search |
-| **AI/ML** | 7 | Vision, generation, RAG, frameworks |
-| **Total** | **41** | Comprehensive tool suite |
+### DateTimeTool
+
+Date and time operations.
+
+```python
+from agenticaiframework.tools import DateTimeTool
+
+dt = DateTimeTool()
+
+# Current time
+now = dt.run("now", timezone="America/New_York")
+print(f"Current time: {now}")
+
+# Parse date
+parsed = dt.run("parse", date_string="January 15, 2024")
+
+# Calculate difference
+diff = dt.run("diff", date1="2024-01-01", date2="2024-12-31")
+print(f"Days between: {diff['days']}")
+
+# Add duration
+future = dt.run("add", date="2024-01-15", days=30)
+```
+
+### CalculatorTool
+
+Mathematical calculations.
+
+```python
+from agenticaiframework.tools import CalculatorTool
+
+calc = CalculatorTool()
+
+# Basic math
+result = calc.run("2 + 2 * 3")
+print(result)  # 8
+
+# Advanced math
+result = calc.run("sqrt(16) + sin(pi/2)")
+print(result)  # 5.0
+
+# Statistics
+result = calc.run("mean([1, 2, 3, 4, 5])")
+print(result)  # 3.0
+```
+
+### EncryptionTool
+
+Encryption and hashing.
+
+```python
+from agenticaiframework.tools import EncryptionTool
+
+crypto = EncryptionTool()
+
+# Hash
+hash_value = crypto.run("hash", data="password123", algorithm="sha256")
+
+# Encrypt/Decrypt
+encrypted = crypto.run("encrypt", data="secret message", key=secret_key)
+decrypted = crypto.run("decrypt", data=encrypted, key=secret_key)
+
+# Generate key
+key = crypto.run("generate_key", length=32)
+```
+
+### EmailTool
+
+Send emails.
+
+```python
+from agenticaiframework.tools import EmailTool
+
+email = EmailTool(
+    smtp_host="smtp.gmail.com",
+    smtp_port=587,
+    username="user@gmail.com",
+    password="app_password"
+)
+
+# Send email
+email.run(
+    to="recipient@example.com",
+    subject="Hello from AgenticAI",
+    body="This is a test email.",
+    attachments=["/path/to/file.pdf"]
+)
+```
+
+### NotificationTool
+
+Send notifications.
+
+```python
+from agenticaiframework.tools import NotificationTool
+
+notify = NotificationTool()
+
+# Slack notification
+notify.run(
+    channel="slack",
+    webhook_url="https://hooks.slack.com/...",
+    message="Task completed successfully!"
+)
+
+# Discord notification
+notify.run(
+    channel="discord",
+    webhook_url="https://discord.com/api/webhooks/...",
+    message="New alert!",
+    embed={"title": "Alert", "color": 0xff0000}
+)
+```
+
+### ClipboardTool
+
+System clipboard operations.
+
+```python
+from agenticaiframework.tools import ClipboardTool
+
+clipboard = ClipboardTool()
+
+# Copy to clipboard
+clipboard.run("copy", text="Hello, World!")
+
+# Paste from clipboard
+content = clipboard.run("paste")
+```
 
 ---
 
-## 🎯 Best Practices
+## Creating Custom Tools
 
-!!! tip "Tool Usage Guidelines"
+### Using Decorator
+
+```python
+from agenticaiframework.tools import tool
+
+@tool
+def get_stock_price(ticker: str) -> dict:
+    """Get current stock price for a ticker symbol.
     
-    1. **Use the right tool** - Match tool capabilities to your task
-    2. **Handle errors** - Always check `result.success` before using data
-    3. **Validate inputs** - Use ToolConfig for input validation
-    4. **Async when possible** - Use AsyncBaseTool for I/O operations
-    5. **Register custom tools** - Use `@register_tool` for discoverability
+    Args:
+        ticker: Stock ticker symbol (e.g., AAPL, GOOGL)
+        
+    Returns:
+        Dictionary with price information
+    """
+    # Your implementation
+    price = fetch_stock_price(ticker)
+    return {
+        "ticker": ticker,
+        "price": price,
+        "currency": "USD"
+    }
+```
 
-!!! warning "Security Considerations"
+### Using Tool Class
+
+```python
+from agenticaiframework.tools import Tool
+
+class WeatherTool(Tool):
+    name = "weather"
+    description = "Get current weather for a location"
     
-    - Validate file paths to prevent directory traversal
-    - Sanitize SQL queries to prevent injection
-    - Use secure connections for database tools
-    - Implement rate limiting for web scraping
+    def __init__(self, api_key: str):
+        self.api_key = api_key
+    
+    def _run(self, location: str, units: str = "celsius") -> dict:
+        """
+        Args:
+            location: City name or coordinates
+            units: Temperature units (celsius or fahrenheit)
+        """
+        # Synchronous implementation
+        response = requests.get(
+            f"https://api.weather.com/current",
+            params={"location": location, "units": units},
+            headers={"Authorization": f"Bearer {self.api_key}"}
+        )
+        return response.json()
+    
+    async def _arun(self, location: str, units: str = "celsius") -> dict:
+        """Async implementation."""
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                f"https://api.weather.com/current",
+                params={"location": location, "units": units},
+                headers={"Authorization": f"Bearer {self.api_key}"}
+            ) as response:
+                return await response.json()
+```
+
+### Tool with Schema
+
+```python
+from agenticaiframework.tools import Tool
+from pydantic import BaseModel, Field
+
+class StockInput(BaseModel):
+    ticker: str = Field(..., description="Stock ticker symbol")
+    include_history: bool = Field(False, description="Include price history")
+    days: int = Field(7, description="Days of history to include")
+
+class StockTool(Tool):
+    name = "stock_price"
+    description = "Get stock price and optional history"
+    args_schema = StockInput
+    
+    def _run(self, ticker: str, include_history: bool = False, days: int = 7):
+        # Implementation
+        pass
+```
 
 ---
 
-## 📚 Related Documentation
+## Tool Configuration
 
-- [MCP Tools Module](mcp_tools.md) - Model Context Protocol integration
-- [Agents](agents.md) - Agent tool binding
-- [Integration Patterns](integration.md) - External system integration
-- [Security](security.md) - Tool security best practices
+### Global Tool Settings
+
+```python
+from agenticaiframework.tools import ToolRegistry
+
+# Configure global settings
+ToolRegistry.configure(
+    default_timeout=30,
+    rate_limiting=True,
+    caching=True,
+    cache_ttl=300
+)
+
+# Register custom tools
+ToolRegistry.register(WeatherTool())
+ToolRegistry.register(StockTool())
+```
+
+### Tool Permissions
+
+```python
+from agenticaiframework import Agent, AgentConfig, ToolPermissions
+
+agent = Agent(
+    config=AgentConfig(
+        name="restricted_agent",
+        tools=ToolRegistry.all(),
+        tool_permissions=ToolPermissions(
+            allowed=["search", "calculator", "file_read"],
+            denied=["shell", "file_write"],
+            confirmation_required=["email"],
+            rate_limits={
+                "search": {"calls": 10, "window": 60}
+            }
+        )
+    )
+)
+```
+
+---
+
+## 📚 API Reference
+
+For complete API documentation, see:
+
+- [Tool Base Class](API_REFERENCE.md#tool)
+- [ToolRegistry](API_REFERENCE.md#toolregistry)
+- [Custom Tool Creation](API_REFERENCE.md#custom-tools)

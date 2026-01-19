@@ -1,234 +1,876 @@
-/* Custom Styles for AgenticAI Framework Documentation */
+/* ============================================================================
+   AgenticAI Framework Documentation - Premium Stylesheet
+   Version: 2.0 | Enterprise-Grade Design System
+   ============================================================================ */
 
-/* Grid Layout Improvements */
+/* ============================================================================
+   CSS Variables - Design Tokens
+   ============================================================================ */
+:root {
+  /* Primary Colors */
+  --agentic-primary: #6366f1;
+  --agentic-primary-dark: #4f46e5;
+  --agentic-primary-light: #818cf8;
+  --agentic-secondary: #06b6d4;
+  --agentic-accent: #f59e0b;
+  
+  /* Gradients */
+  --agentic-gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+  --agentic-gradient-hero: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e3a5f 100%);
+  --agentic-gradient-card: linear-gradient(145deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+  --agentic-gradient-success: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  --agentic-gradient-warning: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  
+  /* Shadows */
+  --agentic-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --agentic-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --agentic-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --agentic-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --agentic-shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
+  
+  /* Border Radius */
+  --agentic-radius-sm: 0.375rem;
+  --agentic-radius-md: 0.5rem;
+  --agentic-radius-lg: 0.75rem;
+  --agentic-radius-xl: 1rem;
+  --agentic-radius-2xl: 1.5rem;
+  
+  /* Transitions */
+  --agentic-transition-fast: 150ms ease;
+  --agentic-transition-normal: 250ms ease;
+  --agentic-transition-slow: 350ms ease;
+}
+
+/* ============================================================================
+   Hero Section
+   ============================================================================ */
+.hero-section {
+  background: var(--agentic-gradient-hero);
+  padding: 4rem 2rem;
+  border-radius: var(--agentic-radius-2xl);
+  margin: -1rem -1rem 2rem -1rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.5;
+}
+
+.hero-section h1 {
+  color: #ffffff !important;
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-section .hero-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-section .hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================================
+   Statistics Cards
+   ============================================================================ */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.stat-card {
+  background: var(--agentic-gradient-card);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: var(--agentic-radius-xl);
+  padding: 1.5rem;
+  text-align: center;
+  transition: all var(--agentic-transition-normal);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--agentic-shadow-lg);
+  border-color: var(--agentic-primary);
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: var(--agentic-gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--md-default-fg-color--light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.5rem;
+}
+
+/* ============================================================================
+   Feature Cards - Enhanced Grid
+   ============================================================================ */
 .md-typeset .grid {
-    grid-gap: 1rem;
-    margin: 1.5em 0;
+  grid-gap: 1rem;
+  margin: 1.5em 0;
 }
 
 .md-typeset .grid.cards > * {
-    border: 1px solid var(--md-default-fg-color--lightest);
-    border-radius: 0.5rem;
-    transition: all 0.3s ease;
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  border-radius: var(--agentic-radius-lg);
+  padding: 1.5rem;
+  transition: all var(--agentic-transition-normal);
+  background: linear-gradient(145deg, transparent 0%, rgba(99, 102, 241, 0.02) 100%);
 }
 
 .md-typeset .grid.cards > *:hover {
-    border-color: var(--md-accent-fg-color);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
+  border-color: var(--agentic-primary);
+  box-shadow: var(--agentic-shadow-lg), var(--agentic-shadow-glow);
+  transform: translateY(-4px);
+  background: var(--agentic-gradient-card);
 }
 
-/* Icon Styling */
-.md-typeset .lg {
-    font-size: 2em;
-    line-height: 1;
+.md-typeset .grid.cards > * .card-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  display: block;
 }
 
-/* Admonition Improvements */
-.md-typeset .admonition,
-.md-typeset details {
-    border-left: 4px solid;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+/* ============================================================================
+   Navigation Enhancement
+   ============================================================================ */
+.md-tabs__link {
+  font-weight: 600;
+  transition: all var(--agentic-transition-fast);
 }
 
-.md-typeset .admonition.success {
-    border-left-color: #00c853;
+.md-tabs__link:hover {
+  color: var(--agentic-primary) !important;
 }
 
-.md-typeset .admonition.tip {
-    border-left-color: #00b0ff;
+.md-tabs__link--active {
+  border-bottom: 3px solid var(--agentic-primary);
 }
 
-.md-typeset .admonition.warning {
-    border-left-color: #ff6d00;
+/* ============================================================================
+   Code Blocks - Enhanced
+   ============================================================================ */
+.md-typeset pre {
+  border-radius: var(--agentic-radius-lg);
+  box-shadow: var(--agentic-shadow-md);
 }
 
-.md-typeset .admonition.info {
-    border-left-color: #2979ff;
-}
-
-/* Code Block Enhancements */
 .md-typeset pre > code {
-    border-radius: 0.5rem;
+  border-radius: var(--agentic-radius-lg);
 }
 
 .md-typeset .highlight {
-    border-radius: 0.5rem;
+  border-radius: var(--agentic-radius-lg);
+  overflow: hidden;
 }
 
-/* Button Styling */
-.md-button {
-    font-weight: 600;
-    border-radius: 0.5rem;
-    transition: all 0.2s ease;
-}
-
-.md-button:hover {
-    transform: scale(1.05);
-}
-
-.md-button--primary {
-    background-color: var(--md-primary-fg-color);
-    border: 2px solid var(--md-primary-fg-color);
-}
-
-/* Table Improvements */
-.md-typeset table:not([class]) {
-    border: 1px solid var(--md-default-fg-color--lightest);
-    border-radius: 0.5rem;
-    overflow: hidden;
-}
-
-.md-typeset table:not([class]) th {
-    background-color: var(--md-code-bg-color);
-    font-weight: 700;
-}
-
-.md-typeset table:not([class]) tr:hover {
-    background-color: var(--md-code-bg-color);
-}
-
-/* Tabs Styling */
-.md-typeset .tabbed-set {
-    border-radius: 0.5rem;
-    overflow: hidden;
-}
-
-.md-typeset .tabbed-labels {
-    border-bottom: 2px solid var(--md-default-fg-color--lightest);
-}
-
-.md-typeset .tabbed-labels > label {
-    font-weight: 600;
-    transition: all 0.2s ease;
-}
-
-.md-typeset .tabbed-labels > label:hover {
-    background-color: var(--md-code-bg-color);
-}
-
-/* Header Improvements */
-.md-typeset h1 {
-    font-weight: 800;
-    margin-bottom: 1.5rem;
-}
-
-.md-typeset h2 {
-    font-weight: 700;
-    margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 2px solid var(--md-default-fg-color--lightest);
-}
-
-.md-typeset h3 {
-    font-weight: 600;
-}
-
-/* Annotation Styling */
-.annotate {
-    font-size: 1.1em;
-    line-height: 1.8;
-    margin: 1.5rem 0;
-}
-
-/* Badge Styling */
-.md-tag {
-    border-radius: 0.5rem;
-    font-weight: 600;
-    padding: 0.25rem 0.75rem;
-}
-
-/* Navigation Footer */
-.md-footer-meta {
-    background-color: var(--md-footer-bg-color);
-}
-
-/* Search Improvements */
-.md-search__form {
-    border-radius: 2rem;
-}
-
-.md-search__input {
-    border-radius: 2rem;
-}
-
-/* Logo Spacing */
-.md-header__title {
-    margin-left: 1rem;
-}
-
-/* Mobile Responsiveness */
-@media screen and (max-width: 76.1875em) {
-    .md-typeset .grid.cards {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Dark Mode Specific Adjustments */
-[data-md-color-scheme="slate"] {
-    --md-code-bg-color: rgba(255, 255, 255, 0.05);
-}
-
-[data-md-color-scheme="slate"] .md-typeset .grid.cards > * {
-    border-color: rgba(255, 255, 255, 0.1);
-}
-
-[data-md-color-scheme="slate"] .md-typeset .grid.cards > *:hover {
-    border-color: var(--md-accent-fg-color);
-    background-color: rgba(255, 255, 255, 0.02);
+/* Code block header */
+.md-typeset .highlight > .filename {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  border-radius: var(--agentic-radius-lg) var(--agentic-radius-lg) 0 0;
 }
 
 /* Inline Code Styling */
 .md-typeset code {
-    border-radius: 0.25rem;
-    padding: 0.125rem 0.375rem;
-    font-weight: 500;
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.375rem;
+  font-weight: 500;
 }
 
-/* Keyboard Key Styling */
-.md-typeset kbd {
-    border-radius: 0.25rem;
-    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
+/* ============================================================================
+   Admonitions - Modern Style
+   ============================================================================ */
+.md-typeset .admonition,
+.md-typeset details {
+  border: none;
+  border-left: 4px solid;
+  border-radius: var(--agentic-radius-lg);
+  box-shadow: var(--agentic-shadow-md);
+  overflow: hidden;
 }
 
-/* Emphasis Styling */
-.md-typeset mark {
-    background-color: rgba(255, 235, 59, 0.3);
-    border-radius: 0.25rem;
-    padding: 0.125rem 0.25rem;
+.md-typeset .admonition.note,
+.md-typeset details.note {
+  border-left-color: var(--agentic-primary);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(99, 102, 241, 0.05) 100%);
 }
 
-/* Custom Color Classes */
+.md-typeset .admonition.tip,
+.md-typeset details.tip {
+  border-left-color: #10b981;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+}
+
+.md-typeset .admonition.info,
+.md-typeset details.info {
+  border-left-color: #06b6d4;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%);
+}
+
+.md-typeset .admonition.warning,
+.md-typeset details.warning {
+  border-left-color: #f59e0b;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+}
+
+.md-typeset .admonition.danger,
+.md-typeset details.danger {
+  border-left-color: #ef4444;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
+}
+
+.md-typeset .admonition.success,
+.md-typeset details.success {
+  border-left-color: #10b981;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+}
+
+.md-typeset .admonition.example,
+.md-typeset details.example {
+  border-left-color: #8b5cf6;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
+}
+
+/* ============================================================================
+   Tables - Premium Style
+   ============================================================================ */
+.md-typeset table:not([class]) {
+  border: none;
+  border-radius: var(--agentic-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--agentic-shadow-md);
+}
+
+.md-typeset table:not([class]) thead {
+  background: linear-gradient(135deg, var(--agentic-primary) 0%, var(--agentic-primary-dark) 100%);
+}
+
+.md-typeset table:not([class]) th {
+  color: #ffffff !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 1rem;
+  border: none;
+}
+
+.md-typeset table:not([class]) td {
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+.md-typeset table:not([class]) tr:hover td {
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.md-typeset table:not([class]) tr:last-child td {
+  border-bottom: none;
+}
+
+/* ============================================================================
+   Buttons - Enhanced
+   ============================================================================ */
+.md-button {
+  font-weight: 700;
+  border-radius: var(--agentic-radius-md);
+  padding: 0.75rem 1.5rem;
+  transition: all var(--agentic-transition-normal);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  font-size: 0.875rem;
+}
+
+.md-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--agentic-shadow-lg);
+}
+
+.md-button--primary {
+  background: var(--agentic-gradient-primary) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+
+.md-button--primary:hover {
+  box-shadow: var(--agentic-shadow-lg), var(--agentic-shadow-glow);
+}
+
+/* ============================================================================
+   Tabs - Modern Style
+   ============================================================================ */
+.md-typeset .tabbed-set {
+  border-radius: var(--agentic-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--agentic-shadow-sm);
+}
+
+.md-typeset .tabbed-labels {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%);
+  border-bottom: 2px solid rgba(99, 102, 241, 0.1);
+}
+
+.md-typeset .tabbed-labels > label {
+  font-weight: 600;
+  padding: 1rem 1.5rem;
+  transition: all var(--agentic-transition-fast);
+}
+
+.md-typeset .tabbed-labels > label:hover {
+  color: var(--agentic-primary);
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.md-typeset .tabbed-set > input:checked + label {
+  color: var(--agentic-primary);
+  border-bottom: 3px solid var(--agentic-primary);
+}
+
+/* ============================================================================
+   Module Cards - For Documentation
+   ============================================================================ */
+.module-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  border-radius: var(--agentic-radius-xl);
+  padding: 2rem;
+  margin: 1rem 0;
+  transition: all var(--agentic-transition-normal);
+}
+
+.module-card:hover {
+  border-color: var(--agentic-primary);
+  box-shadow: var(--agentic-shadow-lg);
+  transform: translateY(-2px);
+}
+
+.module-card h3 {
+  color: var(--agentic-primary);
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.module-card .module-icon {
+  font-size: 1.5rem;
+}
+
+/* ============================================================================
+   Feature List - Check marks
+   ============================================================================ */
+.feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.feature-list li {
+  padding: 0.5rem 0;
+  padding-left: 2rem;
+  position: relative;
+}
+
+.feature-list li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #10b981;
+  font-weight: bold;
+}
+
+/* ============================================================================
+   Status Badges
+   ============================================================================ */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-badge.stable {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  color: white;
+}
+
+.status-badge.beta {
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  color: white;
+}
+
+.status-badge.new {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+}
+
+.status-badge.experimental {
+  background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+  color: white;
+}
+
+/* ============================================================================
+   Architecture Diagram
+   ============================================================================ */
+.architecture-diagram {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  border-radius: var(--agentic-radius-xl);
+  padding: 2rem;
+  margin: 2rem 0;
+  overflow-x: auto;
+}
+
+.architecture-diagram pre {
+  background: transparent !important;
+  color: #e0e7ff;
+  margin: 0;
+  padding: 0;
+}
+
+.architecture-diagram code {
+  background: transparent !important;
+  color: #e0e7ff;
+}
+
+/* ============================================================================
+   Header Improvements
+   ============================================================================ */
+.md-typeset h1 {
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+}
+
+.md-typeset h2 {
+  font-weight: 700;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 2px solid var(--md-default-fg-color--lightest);
+}
+
+.md-typeset h3 {
+  font-weight: 600;
+}
+
+/* ============================================================================
+   API Reference Styling
+   ============================================================================ */
+.md-typeset .doc-heading {
+  border-bottom: 2px solid var(--agentic-primary);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.md-typeset .doc-param {
+  background: rgba(99, 102, 241, 0.05);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--agentic-radius-sm);
+  font-family: var(--md-code-font-family);
+}
+
+.md-typeset .doc-type {
+  color: var(--agentic-secondary);
+  font-style: italic;
+}
+
+.md-typeset .doc-default {
+  color: var(--agentic-accent);
+}
+
+/* ============================================================================
+   Table of Contents Enhancement
+   ============================================================================ */
+.md-sidebar--secondary .md-nav__link {
+  transition: all var(--agentic-transition-fast);
+  border-radius: var(--agentic-radius-sm);
+  padding: 0.25rem 0.5rem;
+  margin: 0.125rem 0;
+}
+
+.md-sidebar--secondary .md-nav__link:hover {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--agentic-primary);
+}
+
+.md-sidebar--secondary .md-nav__link--active {
+  background: rgba(99, 102, 241, 0.15);
+  color: var(--agentic-primary);
+  font-weight: 600;
+}
+
+/* ============================================================================
+   Search Enhancement
+   ============================================================================ */
+.md-search__form {
+  border-radius: 2rem;
+}
+
+.md-search__input {
+  border-radius: var(--agentic-radius-lg);
+}
+
+.md-search__output {
+  border-radius: var(--agentic-radius-lg);
+  box-shadow: var(--agentic-shadow-xl);
+}
+
+/* ============================================================================
+   Footer Enhancement
+   ============================================================================ */
+.md-footer {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+}
+
+.md-footer-meta {
+  background: transparent;
+}
+
+/* ============================================================================
+   Comparison Table
+   ============================================================================ */
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+}
+
+.comparison-table th {
+  background: var(--agentic-gradient-primary);
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+.comparison-table td {
+  padding: 0.75rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+.comparison-table .feature-name {
+  text-align: left;
+  font-weight: 600;
+}
+
+.comparison-table .check {
+  color: #10b981;
+  font-size: 1.25rem;
+}
+
+.comparison-table .cross {
+  color: #ef4444;
+  font-size: 1.25rem;
+}
+
+.comparison-table .partial {
+  color: #f59e0b;
+  font-size: 1.25rem;
+}
+
+/* ============================================================================
+   Quick Links
+   ============================================================================ */
+.quick-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 2rem 0;
+  justify-content: center;
+}
+
+.quick-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: var(--agentic-radius-lg);
+  font-weight: 600;
+  transition: all var(--agentic-transition-normal);
+}
+
+.quick-links a:hover {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: var(--agentic-primary);
+  transform: translateY(-2px);
+}
+
+/* ============================================================================
+   Custom Color Classes
+   ============================================================================ */
 .text-success {
-    color: #00c853;
+  color: #10b981;
 }
 
 .text-warning {
-    color: #ff6d00;
+  color: #f59e0b;
 }
 
 .text-info {
-    color: #2979ff;
+  color: #06b6d4;
 }
 
 .text-danger {
-    color: #d32f2f;
+  color: #ef4444;
 }
 
-/* Smooth Scrolling */
+.text-primary {
+  color: var(--agentic-primary);
+}
+
+/* ============================================================================
+   Version Badge
+   ============================================================================ */
+.version-badge {
+  display: inline-block;
+  background: var(--agentic-gradient-primary);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+/* ============================================================================
+   Icon Sizes
+   ============================================================================ */
+.md-typeset .lg {
+  font-size: 2em;
+  line-height: 1;
+}
+
+.md-typeset .xl {
+  font-size: 3em;
+  line-height: 1;
+}
+
+.md-typeset .xxl {
+  font-size: 4em;
+  line-height: 1;
+}
+
+/* ============================================================================
+   Badge Styling
+   ============================================================================ */
+.md-tag {
+  border-radius: 0.5rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+}
+
+/* ============================================================================
+   Logo Spacing
+   ============================================================================ */
+.md-header__title {
+  margin-left: 1rem;
+}
+
+/* ============================================================================
+   Keyboard Key Styling
+   ============================================================================ */
+.md-typeset kbd {
+  border-radius: 0.25rem;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================================================
+   Emphasis Styling
+   ============================================================================ */
+.md-typeset mark {
+  background-color: rgba(255, 235, 59, 0.3);
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.25rem;
+}
+
+/* ============================================================================
+   Responsive Adjustments
+   ============================================================================ */
+@media screen and (max-width: 76.25em) {
+  .hero-section h1 {
+    font-size: 2rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 76.1875em) {
+  .md-typeset .grid.cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media screen and (max-width: 60em) {
+  .hero-section {
+    padding: 2rem 1rem;
+    margin: 0 0 1rem 0;
+    border-radius: var(--agentic-radius-lg);
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stat-number {
+    font-size: 2rem;
+  }
+}
+
+/* ============================================================================
+   Dark Mode Enhancements
+   ============================================================================ */
+[data-md-color-scheme="slate"] {
+  --agentic-shadow-glow: 0 0 30px rgba(99, 102, 241, 0.4);
+  --md-code-bg-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > * {
+  background: linear-gradient(145deg, rgba(99, 102, 241, 0.05) 0%, rgba(6, 182, 212, 0.03) 100%);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > *:hover {
+  border-color: var(--md-accent-fg-color);
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+[data-md-color-scheme="slate"] .stat-card {
+  background: linear-gradient(145deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%);
+}
+
+[data-md-color-scheme="slate"] .module-card {
+  background: linear-gradient(145deg, rgba(30, 27, 75, 0.5) 0%, rgba(49, 46, 129, 0.3) 100%);
+}
+
+/* ============================================================================
+   Animations
+   ============================================================================ */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* ============================================================================
+   Code Annotations
+   ============================================================================ */
+.md-typeset .annotate > ol > li:before {
+  background: var(--agentic-gradient-primary);
+  color: white;
+  font-weight: 700;
+}
+
+/* Annotation Styling */
+.annotate {
+  font-size: 1.1em;
+  line-height: 1.8;
+  margin: 1.5rem 0;
+}
+
+/* ============================================================================
+   Smooth Scrolling
+   ============================================================================ */
 html {
-    scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
 
-/* Print Styles */
+/* ============================================================================
+   Print Styles
+   ============================================================================ */
 @media print {
-    .md-header,
-    .md-footer,
-    .md-sidebar {
-        display: none;
-    }
-    
-    .md-content {
-        max-width: 100%;
-    }
+  .md-header,
+  .md-footer,
+  .md-sidebar {
+    display: none;
+  }
+  
+  .md-content {
+    max-width: 100%;
+  }
+  
+  .hero-section {
+    background: #1e1b4b !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .md-typeset .grid.cards > * {
+    border: 1px solid #ccc;
+    page-break-inside: avoid;
+  }
 }

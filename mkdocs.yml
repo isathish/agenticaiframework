@@ -189,8 +189,8 @@ nav:
   - Welcome: index.md
   - What's New: changelog.md
 - 🚀 Getting Started:
-  - Installation & Setup: USAGE.md
   - Quick Start Guide: quick-start.md
+  - Installation & Setup: USAGE.md
   - ✨ Feature Overview: features.md
   - ⚖️ Framework Comparison: comparison.md
   - Configuration Guide: CONFIGURATION.md
@@ -202,20 +202,25 @@ nav:
   - 🔄 Processes: processes.md
   - 🧠 LLMs: llms.md
   - 💾 Memory: memory.md
+  - 📊 State Management: state.md
   - 📚 Knowledge: knowledge.md
   - 💬 Communication: communication.md
-  - 📊 Monitoring: monitoring.md
-  - 🛡️ Guardrails: guardrails.md
-  - 📈 Evaluation: evaluation.md
+  - 🎤 Speech Processing: speech.md
+  - 🛠️ Tools: tools.md
   - 🔧 MCP Tools: mcp_tools.md
   - 📝 Prompts: prompts.md
+  - 🧠 Context Engineering: context.md
+- 🎭 Orchestration & Teams:
+  - 🎭 Multi-Agent Orchestration: orchestration.md
   - 🌐 Hub: hub.md
-  - 🛠️ Tools: tools.md
+- 📈 Monitoring & Evaluation:
+  - 📊 Monitoring: monitoring.md
+  - 📈 12-Tier Evaluation: evaluation.md
   - 📡 Tracing: tracing.md
+- 🔒 Security & Compliance:
+  - 🛡️ Guardrails: guardrails.md
   - 🏛️ Compliance: compliance.md
   - 🏗️ Infrastructure: infrastructure.md
-  - 🎭 Orchestration: orchestration.md
-  - 🧠 Context Engineering: context.md
 - 📖 Examples & Tutorials:
   - 📋 Overview: EXAMPLES.md
   - 🎯 Basic Examples:
