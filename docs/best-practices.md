@@ -24,13 +24,13 @@ Build scalable, reliable AI agent applications
     
     Monitoring and logging patterns
     
-    [:octicons-arrow-right-24: Learn More](#design-for-observability)
+    [:octicons-arrow-right-24: Learn More](#general-principles)
 
 -   :material-alert-circle:{ .lg } **Error Handling**
     
     Graceful failure management
     
-    [:octicons-arrow-right-24: View Patterns](#implement-proper-error-handling)
+    [:octicons-arrow-right-24: View Patterns](#agent-development)
 
 -   :material-speedometer:{ .lg } **Performance**
     

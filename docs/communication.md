@@ -24,25 +24,25 @@ Multiple protocols and communication patterns
     
     Point-to-point communication
     
-    [:octicons-arrow-right-24: Learn More](#point-to-point)
+    [:octicons-arrow-right-24: Learn More](#1-point-to-point-communication)
 
 -   :material-broadcast:{ .lg } **Pub/Sub**
     
     Topic-based messaging
     
-    [:octicons-arrow-right-24: Configure](#publish-subscribe)
+    [:octicons-arrow-right-24: Configure](#2-publish-subscribe-pattern)
 
 -   :material-swap-horizontal:{ .lg } **Request/Reply**
     
     Synchronous communication
     
-    [:octicons-arrow-right-24: Implement](#request-reply)
+    [:octicons-arrow-right-24: Implement](#3-request-reply-pattern)
 
 -   :material-book-open:{ .lg } **Examples**
     
     Communication patterns
     
-    [:octicons-arrow-right-24: View Examples](#examples)
+    [:octicons-arrow-right-24: View Examples](#related-documentation)
 
 </div>
 

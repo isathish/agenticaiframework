@@ -24,25 +24,25 @@ Share and discover reusable components
     
     Register and discover agents
     
-    [:octicons-arrow-right-24: Manage](#agent-management)
+    [:octicons-arrow-right-24: Manage](#key-functions)
 
 -   :material-toolbox:{ .lg } **Tools**
     
     Share reusable tools
     
-    [:octicons-arrow-right-24: Register](#tool-management)
+    [:octicons-arrow-right-24: Register](#hub-architecture)
 
 -   :material-workflow:{ .lg } **Processes**
     
     Workflow templates
     
-    [:octicons-arrow-right-24: Browse](#process-management)
+    [:octicons-arrow-right-24: Browse](#use-cases)
 
 -   :material-book-open:{ .lg } **Examples**
     
     Hub usage patterns
     
-    [:octicons-arrow-right-24: View Examples](#examples)
+    [:octicons-arrow-right-24: View Examples](#example-usage)
 
 </div>
 

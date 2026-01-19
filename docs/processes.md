@@ -24,25 +24,25 @@ Sequential, hierarchical, consensus, and parallel execution
     
     Execute tasks one after another
     
-    [:octicons-arrow-right-24: Learn More](#sequential-process)
+    [:octicons-arrow-right-24: Learn More](#process-architecture)
 
 -   :material-file-tree:{ .lg } **Hierarchical**
     
     Manager-worker coordination
     
-    [:octicons-arrow-right-24: Learn More](#hierarchical-process)
+    [:octicons-arrow-right-24: Learn More](#key-functions)
 
 -   :material-vote:{ .lg } **Consensus**
     
     Vote and decide together
     
-    [:octicons-arrow-right-24: Learn More](#consensus-process)
+    [:octicons-arrow-right-24: Learn More](#example-usage)
 
 -   :material-flash:{ .lg } **Parallel**
     
     Run tasks concurrently
     
-    [:octicons-arrow-right-24: Learn More](#parallel-process)
+    [:octicons-arrow-right-24: Learn More](#use-cases)
 
 </div>
 

@@ -8,7 +8,7 @@ edit_uri: edit/main/docs/
 
 # Copyright
 copyright: >
-  Copyright &copy; 2024-2025 AgenticAI Framework Contributors<br/> <a href="#__consent">Change cookie settings</a>
+  Copyright &copy; 2024-2026 AgenticAI Framework Contributors<br/> <a href="#__consent">Change cookie settings</a>
 
 # Theme Configuration
 theme:
@@ -18,6 +18,9 @@ theme:
     repo: fontawesome/brands/github
     edit: material/pencil
     view: material/eye
+    logo: material/robot-outline
+  # logo: assets/agenticaiframework.png
+  # favicon: assets/favicon.png
   palette:
   # Palette toggle for automatic mode
   - media: "(prefers-color-scheme)"
@@ -78,11 +81,6 @@ theme:
   font:
     text: Roboto
     code: Roboto Mono
-
-  icon:
-    logo: material/robot-outline
-  # logo: assets/agenticaiframework.png
-  # favicon: assets/favicon.png
 
 # Extensions
 markdown_extensions:
@@ -181,8 +179,6 @@ plugins:
     draggable: true
     skip_classes:
     - skip-lightbox
-    draggable: true
-    skip_classes:
     - custom-skip-class-name
     auto_caption: false
     caption_position: bottom

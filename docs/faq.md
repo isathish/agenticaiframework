@@ -42,7 +42,7 @@ Find solutions and learn best practices
     
     How-to questions
     
-    [:octicons-arrow-right-24: Learn How](#usage-questions)
+    [:octicons-arrow-right-24: Learn How](#agent-questions)
 
 </div>
 

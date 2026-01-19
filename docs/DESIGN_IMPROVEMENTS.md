@@ -1,5 +1,9 @@
 # 🎨 Documentation Design Improvements Summary
 
+!!! warning "Historical Document"
+    This is an archived internal document from the December 2025 documentation redesign.
+    For current documentation, please refer to the main [documentation](index.md).
+
 ## Overview
 
 This document summarizes the comprehensive design improvements made to the AgenticAI Framework documentation, including visual enhancements, new pages, improved diagrams, and overall modernization.
@@ -42,7 +46,7 @@ This document summarizes the comprehensive design improvements made to the Agent
 - **Status**: ✅ Complete - 350+ lines with 9 major diagrams
 
 #### changelog.md - Release History
-- 📝 Complete version history (1.0.0 to 1.2.3)
+- 📝 Complete version history (1.0.0 to 1.2.11)
 - 🎉 Feature additions by version
 - 🚀 Improvements and optimizations
 - 🐛 Bug fixes
@@ -55,7 +59,7 @@ This document summarizes the comprehensive design improvements made to the Agent
 #### index.md - Landing Page
 - ✨ Added hero subtitle: "Enterprise-ready • Developer-friendly • Production-tested"
 - ⭐ GitHub Stars badge with social style
-- 🎉 Success banner for "Latest Release: v1.2.3" with feature highlights
+- 🎉 Success banner for "Latest Release: v1.2.10" with feature highlights
 - 🏗️ Enhanced Core Architecture diagram with 6 layers:
   - Application Layer (User/Application)
   - Agent Layer (Agent Manager, Multiple Agents)

@@ -1,3 +1,14 @@
+---
+tags:
+  - examples
+  - knowledge
+  - retrieval
+  - summarization
+---
+
+# Knowledge Retrieval Example
+
+```python
 from agenticaiframework.agents import Agent
 from agenticaiframework.tasks import Task
 from agenticaiframework.llms import LLMManager
@@ -40,3 +51,5 @@ if __name__ == "__main__":
     # Output result
     print("=== Knowledge Retrieval Summary ===")
     print(result)
+
+```

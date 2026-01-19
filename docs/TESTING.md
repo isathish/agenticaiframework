@@ -1,3 +1,11 @@
+---
+tags:
+  - testing
+  - quality
+  - pytest
+  - coverage
+---
+
 # :test_tube: Testing Guide
 
 <div class="annotate" markdown>

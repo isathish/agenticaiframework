@@ -1,204 +1,233 @@
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://isathish.github.io/agenticaiframework/">
-    <img src="https://img.shields.io/pypi/v/agenticaiframework?color=blue&label=PyPI%20Version&logo=python&logoColor=white" alt="PyPI Version">
-  </a>
-  <a href="https://pypi.org/project/agenticaiframework/">
-    <img src="https://img.shields.io/pypi/dm/agenticaiframework?color=green&label=Downloads&logo=python&logoColor=white" alt="Downloads">
-  </a>
-  <a href="https://github.com/isathish/agenticaiframework/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/isathish/agenticaiframework/python-package.yml?branch=main&label=Build&logo=github" alt="Build Status">
-  </a>
-  <a href="https://isathish.github.io/agenticaiframework/">
-    <img src="https://img.shields.io/badge/Documentation-Online-blue?logo=readthedocs&logoColor=white" alt="Documentation">
-  </a>
-</div>
+---
+tags:
+  - extending
+  - customization
+  - development
+  - plugins
+---
 
+# 🔧 Extending AgenticAI
 
-## 9. Creating Custom Communication Protocols
+This guide explains how to extend the **AgenticAI Framework** to add new capabilities, integrate with external systems, and customize its behavior.
 
-You can extend `communication.py` to support new protocols.
+---
 
-Example: Adding MQTT support
+## 🏗️ Understanding the Architecture
+
+AgenticAI is organized into modular components:
+
+| Module | Purpose |
+|--------|---------|
+| `core/` | Agent classes and orchestration logic |
+| `memory/` | Short-term and long-term memory management |
+| `llms/` | LLM provider integrations |
+| `tools/` | Tool registry and implementations |
+| `guardrails/` | Safety and compliance checks |
+| `knowledge/` | Knowledge base and retrieval |
+| `orchestration/` | Workflow coordination |
+| `tracing/` | Distributed tracing |
+| `evaluation/` | Evaluation framework |
+
+---
+
+## 🤖 Adding a New Agent
+
+1. Create a new class inheriting from `Agent`
+2. Implement required methods
+3. Register the agent
+
 ```python
-import paho.mqtt.client as mqtt
+from agenticaiframework import Agent, AgentManager
 
-class MQTTCommunication:
-    def __init__(self, broker, port):
-        self.client = mqtt.Client()
-        self.client.connect(broker, port)
-
-    def publish(self, topic, message):
-        self.client.publish(topic, message)
-
-    def subscribe(self, topic, callback):
-        self.client.subscribe(topic)
-        self.client.on_message = lambda client, userdata, msg: callback(msg.payload.decode())
-```
-
-
-## 10. Adding New Process Types
-
-Extend `processes.py` to add new orchestration patterns.
-
-Example: Conditional process execution
-```python
-def conditional_process(condition, process_a, process_b):
-    if condition():
-        return process_a()
-    else:
-        return process_b()
-```
-
-
-## 11. Extending Knowledge Base
-
-Add new retrieval strategies in `knowledge.py`:
-```python
-class CustomKnowledgeBase:
-    def __init__(self):
-        self.data = {}
-
-    def add_document(self, key, content):
-        self.data[key] = content
-
-    def search(self, query):
-        return [v for k, v in self.data.items() if query.lower() in v.lower()]
-```
-
-
-## 12. Advanced Guardrails
-
-Implement multi-step guardrails:
-```python
-from agenticaiframework.guardrails import add_guardrail
-
-def profanity_filter(input_data):
-    banned_words = ["badword"]
-    for word in banned_words:
-        if word in input_data.lower():
-            raise ValueError("Inappropriate content detected!")
-    return input_data
-
-add_guardrail(profanity_filter)
-```
-
-
-## 13. Packaging Extensions
-
-- Place your extensions in a separate module.
-- Add `__init__.py` to make it importable.
-- Document your extension in `EXTENDING.md`.
-
-
-## 14. Testing Extensions
-
-- Write unit tests for each new feature.
-- Use mocks for external API calls.
-- Run `pytest --cov` to ensure coverage.
-# Extending AgenticAI
-
-This guide explains how to extend the **AgenticAI** package to add new capabilities, integrate with external systems, and customize its behavior.
-
-
-## 1. Understanding the Architecture
-
-AgenticAI is organized into several core modules:
-
-- **agents.py** – Defines agent classes and their orchestration logic.
-- **communication.py** – Handles inter-agent and external communication.
-- **configurations.py** – Manages configuration settings.
-- **evaluation.py** – Provides evaluation and scoring mechanisms.
-- **guardrails.py** – Implements safety and compliance checks.
-- **hub.py** – Central registry for agents, tools, and processes.
-- **knowledge.py** – Manages knowledge bases and retrieval.
-- **llms.py** – Interfaces with large language models.
-- **mcp_tools.py** – Integrates with Model Context Protocol tools.
-- **memory.py** – Handles short-term and long-term memory.
-- **monitoring.py** – Tracks performance and logs.
-- **processes.py** – Defines workflows and process orchestration.
-- **prompts.py** – Stores and manages prompt templates.
-- **tasks.py** – Defines and manages tasks.
-
-
-## 2. Adding a New Agent
-
-1. Create a new class in `agenticaiframework/agents.py` or a new file in `agenticaiframework/agents/` if modularizing.
-2. Inherit from the base `Agent` class.
-3. Implement required methods such as `act()`, `observe()`, and `plan()`.
-4. Register the agent in `hub.py` so it can be discovered.
-
-**Example:**
-```python
-from agenticaiframework.agents import Agent
-from agenticaiframework.hub import register_agent
-
-class MyCustomAgent(Agent):
-    def act(self, input_data):
+class CustomAgent(Agent):
+    """Custom agent with specialized behavior."""
+    
+    def __init__(self, name: str, **kwargs):
+        super().__init__(name=name, role="custom", capabilities=["text"])
+    
+    def act(self, input_data: str) -> str:
         return f"Processed: {input_data}"
 
-register_agent("my_custom_agent", MyCustomAgent)
+# Register and use
+manager = AgentManager()
+agent = CustomAgent(name="MyCustomAgent")
+manager.register_agent(agent)
 ```
 
+---
 
-## 3. Adding a New Tool
+## 🔧 Adding a New Tool
 
-1. Create a new function or class in `mcp_tools.py`.
-2. Follow the MCP tool interface requirements.
-3. Register the tool in `hub.py`.
+1. Create a class inheriting from `BaseTool`
+2. Implement the `_run` method
+3. Register with the decorator
 
-**Example:**
 ```python
-from agenticaiframework.hub import register_tool
+from agenticaiframework.tools import BaseTool, register_tool
 
-def sentiment_analysis_tool(text):
-    # Implement sentiment analysis logic
-    return {"sentiment": "positive"}
-
-register_tool("sentiment_analysis", sentiment_analysis_tool)
+@register_tool()
+class SentimentTool(BaseTool):
+    """Analyze sentiment of text."""
+    
+    name = "sentiment_analysis"
+    description = "Analyzes the sentiment of input text"
+    
+    def _run(self, input_data: dict) -> dict:
+        text = input_data.get("text", "")
+        # Your sentiment analysis logic here
+        return {"sentiment": "positive", "confidence": 0.95}
 ```
 
+---
 
-## 4. Extending Memory
+## 🧠 Extending Memory
 
-To add a new memory backend:
+Add a custom memory backend:
 
-1. Create a new class in `memory.py`.
-2. Implement methods like `store()`, `retrieve()`, and `clear()`.
-3. Update configuration to use the new backend.
+```python
+from agenticaiframework.memory import MemoryManager
 
-
-## 5. Extending LLM Integrations
-
-To integrate a new LLM provider:
-
-1. Add a new class in `llms.py`.
-2. Implement the `generate()` method.
-3. Update configuration to select the new provider.
-
-
-## 6. Adding Guardrails
-
-To add new safety checks:
-
-1. Add a function in `guardrails.py`.
-2. Ensure it runs before agent actions.
-3. Register it in the guardrail pipeline.
-
-
-## 7. Testing Extensions
-
-- Add tests in `tests/` following the naming convention `test_*.py`.
-- Use `pytest` to run tests:
-```bash
-pytest
+class RedisMemoryBackend:
+    """Redis-based memory backend."""
+    
+    def __init__(self, redis_client):
+        self.client = redis_client
+    
+    def store(self, key: str, value: any) -> None:
+        self.client.set(key, value)
+    
+    def retrieve(self, key: str) -> any:
+        return self.client.get(key)
+    
+    def clear(self, key: str) -> None:
+        self.client.delete(key)
 ```
 
+---
 
-## 8. Best Practices
+## 🤖 Extending LLM Integrations
 
-- Keep extensions modular.
-- Write unit tests for all new features.
-- Follow PEP8 coding standards.
-- Document your changes in `CHANGELOG.md`.
+Add a new LLM provider:
+
+```python
+from agenticaiframework.llms import LLMManager
+
+def custom_llm_provider(prompt: str, **kwargs) -> str:
+    """Custom LLM provider integration."""
+    # Your LLM API call here
+    return f"Response to: {prompt}"
+
+# Register the provider
+llm = LLMManager()
+llm.register_model("custom-llm", custom_llm_provider)
+llm.set_active_model("custom-llm")
+```
+
+---
+
+## 🛡️ Adding Guardrails
+
+Implement custom safety checks:
+
+```python
+from agenticaiframework.guardrails import GuardrailManager
+
+def content_filter(input_data: str) -> str:
+    """Filter inappropriate content."""
+    banned_words = ["spam", "scam"]
+    for word in banned_words:
+        if word in input_data.lower():
+            raise ValueError(f"Content contains banned word: {word}")
+    return input_data
+
+# Register guardrail
+guardrails = GuardrailManager()
+guardrails.add_guardrail("content_filter", content_filter)
+```
+
+---
+
+## 📡 Custom Communication Protocols
+
+Extend communication capabilities:
+
+```python
+class WebSocketCommunication:
+    """WebSocket-based communication."""
+    
+    def __init__(self, url: str):
+        self.url = url
+        self.connection = None
+    
+    async def connect(self):
+        import websockets
+        self.connection = await websockets.connect(self.url)
+    
+    async def send(self, message: str):
+        await self.connection.send(message)
+    
+    async def receive(self) -> str:
+        return await self.connection.recv()
+```
+
+---
+
+## 🧪 Testing Extensions
+
+Write comprehensive tests for new features:
+
+```python
+import pytest
+from agenticaiframework import Agent
+
+class TestCustomAgent:
+    def test_agent_creation(self):
+        agent = CustomAgent(name="TestAgent")
+        assert agent.name == "TestAgent"
+    
+    def test_agent_act(self):
+        agent = CustomAgent(name="TestAgent")
+        result = agent.act("Hello")
+        assert "Processed" in result
+
+# Run tests
+# pytest tests/test_custom_agent.py -v
+```
+
+---
+
+## 📦 Packaging Extensions
+
+Structure your extension as a package:
+
+```
+my_extension/
+├── __init__.py
+├── agents/
+│   └── custom_agent.py
+├── tools/
+│   └── custom_tool.py
+└── tests/
+    └── test_extension.py
+```
+
+---
+
+## ✅ Best Practices
+
+!!! tip "Extension Best Practices"
+    - Keep extensions modular and focused
+    - Write unit tests for all new features
+    - Follow PEP8 coding standards
+    - Document your changes
+    - Use type hints for better IDE support
+    - Handle errors gracefully
+
+---
+
+## 📚 Related Documentation
+
+- [API Reference](API_REFERENCE.md)
+- [Usage Guide](USAGE.md)
+- [Testing Guide](TESTING.md)
+- [Contributing](contributing.md)

@@ -379,112 +379,64 @@ Detailed reference for classes, methods, and functions
 - `run_all()` – Run all tasks
 - `list_tasks()` – List tasks
 
+---
 
-## 7. Advanced Usage Examples
+## 📝 Usage Examples
 
 ### Using Multiple Modules Together
+
 ```python
-from agenticaiframework import Agent
-from agenticaiframework.hub import register_agent, get_agent, register_tool
-from agenticaiframework.memory import Memory
+from agenticaiframework import Agent, AgentManager
+from agenticaiframework.memory import MemoryManager
 
-class EchoAgent(Agent):
-    def act(self, input_data):
-        return f"Echo: {input_data}"
+# Create and register agent
+agent = Agent(name="MyAgent", role="assistant", capabilities=["text"])
+manager = AgentManager()
+manager.register_agent(agent)
 
-register_agent("echo", EchoAgent)
+# Use memory
+memory = MemoryManager()
+memory.store("greeting", "Hello, World!")
 
-memory = Memory()
-memory.store("greeting", "Hello")
-
-agent = get_agent("echo")
-print(agent.act(memory.retrieve("greeting")))
+# Agent action with memory
+result = agent.act(memory.retrieve("greeting"))
+print(result)
 ```
 
 ### Custom Process with Guardrails
-```python
-from agenticaiframework.guardrails import add_guardrail
-from agenticaiframework.processes import run_process
 
+```python
+from agenticaiframework.guardrails import GuardrailManager
+
+# Create guardrail manager
+guardrails = GuardrailManager()
+
+# Add validation guardrail
 def no_numbers(input_data):
     if any(char.isdigit() for char in input_data):
         raise ValueError("Numbers are not allowed!")
     return input_data
 
-add_guardrail(no_numbers)
+guardrails.add_guardrail("no_numbers", no_numbers)
 
-def greet():
-    return "Hello, World!"
-
-print(run_process(greet))
+# Validate input
+result = guardrails.enforce_guardrails("Hello World")
+print(result)
 ```
 
-## 8. Notes on API Stability
+---
 
-- Public APIs follow semantic versioning.
-- Experimental APIs are marked in the documentation and may change.
-# AgenticAI API Reference
+## ⚠️ API Stability Notes
 
-This document provides a reference for the main classes, functions, and modules in **AgenticAI**.
+!!! info "Versioning Policy"
+    - Public APIs follow semantic versioning
+    - Experimental APIs are marked in documentation and may change
+    - Deprecated APIs will be marked with warnings before removal
 
+---
 
-- **agenticaiframework.agents** – Agent base classes and implementations.
-- **agenticaiframework.communication** – Communication utilities.
-- **agenticaiframework.configurations** – Configuration management.
-- **agenticaiframework.evaluation** – Evaluation and scoring.
-- **agenticaiframework.guardrails** – Safety and compliance checks.
-- **agenticaiframework.hub** – Registry for agents, tools, and processes.
-- **agenticaiframework.knowledge** – Knowledge base management.
-- **agenticaiframework.llms** – LLM integrations.
-- **agenticaiframework.mcp_tools** – MCP tool integrations.
-- **agenticaiframework.memory** – Memory management.
-- **agenticaiframework.monitoring** – Monitoring and logging.
-- **agenticaiframework.processes** – Workflow orchestration.
-- **agenticaiframework.prompts** – Prompt templates.
-- **agenticaiframework.tasks** – Task management.
+## 📚 Related Documentation
 
-## 2. Core Classes
-### `Agent`
-**Location:** `agenticaiframework.agents`
-
-**Methods:**
-- `act(input_data)` – Perform an action based on input.
-- `observe(data)` – Observe environment or input.
-- `plan()` – Plan next steps.
-
-**Location:** `agenticaiframework.memory`
-**Methods:**
-- `store(key, value)` – Store a value.
-- `retrieve(key)` – Retrieve a value.
-- `clear()` – Clear memory.
-
-
-**Location:** `agenticaiframework.hub`
-
-- `register_agent(name, cls)` – Register an agent.
-- `get_agent(name)` – Retrieve an agent instance.
-- `register_tool(name, func)` – Register a tool.
-- `get_tool(name)` – Retrieve a tool.
-
-## 3. Utility Functions
-### `set_config(key, value)`
-**Location:** `agenticaiframework.configurations`
-Set a configuration value.
-
-
-### `run_process(name, params)`
-**Location:** `agenticaiframework.processes`
-Run a registered process.
-
-## 4. Example Usage
-
-```python
-
-agent = get_agent("default_agent")
-print(agent.act("Hello"))
-```
-
-
-
-- All public APIs are subject to semantic versioning.
-- Internal APIs may change without notice.
+- [Usage Guide](USAGE.md)
+- [Examples](EXAMPLES.md)
+- [Extending the Framework](EXTENDING.md)

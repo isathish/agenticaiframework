@@ -36,7 +36,7 @@ Create your first intelligent agent
     
     Configure your setup
     
-    [:octicons-arrow-right-24: Configure](#configuration)
+    [:octicons-arrow-right-24: Configure](#configuration-management)
 
 -   :material-book-open:{ .lg } **Next Steps**
     

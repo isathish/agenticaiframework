@@ -1,3 +1,13 @@
+---
+tags:
+  - examples
+  - prompts
+  - templates
+---
+
+# Prompt Manager Example
+
+```python
 from agenticaiframework.prompts import Prompt, PromptManager
 
 # Example: Using the Prompt and PromptManager
@@ -30,3 +40,5 @@ if __name__ == "__main__":
     sum_prompt = prompt_manager.get_prompt("SumPrompt")
     if sum_prompt:
         print("SumPrompt filled:", sum_prompt.fill({"a": 5, "b": 7, "result": 12}))
+
+```

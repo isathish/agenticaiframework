@@ -23,25 +23,25 @@ Create, manage, and render safe prompts for LLMs
     
     Create reusable prompt templates
     
-    [:octicons-arrow-right-24: Create](#prompt-templates)
+    [:octicons-arrow-right-24: Create](#core-components)
 
 -   :material-shield-lock:{ .lg } **Security**
     
     Injection detection and sanitization
     
-    [:octicons-arrow-right-24: Secure](#security-features)
+    [:octicons-arrow-right-24: Secure](#best-practices)
 
 -   :material-source-branch:{ .lg } **Versioning**
     
     Track prompt versions
     
-    [:octicons-arrow-right-24: Manage](#version-control)
+    [:octicons-arrow-right-24: Manage](#overview)
 
 -   :material-book-open:{ .lg } **Examples**
     
     Prompt engineering patterns
     
-    [:octicons-arrow-right-24: View Examples](#examples)
+    [:octicons-arrow-right-24: View Examples](#use-cases)
 
 </div>
 

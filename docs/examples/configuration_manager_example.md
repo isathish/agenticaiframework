@@ -1,3 +1,13 @@
+---
+tags:
+  - examples
+  - configuration
+  - settings
+---
+
+# Configuration Manager Example
+
+```python
 from agenticaiframework.configurations import ConfigurationManager
 
 # Example: Using the ConfigurationManager
@@ -31,3 +41,5 @@ if __name__ == "__main__":
     # Remove the configuration
     config_manager.remove_config("Database")
     print("Database config removed. Components now:", config_manager.list_components())
+
+```

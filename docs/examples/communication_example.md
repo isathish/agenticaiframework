@@ -1,3 +1,13 @@
+---
+tags:
+  - examples
+  - communication
+  - messaging
+---
+
+# Communication Example
+
+```python
 from agenticaiframework.communication import CommunicationManager
 
 # Example: Using the CommunicationManager
@@ -22,3 +32,5 @@ if __name__ == "__main__":
 
     # Send a message
     comm_manager.send_message("Hello from CommunicationManager!")
+
+```

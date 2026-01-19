@@ -30,19 +30,19 @@ Store, retrieve, and organize information across time and context
     
     Redis, PostgreSQL, Vector DBs
     
-    [:octicons-arrow-right-24: Configure](#storage-backends)
+    [:octicons-arrow-right-24: Configure](#memory-persistence)
 
 -   :material-magnify:{ .lg } **Retrieval**
     
     Semantic search and filtering
     
-    [:octicons-arrow-right-24: Retrieve](#retrieval-strategies)
+    [:octicons-arrow-right-24: Retrieve](#advanced-memory-features)
 
 -   :material-code-tags:{ .lg } **Examples**
     
     Implementation patterns
     
-    [:octicons-arrow-right-24: View Examples](#examples)
+    [:octicons-arrow-right-24: View Examples](#integration-with-other-modules)
 
 </div>
 

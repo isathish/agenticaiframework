@@ -24,25 +24,25 @@ Manage structured and unstructured knowledge sources with vector search
     
     Store and organize documents
     
-    [:octicons-arrow-right-24: Setup](#knowledge-base)
+    [:octicons-arrow-right-24: Setup](#key-classes-and-functions)
 
 -   :material-vector-triangle:{ .lg } **Vector Search**
     
     Semantic similarity retrieval
     
-    [:octicons-arrow-right-24: Configure](#vector-search)
+    [:octicons-arrow-right-24: Configure](#knowledge-architecture)
 
 -   :material-file-document:{ .lg } **Documents**
     
     Add and manage content
     
-    [:octicons-arrow-right-24: Learn More](#documents)
+    [:octicons-arrow-right-24: Learn More](#use-cases)
 
 -   :material-book-open:{ .lg } **RAG Patterns**
     
     Implementation examples
     
-    [:octicons-arrow-right-24: View Examples](#rag-examples)
+    [:octicons-arrow-right-24: View Examples](#example-usage)
 
 </div>
 

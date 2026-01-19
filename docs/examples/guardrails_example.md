@@ -1,3 +1,11 @@
+---
+tags:
+  - examples
+  - guardrails
+  - safety
+  - compliance
+---
+
 # Guardrail Management Example
 
 This guide provides a **professional, step-by-step walkthrough** for adding and validating guardrails using the `GuardrailManager` in the `agenticaiframework` package.  

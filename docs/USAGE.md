@@ -49,125 +49,9 @@ tags:
 
 </div>
 
+---
+
 ## 📦 Installation
-
-
-## 11. Advanced Usage Patterns
-
-### Multi-Agent Collaboration
-You can orchestrate multiple agents to work together on complex tasks.
-
-```python
-from agenticaiframework import Agent, AgentManager
-
-agent1 = Agent(name="Researcher", role="research", capabilities=["text"])
-agent2 = Agent(name="Summarizer", role="summarize", capabilities=["text"])
-
-manager = AgentManager()
-manager.register_agent(agent1)
-manager.register_agent(agent2)
-
-research_result = agent1.act("Find the latest AI research papers on reinforcement learning.")
-summary = agent2.act(f"Summarize this: {research_result}")
-print(summary)
-```
-
-### Asynchronous Processing
-For I/O-bound tasks, use asynchronous processes to improve performance.
-
-```python
-import asyncio
-from agenticaiframework.processes import run_process_async
-
-async def async_task():
-    return "Completed async task"
-
-result = asyncio.run(run_process_async(async_task))
-print(result)
-```
-
-### Integrating External APIs
-Agents can call external APIs as part of their workflow.
-
-```python
-import requests
-from agenticaiframework.agents import Agent
-
-class WeatherAgent(Agent):
-    def act(self, location):
-        response = requests.get(f"https://api.weatherapi.com/v1/current.json?q={location}&key=YOUR_KEY")
-        return response.json()
-
-weather_agent = WeatherAgent(name="WeatherBot", role="weather", capabilities=["data"])
-print(weather_agent.act("New York"))
-```
-
-
-## 12. Deployment Scenarios
-
-### Local Development
-- Install dependencies with `pip install -e .[dev]`
-- Run tests locally before deployment.
-
-### Docker Deployment
-Create a `Dockerfile`:
-```dockerfile
-FROM python:3.10
-WORKDIR /app
-COPY . .
-RUN pip install .
-CMD ["python", "main.py"]
-```
-
-### Cloud Deployment
-Deploy to AWS Lambda, Google Cloud Functions, or Azure Functions by packaging the code and dependencies.
-
-
-## 13. Security Considerations
-
-- Always validate and sanitize inputs to agents.
-- Use guardrails to prevent unsafe actions.
-- Store API keys securely using environment variables or secret managers.
-- Limit network access for agents running in untrusted environments.
-
-
-## 14. Performance Optimization
-
-- Use caching for repeated computations.
-- Optimize prompt templates for LLMs to reduce token usage.
-- Use batch processing for large datasets.
-- Profile and monitor agent performance using `monitoring.py`.
-
-
-## 15. Troubleshooting Complex Workflows
-
-- Enable debug logging: `set_config("log_level", "DEBUG")`
-- Break down workflows into smaller steps for easier debugging.
-- Use `pytest -v` for verbose test output.
-
-
-## 16. Contributing to AgenticAI
-
-We welcome contributions!  
-1. Fork the repository.  
-2. Create a feature branch.  
-3. Implement your changes with tests.  
-4. Submit a pull request.  
-
-
-## 17. Additional Resources
-
-- [API Reference](API_REFERENCE.md)
-- [Configuration Guide](CONFIGURATION.md)
-- [Extending the Framework](EXTENDING.md)
-- [Examples](EXAMPLES.md)
-- [Troubleshooting](TROUBLESHOOTING.md)
-# Using AgenticAI
-
-This guide explains how to install, configure, and use the **AgenticAI** package with practical examples.
-
-
-## 1. Installation
 
 Install AgenticAI from PyPI:
 
@@ -178,113 +62,192 @@ pip install agenticaiframework
 Or install from source:
 
 ```bash
-git clone https://github.com/isathish/AgenticAI.git
-cd AgenticAI
-pip install .
+git clone https://github.com/isathish/agenticaiframework.git
+cd agenticaiframework
+pip install -e .
 ```
 
+---
 
-## 2. Basic Usage
+## 🎯 Basic Usage
 
 ### Creating and Running an Agent
 
 ```python
-from agenticaiframework.agents import Agent
-from agenticaiframework.hub import register_agent, get_agent
+from agenticaiframework import Agent, AgentManager
 
-class EchoAgent(Agent):
-    def act(self, input_data):
-        return f"Echo: {input_data}"
+# Create an agent
+agent = Agent(
+    name="MyAgent",
+    role="assistant",
+    capabilities=["text", "analysis"]
+)
 
-register_agent("echo", EchoAgent)
+# Register with manager
+manager = AgentManager()
+manager.register_agent(agent)
 
-agent = get_agent("echo")
-print(agent.act("Hello World"))
-```
-
-
-## 3. Using Built-in Agents
-
-AgenticAI comes with prebuilt agents. You can load them via the hub:
-
-```python
-from agenticaiframework.hub import get_agent
-
-agent = get_agent("default_agent")
-response = agent.act("Summarize this text.")
-print(response)
-```
-
-
-## 4. Configuring the System
-
-Edit `configurations.py` or pass configuration at runtime:
-
-```python
-from agenticaiframework.configurations import set_config
-
-set_config("llm_provider", "openai")
-set_config("api_key", "your_api_key_here")
-```
-
-
-## 5. Using Tools
-
-```python
-from agenticaiframework.hub import get_tool
-
-sentiment_tool = get_tool("sentiment_analysis")
-result = sentiment_tool("I love this product!")
+# Start the agent
+agent.start()
+result = agent.act("Analyze this text for sentiment")
 print(result)
 ```
 
+---
 
-## 6. Running Processes
+## ⚙️ Configuration
+
+Configure AgenticAI programmatically or via environment variables:
 
 ```python
-from agenticaiframework.processes import run_process
+from agenticaiframework.configurations import ConfigurationManager
 
-result = run_process("data_analysis", {"dataset": "data.csv"})
+config = ConfigurationManager()
+config.set_config("LLM", {"provider": "openai", "model": "gpt-4"})
+config.set_config("Logging", {"log_level": "INFO"})
+```
+
+Or via environment variables:
+
+```bash
+export OPENAI_API_KEY=your_api_key_here
+```
+
+---
+
+## 🔧 Using Tools
+
+```python
+from agenticaiframework.tools import tool_registry
+
+# List available tools
+print(tool_registry.list_tools())
+
+# Get and use a tool
+tool = tool_registry.get_tool("web_search")
+result = tool.run({"query": "AI news"})
+```
+
+---
+
+## 🧠 Memory Usage
+
+```python
+from agenticaiframework.memory import MemoryManager
+
+memory = MemoryManager()
+
+# Store data
+memory.store("user_preference", "dark_mode")
+
+# Retrieve data
+pref = memory.retrieve("user_preference")
+print(pref)
+```
+
+---
+
+## 📋 Running Tasks
+
+```python
+from agenticaiframework import Task
+
+def analyze_data(inputs):
+    return {"result": f"Analyzed: {inputs['data']}"}
+
+task = Task(
+    name="DataAnalysis",
+    objective="Analyze user data",
+    executor=analyze_data,
+    inputs={"data": "sample_data.csv"}
+)
+
+result = task.run()
 print(result)
 ```
 
+---
 
-## 7. Memory Usage
+## 🤝 Multi-Agent Collaboration
 
-```python
-from agenticaiframework.memory import Memory
-
-mem = Memory()
-mem.store("user_name", "Alice")
-print(mem.retrieve("user_name"))
-```
-
-
-## 8. Example Workflow
+Orchestrate multiple agents for complex tasks:
 
 ```python
-from agenticaiframework.hub import get_agent, get_tool
+from agenticaiframework import Agent, AgentManager
 
-agent = get_agent("default_agent")
-tool = get_tool("sentiment_analysis")
+# Create specialized agents
+researcher = Agent(name="Researcher", role="research", capabilities=["web", "text"])
+summarizer = Agent(name="Summarizer", role="summarize", capabilities=["text"])
 
-text = "The movie was fantastic!"
-analysis = tool(text)
-response = agent.act(f"Summarize the sentiment: {analysis}")
-print(response)
+manager = AgentManager()
+manager.register_agent(researcher)
+manager.register_agent(summarizer)
+
+# Agents can collaborate
+research_result = researcher.act("Find the latest AI research papers")
+summary = summarizer.act(f"Summarize: {research_result}")
 ```
 
+---
 
-## 9. Testing
+## 🚀 Deployment
+
+### Docker Deployment
+
+```dockerfile
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+CMD ["python", "main.py"]
+```
+
+### Cloud Deployment
+
+Deploy to AWS Lambda, Google Cloud Functions, or Azure Functions by packaging the code and dependencies.
+
+---
+
+## 🔒 Security
+
+- Always validate and sanitize inputs to agents
+- Use guardrails to prevent unsafe actions
+- Store API keys securely using environment variables
+- Limit network access for agents in untrusted environments
+
+---
+
+## ⚡ Performance Optimization
+
+- Use caching for repeated computations
+- Optimize prompt templates for LLMs to reduce token usage
+- Use batch processing for large datasets
+- Monitor performance using the monitoring module
+
+---
+
+## 🧪 Testing
 
 Run tests with:
 
 ```bash
-pytest
+pytest tests/ -v
 ```
 
+With coverage:
 
-## 10. Additional Resources
+```bash
+pytest tests/ --cov=agenticaiframework --cov-report=html
+```
 
-- [Extending AgenticAI](EXTENDING.md)
+---
+
+## 📚 Additional Resources
+
+- [Quick Start Guide](quick-start.md)
+- [API Reference](API_REFERENCE.md)
+- [Configuration Guide](CONFIGURATION.md)
+- [Extending the Framework](EXTENDING.md)
 - [Examples](EXAMPLES.md)
+- [Troubleshooting](TROUBLESHOOTING.md)

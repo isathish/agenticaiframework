@@ -1,3 +1,13 @@
+---
+tags:
+  - examples
+  - monitoring
+  - metrics
+---
+
+# Monitoring System Example
+
+```python
 from agenticaiframework.monitoring import MonitoringSystem
 
 # Example: Using the MonitoringSystem
@@ -21,3 +31,5 @@ if __name__ == "__main__":
     # Retrieve and display metrics
     metrics = monitor.get_metrics()
     print("Recorded Metrics:", metrics)
+
+```

@@ -1,3 +1,10 @@
+---
+tags:
+  - home
+  - overview
+  - getting-started
+---
+
 <div align="center" markdown>
 
 # :robot: AgenticAI Framework
@@ -18,8 +25,8 @@
   <a href="https://github.com/isathish/agenticaiframework"><img src="https://img.shields.io/github/stars/isathish/agenticaiframework?style=social" alt="GitHub Stars"></a>
 </p>
 
-!!! success "Latest Release: v1.2.3"
-    🎉 New features: Enhanced evaluation framework, Improved monitoring, Better error handling
+!!! success "Latest Release: v1.2.11"
+    🎉 New features: Documentation improvements, Enhanced testing, Updated examples
     [:octicons-arrow-right-24: See What's New](changelog.md)
 
 </div>
@@ -843,4 +850,4 @@ We welcome contributions!
 
 ## 📜 License
 
-© 2025 AgenticAI Framework. Licensed under the MIT License.
+© 2026 AgenticAI Framework. Licensed under the MIT License.

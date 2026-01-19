@@ -1,3 +1,13 @@
+---
+tags:
+  - examples
+  - mcp
+  - tools
+---
+
+# MCP Tools Manager Example
+
+```python
 from agenticaiframework.mcp_tools import MCPTool, MCPToolManager
 
 # Example: Using the MCPTool and MCPToolManager
@@ -32,3 +42,5 @@ if __name__ == "__main__":
     # Execute tools
     print("EchoTool result:", tool_manager.execute_tool("EchoTool", "Hello MCP"))
     print("MultiplyTool result:", tool_manager.execute_tool("MultiplyTool", 6, 7))
+
+```

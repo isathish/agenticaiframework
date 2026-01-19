@@ -9,7 +9,7 @@ tags:
 
 <div align="center">
 
-[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](https://github.com/isathish/agenticaiframework)
+[![Version](https://img.shields.io/badge/version-1.2.11-blue.svg)](https://github.com/isathish/agenticaiframework)
 [![Docker](https://img.shields.io/badge/Docker-Supported-2496ED?logo=docker&logoColor=white)](https://hub.docker.com)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-Ready-326CE5?logo=kubernetes&logoColor=white)](https://kubernetes.io)
 [![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://isathish.github.io/agenticaiframework/)
@@ -403,7 +403,7 @@ kubectl scale deployment/agenticai-deployment --replicas=5
 
 # Update deployment
 kubectl set image deployment/agenticai-deployment \
-  agenticai=your-registry/agenticai-framework:v1.2.1
+  agenticai=your-registry/agenticai-framework:v1.2.10
 
 # Delete deployment
 kubectl delete -f kubernetes/

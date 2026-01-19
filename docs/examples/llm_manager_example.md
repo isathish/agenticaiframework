@@ -1,3 +1,13 @@
+---
+tags:
+  - examples
+  - llms
+  - models
+---
+
+# LLM Manager Example
+
+```python
 from agenticaiframework.llms import LLMManager
 
 # Example: Using the LLMManager
@@ -25,3 +35,5 @@ if __name__ == "__main__":
     prompt_text = "What is the capital of France?"
     response = llm_manager.generate("MockLLM", prompt_text)
     print("LLM Response:", response)
+
+```

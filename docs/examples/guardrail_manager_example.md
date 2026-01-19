@@ -1,3 +1,14 @@
+---
+tags:
+  - examples
+  - guardrails
+  - validation
+  - safety
+---
+
+# Guardrail Manager Example
+
+```python
 from agenticaiframework.guardrails import Guardrail, GuardrailManager
 
 # Example: Using the Guardrail and GuardrailManager
@@ -34,3 +45,5 @@ if __name__ == "__main__":
     print("Validate '':", guardrail_manager.validate("NonEmptyString", ""))
     print("Validate 42:", guardrail_manager.validate("PositiveNumber", 42))
     print("Validate -5:", guardrail_manager.validate("PositiveNumber", -5))
+
+```

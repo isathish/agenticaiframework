@@ -24,25 +24,25 @@ Connect to 10+ LLM providers with intelligent fallbacks and monitoring
     
     OpenAI, Anthropic, Azure, and more
     
-    [:octicons-arrow-right-24: View Models](#supported-models)
+    [:octicons-arrow-right-24: View Models](#key-classes)
 
 -   :material-shield-check:{ .lg } **Reliability**
     
     Circuit breakers and retry logic
     
-    [:octicons-arrow-right-24: Learn More](#reliability-patterns)
+    [:octicons-arrow-right-24: Learn More](#low-level-design-lld)
 
 -   :material-cached:{ .lg } **Caching**
     
     Response caching for performance
     
-    [:octicons-arrow-right-24: Configure](#caching)
+    [:octicons-arrow-right-24: Configure](#advanced-features)
 
 -   :material-book-open:{ .lg } **Examples**
     
     Integration patterns
     
-    [:octicons-arrow-right-24: View Examples](#examples)
+    [:octicons-arrow-right-24: View Examples](#real-world-example)
 
 </div>
 

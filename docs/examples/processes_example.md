@@ -1,3 +1,13 @@
+---
+tags:
+  - examples
+  - processes
+  - workflows
+---
+
+# Process Example
+
+```python
 from agenticaiframework.processes import Process
 
 # Example: Using the Process class
@@ -27,3 +37,5 @@ if __name__ == "__main__":
 
     # Execute the process
     process.execute()
+
+```

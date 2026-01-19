@@ -1,3 +1,13 @@
+---
+tags:
+  - examples
+  - tasks
+  - execution
+---
+
+# Task Manager Example
+
+```python
 from agenticaiframework.tasks import Task, TaskManager
 
 # Example: Using the Task and TaskManager
@@ -33,3 +43,5 @@ if __name__ == "__main__":
     for task in task_manager.list_tasks():
         result = task_manager.execute_task(task.name)
         print(f"Task '{task.name}' result:", result)
+
+```

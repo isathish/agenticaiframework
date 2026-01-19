@@ -25,13 +25,13 @@ Runnable examples for every feature of the AgenticAI Framework. Copy, paste, and
     
     Core functionality
     
-    [:octicons-arrow-right-24: View](#basic-examples)
+    [:octicons-arrow-right-24: View](#1-agents-example)
 
 -   :material-cog-multiple:{ .lg } **Advanced Patterns**
     
     Production use cases
     
-    [:octicons-arrow-right-24: View](#advanced-patterns)
+    [:octicons-arrow-right-24: View](#8-prompts-example)
 
 -   :material-application:{ .lg } **Complete Apps**
     

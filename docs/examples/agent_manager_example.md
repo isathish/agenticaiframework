@@ -1,3 +1,14 @@
+---
+tags:
+  - examples
+  - agents
+  - agent-manager
+  - lifecycle
+---
+
+# Agent Manager Example
+
+```python
 from agenticaiframework.agents import Agent, AgentManager
 
 # Example: Using the Agent and AgentManager
@@ -42,3 +53,5 @@ if __name__ == "__main__":
 
     # Broadcast a message to all agents
     agent_manager.broadcast("System maintenance scheduled.")
+
+```
