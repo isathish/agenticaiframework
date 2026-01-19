@@ -161,6 +161,20 @@ class AgentLogger:
             Path(self.config.file_path).parent.mkdir(parents=True, exist_ok=True)
             self._file = open(self.config.file_path, "a")
     
+    def __del__(self) -> None:
+        """Clean up file handle on destruction."""
+        if hasattr(self, '_file') and self._file:
+            try:
+                self._file.close()
+            except Exception:
+                pass
+    
+    def close(self) -> None:
+        """Explicitly close the logger and release resources."""
+        if self._file:
+            self._file.close()
+            self._file = None
+    
     def _generate_id(self) -> str:
         """Generate unique log entry ID."""
         with self._lock:

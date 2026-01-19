@@ -86,9 +86,22 @@ class Message:
         return msg
     
     def to_anthropic_format(self) -> Dict[str, Any]:
-        """Convert to Anthropic message format."""
+        """
+        Convert to Anthropic message format.
+        
+        Note: Anthropic uses a separate 'system' parameter in the API,
+        not a system role in messages. System messages should be extracted
+        and passed to the API separately.
+        """
+        if self.role == MessageRole.SYSTEM:
+            # Return as user message for compatibility, but ideally
+            # system messages should be handled separately
+            return {
+                "role": "user",
+                "content": f"[System Context]: {self.content}",
+            }
         return {
-            "role": self.role.value if self.role != MessageRole.SYSTEM else "user",
+            "role": self.role.value,
             "content": self.content,
         }
 
@@ -395,23 +408,33 @@ class ConversationManager:
             return [m.to_dict() for m in messages]
     
     def _trim_to_tokens(self, messages: List[Message], max_tokens: int) -> List[Message]:
-        """Trim messages to fit within token limit."""
-        result = []
+        """Trim messages to fit within token limit, keeping most recent messages."""
+        system_msg = None
         total = 0
         
         # Keep system message
         if messages and messages[0].role == MessageRole.SYSTEM:
-            result.append(messages[0])
-            total += messages[0].tokens
+            system_msg = messages[0]
+            total += system_msg.tokens
             messages = messages[1:]
         
-        # Add messages from end until limit
+        # Collect messages from end until limit (reversed order)
+        collected = []
         for msg in reversed(messages):
             if total + msg.tokens <= max_tokens:
-                result.insert(1 if result else 0, msg)
+                collected.append(msg)
                 total += msg.tokens
             else:
                 break
+        
+        # Reverse to restore chronological order
+        collected.reverse()
+        
+        # Build result with system message first
+        result = []
+        if system_msg:
+            result.append(system_msg)
+        result.extend(collected)
         
         return result
     

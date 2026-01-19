@@ -314,7 +314,7 @@ class CallbackApprovalHandler(ApprovalHandler):
             return await self.async_callback(request)
         
         if self.callback:
-            loop = asyncio.get_event_loop()
+            loop = asyncio.get_running_loop()
             return await loop.run_in_executor(None, self.callback, request)
         
         return ApprovalDecision(
@@ -387,6 +387,7 @@ class QueueApprovalHandler(ApprovalHandler):
             
             if request_id in self._event_map:
                 self._event_map[request_id].set()
+                del self._event_map[request_id]  # Clean up to prevent memory leak
             
             return True
     

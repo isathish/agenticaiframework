@@ -460,6 +460,57 @@ from .hitl import (
     QueueApprovalHandler,
 )
 
+# State Management (modular imports)
+from .state import (
+    # Core State Manager
+    StateManager,
+    StateBackend,
+    MemoryBackend,
+    FileBackend,
+    RedisBackend,
+    StateConfig,
+    # Agent State
+    AgentStateStore,
+    AgentSnapshot,
+    AgentCheckpoint,
+    AgentRecoveryManager,
+    # Workflow State
+    WorkflowStateManager,
+    WorkflowState,
+    WorkflowCheckpoint,
+    StepState,
+    WorkflowStatus,
+    # Orchestration State
+    OrchestrationStateManager,
+    TeamState,
+    AgentCoordinationState,
+    TaskQueueState,
+    # Knowledge State
+    KnowledgeStateManager,
+    IndexingProgress,
+    IndexingStatus,
+    SyncStatus,
+    SourceState,
+    KnowledgeBaseState,
+    # Tool State
+    ToolStateManager,
+    ToolExecution,
+    ToolExecutionStatus,
+    ToolCacheEntry,
+    RetryState,
+    ToolStats,
+    # Speech State
+    SpeechStateManager,
+    AudioSessionStatus,
+    StreamingMode,
+    TranscriptionStatus,
+    AudioChunk,
+    TranscriptionResult,
+    STTState,
+    TTSState,
+    VoiceConversationState,
+)
+
 # Exceptions
 from .exceptions import (
     # Base exception
@@ -909,6 +960,57 @@ __all__ = [
     "ConsoleApprovalHandler",
     "CallbackApprovalHandler",
     "QueueApprovalHandler",
+    
+    # ========================================================================
+    # State Management
+    # ========================================================================
+    # Core State Manager
+    "StateManager",
+    "StateBackend",
+    "MemoryBackend",
+    "FileBackend",
+    "RedisBackend",
+    "StateConfig",
+    # Agent State
+    "AgentStateStore",
+    "AgentSnapshot",
+    "AgentCheckpoint",
+    "AgentRecoveryManager",
+    # Workflow State
+    "WorkflowStateManager",
+    "WorkflowState",
+    "WorkflowCheckpoint",
+    "StepState",
+    "WorkflowStatus",
+    # Orchestration State
+    "OrchestrationStateManager",
+    "TeamState",
+    "AgentCoordinationState",
+    "TaskQueueState",
+    # Knowledge State
+    "KnowledgeStateManager",
+    "IndexingProgress",
+    "IndexingStatus",
+    "SyncStatus",
+    "SourceState",
+    "KnowledgeBaseState",
+    # Tool State
+    "ToolStateManager",
+    "ToolExecution",
+    "ToolExecutionStatus",
+    "ToolCacheEntry",
+    "RetryState",
+    "ToolStats",
+    # Speech State
+    "SpeechStateManager",
+    "AudioSessionStatus",
+    "StreamingMode",
+    "TranscriptionStatus",
+    "AudioChunk",
+    "TranscriptionResult",
+    "STTState",
+    "TTSState",
+    "VoiceConversationState",
     
     # ========================================================================
     # Exceptions

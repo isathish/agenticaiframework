@@ -467,9 +467,15 @@ class AzureSTT(STTProvider):
         result = response.json()
         processing_time = int((time.time() - start_time) * 1000)
         
+        # Azure returns confidence in different fields based on recognition mode
+        # NBest results contain confidence scores, otherwise use 1.0 for success
+        confidence = 1.0 if result.get("RecognitionStatus") == "Success" else 0.0
+        if "NBest" in result and result["NBest"]:
+            confidence = result["NBest"][0].get("Confidence", confidence)
+        
         return STTResult(
             text=result.get("DisplayText", ""),
-            confidence=result.get("RecognitionStatus") == "Success",
+            confidence=confidence,
             language=lang,
             duration_seconds=result.get("Duration", 0) / 10000000,
             provider="azure",
