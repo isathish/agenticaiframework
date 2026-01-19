@@ -17,10 +17,42 @@ Enterprise Features:
 - Audit Trails
 - Policy Enforcement
 - Data Masking
+
+Quick Start:
+    >>> import agenticaiframework as aaf
+    >>> 
+    >>> # Configure once at startup (optional - auto-configures from env)
+    >>> aaf.configure(provider="openai", guardrails="minimal")
+    >>> 
+    >>> # Create agent with one line
+    >>> agent = aaf.Agent.quick("Assistant")
+    >>> 
+    >>> # Run with structured output
+    >>> output = agent.invoke("Hello, world!")
+    >>> print(output.response)
 """
 
+# Global configuration (import first)
+from .config import (
+    FrameworkConfig,
+    configure,
+    get_config,
+    is_configured,
+    reset_config,
+)
+
 # Core components (modular imports)
-from .core import Agent, AgentManager
+from .core import (
+    Agent,
+    AgentManager,
+    AgentInput,
+    AgentOutput,
+    AgentStep,
+    AgentThought,
+    AgentStatus,
+    StepType,
+    AgentRunner,
+)
 
 # ACE - Agentic Context Engine (modular imports)
 from .context import (
@@ -359,9 +391,16 @@ from .exceptions import (
 
 __all__ = [
     # ========================================================================
+    # Global Configuration
+    # ========================================================================
+    "FrameworkConfig", "configure", "get_config", "is_configured", "reset_config",
+    
+    # ========================================================================
     # Core Components
     # ========================================================================
     "Agent", "AgentManager", "ContextManager",
+    "AgentInput", "AgentOutput", "AgentStep", "AgentThought",
+    "AgentStatus", "StepType", "AgentRunner",
     "Prompt", "PromptManager",
     "Process",
     "Task", "TaskManager",

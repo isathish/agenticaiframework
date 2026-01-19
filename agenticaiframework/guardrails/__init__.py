@@ -28,6 +28,11 @@ from .content_safety import ContentSafetyGuardrail
 from .output_format import OutputFormatGuardrail
 from .chain_of_thought import ChainOfThoughtGuardrail
 from .tool_use import ToolUseGuardrail
+from .specialized import (
+    PromptInjectionGuardrail,
+    InputLengthGuardrail,
+    PIIDetectionGuardrail,
+)
 
 # Pipeline
 from .pipeline import GuardrailPipeline
@@ -71,6 +76,9 @@ __all__ = [
     'OutputFormatGuardrail',
     'ChainOfThoughtGuardrail',
     'ToolUseGuardrail',
+    'PromptInjectionGuardrail',
+    'InputLengthGuardrail',
+    'PIIDetectionGuardrail',
     
     # Pipeline
     'GuardrailPipeline',

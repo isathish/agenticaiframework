@@ -84,11 +84,75 @@ Create your first intelligent agent
 
 ## :zap: Your First Agent
 
-!!! example "Build an Intelligent Agent in 4 Steps"
+!!! example "Build an Intelligent Agent"
 
-    Let's create a simple agent that can generate text responses:
+    Choose the fastest approach that works for you:
 
-=== ":one: Setup LLM"
+=== ":one: One-Line Agent (Recommended)"
+
+    ```python
+    import agenticaiframework as aaf
+    
+    # Create a fully configured agent in ONE line
+    agent = aaf.Agent.quick("Assistant")
+    
+    # Use it
+    output = agent.invoke("Hello, how can you help me?")
+    print(output)
+    ```
+    
+    !!! success "That's it!"
+        `Agent.quick()` automatically:
+        
+        - Detects your LLM from environment (OPENAI_API_KEY, etc.)
+        - Sets up default guardrails (safety, length limits)
+        - Configures tracing and monitoring
+        - Creates context and memory management
+
+=== ":two: Role-Based Agent"
+
+    ```python
+    import agenticaiframework as aaf
+    
+    # Create specialized agents with pre-configured roles
+    researcher = aaf.Agent.quick("Research Bot", role="researcher")
+    coder = aaf.Agent.quick("Code Helper", role="coder")
+    analyst = aaf.Agent.quick("Data Analyst", role="analyst")
+    writer = aaf.Agent.quick("Content Writer", role="writer")
+    
+    # Use them
+    result = coder.invoke("Write a function to parse JSON files")
+    ```
+    
+    !!! info "Available Roles"
+        - `assistant` (default) - General purpose
+        - `coder` - Code generation and review
+        - `analyst` - Data analysis
+        - `researcher` - Research and synthesis
+        - `writer` - Content creation
+
+=== ":three: With Global Config"
+
+    ```python
+    import agenticaiframework as aaf
+    
+    # Configure once at application startup
+    aaf.configure(
+        provider="openai",      # or "anthropic", "google", "auto"
+        model="gpt-4o",         # model name
+        guardrails="enterprise", # "minimal", "safety", or "enterprise"
+        tracing=True,
+    )
+    
+    # All agents now inherit these defaults
+    agent = aaf.Agent.quick("ProductionAssistant")
+    result = agent.run("Analyze the data and create a report")
+    ```
+    
+    !!! tip "Environment Variables"
+        Set `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or `GOOGLE_API_KEY` for auto-detection.
+
+=== ":four: Traditional Setup"
 
     ```python
     from agenticaiframework import Agent, Task, LLMManager
@@ -102,14 +166,7 @@ Create your first intelligent agent
     
     llm_manager.register_model("simple-llm", simple_llm)
     llm_manager.set_active_model("simple-llm")
-    ```
     
-    !!! tip
-        In production, register real LLM providers like OpenAI, Anthropic, or Azure OpenAI.
-
-=== ":two: Create Agent"
-
-    ```python
     # Create an intelligent agent
     agent = Agent(
         name="QuickStartAgent",
@@ -117,36 +174,13 @@ Create your first intelligent agent
         capabilities=["text_generation"],
         config={"llm": llm_manager}
     )
+    
+    # Start and use
+    agent.start()
     ```
     
     !!! info
-        Agents can have multiple capabilities and custom configurations.
-
-=== ":three: Define Task"
-
-    ```python
-    # Define what the agent should do
-    task = Task(
-        name="GreetingTask",
-        objective="Generate a friendly greeting",
-        executor=lambda: llm_manager.generate("Say hello to the user!")
-    )
-    ```
-    
-    !!! tip
-        Tasks can have dependencies, priorities, and error handling.
-
-=== ":four: Execute"
-
-    ```python
-    # Start the agent and run the task
-    agent.start()
-    result = task.run()
-    print(f"Agent response: {result}")
-    ```
-    
-    !!! success "Done!"
-        Your first agent is now running! :tada:
+        Use this approach when you need full control over configuration.
 
 ## Multi-Agent Example
 

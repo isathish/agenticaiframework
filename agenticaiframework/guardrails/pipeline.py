@@ -140,5 +140,198 @@ class GuardrailPipeline:
             'violations': violations
         }
 
+    # ========================================================================
+    # Factory Methods for Common Presets
+    # ========================================================================
+    
+    @classmethod
+    def minimal(cls) -> 'GuardrailPipeline':
+        """
+        Create a minimal guardrail pipeline with basic protections.
+        
+        Includes:
+        - Input length validation
+        - Basic injection detection
+        
+        Returns:
+            Configured GuardrailPipeline
+            
+        Example:
+            >>> pipeline = GuardrailPipeline.minimal()
+            >>> result = pipeline.execute("user input")
+        """
+        from .specialized import PromptInjectionGuardrail, InputLengthGuardrail
+        
+        pipeline = cls("minimal")
+        
+        # Stage 1: Basic input validation
+        pipeline.add_stage(
+            guardrails=[
+                InputLengthGuardrail(max_length=50000),
+            ],
+            mode="all",
+            on_failure=GuardrailAction.BLOCK,
+        )
+        
+        # Stage 2: Injection detection (warn only)
+        pipeline.add_stage(
+            guardrails=[
+                PromptInjectionGuardrail(),
+            ],
+            mode="all",
+            on_failure=GuardrailAction.WARN,
+        )
+        
+        return pipeline
+    
+    @classmethod
+    def safety_only(cls) -> 'GuardrailPipeline':
+        """
+        Create a safety-focused guardrail pipeline.
+        
+        Includes:
+        - Content safety (toxicity, harmful content)
+        - Prompt injection detection
+        - Output format validation
+        
+        Returns:
+            Configured GuardrailPipeline
+        """
+        from .specialized import (
+            PromptInjectionGuardrail,
+            ContentSafetyGuardrail,
+            OutputFormatGuardrail,
+        )
+        
+        pipeline = cls("safety")
+        
+        # Stage 1: Content safety
+        pipeline.add_stage(
+            guardrails=[
+                ContentSafetyGuardrail(),
+            ],
+            mode="all",
+            on_failure=GuardrailAction.BLOCK,
+        )
+        
+        # Stage 2: Injection detection
+        pipeline.add_stage(
+            guardrails=[
+                PromptInjectionGuardrail(),
+            ],
+            mode="all",
+            on_failure=GuardrailAction.BLOCK,
+        )
+        
+        return pipeline
+    
+    @classmethod
+    def enterprise_defaults(cls) -> 'GuardrailPipeline':
+        """
+        Create an enterprise-grade guardrail pipeline with comprehensive protections.
+        
+        Includes:
+        - Input validation (length, format)
+        - Content safety (toxicity, PII detection)
+        - Prompt injection detection
+        - Tool use validation
+        - Output format validation
+        - Chain-of-thought validation
+        
+        Returns:
+            Configured GuardrailPipeline
+            
+        Example:
+            >>> pipeline = GuardrailPipeline.enterprise_defaults()
+            >>> result = pipeline.execute("sensitive data input", context={"user_role": "admin"})
+        """
+        from .specialized import (
+            PromptInjectionGuardrail,
+            ContentSafetyGuardrail,
+            OutputFormatGuardrail,
+            ChainOfThoughtGuardrail,
+            ToolUseGuardrail,
+            SemanticGuardrail,
+            InputLengthGuardrail,
+        )
+        
+        pipeline = cls("enterprise")
+        
+        # Stage 1: Input validation
+        pipeline.add_stage(
+            guardrails=[
+                InputLengthGuardrail(max_length=100000),
+            ],
+            mode="all",
+            on_failure=GuardrailAction.BLOCK,
+        )
+        
+        # Stage 2: Content safety (critical)
+        pipeline.add_stage(
+            guardrails=[
+                ContentSafetyGuardrail(),
+            ],
+            mode="all",
+            on_failure=GuardrailAction.BLOCK,
+        )
+        
+        # Stage 3: Security checks
+        pipeline.add_stage(
+            guardrails=[
+                PromptInjectionGuardrail(),
+            ],
+            mode="all",
+            on_failure=GuardrailAction.BLOCK,
+        )
+        
+        # Stage 4: Tool use validation (if tools are used)
+        pipeline.add_stage(
+            guardrails=[
+                ToolUseGuardrail(),
+            ],
+            mode="all",
+            condition=lambda ctx: ctx.get('has_tools', False),
+            on_failure=GuardrailAction.WARN,
+        )
+        
+        # Stage 5: Semantic validation
+        pipeline.add_stage(
+            guardrails=[
+                SemanticGuardrail(name="semantic_validator"),
+            ],
+            mode="all",
+            on_failure=GuardrailAction.WARN,
+        )
+        
+        return pipeline
+    
+    @classmethod
+    def custom(
+        cls,
+        name: str,
+        guardrails: List[Union[Guardrail, Any]],
+        mode: str = "all",
+        on_failure: GuardrailAction = GuardrailAction.BLOCK,
+    ) -> 'GuardrailPipeline':
+        """
+        Create a custom single-stage pipeline with specified guardrails.
+        
+        Args:
+            name: Pipeline name
+            guardrails: List of guardrails to apply
+            mode: Evaluation mode ('all', 'any', 'majority')
+            on_failure: Action on failure
+            
+        Returns:
+            Configured GuardrailPipeline
+        """
+        pipeline = cls(name)
+        pipeline.add_stage(
+            guardrails=guardrails,
+            mode=mode,
+            on_failure=on_failure,
+        )
+        return pipeline
+
 
 __all__ = ['GuardrailPipeline']

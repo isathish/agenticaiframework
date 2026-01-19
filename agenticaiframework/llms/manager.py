@@ -9,16 +9,21 @@ Enhanced LLM Manager with reliability and monitoring features:
 - Token usage tracking
 - Fallback chain
 - Performance metrics
+- Auto-configuration from environment variables
 """
 
+import os
 import time
 import hashlib
 import logging
-from typing import Dict, Any, Callable, Optional, List
+from typing import Dict, Any, Callable, Optional, List, TYPE_CHECKING
 from collections import defaultdict
 
 from .circuit_breaker import CircuitBreaker
 from ..exceptions import CircuitBreakerOpenError
+
+if TYPE_CHECKING:
+    from .providers import BaseLLMProvider
 
 logger = logging.getLogger(__name__)
 
@@ -108,6 +113,122 @@ class LLMManager:
         valid_models = [name for name in model_names if name in self.models]
         self.fallback_chain = valid_models
         self._log(f"Set fallback chain: {valid_models}")
+
+    @classmethod
+    def from_environment(
+        cls,
+        auto_select: bool = True,
+        preferred_provider: Optional[str] = None,
+    ) -> 'LLMManager':
+        """
+        Create LLMManager auto-configured from environment variables.
+        
+        Detects and registers providers based on available API keys:
+        - OPENAI_API_KEY -> OpenAI models
+        - ANTHROPIC_API_KEY -> Anthropic Claude models
+        - GOOGLE_API_KEY / GEMINI_API_KEY -> Google Gemini models
+        
+        Args:
+            auto_select: Automatically set the first available as active
+            preferred_provider: Preferred provider ('openai', 'anthropic', 'google')
+            
+        Returns:
+            Configured LLMManager instance
+            
+        Example:
+            >>> llm = LLMManager.from_environment()
+            >>> response = llm.generate("Hello, world!")
+        """
+        from .providers import (
+            OpenAIProvider,
+            AnthropicProvider,
+            GoogleProvider,
+        )
+        
+        manager = cls()
+        registered = []
+        
+        # Register OpenAI if available
+        if os.getenv("OPENAI_API_KEY"):
+            provider = OpenAIProvider.from_env()
+            manager.register_provider(provider, "openai")
+            registered.append("openai")
+        
+        # Register Anthropic if available
+        if os.getenv("ANTHROPIC_API_KEY"):
+            provider = AnthropicProvider.from_env()
+            manager.register_provider(provider, "anthropic")
+            registered.append("anthropic")
+        
+        # Register Google if available
+        if os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY"):
+            provider = GoogleProvider.from_env()
+            manager.register_provider(provider, "google")
+            registered.append("google")
+        
+        if not registered:
+            logger.warning(
+                "No LLM provider API keys found. "
+                "Set OPENAI_API_KEY, ANTHROPIC_API_KEY, or GOOGLE_API_KEY"
+            )
+            return manager
+        
+        # Set active model
+        if auto_select:
+            if preferred_provider and preferred_provider in registered:
+                manager.set_active_model(preferred_provider)
+            else:
+                manager.set_active_model(registered[0])
+        
+        # Set fallback chain
+        manager.set_fallback_chain(registered)
+        
+        logger.info("LLMManager configured with providers: %s", registered)
+        return manager
+
+    def register_provider(
+        self,
+        provider: 'BaseLLMProvider',
+        name: Optional[str] = None,
+    ) -> None:
+        """
+        Register an LLM provider adapter.
+        
+        Args:
+            provider: Provider instance (OpenAIProvider, AnthropicProvider, etc.)
+            name: Name to register under (defaults to provider_name)
+            
+        Example:
+            >>> from agenticaiframework.llms.providers import OpenAIProvider
+            >>> provider = OpenAIProvider.from_env()
+            >>> llm.register_provider(provider)
+        """
+        name = name or provider.provider_name
+        
+        # Create inference function wrapper
+        def inference_fn(prompt: str, kwargs: Dict[str, Any]) -> str:
+            response = provider.generate(prompt, **kwargs)
+            return response.content
+        
+        # Get metadata from provider
+        metadata = {
+            'provider': provider.provider_name,
+            'default_model': provider.config.default_model,
+            'supported_models': provider.supported_models,
+        }
+        
+        self.register_model(name, inference_fn, metadata)
+        
+        # Store provider reference for advanced features
+        if not hasattr(self, '_providers'):
+            self._providers: Dict[str, 'BaseLLMProvider'] = {}
+        self._providers[name] = provider
+
+    def get_provider(self, name: str) -> Optional['BaseLLMProvider']:
+        """Get a registered provider by name."""
+        if hasattr(self, '_providers'):
+            return self._providers.get(name)
+        return None
 
     def generate(self, 
                 prompt: str, 

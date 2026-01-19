@@ -6,7 +6,7 @@ sys.path.insert(0, '.')
 
 try:
     import agenticaiframework
-    print("✅ All imports successful!")
+    print("[OK] All imports successful!")
     print(f"Exported symbols: {len(agenticaiframework.__all__)}")
     print("\nEnterprise modules:")
     
@@ -34,7 +34,7 @@ try:
     
     for attr, name in modules:
         available = hasattr(agenticaiframework, attr)
-        status = "✅" if available else "❌"
+        status = "[OK]" if available else "[MISSING]"
         print(f"  {status} {name} ({attr})")
     
     print("\nGlobal instances:")
@@ -47,13 +47,13 @@ try:
     
     for inst in instances:
         available = hasattr(agenticaiframework, inst)
-        status = "✅" if available else "❌"
+        status = "[OK]" if available else "[MISSING]"
         print(f"  {status} {inst}")
     
-    print("\n✅ All enterprise features implemented!")
+    print("\n[OK] All enterprise features implemented!")
     
 except Exception as e:
-    print(f"❌ Import error: {e}")
+    print(f"[ERROR] Import error: {e}")
     import traceback
     traceback.print_exc()
     sys.exit(1)

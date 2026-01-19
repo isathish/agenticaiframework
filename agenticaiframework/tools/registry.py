@@ -285,6 +285,170 @@ class ToolRegistry:
             },
         }
 
+    def discover(
+        self,
+        package: str = "agenticaiframework.tools",
+        recursive: bool = True,
+        register: bool = True,
+    ) -> List[str]:
+        """
+        Auto-discover and register tools from a package.
+        
+        Scans the specified package for classes that inherit from BaseTool
+        and optionally registers them.
+        
+        Args:
+            package: Package path to scan (e.g., 'agenticaiframework.tools')
+            recursive: Scan subpackages recursively
+            register: Automatically register discovered tools
+            
+        Returns:
+            List of discovered tool class names
+            
+        Example:
+            >>> # Discover all built-in tools
+            >>> tools = tool_registry.discover()
+            >>> print(f"Found {len(tools)} tools")
+            
+            >>> # Discover custom tools package
+            >>> tools = tool_registry.discover("myapp.tools")
+        """
+        import importlib
+        import pkgutil
+        import inspect
+        
+        discovered = []
+        
+        try:
+            pkg = importlib.import_module(package)
+        except ImportError as e:
+            logger.warning("Cannot import package %s: %s", package, e)
+            return discovered
+        
+        # Get package path
+        pkg_path = getattr(pkg, '__path__', None)
+        if pkg_path is None:
+            # Not a package, just a module
+            discovered.extend(
+                self._discover_from_module(pkg, register)
+            )
+            return discovered
+        
+        # Iterate through submodules
+        for importer, modname, ispkg in pkgutil.walk_packages(
+            pkg_path,
+            prefix=package + ".",
+            onerror=lambda x: None,
+        ):
+            if not recursive and ispkg:
+                continue
+            
+            try:
+                module = importlib.import_module(modname)
+                discovered.extend(
+                    self._discover_from_module(module, register)
+                )
+            except Exception as e:
+                logger.debug("Cannot import %s: %s", modname, e)
+        
+        if discovered:
+            logger.info("Discovered %d tools from %s", len(discovered), package)
+        
+        return discovered
+    
+    def _discover_from_module(
+        self,
+        module,
+        register: bool = True,
+    ) -> List[str]:
+        """Discover tools from a module."""
+        import inspect
+        
+        discovered = []
+        
+        for name, obj in inspect.getmembers(module, inspect.isclass):
+            # Check if it's a BaseTool subclass (but not BaseTool itself)
+            if (
+                issubclass(obj, BaseTool)
+                and obj is not BaseTool
+                and not getattr(obj, '__abstract__', False)
+                and obj.__module__ == module.__name__  # Defined in this module
+            ):
+                if register and name not in self._tools:
+                    try:
+                        self.register(obj)
+                        discovered.append(name)
+                    except Exception as e:
+                        logger.debug("Cannot register %s: %s", name, e)
+                elif not register:
+                    discovered.append(name)
+        
+        return discovered
+    
+    def discover_and_bind(
+        self,
+        agent,
+        package: str = "agenticaiframework.tools",
+        by_category: Optional[List[ToolCategory]] = None,
+        by_tags: Optional[List[str]] = None,
+        by_role: Optional[str] = None,
+    ) -> List[str]:
+        """
+        Discover tools and bind to an agent based on criteria.
+        
+        Args:
+            agent: Agent to bind tools to
+            package: Package to discover from
+            by_category: Filter by categories
+            by_tags: Filter by tags
+            by_role: Bind tools appropriate for role
+            
+        Returns:
+            List of bound tool names
+        """
+        from .agent_tools import agent_tool_manager
+        
+        # Ensure tools are discovered
+        self.discover(package)
+        
+        # Get tools to bind
+        tools_to_bind = []
+        
+        if by_role:
+            role_tools = self._get_tools_for_role(by_role)
+            tools_to_bind.extend(role_tools)
+        
+        if by_category:
+            for cat in by_category:
+                tools_to_bind.extend(self.list_tools(category=cat))
+        
+        if by_tags:
+            tools_to_bind.extend(self.list_tools(tags=by_tags))
+        
+        # Remove duplicates
+        tools_to_bind = list(set(tools_to_bind))
+        
+        # Bind to agent
+        if tools_to_bind:
+            agent_tool_manager.bind_tools(agent, tools_to_bind)
+        
+        return tools_to_bind
+    
+    def _get_tools_for_role(self, role: str) -> List[str]:
+        """Get recommended tools for a role."""
+        role_tools = {
+            "analyst": ["SQLQueryTool", "DataVisualizationTool", "CSVReadTool"],
+            "coder": ["CodeInterpreterTool", "JavaScriptCodeInterpreterTool", "FileReadTool", "FileWriteTool"],
+            "researcher": ["WebSearchTool", "PDFReadTool", "WebScraperTool"],
+            "assistant": ["CalculatorTool", "WebSearchTool"],
+            "writer": ["FileWriteTool", "MarkdownTool"],
+            "data_scientist": ["CodeInterpreterTool", "DataVisualizationTool", "SQLQueryTool"],
+        }
+        
+        tools = role_tools.get(role.lower(), [])
+        # Filter to only registered tools
+        return [t for t in tools if t in self._tools]
+
 
 # Global registry instance
 tool_registry = ToolRegistry()
