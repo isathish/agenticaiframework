@@ -394,6 +394,72 @@ from .integrations import (
     webhook_manager
 )
 
+# Output Formatting (modular imports)
+from .formatting import (
+    OutputFormatter,
+    FormatType,
+    FormattedOutput,
+    CodeBlock,
+    TableFormat,
+    MarkdownFormatter,
+    CodeFormatter,
+    JSONFormatter,
+    HTMLFormatter,
+    TableFormatter,
+    PlainTextFormatter,
+)
+
+# Conversations & Logging (modular imports)
+from .conversations import (
+    ConversationManager,
+    SessionManager,
+    Message,
+    MessageRole,
+    MessageType as ConversationMessageType,
+    Turn,
+    Session,
+    ConversationConfig,
+    AgentLogger,
+    StructuredLogger,
+    ConversationLogger,
+    LogLevel,
+    LogEntry,
+    LogConfig,
+)
+
+# Speech - STT/TTS (modular imports)
+from .speech import (
+    SpeechProcessor,
+    VoiceConfig,
+    STTResult,
+    TTSResult,
+    AudioFormat,
+    OpenAISTT,
+    OpenAITTS,
+    AzureSTT,
+    AzureTTS,
+    GoogleSTT,
+    GoogleTTS,
+    ElevenLabsTTS,
+    WhisperLocalSTT,
+)
+
+# Human-in-the-Loop (modular imports)
+from .hitl import (
+    HumanInTheLoop,
+    ApprovalStatus,
+    ApprovalRequest,
+    ApprovalDecision,
+    FeedbackCollector,
+    Feedback,
+    FeedbackType,
+    EscalationLevel,
+    InterventionRequest,
+    ConsoleApprovalHandler,
+    CallbackApprovalHandler,
+    QueueApprovalHandler,
+)
+
 # Exceptions
 from .exceptions import (
     # Base exception
@@ -777,6 +843,72 @@ __all__ = [
     "IntegrationStatus",
     "integration_manager",
     "webhook_manager",
+    
+    # ========================================================================
+    # Output Formatting
+    # ========================================================================
+    "OutputFormatter",
+    "FormatType",
+    "FormattedOutput",
+    "CodeBlock",
+    "TableFormat",
+    "MarkdownFormatter",
+    "CodeFormatter",
+    "JSONFormatter",
+    "HTMLFormatter",
+    "TableFormatter",
+    "PlainTextFormatter",
+    
+    # ========================================================================
+    # Conversations & Logging
+    # ========================================================================
+    "ConversationManager",
+    "SessionManager",
+    "Message",
+    "MessageRole",
+    "ConversationMessageType",
+    "Turn",
+    "Session",
+    "ConversationConfig",
+    "AgentLogger",
+    "StructuredLogger",
+    "ConversationLogger",
+    "LogLevel",
+    "LogEntry",
+    "LogConfig",
+    
+    # ========================================================================
+    # Speech - STT/TTS
+    # ========================================================================
+    "SpeechProcessor",
+    "VoiceConfig",
+    "STTResult",
+    "TTSResult",
+    "AudioFormat",
+    "OpenAISTT",
+    "OpenAITTS",
+    "AzureSTT",
+    "AzureTTS",
+    "GoogleSTT",
+    "GoogleTTS",
+    "ElevenLabsTTS",
+    "WhisperLocalSTT",
+    
+    # ========================================================================
+    # Human-in-the-Loop
+    # ========================================================================
+    "HumanInTheLoop",
+    "ApprovalStatus",
+    "ApprovalRequest",
+    "ApprovalDecision",
+    "FeedbackCollector",
+    "Feedback",
+    "FeedbackType",
+    "EscalationLevel",
+    "InterventionRequest",
+    "ConsoleApprovalHandler",
+    "CallbackApprovalHandler",
+    "QueueApprovalHandler",
     
     # ========================================================================
     # Exceptions

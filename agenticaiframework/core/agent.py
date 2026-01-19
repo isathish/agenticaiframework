@@ -1897,3 +1897,505 @@ class Agent:
             'metrics': self.get_performance_metrics(),
             'context_stats': self.get_context_stats(),
         }
+    # =========================================================================
+    # Output Formatting Methods
+    # =========================================================================
+    
+    def with_formatter(self, format_type: str = "markdown") -> "Agent":
+        """
+        Enable output formatting for agent responses.
+        
+        Args:
+            format_type: Default format ('markdown', 'code', 'json', 'html', 'table')
+        
+        Example:
+            >>> agent = Agent.quick("Assistant").with_formatter("markdown")
+            >>> result = agent.format_response("Hello World", template="heading")
+        """
+        try:
+            from ..formatting import OutputFormatter, FormatType
+            self.config['formatter'] = OutputFormatter()
+            self.config['default_format'] = format_type
+            self._log(f"Output formatter enabled with default: {format_type}")
+        except ImportError:
+            self._log("Warning: Formatting module not available")
+        return self
+    
+    def format_response(
+        self,
+        content: Any,
+        format_type: str = None,
+        **options
+    ) -> str:
+        """
+        Format agent response in specified format.
+        
+        Args:
+            content: Content to format
+            format_type: 'markdown', 'code', 'json', 'html', 'table', 'plain'
+            **options: Format-specific options
+        
+        Returns:
+            Formatted string
+        """
+        if 'formatter' not in self.config:
+            self.with_formatter()
+        
+        from ..formatting import FormatType
+        
+        formatter = self.config['formatter']
+        fmt = format_type or self.config.get('default_format', 'plain')
+        
+        format_map = {
+            'markdown': FormatType.MARKDOWN,
+            'code': FormatType.CODE,
+            'json': FormatType.JSON,
+            'html': FormatType.HTML,
+            'table': FormatType.TABLE,
+            'plain': FormatType.PLAIN,
+        }
+        
+        result = formatter.format(content, format_map.get(fmt, FormatType.PLAIN), **options)
+        return result.formatted
+    
+    def format_as_markdown(self, content: Any, **options) -> str:
+        """Format as Markdown."""
+        return self.format_response(content, "markdown", **options)
+    
+    def format_as_code(self, code: str, language: str = "", **options) -> str:
+        """Format as code block."""
+        options['language'] = language
+        return self.format_response(code, "code", **options)
+    
+    def format_as_table(self, data: List[Dict], **options) -> str:
+        """Format data as table."""
+        return self.format_response(data, "table", **options)
+    
+    def format_as_json(self, data: Any, indent: int = 2) -> str:
+        """Format as pretty JSON."""
+        return self.format_response(data, "json", indent=indent)
+
+    # =========================================================================
+    # Conversation & Logging Methods
+    # =========================================================================
+    
+    def with_conversation(
+        self,
+        session_id: str = None,
+        system_message: str = None,
+        persist: bool = False,
+        persist_path: str = None,
+    ) -> "Agent":
+        """
+        Enable conversation history tracking.
+        
+        Args:
+            session_id: Session identifier
+            system_message: System prompt
+            persist: Auto-save conversations
+            persist_path: Path for saving conversations
+        
+        Example:
+            >>> agent = Agent.quick("Assistant").with_conversation(
+            ...     system_message="You are a helpful assistant."
+            ... )
+            >>> agent.chat("Hello!")
+            >>> agent.chat("What did I just say?")
+        """
+        try:
+            from ..conversations import ConversationManager, ConversationConfig
+            
+            config = ConversationConfig(
+                persist=persist,
+                persist_path=persist_path,
+            )
+            
+            conv = ConversationManager(
+                agent_id=self.id,
+                session_id=session_id,
+                config=config,
+            )
+            
+            if system_message:
+                conv.set_system_message(system_message)
+            
+            self.config['conversation'] = conv
+            self._log(f"Conversation tracking enabled (session: {conv.session.id})")
+        except ImportError:
+            self._log("Warning: Conversation module not available")
+        return self
+    
+    def chat(self, message: str, **kwargs) -> str:
+        """
+        Send message and get response with conversation tracking.
+        
+        Args:
+            message: User message
+            **kwargs: Additional options
+        
+        Returns:
+            Assistant response
+        """
+        if 'conversation' not in self.config:
+            self.with_conversation()
+        
+        conv = self.config['conversation']
+        conv.add_user_message(message)
+        
+        # Get response from LLM
+        if 'llm' in self.config:
+            messages = conv.get_messages_for_llm()
+            response = self.config['llm'].generate(messages, **kwargs)
+            response_text = response if isinstance(response, str) else str(response)
+        else:
+            response_text = self.run(message, **kwargs)
+        
+        conv.add_assistant_message(response_text)
+        return response_text
+    
+    def get_conversation_history(self, limit: int = None) -> List[Dict]:
+        """Get conversation history."""
+        if 'conversation' not in self.config:
+            return []
+        return [m.to_dict() for m in self.config['conversation'].get_history(limit)]
+    
+    def export_conversation(self, format: str = "markdown") -> str:
+        """
+        Export conversation in specified format.
+        
+        Args:
+            format: 'markdown', 'json', 'html'
+        """
+        if 'conversation' not in self.config:
+            return ""
+        
+        conv = self.config['conversation']
+        if format == "markdown":
+            return conv.export_markdown()
+        elif format == "json":
+            return conv.export_json()
+        elif format == "html":
+            return conv.export_html()
+        return conv.export_json()
+    
+    def clear_conversation(self, keep_system: bool = True) -> None:
+        """Clear conversation history."""
+        if 'conversation' in self.config:
+            self.config['conversation'].clear(keep_system)
+    
+    def with_logging(
+        self,
+        level: str = "info",
+        output: str = "console",
+        file_path: str = None,
+    ) -> "Agent":
+        """
+        Enable structured logging.
+        
+        Args:
+            level: 'debug', 'info', 'warning', 'error'
+            output: 'console', 'file', 'both'
+            file_path: Log file path
+        """
+        try:
+            from ..conversations import AgentLogger, LogConfig, LogLevel
+            
+            level_map = {
+                'debug': LogLevel.DEBUG,
+                'info': LogLevel.INFO,
+                'warning': LogLevel.WARNING,
+                'error': LogLevel.ERROR,
+            }
+            
+            config = LogConfig(
+                level=level_map.get(level, LogLevel.INFO),
+                output=output,
+                file_path=file_path,
+            )
+            
+            self.config['logger'] = AgentLogger(
+                agent_id=self.id,
+                config=config,
+            )
+            self._log(f"Structured logging enabled (level: {level})")
+        except ImportError:
+            self._log("Warning: Logging module not available")
+        return self
+    
+    def log_event(self, event_type: str, message: str, data: Dict = None) -> None:
+        """Log a structured event."""
+        if 'logger' in self.config:
+            self.config['logger'].event(event_type, message, data)
+        else:
+            self._log(f"[{event_type}] {message}")
+
+    # =========================================================================
+    # Speech (STT/TTS) Methods
+    # =========================================================================
+    
+    def with_speech(
+        self,
+        stt_provider: str = "openai",
+        tts_provider: str = "openai",
+        voice_id: str = "alloy",
+        **provider_config,
+    ) -> "Agent":
+        """
+        Enable speech capabilities (STT and TTS).
+        
+        Args:
+            stt_provider: 'openai', 'azure', 'google', 'whisper_local'
+            tts_provider: 'openai', 'azure', 'google', 'elevenlabs'
+            voice_id: Voice identifier
+            **provider_config: Provider-specific configuration
+        
+        Example:
+            >>> agent = Agent.quick("Assistant").with_speech(
+            ...     stt_provider="openai",
+            ...     tts_provider="elevenlabs",
+            ...     elevenlabs_api_key="..."
+            ... )
+            >>> text = agent.listen("question.mp3")
+            >>> agent.speak("Here's my answer", save_to="answer.mp3")
+        """
+        try:
+            from ..speech import SpeechProcessor, VoiceConfig
+            
+            voice = VoiceConfig(voice_id=voice_id)
+            
+            self.config['speech'] = SpeechProcessor(
+                stt_provider=stt_provider,
+                tts_provider=tts_provider,
+                voice=voice,
+                **provider_config,
+            )
+            self._log(f"Speech enabled (STT: {stt_provider}, TTS: {tts_provider})")
+        except ImportError:
+            self._log("Warning: Speech module not available")
+        return self
+    
+    def listen(self, audio: Union[str, bytes], language: str = None) -> str:
+        """
+        Transcribe audio to text.
+        
+        Args:
+            audio: Audio file path or bytes
+            language: Language code (e.g., 'en', 'es')
+        
+        Returns:
+            Transcribed text
+        """
+        if 'speech' not in self.config:
+            raise ValueError("Speech not enabled. Call with_speech() first.")
+        
+        result = self.config['speech'].transcribe(audio, language)
+        return result.text
+    
+    def speak(
+        self,
+        text: str,
+        save_to: str = None,
+        voice_id: str = None,
+    ):
+        """
+        Convert text to speech.
+        
+        Args:
+            text: Text to speak
+            save_to: Optional file path to save audio
+            voice_id: Override voice ID
+        
+        Returns:
+            TTSResult with audio data
+        """
+        if 'speech' not in self.config:
+            raise ValueError("Speech not enabled. Call with_speech() first.")
+        
+        from ..speech import VoiceConfig
+        
+        voice = None
+        if voice_id:
+            voice = VoiceConfig(voice_id=voice_id)
+        
+        result = self.config['speech'].synthesize(text, voice)
+        
+        if save_to:
+            result.save(save_to)
+        
+        return result
+    
+    def voice_chat(
+        self,
+        audio_input: Union[str, bytes],
+        save_response_to: str = None,
+    ) -> tuple:
+        """
+        Complete voice conversation turn.
+        
+        Args:
+            audio_input: User's audio message
+            save_response_to: Path to save response audio
+        
+        Returns:
+            Tuple of (transcribed_input, response_text, response_audio)
+        """
+        if 'speech' not in self.config:
+            raise ValueError("Speech not enabled. Call with_speech() first.")
+        
+        # Transcribe input
+        user_text = self.listen(audio_input)
+        
+        # Get response
+        response_text = self.chat(user_text)
+        
+        # Synthesize response
+        response_audio = self.speak(response_text, save_to=save_response_to)
+        
+        return user_text, response_text, response_audio
+
+    # =========================================================================
+    # Human-in-the-Loop Methods
+    # =========================================================================
+    
+    def with_human_oversight(
+        self,
+        approval_required_for: List[str] = None,
+        auto_approve_after: int = None,
+        handler: str = "console",
+    ) -> "Agent":
+        """
+        Enable human-in-the-loop oversight.
+        
+        Args:
+            approval_required_for: Actions requiring approval
+                (e.g., ['tool_call', 'external_api', 'send_email'])
+            auto_approve_after: Seconds before auto-approval (None = never)
+            handler: 'console', 'callback', 'queue'
+        
+        Example:
+            >>> agent = Agent.quick("Assistant").with_human_oversight(
+            ...     approval_required_for=["send_email", "delete_file"],
+            ...     handler="console"
+            ... )
+        """
+        try:
+            from ..hitl import (
+                HumanInTheLoop,
+                ConsoleApprovalHandler,
+                CallbackApprovalHandler,
+                QueueApprovalHandler,
+            )
+            
+            handlers = {
+                'console': ConsoleApprovalHandler(),
+                'callback': CallbackApprovalHandler(),
+                'queue': QueueApprovalHandler(),
+            }
+            
+            self.config['hitl'] = HumanInTheLoop(
+                agent_id=self.id,
+                approval_required_for=approval_required_for or [],
+                approval_handler=handlers.get(handler, handlers['callback']),
+                auto_approve_after=auto_approve_after,
+            )
+            self._log(f"Human oversight enabled (handler: {handler})")
+        except ImportError:
+            self._log("Warning: HITL module not available")
+        return self
+    
+    def requires_approval(self, action: str, details: Dict = None) -> bool:
+        """Check if action requires human approval."""
+        if 'hitl' not in self.config:
+            return False
+        return self.config['hitl'].requires_approval(action, details)
+    
+    def request_approval(
+        self,
+        action: str,
+        details: Dict,
+        reason: str = "Action requires approval",
+        timeout: int = None,
+    ) -> bool:
+        """
+        Request human approval for an action.
+        
+        Args:
+            action: Action type
+            details: Action details to review
+            reason: Why approval is needed
+            timeout: Timeout in seconds
+        
+        Returns:
+            True if approved, False otherwise
+        """
+        if 'hitl' not in self.config:
+            self.with_human_oversight()
+        
+        from ..hitl import ApprovalStatus
+        
+        decision = self.config['hitl'].request_approval(
+            action=action,
+            details=details,
+            reason=reason,
+            timeout=timeout,
+        )
+        
+        return decision.status == ApprovalStatus.APPROVED
+    
+    def collect_feedback(
+        self,
+        response_id: str,
+        feedback_type: str = "thumbs",
+        value: Any = None,
+    ):
+        """
+        Collect human feedback on a response.
+        
+        Args:
+            response_id: ID of the response
+            feedback_type: 'rating', 'thumbs', 'text', 'correction', 'flag'
+            value: Feedback value
+        """
+        if 'hitl' not in self.config:
+            self.with_human_oversight()
+        
+        collector = self.config['hitl'].feedback
+        
+        if feedback_type == "rating":
+            return collector.collect_rating(response_id, value)
+        elif feedback_type == "thumbs":
+            return collector.collect_thumbs(response_id, value)
+        elif feedback_type == "text":
+            return collector.collect_text(response_id, value)
+        else:
+            return collector.collect_text(response_id, str(value))
+    
+    def request_human_help(self, reason: str, context: Dict = None):
+        """
+        Request human intervention/help.
+        
+        Use when agent is uncertain or needs guidance.
+        """
+        if 'hitl' not in self.config:
+            self.with_human_oversight()
+        
+        from ..hitl import EscalationLevel
+        
+        return self.config['hitl'].request_intervention(
+            reason=reason,
+            level=EscalationLevel.MEDIUM,
+            context=context or {},
+        )
+    
+    def pause_for_review(self, reason: str = "Paused for human review"):
+        """Pause agent operation for human review."""
+        if 'hitl' not in self.config:
+            self.with_human_oversight()
+        
+        return self.config['hitl'].pause_agent(reason)
+    
+    def get_feedback_summary(self, response_id: str) -> Dict:
+        """Get feedback summary for a response."""
+        if 'hitl' not in self.config:
+            return {}
+        return self.config['hitl'].feedback.get_summary(response_id)
