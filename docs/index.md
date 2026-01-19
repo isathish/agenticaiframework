@@ -18,8 +18,8 @@
   <a href="https://github.com/isathish/agenticaiframework"><img src="https://img.shields.io/github/stars/isathish/agenticaiframework?style=social" alt="GitHub Stars"></a>
 </p>
 
-!!! success "Latest Release: v1.2.3"
-    🎉 New features: Enhanced evaluation framework, Improved monitoring, Better error handling
+!!! success "Latest Release: v1.2.10"
+    🎉 New features: Comprehensive unit tests for tools framework, Enhanced prompts testing, Improved documentation
     [:octicons-arrow-right-24: See What's New](changelog.md)
 
 </div>
@@ -843,4 +843,4 @@ We welcome contributions!
 
 ## 📜 License
 
-© 2025 AgenticAI Framework. Licensed under the MIT License.
+© 2026 AgenticAI Framework. Licensed under the MIT License.

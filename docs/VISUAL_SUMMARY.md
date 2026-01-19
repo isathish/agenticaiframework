@@ -1,5 +1,9 @@
 # 📊 Documentation Redesign - Visual Summary
 
+!!! warning "Historical Document"
+    This is an archived internal document from the December 2025 documentation redesign.
+    For current documentation, please refer to the main [documentation](index.md).
+
 ## 🎯 Mission Accomplished
 
 The AgenticAI Framework documentation has been **completely redesigned** with modern visual elements, improved navigation, and professional styling.
@@ -13,13 +17,13 @@ The AgenticAI Framework documentation has been **completely redesigned** with mo
 │           DOCUMENTATION STATISTICS              │
 ├─────────────────────────────────────────────────┤
 │                                                 │
-│  📄 Total MD Files:              68             │
-│  ✨ Files Enhanced:              40+            │
+│  📄 Total MD Files:              77             │
+│  ✨ Files Enhanced:              50+            │
 │  🆕 New Pages:                   4              │
 │  🧭 Quick Navigation Sections:   22             │
 │  📊 New Diagrams:                25+            │
 │  🎴 Material Design Cards:       50+            │
-│  ⚡ Build Time:                  5.9s           │
+│  ⚡ Build Time:                  ~6s            │
 │  ❌ Build Errors:                0              │
 │  ⚠️  Build Warnings:              0              │
 │  ✅ Status:                      COMPLETE       │
@@ -342,6 +346,7 @@ mkdocs serve
 ---
 
 **Created**: December 29, 2025  
+**Last Updated**: January 20, 2026  
 **Project**: AgenticAI Framework  
-**Version**: 1.2.3  
-**Documentation**: http://127.0.0.1:8001
+**Current Version**: 1.2.10  
+**Documentation**: https://isathish.github.io/agenticaiframework/

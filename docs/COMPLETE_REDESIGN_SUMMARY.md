@@ -1,8 +1,12 @@
 # 🎉 Complete Documentation Redesign Summary
 
+!!! warning "Historical Document"
+    This is an archived internal document from the December 2025 documentation redesign.
+    For current documentation, please refer to the main [documentation](index.md).
+
 **Date**: December 29, 2025  
 **Project**: AgenticAI Framework Documentation  
-**Status**: ✅ COMPLETED
+**Status**: ✅ COMPLETED (Archived January 2026)
 
 ---
 
@@ -73,7 +77,7 @@
 #### changelog.md ✅
 - **Purpose**: Version history and migration guides
 - **Content**:
-  - Version history (1.0.0 → 1.2.3)
+  - Version history (1.0.0 → 1.2.10)
   - Feature highlights by version
   - Migration guides between versions
   - Breaking changes documentation

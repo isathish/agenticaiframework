@@ -53,7 +53,7 @@ From microseconds to enterprise scale
 
 <div align="center">
 
-[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](https://github.com/isathish/agenticaiframework)
+[![Version](https://img.shields.io/badge/version-1.2.10-blue.svg)](https://github.com/isathish/agenticaiframework)
 [![Performance](https://img.shields.io/badge/Performance-Optimized-success.svg)](https://github.com/isathish/agenticaiframework)
 [![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://isathish.github.io/agenticaiframework/)
 
