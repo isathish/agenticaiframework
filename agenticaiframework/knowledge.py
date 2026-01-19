@@ -28,6 +28,24 @@ class KnowledgeRetriever:
             return self.cache[query]
 
         results = []
+
+        # Search internal knowledge base
+        if query:
+            q = query.lower()
+            for key, content in self.knowledge_base.items():
+                if q in key.lower() or q in content.lower():
+                    results.append({
+                        'source': 'knowledge_base',
+                        'key': key,
+                        'content': content,
+                    })
+        else:
+            for key, content in self.knowledge_base.items():
+                results.append({
+                    'source': 'knowledge_base',
+                    'key': key,
+                    'content': content,
+                })
         for name, fn in self.sources.items():
             try:
                 source_results = fn(query)

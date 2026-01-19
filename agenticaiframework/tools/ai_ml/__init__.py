@@ -7,7 +7,7 @@ Tools for AI-powered operations and integrations.
 from .generation_tools import DALLETool, VisionTool
 from .framework_tools import LlamaIndexTool, LangChainTool
 from .rag_tools import RAGTool, AIMindTool
-from .code_tools import CodeInterpreterTool
+from .code_tools import CodeInterpreterTool, JavaScriptCodeInterpreterTool
 
 __all__ = [
     # Generation Tools
@@ -21,4 +21,5 @@ __all__ = [
     'AIMindTool',
     # Code Tools
     'CodeInterpreterTool',
+    'JavaScriptCodeInterpreterTool',
 ]
