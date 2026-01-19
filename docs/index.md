@@ -25,8 +25,8 @@ tags:
   <a href="https://github.com/isathish/agenticaiframework"><img src="https://img.shields.io/github/stars/isathish/agenticaiframework?style=social" alt="GitHub Stars"></a>
 </p>
 
-!!! success "Latest Release: v1.2.11"
-    🎉 New features: Documentation improvements, Enhanced testing, Updated examples
+!!! success "Latest Release: v1.2.13"
+    🎉 New features: Documentation cleanup, Enhanced examples, Improved testing
     [:octicons-arrow-right-24: See What's New](changelog.md)
 
 </div>

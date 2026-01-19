@@ -4,6 +4,9 @@ tags:
   - safety
   - security
   - compliance
+  - policies
+  - content-safety
+  - validation
 ---
 
 # 🛡️ Guardrails Module
@@ -20,29 +23,29 @@ Protect your AI applications with intelligent validation and content moderation
 
 <div class="grid cards" markdown>
 
--   :material-shield-check:{ .lg } **Safety Rules**
+-   :material-shield-check:{ .lg } **Core Guardrails**
     
-    Content moderation and filtering
+    Basic validation and enforcement
     
     [:octicons-arrow-right-24: Configure](#core-components)
 
--   :material-scale-balance:{ .lg } **Compliance**
+-   :material-brain:{ .lg } **Specialized**
     
-    Regulatory and policy checks
+    Semantic, safety, format validation
     
-    [:octicons-arrow-right-24: Learn More](#overview)
+    [:octicons-arrow-right-24: Explore](#specialized-guardrails)
 
--   :material-quality-high:{ .lg } **Quality**
+-   :material-pipe:{ .lg } **Pipeline**
     
-    Output validation and scoring
+    Chain multiple guardrails
     
-    [:octicons-arrow-right-24: Validate](#best-practices)
+    [:octicons-arrow-right-24: Build](#guardrail-pipeline)
 
--   :material-book-open:{ .lg } **Examples**
+-   :material-gavel:{ .lg } **Policies**
     
-    Implementation patterns
+    Behavior and resource policies
     
-    [:octicons-arrow-right-24: View Examples](#use-cases)
+    [:octicons-arrow-right-24: Define](#agent-policy-framework)
 
 </div>
 
@@ -169,13 +172,301 @@ print(f"Violations: {result.get('violations', [])}")
 - Maintaining brand voice and tone consistency.
 - Filtering out harmful, biased, or toxic content.
 
+---
+
+## 🎯 Specialized Guardrails
+
+The framework provides pre-built guardrails for common validation scenarios.
+
+### SemanticGuardrail
+
+Validates content based on semantic meaning and intent:
+
+```python
+from agenticaiframework.guardrails import SemanticGuardrail
+
+# Create semantic guardrail
+semantic = SemanticGuardrail(
+    name="topic_guardrail",
+    allowed_topics=["technology", "science", "education"],
+    blocked_topics=["violence", "illegal activities"],
+    similarity_threshold=0.75
+)
+
+# Validate content
+result = semantic.validate("Explain quantum computing basics")
+print(f"Valid: {result.is_valid}")
+print(f"Detected topics: {result.detected_topics}")
+```
+
+### ContentSafetyGuardrail
+
+Comprehensive content safety checking:
+
+```python
+from agenticaiframework.guardrails import ContentSafetyGuardrail
+
+# Create content safety guardrail
+content_safety = ContentSafetyGuardrail(
+    name="content_filter",
+    check_toxicity=True,
+    check_profanity=True,
+    check_pii=True,
+    toxicity_threshold=0.7
+)
+
+# Validate content
+result = content_safety.validate("Check this message for safety issues")
+print(f"Safe: {result.is_valid}")
+print(f"Flags: {result.flags}")
+```
+
+### OutputFormatGuardrail
+
+Validates output format and structure:
+
+```python
+from agenticaiframework.guardrails import OutputFormatGuardrail
+
+# Create format guardrail for JSON output
+format_guard = OutputFormatGuardrail(
+    name="json_format",
+    expected_format="json",
+    required_fields=["result", "confidence", "sources"],
+    max_length=5000
+)
+
+# Validate output
+output = '{"result": "answer", "confidence": 0.95, "sources": ["doc1"]}'
+result = format_guard.validate(output)
+print(f"Format valid: {result.is_valid}")
+```
+
+### ChainOfThoughtGuardrail
+
+Validates reasoning chains for quality:
+
+```python
+from agenticaiframework.guardrails import ChainOfThoughtGuardrail
+
+# Create CoT guardrail
+cot_guard = ChainOfThoughtGuardrail(
+    name="reasoning_check",
+    min_steps=3,
+    require_conclusion=True,
+    check_logical_flow=True
+)
+
+# Validate reasoning
+reasoning = """
+Step 1: Identify the problem
+Step 2: Analyze the data
+Step 3: Draw conclusions
+Conclusion: Based on the analysis, the answer is X.
+"""
+result = cot_guard.validate(reasoning)
+print(f"Valid reasoning: {result.is_valid}")
+```
+
+### ToolUseGuardrail
+
+Validates tool invocations:
+
+```python
+from agenticaiframework.guardrails import ToolUseGuardrail
+
+# Create tool use guardrail
+tool_guard = ToolUseGuardrail(
+    name="tool_validator",
+    allowed_tools=["file_read", "web_search", "calculator"],
+    blocked_tools=["system_exec", "delete_file"],
+    max_tool_calls=10
+)
+
+# Validate tool invocation
+result = tool_guard.validate({
+    "tool": "file_read",
+    "params": {"path": "/data/config.json"}
+})
+print(f"Tool allowed: {result.is_valid}")
+```
+
+---
+
+## 🔗 Guardrail Pipeline
+
+Chain multiple guardrails for comprehensive validation:
+
+```python
+from agenticaiframework.guardrails import (
+    GuardrailPipeline,
+    ContentSafetyGuardrail,
+    OutputFormatGuardrail,
+    SemanticGuardrail
+)
+
+# Create pipeline
+pipeline = GuardrailPipeline(name="output_pipeline")
+
+# Add guardrails in order
+pipeline.add_guardrail(ContentSafetyGuardrail(
+    name="safety",
+    check_toxicity=True,
+    check_pii=True
+))
+
+pipeline.add_guardrail(SemanticGuardrail(
+    name="topic",
+    allowed_topics=["technical", "support"]
+))
+
+pipeline.add_guardrail(OutputFormatGuardrail(
+    name="format",
+    expected_format="json"
+))
+
+# Execute pipeline
+result = pipeline.execute(content)
+print(f"All passed: {result.all_passed}")
+print(f"Failed guardrails: {result.failures}")
+```
+
+---
+
+## 📜 Agent Policy Framework
+
+Define and enforce policies on agent behavior.
+
+### Policy Types
+
+| Type | Description |
+|------|-------------|
+| `BehaviorPolicy` | Controls agent behavior constraints |
+| `ResourcePolicy` | Manages resource access and limits |
+| `SafetyPolicy` | Enforces safety requirements |
+
+### PolicyScope
+
+```python
+from agenticaiframework.guardrails import PolicyScope
+
+PolicyScope.GLOBAL    # Applies to all agents
+PolicyScope.TEAM      # Applies to agent team
+PolicyScope.AGENT     # Applies to specific agent
+PolicyScope.TASK      # Applies to specific task
+```
+
+### PolicyEnforcement
+
+```python
+from agenticaiframework.guardrails import PolicyEnforcement
+
+PolicyEnforcement.STRICT   # Block on violation
+PolicyEnforcement.WARN     # Warn but allow
+PolicyEnforcement.LOG      # Log only
+```
+
+### Creating Policies
+
+```python
+from agenticaiframework.guardrails import (
+    BehaviorPolicy,
+    ResourcePolicy,
+    SafetyPolicy,
+    AgentPolicyManager,
+    PolicyScope,
+    PolicyEnforcement,
+    agent_policy_manager
+)
+
+# Create a behavior policy
+behavior_policy = BehaviorPolicy(
+    name="production_behavior",
+    scope=PolicyScope.GLOBAL,
+    enforcement=PolicyEnforcement.STRICT,
+    max_tokens_per_response=2000,
+    max_tool_calls_per_task=5,
+    require_reasoning=True,
+    timeout_seconds=30
+)
+
+# Create a resource policy
+resource_policy = ResourcePolicy(
+    name="resource_limits",
+    scope=PolicyScope.TEAM,
+    max_memory_mb=512,
+    max_concurrent_tasks=10,
+    allowed_external_apis=["openai", "anthropic"],
+    blocked_file_paths=["/etc", "/var/log"]
+)
+
+# Create a safety policy
+safety_policy = SafetyPolicy(
+    name="enterprise_safety",
+    scope=PolicyScope.GLOBAL,
+    enforcement=PolicyEnforcement.STRICT,
+    block_pii=True,
+    block_secrets=True,
+    content_moderation=True,
+    max_risk_score=0.3
+)
+
+# Register policies
+agent_policy_manager.register_behavior_policy("prod", behavior_policy)
+agent_policy_manager.register_resource_policy("limits", resource_policy)
+agent_policy_manager.register_safety_policy("enterprise", safety_policy)
+```
+
+### Enforcing Policies
+
+```python
+# Apply policies to an agent
+agent_policy_manager.apply_policies(
+    agent_id="agent-001",
+    policy_names=["production_behavior", "resource_limits", "enterprise_safety"]
+)
+
+# Check policy compliance
+compliance = agent_policy_manager.check_compliance(
+    agent_id="agent-001",
+    action="tool_call",
+    context={"tool": "file_read", "path": "/data/config.json"}
+)
+
+if not compliance.is_allowed:
+    print(f"Policy violation: {compliance.violated_policy}")
+    print(f"Reason: {compliance.reason}")
+```
+
+---
+
+## 📊 Guardrail Types Summary
+
+| Guardrail | Purpose |
+|-----------|---------|
+| `SemanticGuardrail` | Topic and intent validation |
+| `ContentSafetyGuardrail` | Toxicity, profanity, PII detection |
+| `OutputFormatGuardrail` | Format and schema validation |
+| `ChainOfThoughtGuardrail` | Reasoning quality validation |
+| `ToolUseGuardrail` | Tool invocation validation |
+| `PromptInjectionGuardrail` | Injection attack detection |
+| `InputLengthGuardrail` | Input length validation |
+| `PIIDetectionGuardrail` | PII detection and masking |
+
+---
+
 ## Best Practices
 - Combine multiple guardrails for layered protection.
 - Regularly update blocked keywords and policies.
 - Test guardrails with diverse datasets to ensure robustness.
 - Log blocked outputs for auditing and improvement.
+- **Use GuardrailPipeline for chaining multiple validations.**
+- **Define policies at appropriate scopes (global, team, agent, task).**
+- **Start with WARN enforcement and move to STRICT after testing.**
 
 ## Related Documentation
 - [LLMs Module](llms.md)
 - [Knowledge Module](knowledge.md)
 - [Monitoring Module](monitoring.md)
+- [Compliance Module](compliance.md)
+- [Security Module](security.md)

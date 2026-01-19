@@ -3,6 +3,8 @@ tags:
   - prompts
   - templates
   - prompt-engineering
+  - versioning
+  - prompt-library
 ---
 
 # 📝 Prompts Module
@@ -33,15 +35,15 @@ Create, manage, and render safe prompts for LLMs
 
 -   :material-source-branch:{ .lg } **Versioning**
     
-    Track prompt versions
+    Full lifecycle version control
     
-    [:octicons-arrow-right-24: Manage](#overview)
+    [:octicons-arrow-right-24: Manage](#prompt-versioning)
 
--   :material-book-open:{ .lg } **Examples**
+-   :material-library:{ .lg } **Library**
     
-    Prompt engineering patterns
+    Reusable prompt components
     
-    [:octicons-arrow-right-24: View Examples](#use-cases)
+    [:octicons-arrow-right-24: Browse](#promptlibrary)
 
 </div>
 
@@ -174,19 +176,211 @@ prompts = manager.list_prompts()
 print(f"Registered prompts: {len(prompts)}")
 ```
 
+---
+
+## 🔄 Prompt Versioning
+
+The Prompt Versioning module provides enterprise-grade version control for prompts with semantic versioning, lifecycle management, and full audit trails.
+
+### PromptVersionManager
+
+Manages versioned prompts with full lifecycle support.
+
+```python
+from agenticaiframework.prompt_versioning import (
+    PromptVersionManager,
+    PromptVersion,
+    PromptStatus,
+    prompt_version_manager
+)
+
+# Create manager with persistent storage
+manager = PromptVersionManager(storage_path="/path/to/prompts")
+
+# Create a new prompt (starts at v1.0.0)
+prompt = manager.create_prompt(
+    name="customer_support",
+    template="Hello {customer_name}, I'm here to help with {issue}. {instructions}",
+    created_by="admin",
+    tags=["support", "customer-facing"]
+)
+
+print(f"Created: {prompt.name} v{prompt.version}")  # v1.0.0
+```
+
+#### Version Lifecycle
+
+```mermaid
+graph LR
+    DRAFT[Draft] --> ACTIVE[Active]
+    ACTIVE --> DEPRECATED[Deprecated]
+    DEPRECATED --> ARCHIVED[Archived]
+    ACTIVE -->|Rollback| DRAFT
+```
+
+#### Creating New Versions
+
+```python
+# Create a new version with semantic versioning
+new_version = manager.create_version(
+    prompt_id=prompt.prompt_id,
+    template="Hi {customer_name}! I'll assist you with {issue}. {instructions}",
+    version_bump="minor",  # major, minor, or patch
+    created_by="developer",
+    changelog="Improved greeting tone"
+)
+
+print(f"New version: v{new_version.version}")  # v1.1.0
+```
+
+#### Activation and Rollback
+
+```python
+# Activate a version (makes it the default)
+manager.activate(
+    prompt_id=prompt.prompt_id,
+    version="1.1.0",
+    activated_by="admin"
+)
+
+# Rollback to a previous version
+rolled_back = manager.rollback(
+    prompt_id=prompt.prompt_id,
+    target_version="1.0.0",
+    rolled_back_by="admin"
+)
+print(f"Rolled back, new version: v{rolled_back.version}")  # v1.1.1
+```
+
+#### Rendering Prompts
+
+```python
+# Render the active version
+result = manager.render(
+    prompt_id=prompt.prompt_id,
+    variables={
+        "customer_name": "Alice",
+        "issue": "billing",
+        "instructions": "I'll look into this right away."
+    }
+)
+
+# Render a specific version
+result_v1 = manager.render(
+    prompt_id=prompt.prompt_id,
+    variables={"customer_name": "Bob", "issue": "shipping", "instructions": ""},
+    version="1.0.0"
+)
+```
+
+#### Audit Trail
+
+```python
+# Get audit log for a prompt
+audit_log = manager.get_audit_log(prompt_id=prompt.prompt_id, limit=50)
+
+for entry in audit_log:
+    print(f"{entry['action']} by {entry['actor']} at {entry['timestamp']}")
+```
+
+### PromptLibrary
+
+Library for reusable prompt components with template inheritance.
+
+```python
+from agenticaiframework.prompt_versioning import PromptLibrary, prompt_library
+
+# Register reusable components
+prompt_library.register_component(
+    name="system_header",
+    content="You are a helpful AI assistant. Be concise and accurate.",
+    category="system",
+    description="Standard system message header"
+)
+
+prompt_library.register_component(
+    name="safety_footer",
+    content="Remember: Never share sensitive information. If unsure, ask for clarification.",
+    category="safety",
+    description="Safety guidelines footer"
+)
+
+prompt_library.register_component(
+    name="code_assistant_base",
+    content="You are a coding assistant specializing in {language}. {context}",
+    category="code",
+    description="Base template for code assistants"
+)
+```
+
+#### Composing Prompts
+
+```python
+# Compose multiple components
+full_prompt = prompt_library.compose(
+    components=["system_header", "code_assistant_base", "safety_footer"],
+    separator="\n\n"
+)
+```
+
+#### Template Inheritance
+
+```python
+# Extend a base component
+python_prompt = prompt_library.extend(
+    base_component="code_assistant_base",
+    extensions={
+        "replace_language": "Python",
+        "replace_context": "Focus on clean, PEP8-compliant code.",
+        "suffix": "Include type hints where appropriate."
+    }
+)
+```
+
+#### Search and Discovery
+
+```python
+# Search components
+results = prompt_library.search("code")
+
+# List by category
+code_components = prompt_library.list_by_category("code")
+
+# Get all categories
+categories = prompt_library.get_categories()
+```
+
+### PromptStatus Enum
+
+| Status | Description |
+|--------|-------------|
+| `DRAFT` | Newly created, not yet activated |
+| `ACTIVE` | Currently in use (default for rendering) |
+| `DEPRECATED` | Replaced by newer version |
+| `ARCHIVED` | No longer in use |
+
+---
+
 ## Use Cases
 - Creating consistent prompts for chatbots and virtual assistants.
 - Dynamically generating prompts based on user input or context.
 - Optimizing prompts for specific LLM providers.
 - Managing large prompt libraries for enterprise applications.
+- **Version-controlled prompt updates with rollback capability.**
+- **A/B testing different prompt versions.**
+- **Audit compliance for regulated industries.**
 
 ## Best Practices
 - Keep prompts concise and clear to avoid ambiguity.
 - Use placeholders for dynamic values to improve reusability.
 - Test prompts with different LLMs to ensure compatibility.
 - Store prompts in version-controlled files for maintainability.
+- **Use semantic versioning: major for breaking changes, minor for features, patch for fixes.**
+- **Always add changelog messages when creating new versions.**
+- **Use PromptLibrary for reusable components to ensure consistency.**
 
 ## Related Documentation
 - [LLMs Module](llms.md)
 - [Knowledge Module](knowledge.md)
 - [Agents Module](agents.md)
+- [Evaluation Module](evaluation.md) - A/B testing prompts

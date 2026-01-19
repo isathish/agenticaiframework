@@ -905,6 +905,101 @@ for level, metrics_data in metrics.items():
         print(f"  {key}: {value}")
 ```
 
+---
+
+## 📉 Prompt Drift Detection
+
+Monitor prompt effectiveness over time and detect degradation.
+
+### DriftType Enum
+
+| Type | Description |
+|------|-------------|
+| `QUALITY_DEGRADATION` | Quality scores dropping |
+| `LATENCY_INCREASE` | Response times increasing |
+| `COST_INCREASE` | Token/API costs rising |
+| `BEHAVIOR_SHIFT` | Output behavior changing |
+| `DISTRIBUTION_SHIFT` | Output distribution changing |
+| `SEMANTIC_DRIFT` | Semantic meaning shifting |
+
+### PromptDriftDetector
+
+```python
+from agenticaiframework.evaluation import (
+    PromptDriftDetector,
+    DriftType,
+    DriftSeverity,
+    DriftAlert,
+    prompt_drift_detector
+)
+
+# Create drift detector
+detector = PromptDriftDetector(
+    window_size=100,
+    significance_threshold=0.05,
+    drift_thresholds={
+        'quality_score': 10.0,    # 10% degradation triggers alert
+        'latency_ms': 25.0,       # 25% latency increase
+        'token_count': 20.0,      # 20% token increase
+        'error_rate': 50.0,       # 50% error rate increase
+        'hallucination_score': 30.0  # 30% hallucination increase
+    }
+)
+
+# Establish baseline from initial samples
+detector.establish_baseline(
+    prompt_id="customer_support_v1",
+    samples=[
+        {'quality_score': 0.92, 'latency_ms': 150, 'token_count': 250},
+        {'quality_score': 0.95, 'latency_ms': 145, 'token_count': 240},
+        # ... more samples
+    ],
+    metadata={'model': 'gpt-4', 'version': '1.0'}
+)
+
+# Record new samples (in production)
+detector.record_sample(
+    prompt_id="customer_support_v1",
+    sample={
+        'quality_score': 0.85,  # Lower quality
+        'latency_ms': 180,      # Higher latency
+        'token_count': 280
+    }
+)
+
+# Check for drift
+alerts = detector.check_drift("customer_support_v1")
+for alert in alerts:
+    print(f"Drift detected: {alert.drift_type.value}")
+    print(f"Severity: {alert.severity.value}")
+    print(f"Deviation: {alert.deviation_percent:.1f}%")
+```
+
+### Alert Callbacks
+
+```python
+# Register callback for alerts
+def handle_drift_alert(alert: DriftAlert):
+    if alert.severity == DriftSeverity.CRITICAL:
+        # Trigger rollback or notification
+        print(f"CRITICAL: {alert.drift_type.value} detected for {alert.prompt_id}")
+        # notify_team(alert)
+        # trigger_rollback(alert.prompt_id)
+
+detector.register_alert_callback(handle_drift_alert)
+```
+
+### Drift Statistics
+
+```python
+# Get monitoring statistics
+stats = detector.get_stats()
+print(f"Prompts monitored: {stats['prompts_monitored']}")
+print(f"Drift detections: {stats['drift_detections']}")
+print(f"Total samples: {stats['total_samples']}")
+```
+
+---
 
 ## Best Practices
 

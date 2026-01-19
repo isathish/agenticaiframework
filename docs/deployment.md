@@ -403,7 +403,7 @@ kubectl scale deployment/agenticai-deployment --replicas=5
 
 # Update deployment
 kubectl set image deployment/agenticai-deployment \
-  agenticai=your-registry/agenticai-framework:v1.2.10
+  agenticai=your-registry/agenticai-framework:v1.2.13
 
 # Delete deployment
 kubectl delete -f kubernetes/

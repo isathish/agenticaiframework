@@ -4,6 +4,10 @@ tags:
   - external-services
   - APIs
   - patterns
+  - servicenow
+  - github
+  - azure-devops
+  - enterprise
 ---
 
 # 🔌 Integration Patterns
@@ -38,11 +42,11 @@ Comprehensive integration guide for APIs, databases, and message queues
     
     [:octicons-arrow-right-24: Setup](#message-queue-integration)
 
--   :material-cloud:{ .lg } **Cloud Services**
+-   :material-office-building:{ .lg } **Enterprise**
     
-    AWS, Azure, GCP integration
+    ServiceNow, GitHub, Azure DevOps
     
-    [:octicons-arrow-right-24: Deploy](#integration-architecture)
+    [:octicons-arrow-right-24: Connect](#enterprise-integrations)
 
 </div>
 
@@ -775,6 +779,235 @@ await webhook_manager.send_webhook(
     url="https://hooks.slack.com/services/xxx",
     payload={"text": "Agent completed task"},
     secret="slack-webhook-secret"
+)
+```
+
+---
+
+## 🏢 Enterprise Integrations
+
+The AgenticAI Framework provides built-in connectors for popular enterprise systems.
+
+### Integration Manager
+
+Central management for all integrations:
+
+```python
+from agenticaiframework.integrations import (
+    IntegrationManager,
+    IntegrationConfig,
+    IntegrationStatus,
+    integration_manager
+)
+
+# Add a ServiceNow integration
+config = integration_manager.add_integration(
+    name="production_snow",
+    integration_type="servicenow",
+    endpoint="https://yourinstance.service-now.com/api",
+    auth_type="api_key",
+    credentials={"api_key": "your-api-key"},
+    settings={"timeout": 30}
+)
+
+# Connect
+integration_manager.connect(config.integration_id)
+
+# Health check
+health = integration_manager.health_check(config.integration_id)
+print(f"Status: {health['status']}")
+
+# List all integrations
+all_integrations = integration_manager.list_integrations()
+```
+
+### ServiceNow Integration
+
+ITSM integration for incident, change, and problem management:
+
+```python
+from agenticaiframework.integrations import (
+    ServiceNowIntegration,
+    IntegrationConfig,
+    IntegrationStatus
+)
+
+# Create ServiceNow integration
+config = IntegrationConfig(
+    integration_id="snow-001",
+    name="ServiceNow Production",
+    integration_type="servicenow",
+    endpoint="https://yourinstance.service-now.com/api",
+    auth_type="api_key",
+    credentials={"api_key": "your-key"},
+    settings={},
+    status=IntegrationStatus.PENDING,
+    created_at=time.time()
+)
+
+snow = ServiceNowIntegration(config)
+snow.connect()
+
+# Create an incident
+incident = snow.create_incident(
+    short_description="AI Agent detected anomaly",
+    description="Automated detection of performance degradation in production.",
+    urgency=2,
+    impact=2,
+    assignment_group="IT-Operations",
+    category="Performance"
+)
+print(f"Created incident: {incident['number']}")
+
+# Create a change request
+change = snow.create_change_request(
+    short_description="Deploy AI Agent update",
+    description="Rolling deployment of AgenticAI Framework v1.2.13",
+    change_type="standard",
+    risk="low"
+)
+```
+
+### GitHub Integration
+
+Repository, issue, and pull request management:
+
+```python
+from agenticaiframework.integrations import GitHubIntegration, IntegrationConfig
+
+config = IntegrationConfig(
+    integration_id="gh-001",
+    name="GitHub Enterprise",
+    integration_type="github",
+    endpoint="https://api.github.com",
+    auth_type="token",
+    credentials={"token": "ghp_xxxxxxxxxxxx"},
+    settings={},
+    status=IntegrationStatus.PENDING,
+    created_at=time.time()
+)
+
+github = GitHubIntegration(config)
+github.connect()
+
+# Create an issue
+issue = github.create_issue(
+    owner="myorg",
+    repo="myrepo",
+    title="AI Agent identified bug",
+    body="Automated bug detection by AgenticAI Framework.",
+    labels=["bug", "ai-detected"],
+    assignees=["developer1"]
+)
+print(f"Created issue: {issue['html_url']}")
+
+# Create a pull request
+pr = github.create_pull_request(
+    owner="myorg",
+    repo="myrepo",
+    title="AI-generated fix for #123",
+    body="This PR was created by an AI agent.",
+    head="feature/ai-fix",
+    base="main"
+)
+```
+
+### Azure DevOps Integration
+
+Work items, repositories, and pipelines:
+
+```python
+from agenticaiframework.integrations import AzureDevOpsIntegration, IntegrationConfig
+
+config = IntegrationConfig(
+    integration_id="ado-001",
+    name="Azure DevOps",
+    integration_type="azure_devops",
+    endpoint="https://dev.azure.com/yourorg",
+    auth_type="pat",
+    credentials={"pat": "your-personal-access-token"},
+    settings={"project": "MyProject"},
+    status=IntegrationStatus.PENDING,
+    created_at=time.time()
+)
+
+ado = AzureDevOpsIntegration(config)
+ado.connect()
+
+# Create a work item
+work_item = ado.create_work_item(
+    work_item_type="Bug",
+    title="AI-detected issue",
+    description="Found during automated analysis.",
+    assigned_to="developer@company.com"
+)
+
+# Trigger a pipeline
+pipeline_run = ado.trigger_pipeline(
+    pipeline_id=123,
+    branch="main",
+    parameters={"environment": "staging"}
+)
+```
+
+### Data Platform Connectors
+
+Connect to Snowflake and Databricks:
+
+```python
+from agenticaiframework.integrations import (
+    SnowflakeConnector,
+    DatabricksConnector
+)
+
+# Snowflake
+snowflake = SnowflakeConnector(
+    account="your-account",
+    user="username",
+    password="password",
+    warehouse="COMPUTE_WH",
+    database="ANALYTICS",
+    schema="PUBLIC"
+)
+
+results = await snowflake.execute_query(
+    "SELECT * FROM sales WHERE date > '2024-01-01'"
+)
+
+# Databricks
+databricks = DatabricksConnector(
+    workspace_url="https://your-workspace.cloud.databricks.com",
+    token="dapi_xxxxx"
+)
+
+job_run = await databricks.run_job(
+    job_id=12345,
+    parameters={"input_path": "/data/raw"}
+)
+```
+
+### Webhook Manager
+
+Manage incoming and outgoing webhooks:
+
+```python
+from agenticaiframework.integrations import WebhookManager, webhook_manager
+
+# Register a webhook endpoint
+webhook_manager.register_endpoint(
+    name="github-events",
+    path="/webhooks/github",
+    secret="webhook-secret",
+    handler=async def(payload): 
+        # Process webhook
+        return {"status": "processed"}
+)
+
+# Send a webhook
+await webhook_manager.send(
+    url="https://api.slack.com/incoming-webhook",
+    payload={"text": "Task completed by AI agent"},
+    headers={"Authorization": "Bearer token"}
 )
 ```
 

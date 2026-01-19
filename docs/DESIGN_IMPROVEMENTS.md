@@ -59,7 +59,7 @@ This document summarizes the comprehensive design improvements made to the Agent
 #### index.md - Landing Page
 - ✨ Added hero subtitle: "Enterprise-ready • Developer-friendly • Production-tested"
 - ⭐ GitHub Stars badge with social style
-- 🎉 Success banner for "Latest Release: v1.2.10" with feature highlights
+- 🎉 Success banner for "Latest Release: v1.2.13" with feature highlights
 - 🏗️ Enhanced Core Architecture diagram with 6 layers:
   - Application Layer (User/Application)
   - Agent Layer (Agent Manager, Multiple Agents)
