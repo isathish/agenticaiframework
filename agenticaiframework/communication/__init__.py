@@ -73,10 +73,16 @@ class CommunicationManager:
     
     def __init__(self):
         from typing import Dict, Any, Callable
+        import time
         self.protocols: Dict[str, Callable[[Any], Any]] = {}
+    
+    def _log(self, message: str):
+        import time
+        print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [CommunicationManager] {message}")
 
     def register_protocol(self, name: str, handler_fn):
         self.protocols[name] = handler_fn
+        self._log(f"Registered communication protocol '{name}'")
 
     def register_handler(self, handler_fn, name: str = None):
         """Alternative method for registering handlers"""
@@ -87,8 +93,10 @@ class CommunicationManager:
         if protocol in self.protocols:
             try:
                 return self.protocols[protocol](data)
-            except Exception:
-                pass
+            except Exception as e:
+                self._log(f"Error sending data via '{protocol}': {e}")
+                return None
+        self._log(f"Protocol '{protocol}' not found")
         return None
 
     def list_protocols(self):

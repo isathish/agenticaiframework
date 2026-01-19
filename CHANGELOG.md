@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v1.2.16](https://github.com/isathish/agenticaiframework/releases/tag/v1.2.16) - 2026-01-19
+
+<small>[Compare with v1.2.15](https://github.com/isathish/agenticaiframework/compare/v1.2.15...v1.2.16)</small>
+
+### Added
+
+- Add comprehensive tests for high-impact modules and state management ([ca775a7](https://github.com/isathish/agenticaiframework/commit/ca775a71c039baf4efb9e0c3ebb61db5dc4a1fda) by isathish).
+
+## [v1.2.15](https://github.com/isathish/agenticaiframework/releases/tag/v1.2.15) - 2026-01-19
+
+<small>[Compare with v1.2.14](https://github.com/isathish/agenticaiframework/compare/v1.2.14...v1.2.15)</small>
+
+### Added
+
+- Add comprehensive unit tests for speech processor and tools modules to achieve 90% coverage ([1989c1d](https://github.com/isathish/agenticaiframework/commit/1989c1de7f9c9f9bc3763ebf55d56f467048fe00) by isathish).
+- Add Tool and Workflow State Management Modules ([9f49115](https://github.com/isathish/agenticaiframework/commit/9f49115ea38f41174fd1cc15de01e6eeaaaeb5b9) by sathish).
+- Add Speech Module with STT and TTS Providers ([c417a76](https://github.com/isathish/agenticaiframework/commit/c417a7693c3d620701749871990339729dd278c6) by sathish).
+- Add Knowledge Retriever and Vector Database Tools ([b10a89a](https://github.com/isathish/agenticaiframework/commit/b10a89a30c4d2eda5e21adf067eb488560c9df0c) by sathish).
+
 ## [v1.2.14](https://github.com/isathish/agenticaiframework/releases/tag/v1.2.14) - 2026-01-19
 
 <small>[Compare with v1.2.12](https://github.com/isathish/agenticaiframework/compare/v1.2.12...v1.2.14)</small>
