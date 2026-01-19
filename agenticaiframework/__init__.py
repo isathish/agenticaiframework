@@ -181,7 +181,55 @@ from .communication import (
     # Manager
     AgentCommunicationManager,
 )
-from .memory import MemoryManager, MemoryEntry, MemoryStats, memory_manager
+
+# Memory Management (modular imports)
+from .memory import (
+    # Core
+    MemoryManager,
+    MemoryEntry,
+    MemoryStats,
+    memory_manager,
+    # Agent Memory
+    MemoryType,
+    ConversationTurn,
+    Episode,
+    Fact,
+    WorkingMemoryItem,
+    AgentMemoryManager,
+    # Workflow Memory
+    StepResultType,
+    StepResult,
+    WorkflowContext,
+    WorkflowMemoryCheckpoint,
+    WorkflowExecutionRecord,
+    WorkflowMemoryManager,
+    # Orchestration Memory
+    MessagePriority,
+    AgentMessage as OrchestrationAgentMessage,
+    TaskHandoff,
+    SharedContext,
+    AgentContribution,
+    OrchestrationMemoryManager,
+    # Knowledge Memory
+    EmbeddingCache,
+    QueryResult,
+    RetrievalRecord,
+    DocumentMemory,
+    KnowledgeMemoryManager,
+    # Tool Memory
+    ToolResultCache,
+    ToolExecutionMemory,
+    ToolPattern,
+    ToolPerformanceStats,
+    ToolMemoryManager,
+    # Speech Memory
+    TranscriptionMemory,
+    SynthesisMemory,
+    VoiceProfile,
+    VoiceConversationMemory,
+    AudioCache,
+    SpeechMemoryManager,
+)
 
 # Tools Framework (35+ tools across 4 categories)
 from .tools import (
@@ -580,9 +628,57 @@ __all__ = [
     "KnowledgeRetriever",
     "LLMManager", "CircuitBreaker",
     "CommunicationManager",
-    "MemoryManager", "MemoryEntry",
     "Hub",
     "ConfigurationManager",
+    
+    # ========================================================================
+    # Memory Management
+    # ========================================================================
+    # Core
+    "MemoryManager",
+    "MemoryEntry",
+    "MemoryStats",
+    "memory_manager",
+    # Agent Memory
+    "MemoryType",
+    "ConversationTurn",
+    "Episode",
+    "Fact",
+    "WorkingMemoryItem",
+    "AgentMemoryManager",
+    # Workflow Memory
+    "StepResultType",
+    "StepResult",
+    "WorkflowContext",
+    "WorkflowMemoryCheckpoint",
+    "WorkflowExecutionRecord",
+    "WorkflowMemoryManager",
+    # Orchestration Memory
+    "MessagePriority",
+    "OrchestrationAgentMessage",
+    "TaskHandoff",
+    "SharedContext",
+    "AgentContribution",
+    "OrchestrationMemoryManager",
+    # Knowledge Memory
+    "EmbeddingCache",
+    "QueryResult",
+    "RetrievalRecord",
+    "DocumentMemory",
+    "KnowledgeMemoryManager",
+    # Tool Memory
+    "ToolResultCache",
+    "ToolExecutionMemory",
+    "ToolPattern",
+    "ToolPerformanceStats",
+    "ToolMemoryManager",
+    # Speech Memory
+    "TranscriptionMemory",
+    "SynthesisMemory",
+    "VoiceProfile",
+    "VoiceConversationMemory",
+    "AudioCache",
+    "SpeechMemoryManager",
     
     # ========================================================================
     # Multi-Protocol Communication (NEW)

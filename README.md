@@ -1,10 +1,8 @@
 <div align="center">
 
-<!-- Logo will be available once agenticaiframework.png is added to docs/assets/ -->
-<!-- <img src="https://raw.githubusercontent.com/isathish/agenticaiframework/main/docs/assets/agenticaiframework.png" alt="AgenticAI Framework" width="600"/> -->
-
 # 🤖 AgenticAI Framework
-### *Enterprise-Grade Multi-Agent Orchestration Platform*
+
+### *Enterprise-Grade Multi-Agent AI Orchestration Platform*
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -12,41 +10,84 @@
 [![PyPI version](https://badge.fury.io/py/agenticaiframework.svg)](https://badge.fury.io/py/agenticaiframework)
 [![Coverage](https://img.shields.io/badge/coverage-66%25-green.svg)](https://github.com/isathish/agenticaiframework)
 [![Tests](https://img.shields.io/badge/tests-1036%20passing-success.svg)](https://github.com/isathish/agenticaiframework)
+[![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-**Production-ready Python SDK for building sophisticated AI agent systems with advanced orchestration, intelligent task management, comprehensive evaluation, and enterprise-grade monitoring.**
+**The most comprehensive Python SDK for building production-ready AI agent systems with advanced orchestration, intelligent memory management, speech processing, state management, and enterprise-grade monitoring.**
 
-[📚 Documentation](https://isathish.github.io/agenticaiframework/) • [🚀 Quick Start](#-quick-start-examples) • [💡 Examples](https://isathish.github.io/agenticaiframework/EXAMPLES/) • [🤝 Contributing](#-community--support)
+[📚 Documentation](https://isathish.github.io/agenticaiframework/) • [🚀 Quick Start](#-quick-start) • [💡 Examples](#-examples) • [🤝 Contributing](#-contributing)
+
+---
+
+<img src="https://img.shields.io/badge/Features-50%2B%20Modules-blue?style=for-the-badge" alt="50+ Modules"/>
+<img src="https://img.shields.io/badge/Tools-35%2B%20Built--in-green?style=for-the-badge" alt="35+ Tools"/>
+<img src="https://img.shields.io/badge/Enterprise-21%20Features-purple?style=for-the-badge" alt="21 Enterprise Features"/>
+<img src="https://img.shields.io/badge/Protocols-6%20Supported-orange?style=for-the-badge" alt="6 Protocols"/>
 
 </div>
 
 ---
 
-## 🎯 What Makes AgenticAI Framework Different?
+## 📋 Table of Contents
+
+- [✨ Key Features](#-key-features)
+- [🏗️ Architecture](#️-architecture)
+- [📦 Installation](#-installation)
+- [🚀 Quick Start](#-quick-start)
+- [🧠 Core Modules](#-core-modules)
+- [🔧 Advanced Features](#-advanced-features)
+- [🏢 Enterprise Features](#-enterprise-features)
+- [📊 Evaluation Framework](#-evaluation-framework)
+- [🔄 Framework Comparison](#-framework-comparison)
+- [📚 Documentation](#-documentation)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+
+---
+
+## ✨ Key Features
 
 <table>
 <tr>
 <td width="50%">
 
 ### 🚀 **Production-First Design**
-Built for real-world workloads with comprehensive error handling, monitoring, resilience patterns, and a **66% test coverage** across **1036 tests**.
+- Enterprise-grade reliability with **66% test coverage**
+- **1036+ tests** ensuring stability
+- Circuit breaker patterns & automatic retry
+- Comprehensive error handling
 
-### 🧩 **Truly Modular**
-Every component is independently composable, extensible, and replaceable. **35+ built-in tools** across file, web, database, and AI/ML categories.
+### 🧩 **Modular Architecture**
+- **50+ independently composable modules**
+- Plug-and-play component system
+- Clean separation of concerns
+- Easy customization & extension
 
-### 🧠 **Intelligence Built-In**
-Sophisticated memory management, multi-tier storage with TTL, and **12-tier evaluation framework** out of the box.
+### 🧠 **Intelligent Memory**
+- **7 specialized memory managers**
+- Multi-tier storage with TTL
+- Context compression & windowing
+- Automatic memory consolidation
 
 </td>
 <td width="50%">
 
-### 📊 **Enterprise-Ready**
-**21 enterprise features** including distributed tracing, multi-region support, compliance monitoring, and tenant isolation.
+### 🎯 **Multi-Agent Orchestration**
+- Team-based coordination
+- Supervisor & peer patterns
+- Task handoff & delegation
+- Shared context management
 
-### 🎓 **Developer Experience**
-Intuitive APIs, comprehensive documentation, extensive examples, and powerful debugging tools make development enjoyable.
+### 🔊 **Speech Processing**
+- STT/TTS integration
+- Voice profile management
+- Multi-language support
+- Audio caching & optimization
 
-### 🌐 **Scale Effortlessly**
-From single-agent prototypes to distributed multi-agent systems with built-in coordination and monitoring.
+### 📊 **12-Tier Evaluation**
+- Model quality assessment
+- RAG evaluation
+- Security risk scoring
+- Business outcome tracking
 
 </td>
 </tr>
@@ -54,614 +95,739 @@ From single-agent prototypes to distributed multi-agent systems with built-in co
 
 ---
 
-## 🏗️ Architecture Overview
+## 🏗️ Architecture
 
-<div align="center">
-
-```mermaid
-graph TB
-    A[Agent Layer] --> B[Task Orchestration]
-    B --> C[Memory Systems]
-    C --> D[LLM Management]
-    D --> E[Evaluation & Monitoring]
-    A --> F[Guardrails & Security]
-    F --> E
-    E --> G[Enterprise Features]
-    
-    style A fill:#4A90E2
-    style B fill:#50C878
-    style C fill:#9B59B6
-    style D fill:#E74C3C
-    style E fill:#F39C12
-    style F fill:#E67E22
-    style G fill:#1ABC9C
 ```
-
-</div>
-
-### 🔧 Core Modules
-
-| Module | Description |
-|--------|-------------|
-| **🤖 Agents** | Context engineering, multi-role agents, lifecycle management, performance monitoring |
-| **📋 Tasks** | Task registration, execution tracking, workflow orchestration |
-| **🧠 Memory** | Multi-tier architecture (short/long-term), TTL support, priority-based retention |
-| **🔗 LLMs** | Circuit breaker pattern, automatic retry, response caching, model routing |
-| **🛡️ Guardrails** | Content filtering, policy enforcement, semantic validation, tool use validation |
-| **🔐 Security** | Prompt injection detection (15+ patterns), rate limiting, audit logging, PII filtering |
-| **📊 Evaluation** | 12-tier assessment framework (model quality, RAG, safety, cost, business outcomes) |
-| **📈 Monitoring** | Metrics recording, event logging, distributed tracing |
-| **🎯 Prompts** | Template system, version control, prompt drift detection, vulnerability scanning |
-| **📡 Communication** | HTTP, WebSocket, gRPC, message queues, pub/sub messaging |
-| **⚙️ Processes** | Complex workflow patterns, dynamic adaptation, resource management |
-| **🧩 Knowledge** | Semantic search, retrieval systems, knowledge graph integration |
-| **🔧 Tools** | 35+ tools across 4 categories (file/document, web scraping, database, AI/ML) |
-| **⚙️ Configurations** | Environment-specific configs, dynamic updates, versioning |
-
----
-
-## 🔄 Framework Comparison
-
-<div align="center">
-
-| Feature | AgenticAI Framework | LangChain | CrewAI | AutoGen |
-|:--------|:-------------------:|:---------:|:------:|:-------:|
-| **Production Ready** | ✅ Enterprise | ⚠️ Experimental | ⚠️ Limited | ⚠️ Research |
-| **Test Coverage** | ✅ 66% (1036 tests) | ⚠️ Variable | ❌ Limited | ⚠️ Basic |
-| **Built-in Tools** | ✅ 35+ tools (4 categories) | ⚠️ Community | ❌ Limited | ⚠️ Basic |
-| **Modular Architecture** | ✅ Fully composable | ⚠️ Monolithic | ❌ Fixed | ⚠️ Rigid |
-| **Memory Management** | ✅ Multi-tier + TTL | ✅ Basic | ❌ None | ⚠️ Simple |
-| **12-Tier Evaluation** | ✅ Built-in | ❌ None | ❌ None | ❌ None |
-| **Task Orchestration** | ✅ Workflow execution | ⚠️ Linear chains | ✅ Role-based | ⚠️ Conversation |
-| **Monitoring & Tracing** | ✅ Distributed tracing | ❌ None | ❌ None | ❌ None |
-| **Error Handling** | ✅ Circuit breakers | ⚠️ Basic | ⚠️ Limited | ⚠️ Basic |
-| **Multi-Agent Coordination** | ✅ Orchestration engine | ⚠️ Simple | ✅ Team-based | ✅ Group chat |
-| **Guardrails & Safety** | ✅ Built-in + PII | ❌ Add-on | ❌ None | ❌ None |
-| **Enterprise Features** | ✅ 21 features | ⚠️ Limited | ❌ None | ❌ None |
-
-</div>
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         AgenticAI Framework                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
+│  │   Agents    │  │  Workflows  │  │Orchestration│  │   Speech    │        │
+│  │  • Context  │  │  • Steps    │  │  • Teams    │  │  • STT/TTS  │        │
+│  │  • Memory   │  │  • Routing  │  │  • Handoffs │  │  • Profiles │        │
+│  │  • Tools    │  │  • State    │  │  • Messages │  │  • Cache    │        │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
+│  │   Memory    │  │    State    │  │Communication│  │  Knowledge  │        │
+│  │ • Agent     │  │ • Agent     │  │ • HTTP/WS   │  │ • Retrieval │        │
+│  │ • Workflow  │  │ • Workflow  │  │ • MQTT/SSE  │  │ • Embedding │        │
+│  │ • Orch.     │  │ • Orch.     │  │ • gRPC      │  │ • RAG       │        │
+│  │ • Knowledge │  │ • Tools     │  │ • STDIO     │  │ • Search    │        │
+│  │ • Tools     │  │ • Speech    │  │ • Remote    │  │ • Indexing  │        │
+│  │ • Speech    │  │ • Knowledge │  │   Agents    │  │             │        │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
+│  │  Guardrails │  │  Security   │  │  Evaluation │  │  Monitoring │        │
+│  │ • Content   │  │ • Injection │  │ • 12-Tier   │  │ • Metrics   │        │
+│  │ • Policy    │  │ • PII       │  │ • A/B Test  │  │ • Tracing   │        │
+│  │ • Semantic  │  │ • Rate Lim  │  │ • Canary    │  │ • Events    │        │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
+│  │    LLMs     │  │    Tools    │  │   Prompts   │  │ Compliance  │        │
+│  │ • Routing   │  │ • 35+ Built │  │ • Versioning│  │ • Audit     │        │
+│  │ • Caching   │  │ • Registry  │  │ • Templates │  │ • Masking   │        │
+│  │ • Fallback  │  │ • MCP       │  │ • Security  │  │ • Policy    │        │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘        │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
 ## 📦 Installation
 
-<div align="center">
+### Quick Install
 
 ```bash
 pip install agenticaiframework
 ```
 
-</div>
+### Development Install
 
-<details>
-<summary><b>📥 Installation Options</b></summary>
-
-### Development Installation
 ```bash
 git clone https://github.com/isathish/agenticaiframework.git
 cd agenticaiframework
-pip install -e .
+pip install -e ".[dev]"
 ```
 
-### With Optional Dependencies
+### Optional Dependencies
+
 ```bash
-# Enhanced monitoring capabilities
-pip install "agenticaiframework[monitoring]"
-
-# Advanced memory features  
-pip install "agenticaiframework[memory]"
-
-# Documentation building
-pip install "agenticaiframework[docs]"
-
-# All optional dependencies
+# Full installation with all features
 pip install "agenticaiframework[all]"
-```
 
-### Documentation Dependencies
-```bash
-pip install -r requirements-docs.txt
+# Specific feature sets
+pip install "agenticaiframework[monitoring]"  # Enhanced observability
+pip install "agenticaiframework[memory]"      # Advanced memory features
+pip install "agenticaiframework[speech]"      # Speech processing
+pip install "agenticaiframework[docs]"        # Documentation building
 ```
-
-</details>
 
 ---
 
-## ⚡ Quick Start Examples
+## 🚀 Quick Start
 
-### Simple Agent Creation
+### 1. Create an Agent
+
 ```python
-from agenticaiframework import Agent
+from agenticaiframework import Agent, AgentManager
 
 # Create a specialized agent
 agent = Agent(
-    name="DataAnalyst",
-    role="Data Analysis Specialist", 
-    capabilities=["data_processing", "visualization", "reporting"],
-    config={
-        "processing_timeout": 300,
-        "output_format": "json",
-        "enable_caching": True
-    }
+    name="ResearchAssistant",
+    role="Research Specialist",
+    capabilities=["web_search", "document_analysis", "summarization"],
+    config={"model": "gpt-4", "temperature": 0.7}
 )
 
 # Start the agent
 agent.start()
-print(f"Agent {agent.name} is ready and {agent.status}")
+print(f"Agent {agent.name} is {agent.status}")
 ```
 
-### Multi-Agent Collaboration
+### 2. Multi-Agent Orchestration
+
 ```python
-from agenticaiframework import Agent, AgentManager
+from agenticaiframework.orchestration import OrchestrationEngine, AgentTeam
 
-# Create specialized agents
-data_collector = Agent(
-    name="DataCollector",
-    role="Data Collection Specialist",
-    capabilities=["api_integration", "data_extraction"]
+# Create a team of agents
+team = AgentTeam(
+    name="ResearchTeam",
+    agents=[researcher, analyst, writer],
+    coordination_strategy="supervisor"
 )
 
-data_processor = Agent(
-    name="DataProcessor", 
-    role="Data Processing Specialist",
-    capabilities=["data_cleaning", "transformation"]
+# Create orchestration engine
+engine = OrchestrationEngine()
+engine.register_team(team)
+
+# Execute coordinated task
+result = engine.execute_task(
+    task="Research AI trends and write a comprehensive report",
+    team_id="ResearchTeam"
 )
-
-report_generator = Agent(
-    name="ReportGenerator",
-    role="Report Generation Specialist", 
-    capabilities=["analysis", "visualization", "reporting"]
-)
-
-# Manage agents
-manager = AgentManager()
-agents = [data_collector, data_processor, report_generator]
-
-for agent in agents:
-    manager.register_agent(agent)
-    agent.start()
-
-# Coordinate workflow
-manager.coordinate_workflow(["collect_data", "process_data", "generate_report"])
 ```
 
-### Advanced Task Management
+### 3. Intelligent Memory Management
+
 ```python
-from agenticaiframework import Task, TaskManager
-
-# Create task manager
-task_manager = TaskManager()
-
-# Define task executor function
-def validate_data(data_source: str, rules: list) -> dict:
-    """Validate data against rules."""
-    return {"valid": True, "source": data_source, "rules_applied": len(rules)}
-
-def process_data(batch_size: int) -> dict:
-    """Process validated data."""
-    return {"processed": batch_size, "status": "complete"}
-
-# Create tasks with executors
-data_validation = Task(
-    name="data_validation",
-    objective="Validate incoming data sources",
-    executor=validate_data,
-    inputs={"data_source": "api", "rules": ["not_null", "type_check"]}
+from agenticaiframework.memory import (
+    AgentMemoryManager,
+    WorkflowMemoryManager,
+    OrchestrationMemoryManager,
+    KnowledgeMemoryManager,
+    ToolMemoryManager,
+    SpeechMemoryManager
 )
 
-data_processing = Task(
-    name="data_processing", 
-    objective="Process validated data",
-    executor=process_data,
-    inputs={"batch_size": 1000}
-)
+# Agent-specific memory with 4 memory types
+agent_memory = AgentMemoryManager("agent_001")
+agent_memory.add_turn("user", "What's the weather like?")
+agent_memory.add_turn("assistant", "It's sunny and 72°F.")
+agent_memory.set_working("current_task", "weather_query", ttl_seconds=300)
+agent_memory.learn_fact("User prefers Fahrenheit", "preference")
+agent_memory.record_episode("weather_query", {"temp": 72}, "Successful query")
 
-# Register and execute tasks
-task_manager.register_task(data_validation)
-task_manager.register_task(data_processing)
+# Workflow memory with step tracking & checkpoints
+workflow_memory = WorkflowMemoryManager()
+ctx = workflow_memory.create_context("workflow_001", {"input": "data"})
+workflow_memory.set_variable("workflow_001", "status", "processing")
+workflow_memory.record_step_result("workflow_001", "step1", "Process", {"result": "ok"})
+workflow_memory.create_checkpoint("workflow_001", "Before critical operation")
 
-# Run all tasks
-results = task_manager.run_all()
-print(f"Results: {results}")
+# Team shared memory with messaging
+team_memory = OrchestrationMemoryManager()
+team_memory.create_team_context("team_001", "Complete analysis task")
+team_memory.send_message("agent_a", "agent_b", "Task completed", priority="high")
+team_memory.record_contribution("team_001", "agent_a", {"output": "analysis"})
+
+# Knowledge memory with embedding cache
+knowledge_memory = KnowledgeMemoryManager()
+knowledge_memory.cache_embedding("sample text", [0.1, 0.2, 0.3], "text-embedding-3")
+knowledge_memory.cache_query_result("What is AI?", "kb_001", [{"doc": "AI is..."}], 5)
+
+# Tool memory with result caching
+tool_memory = ToolMemoryManager()
+tool_memory.cache_result("calculator", {"x": 1, "y": 2}, {"sum": 3})
+tool_memory.record_execution("calculator", {"x": 1}, {"sum": 3}, 50, True)
+
+# Speech memory with voice profiles
+speech_memory = SpeechMemoryManager()
+speech_memory.store_transcription(audio_data, "Hello world", "en", 0.95)
+speech_memory.store_synthesis("Hello world", audio_output, "voice_001", 120)
+speech_memory.create_voice_profile("user_001", "User One", [0.1, 0.2], {"lang": "en"})
 ```
 
-### Intelligent Memory Management
+### 4. State Management
+
 ```python
-from agenticaiframework import MemoryManager
-
-# Create memory manager with tier limits
-memory_manager = MemoryManager(
-    short_term_limit=100,
-    long_term_limit=1000
+from agenticaiframework.state import (
+    AgentStateManager,
+    WorkflowStateManager,
+    OrchestrationStateManager,
+    KnowledgeStateManager,
+    ToolStateManager,
+    SpeechStateManager
 )
 
-# Store with TTL and priority
-memory_manager.store(
-    key="user_preferences",
-    value={
-        "communication_style": "detailed_explanations",
-        "preferred_format": "structured_json",
-        "domain_expertise": ["data_science", "machine_learning"]
-    },
-    memory_type="long_term",
-    ttl=86400,  # 24 hours
-    priority=5,
-    metadata={"source": "user_profile"}
-)
+# Agent state with persistence & checkpoints
+agent_state = AgentStateManager("agent_001", persist=True)
+agent_state.transition("idle", "processing")
+agent_state.update_context({"current_task": "analysis"})
+agent_state.create_checkpoint("Before critical decision")
 
-# Retrieve memory
-user_prefs = memory_manager.retrieve("user_preferences")
-print(f"User preferences: {user_prefs}")
+# Workflow state with step tracking
+workflow_state = WorkflowStateManager("workflow_001")
+workflow_state.set_current_step("data_processing")
+workflow_state.record_step_completion("validation", {"passed": True})
 
-# Search memories
-results = memory_manager.search("user", memory_type="long_term")
-print(f"Found {len(results)} matching memories")
+# Orchestration state for team coordination
+orch_state = OrchestrationStateManager("team_001")
+orch_state.update_team_status("active")
+orch_state.record_agent_contribution("agent_a", {"output": "analysis_result"})
+
+# Knowledge state for index management
+knowledge_state = KnowledgeStateManager("kb_001")
+knowledge_state.set_index_status("ready")
+knowledge_state.record_retrieval("query_001", ["doc1", "doc2"])
+
+# Tool state with circuit breaker
+tool_state = ToolStateManager("calculator")
+tool_state.set_availability(True)
+tool_state.record_execution(success=True, duration_ms=50)
+
+# Speech state for session management
+speech_state = SpeechStateManager("session_001")
+speech_state.set_mode("listening")
+speech_state.update_voice_context({"language": "en", "speaker": "user_001"})
 ```
 
-### Comprehensive Monitoring
+### 5. Speech Processing
+
+```python
+from agenticaiframework.speech import SpeechProcessor
+
+# Initialize speech processor
+speech = SpeechProcessor(
+    stt_provider="whisper",
+    tts_provider="elevenlabs",
+    default_language="en"
+)
+
+# Speech-to-Text
+transcription = speech.transcribe(audio_data, language="en")
+print(f"Transcribed: {transcription.text} (confidence: {transcription.confidence})")
+
+# Text-to-Speech
+audio = speech.synthesize("Hello, how can I help you today?", voice="professional")
+speech.play(audio)
+
+# Voice profile management
+speech.register_voice("user_001", voice_sample, metadata={"language": "en"})
+identified = speech.identify_speaker(audio_data)
+```
+
+### 6. Comprehensive Monitoring
+
 ```python
 from agenticaiframework import MonitoringSystem
 
 # Initialize monitoring
 monitoring = MonitoringSystem()
 
-# Record agent metrics
+# Record metrics
 monitoring.record_metric("agent_response_time", 1.2)
 monitoring.record_metric("agent_success_rate", 0.95)
 monitoring.record_metric("memory_usage_mb", 128)
 
-# Log events
+# Log events with context
 monitoring.log_event("task_completed", {
     "task_name": "data_processing",
     "duration": 2.5,
     "status": "success"
 })
 
-# Log messages
-monitoring.log_message("Processing pipeline started")
+# Distributed tracing
+with monitoring.trace("process_request") as span:
+    span.set_attribute("user_id", "user_001")
+    # Your processing logic
+    span.add_event("processing_complete")
+```
 
-# Get metrics and events
-metrics = monitoring.get_metrics()
-events = monitoring.get_events()
-print(f"Current metrics: {metrics}")
-print(f"Logged events: {len(events)}")
+---
+
+## 🧠 Core Modules
+
+### Memory Management (7 Specialized Managers)
+
+| Manager | Purpose | Key Features |
+|---------|---------|--------------|
+| **MemoryManager** | Core multi-tier memory | Short/long-term, TTL, LRU eviction, consolidation |
+| **AgentMemoryManager** | Agent-specific memory | Conversation, working, episodic, semantic memory |
+| **WorkflowMemoryManager** | Workflow execution memory | Step results, context passing, checkpoints |
+| **OrchestrationMemoryManager** | Multi-agent shared memory | Team context, messaging, task handoffs |
+| **KnowledgeMemoryManager** | Knowledge base memory | Embedding cache, query results, retrieval history |
+| **ToolMemoryManager** | Tool execution memory | Result caching, patterns, performance stats |
+| **SpeechMemoryManager** | Speech processing memory | Transcription/synthesis history, voice profiles |
+
+### State Management (7 State Managers)
+
+| Manager | Purpose | Key Features |
+|---------|---------|--------------|
+| **StateManager** | Core state management | State transitions, history, persistence |
+| **AgentStateManager** | Agent lifecycle state | Status, context, checkpoints, metrics |
+| **WorkflowStateManager** | Workflow execution state | Step tracking, routing, error handling |
+| **OrchestrationStateManager** | Team coordination state | Team status, agent states, coordination |
+| **KnowledgeStateManager** | Knowledge base state | Index status, sync state, retrieval state |
+| **ToolStateManager** | Tool execution state | Availability, execution, circuit breakers |
+| **SpeechStateManager** | Speech processing state | Session, voice, processing state |
+
+### Communication Protocols (6 Protocols)
+
+| Protocol | Use Case | Features |
+|----------|----------|----------|
+| **HTTP** | REST APIs | Request/response, webhooks |
+| **WebSocket** | Real-time | Bidirectional, low-latency |
+| **SSE** | Event streaming | Server-push, one-way |
+| **MQTT** | IoT/Messaging | Pub/sub, lightweight |
+| **gRPC** | High-performance | Streaming, strong typing |
+| **STDIO** | Local processes | MCP compatibility |
+
+### Context Management
+
+```python
+from agenticaiframework.context import (
+    ContextManager,
+    ContextWindow,
+    ContextCompressor
+)
+
+# Manage context windows
+context = ContextManager(max_tokens=8000)
+context.add_message("user", "Hello!")
+context.add_message("assistant", "Hi there!")
+
+# Automatic compression when needed
+compressor = ContextCompressor(strategy="summarize")
+compressed = compressor.compress(context.messages, target_tokens=4000)
+
+# Sliding window management
+window = ContextWindow(size=10, overlap=2)
+window.add(message)
+recent = window.get_recent(5)
+```
+
+---
+
+## 🔧 Advanced Features
+
+### Tools Framework (35+ Built-in Tools)
+
+```python
+from agenticaiframework.tools import (
+    ToolRegistry,
+    ToolExecutor,
+    BaseTool,
+    register_tool
+)
+
+# Register custom tool
+@register_tool(category="analysis", version="1.0")
+class DataAnalysisTool(BaseTool):
+    name = "data_analysis"
+    description = "Analyze data and generate insights"
+    
+    def execute(self, data: dict) -> dict:
+        # Your analysis logic
+        return {"insights": [...], "metrics": {...}}
+
+# Use tool executor with caching
+executor = ToolExecutor()
+result = executor.execute("data_analysis", {"data": dataset})
+```
+
+**Tool Categories:**
+| Category | Tools |
+|----------|-------|
+| **File & Document** | FileRead, FileWrite, PDF, DOCX, OCR, RAG Search |
+| **Web Scraping** | Selenium, Firecrawl, BrightData, Oxylabs |
+| **Database** | MySQL, PostgreSQL, Snowflake, MongoDB, Vector Search |
+| **AI/ML** | DALL-E, Vision, Code Interpreter, LangChain, LlamaIndex |
+
+### Guardrails & Safety
+
+```python
+from agenticaiframework.guardrails import GuardrailManager, ContentGuardrail
+
+# Setup guardrails
+guardrails = GuardrailManager()
+
+# Add content filtering
+guardrails.add(ContentGuardrail(
+    blocked_topics=["violence", "hate_speech"],
+    pii_detection=True,
+    max_token_limit=4000
+))
+
+# Validate input/output
+result = guardrails.validate(user_input)
+if not result.passed:
+    print(f"Blocked: {result.violations}")
+```
+
+### Human-in-the-Loop (HITL)
+
+```python
+from agenticaiframework.hitl import HITLManager
+
+# Setup HITL manager
+hitl = HITLManager(
+    approval_required=["high_risk_actions"],
+    timeout=300,  # 5 minutes
+    escalation_policy="notify_admin"
+)
+
+# Request human approval
+approval = await hitl.request_approval(
+    action="delete_records",
+    context={"count": 1000, "table": "users"},
+    urgency="high"
+)
+
+if approval.granted:
+    execute_action()
+```
+
+### Conversation Management
+
+```python
+from agenticaiframework.conversations import ConversationManager
+
+# Manage multi-turn conversations
+conversation = ConversationManager(
+    session_id="session_001",
+    max_turns=50,
+    context_strategy="sliding_window"
+)
+
+# Add turns with metadata
+conversation.add_turn(
+    role="user",
+    content="Analyze this data",
+    metadata={"intent": "analysis", "entities": ["data"]}
+)
+
+# Get conversation summary
+summary = conversation.summarize()
+```
+
+### Response Formatting
+
+```python
+from agenticaiframework.formatting import ResponseFormatter
+
+# Format responses consistently
+formatter = ResponseFormatter(
+    style="professional",
+    format="markdown",
+    max_length=2000
+)
+
+# Format agent response
+formatted = formatter.format(
+    response=raw_response,
+    include_sources=True,
+    add_disclaimer=True
+)
 ```
 
 ---
 
 ## 🏢 Enterprise Features
 
-AgenticAI Framework includes **21 enterprise-grade features** for production deployments:
+### 21 Enterprise-Grade Capabilities
 
-### 🛠️ **Tools Framework (35+ Tools)**
-| Category | Tools |
-|----------|-------|
-| **File & Document** | FileReadTool, FileWriteTool, DirectoryReadTool, OCRTool, PDFTextWritingTool, PDF/DOCX/MDX/XML/TXT/JSON/CSV RAG Search |
-| **Web Scraping** | ScrapeWebsiteTool, SeleniumScraperTool, FirecrawlTool, ScrapflyScrapeWebsiteTool, BrowserbaseTool, OxylabsScraperTool, BrightDataTool |
-| **Database** | MySQLRAGSearchTool, PostgreSQLRAGSearchTool, SnowflakeSearchTool, NL2SQLTool, Qdrant/Weaviate/MongoDB Vector Search |
-| **AI/ML** | DALLETool, VisionTool, AIMindTool, LlamaIndexTool, LangChainTool, RAGTool, CodeInterpreterTool |
+<table>
+<tr>
+<td width="50%">
 
-### 📊 **Observability & Metrics**
-| Feature | Description |
-|---------|-------------|
-| **Agent Step Tracing** | Distributed tracing with span hierarchy and context propagation |
-| **Latency Metrics** | Percentile-based latency tracking (P50, P95, P99) |
+**Observability & Metrics**
+- ✅ Distributed tracing with span hierarchy
+- ✅ Latency percentiles (P50, P95, P99)
+- ✅ Custom metrics & dashboards
+- ✅ Event logging & alerting
 
-### 🔍 **Evaluation & Testing**
-| Feature | Description |
-|---------|-------------|
-| **Model Quality Evaluation** | Hallucination detection, reasoning assessment, token efficiency |
-| **Task & Skill Evaluation** | Success rates, retry tracking, completion percentages |
-| **Tool & API Evaluation** | Tool invocation tracking, parameter validation, latency monitoring |
-| **Workflow Evaluation** | Multi-agent orchestration, handoff tracking, deadlock detection |
-| **Memory & Context Evaluation** | Context precision/recall, stale data detection, quality scoring |
-| **RAG Evaluation** | Retrieval quality, faithfulness, groundedness, citation accuracy |
-| **Autonomy & Planning** | Plan optimality, replanning tracking, human intervention |
-| **Performance & Scalability** | Latency percentiles (P50/P95/P99), throughput, stability |
-| **Cost & FinOps** | Token usage tracking, cost per request, budget optimization |
-| **Human-in-the-Loop** | Acceptance rates, override tracking, trust scoring |
-| **Business Outcomes** | ROI calculation, baseline comparison, impact metrics |
-| **Security Risk Scoring** | Input/output risk assessment, PII detection, policy compliance |
-| **A/B Testing Framework** | Experiment management with statistical significance |
-| **Canary Deployments** | Gradual rollouts with automatic rollback |
+**Security & Compliance**
+- ✅ Prompt injection detection (15+ patterns)
+- ✅ PII detection & masking
+- ✅ Rate limiting & throttling
+- ✅ Audit trails with hash chain integrity
+- ✅ Policy enforcement
 
-### 📝 **Prompt Management**
-| Feature | Description |
-|---------|-------------|
-| **Prompt Versioning** | Semantic versioning with draft→active→deprecated workflow |
-| **Prompt Library** | Reusable components with template inheritance |
+</td>
+<td width="50%">
 
-### 🎨 **Visual Tools APIs**
-| Feature | Description |
-|---------|-------------|
-| **Agent Builder** | Component library and blueprint management |
-| **Workflow Designer** | Visual workflow design with node/edge management |
-| **Admin Console** | User management, configuration, and dashboards |
+**Infrastructure**
+- ✅ Multi-region deployment
+- ✅ Tenant isolation
+- ✅ Auto-scaling
+- ✅ Serverless execution
 
-### 🔗 **Integrations**
-| Feature | Description |
-|---------|-------------|
-| **ITSM (ServiceNow)** | Incident management and change requests |
-| **Dev Tools (GitHub, ADO)** | Issues, PRs, pipelines integration |
-| **Data Platforms** | Snowflake and Databricks connectors |
-| **Webhooks** | Incoming/outgoing webhook management |
+**Integrations**
+- ✅ ServiceNow (ITSM)
+- ✅ GitHub/Azure DevOps
+- ✅ Snowflake/Databricks
+- ✅ Webhooks (in/out)
 
-### 🏗️ **Infrastructure**
-| Feature | Description |
-|---------|-------------|
-| **Serverless Execution** | Function deployment with auto-scaling |
-| **Multi-Region Support** | Geographic load balancing and failover |
-| **Tenant Isolation** | Multi-tenant resource isolation and quotas |
+</td>
+</tr>
+</table>
 
-### 🔐 **Compliance & Governance**
-| Feature | Description |
-|---------|-------------|
-| **Audit Trails** | Tamper-evident logging with hash chain integrity |
-| **Policy Enforcement** | Rule-based policies with pattern matching |
-| **Data Masking** | PII detection with multiple masking strategies |
+### Compliance & Audit
 
----
-
-## 🎯 Use Cases & Applications
-
-| Domain | Applications |
-|--------|-------------|
-| **🏢 Enterprise Automation** | Document processing, workflow automation, compliance monitoring, resource optimization |
-| **🔬 Research & Development** | Literature review, hypothesis generation, data analysis, experiment design |
-| **💬 Customer Experience** | Intelligent support, personalization, sentiment analysis, predictive support |
-| **🎓 Education & Training** | Adaptive learning, content generation, assessment, AI tutoring |
-| **🏥 Healthcare** | Clinical decision support, drug discovery, patient monitoring, medical documentation |
-
----
-
-## 🔧 Development & Deployment
-
-### Development Workflow
-```bash
-# Clone and setup development environment
-git clone https://github.com/isathish/agenticaiframework.git
-cd agenticaiframework
-
-# Create virtual environment
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-
-# Install development dependencies
-pip install -e ".[dev]"
-
-# Run tests
-pytest tests/
-
-# Run with coverage
-pytest tests/ --cov=agenticaiframework --cov-report=html
-
-# Build documentation locally
-mkdocs serve  # View at http://127.0.0.1:8000
-```
-
-### Production Deployment
 ```python
-from agenticaiframework import AgentManager, MonitoringSystem
-from agenticaiframework.memory import DatabaseMemory
-
-# Production-ready setup
-memory = DatabaseMemory(
-    db_path="/data/production/agent_memory.db",
-    backup_interval=3600,
-    max_connections=100
+from agenticaiframework.compliance import (
+    AuditLogger,
+    PolicyEnforcer,
+    DataMasker
 )
 
-monitoring = MonitoringSystem(
-    metrics_backend="prometheus",
-    alerting_enabled=True,
-    log_level="INFO"
-)
+# Audit logging with integrity
+audit = AuditLogger(storage="database", integrity="hash_chain")
+audit.log_action("data_access", user="admin", resource="customer_data")
 
-manager = AgentManager(
-    memory=memory,
-    monitoring=monitoring,
-    max_agents=50,
-    auto_scaling=True
-)
-```
+# Policy enforcement
+policy = PolicyEnforcer()
+policy.add_rule("no_pii_in_logs", pattern=r"\b\d{3}-\d{2}-\d{4}\b")
+policy.enforce(log_message)
 
-### Docker Deployment
-```dockerfile
-FROM python:3.11-slim
-
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-
-COPY . .
-RUN pip install -e .
-
-EXPOSE 8000
-CMD ["python", "-m", "agenticaiframework.server"]
+# Data masking
+masker = DataMasker(strategies=["pii", "credit_card", "email"])
+masked = masker.mask("Contact: john@example.com, SSN: 123-45-6789")
+# Output: "Contact: [EMAIL], SSN: [SSN]"
 ```
 
 ---
 
-## 📚 Documentation & Resources
+## 📊 Evaluation Framework
 
-### 📖 **Documentation**
-- **[Complete Documentation](https://isathish.github.io/agenticaiframework/)** - Full framework documentation
-- **[API Reference](https://isathish.github.io/agenticaiframework/API_REFERENCE/)** - Detailed API documentation
-- **[Quick Start Guide](https://isathish.github.io/agenticaiframework/quick-start/)** - Get started in minutes
-- **[Best Practices](https://isathish.github.io/agenticaiframework/best-practices/)** - Production-ready patterns
+### 12-Tier Comprehensive Evaluation
 
-### 🎯 **Module Guides**
-- **[Agents](https://isathish.github.io/agenticaiframework/agents/)** - Creating and managing intelligent agents
-- **[Tasks](https://isathish.github.io/agenticaiframework/tasks/)** - Advanced task orchestration
-- **[Memory](https://isathish.github.io/agenticaiframework/memory/)** - Sophisticated memory systems
-- **[Monitoring](https://isathish.github.io/agenticaiframework/monitoring/)** - Comprehensive observability
-- **[Guardrails](https://isathish.github.io/agenticaiframework/guardrails/)** - Safety and compliance
+```python
+from agenticaiframework.evaluation import EvaluationSystem
 
-### 💡 **Examples**
-- **[Basic Examples](https://isathish.github.io/agenticaiframework/EXAMPLES/)** - Simple usage patterns
-- **[Advanced Examples](https://isathish.github.io/agenticaiframework/examples/)** - Complex real-world scenarios
-- **[Integration Examples](https://isathish.github.io/agenticaiframework/integration/)** - Third-party integrations
+# Initialize evaluation system
+evaluator = EvaluationSystem()
+
+# Run comprehensive evaluation
+results = evaluator.evaluate(
+    agent=my_agent,
+    test_cases=test_suite,
+    tiers=[
+        "model_quality",      # Hallucination, reasoning, coherence
+        "task_skill",         # Success rates, completion
+        "tool_api",           # Tool usage, latency
+        "workflow",           # Orchestration, handoffs
+        "memory_context",     # Context quality, retrieval
+        "rag",                # Faithfulness, groundedness
+        "autonomy_planning",  # Plan optimality
+        "performance",        # Latency P50/P95/P99
+        "cost_finops",        # Token usage, cost
+        "human_loop",         # Acceptance rates
+        "business_outcomes",  # ROI, impact
+        "security_risk"       # Risk scoring
+    ]
+)
+
+# A/B Testing
+from agenticaiframework.evaluation import ABTestFramework
+
+ab_test = ABTestFramework()
+experiment = ab_test.create_experiment(
+    name="prompt_optimization",
+    variants=["control", "variant_a", "variant_b"],
+    metrics=["success_rate", "latency", "cost"]
+)
+ab_test.run(experiment, sample_size=1000)
+results = ab_test.analyze(experiment)
+
+# Canary Deployments
+from agenticaiframework.evaluation import CanaryDeployment
+
+canary = CanaryDeployment()
+canary.deploy(
+    new_version="v2.0",
+    initial_traffic=5,
+    increment=10,
+    rollback_threshold={"error_rate": 0.05}
+)
+```
 
 ---
 
-## 📊 Test Coverage Summary
+## 🔄 Framework Comparison
 
-<div align="center">
+| Feature | AgenticAI | LangChain | CrewAI | AutoGen |
+|:--------|:---------:|:---------:|:------:|:-------:|
+| **Production Ready** | ✅ Enterprise | ⚠️ Experimental | ⚠️ Limited | ⚠️ Research |
+| **Test Coverage** | ✅ 66% (1036 tests) | ⚠️ Variable | ❌ Limited | ⚠️ Basic |
+| **Built-in Tools** | ✅ 35+ | ⚠️ Community | ❌ Limited | ⚠️ Basic |
+| **Memory Managers** | ✅ 7 Specialized | ⚠️ 1 Basic | ❌ None | ⚠️ Simple |
+| **State Managers** | ✅ 7 Specialized | ❌ None | ❌ None | ❌ None |
+| **Speech Processing** | ✅ Full STT/TTS | ❌ None | ❌ None | ❌ None |
+| **Communication Protocols** | ✅ 6 Protocols | ⚠️ HTTP only | ❌ None | ⚠️ Basic |
+| **12-Tier Evaluation** | ✅ Built-in | ❌ None | ❌ None | ❌ None |
+| **Multi-Agent Orchestration** | ✅ Advanced | ⚠️ Simple | ✅ Team-based | ✅ Group chat |
+| **Enterprise Features** | ✅ 21 Features | ⚠️ Limited | ❌ None | ❌ None |
+| **HITL Support** | ✅ Built-in | ⚠️ Manual | ❌ None | ⚠️ Basic |
+| **Compliance/Audit** | ✅ Full | ❌ None | ❌ None | ❌ None |
+| **Conversation Management** | ✅ Advanced | ⚠️ Basic | ❌ None | ⚠️ Basic |
+| **Context Compression** | ✅ Built-in | ⚠️ Manual | ❌ None | ❌ None |
 
-![Coverage](https://img.shields.io/badge/coverage-66%25-green.svg)
-![Tests](https://img.shields.io/badge/tests-1036%20passing-success.svg)
-![Quality](https://img.shields.io/badge/quality-production--ready-blue.svg)
+---
 
-</div>
+## 📚 Documentation
 
-<details>
-<summary><b>🧪 Running Tests</b></summary>
+### 📖 Core Documentation
+- **[Complete Documentation](https://isathish.github.io/agenticaiframework/)** - Full framework docs
+- **[API Reference](https://isathish.github.io/agenticaiframework/API_REFERENCE/)** - Detailed API docs
+- **[Quick Start Guide](https://isathish.github.io/agenticaiframework/quick-start/)** - Get started fast
+- **[Best Practices](https://isathish.github.io/agenticaiframework/best-practices/)** - Production patterns
+
+### 🎯 Module Guides
+
+| Module | Description | Link |
+|--------|-------------|------|
+| Agents | Creating intelligent agents | [📚 Docs](https://isathish.github.io/agenticaiframework/agents/) |
+| Memory | 7 specialized memory systems | [📚 Docs](https://isathish.github.io/agenticaiframework/memory/) |
+| State | 7 state management systems | [📚 Docs](https://isathish.github.io/agenticaiframework/state/) |
+| Orchestration | Multi-agent coordination | [📚 Docs](https://isathish.github.io/agenticaiframework/orchestration/) |
+| Speech | STT/TTS processing | [📚 Docs](https://isathish.github.io/agenticaiframework/speech/) |
+| Tools | 35+ built-in tools | [📚 Docs](https://isathish.github.io/agenticaiframework/tools/) |
+| Evaluation | 12-tier assessment | [📚 Docs](https://isathish.github.io/agenticaiframework/evaluation/) |
+| Guardrails | Safety & compliance | [📚 Docs](https://isathish.github.io/agenticaiframework/guardrails/) |
+| Monitoring | Observability & tracing | [📚 Docs](https://isathish.github.io/agenticaiframework/monitoring/) |
+| Communication | 6 protocol support | [📚 Docs](https://isathish.github.io/agenticaiframework/communication/) |
+| HITL | Human-in-the-loop | [📚 Docs](https://isathish.github.io/agenticaiframework/hitl/) |
+| Compliance | Audit & policy | [📚 Docs](https://isathish.github.io/agenticaiframework/compliance/) |
+
+---
+
+## 🧪 Testing
 
 ```bash
 # Run all tests
 pytest tests/
 
-# Run with coverage report
+# Run with coverage
 pytest tests/ --cov=agenticaiframework --cov-report=html
 
-# Run specific test modules
-pytest tests/test_agenticai.py -v              # Core framework tests
-pytest tests/test_all_evaluation_types.py -v   # 12-tier evaluation tests
-pytest tests/test_memory_coverage.py -v        # Memory system tests
-pytest tests/test_agents_coverage.py -v        # Agent & context tests
+# Run specific test suites
+pytest tests/unit/ -v                         # Unit tests
+pytest tests/integration/ -v                  # Integration tests
+pytest tests/test_memory_coverage.py -v       # Memory tests
+pytest tests/test_all_evaluation_types.py -v  # Evaluation tests
 ```
 
-</details>
+### Test Coverage Summary
 
-<details>
-<summary><b>📊 Module Coverage Details</b></summary>
-
-| Module | Coverage | Status | Key Features |
-|--------|----------|--------|--------------|
-| **Evaluation (Advanced)** | 81% | 🟢 | 12-tier evaluation framework |
-| **Communication** | 100% | 🟢 | Multi-protocol support |
-| **Processes** | 100% | 🟢 | Workflow orchestration |
-| **Knowledge** | 94% | 🟢 | Semantic search & retrieval |
-| **Configurations** | 100% | 🟢 | Environment management |
-| **Evaluation (Basic)** | 100% | 🟢 | Core evaluation system |
-| **Integrations** | 95% | 🟢 | Third-party integrations |
-| **Hub** | 85% | 🟢 | Agent coordination |
-| **Monitoring** | 86% | 🟢 | Observability & tracing |
-| **Memory** | 82% | 🟡 | Multi-tier memory systems |
-| **Security** | 74% | 🟡 | Prompt injection protection |
-| **Agents** | 83% | 🟡 | Context engineering |
-| **MCP Tools** | 79% | 🟡 | Model Context Protocol |
-| **Tasks** | 80% | 🟡 | Task orchestration |
-| **Guardrails** | 75% | 🟡 | Safety enforcement |
-| **Prompts** | 71% | 🟡 | Template & security |
-| **LLMs** | 60% | 🟡 | Model routing & management |
-
-</details>
-
-<details>
-<summary><b>🎯 Test Categories</b></summary>
-
-| Category | Tests | Coverage |
-|----------|-------|----------|
-| **Evaluation Framework** | 162 | 12-tier evaluation system |
-| **Core Functionality** | 180 | Basic operations |
-| **Enterprise Features** | 150 | Compliance, integrations |
-| **Security & Safety** | 120 | Injection protection |
-| **Advanced Features** | 200 | Context engineering, orchestration |
-| **Convenience Methods** | 50 | New API wrappers |
-| **Edge Cases** | 174 | Error handling |
-
-</details>
-
-### ✅ Quality Metrics
-
-| Metric | Status | Details |
-|:-------|:------:|:--------|
-| **Test Coverage** | ✅ 66% | 1036 passing tests across 17 modules |
-| **Code Quality** | ✅ Production | Comprehensive testing & validation |
-| **Evaluation** | ✅ 12-Tier | Industry-leading evaluation framework |
-| **Security** | ✅ Enterprise | Prompt injection detection, PII protection |
-| **Performance** | ✅ Optimized | Circuit breakers, caching, retry mechanisms |
+| Module | Coverage | Status |
+|--------|----------|--------|
+| Communication | 100% | 🟢 Excellent |
+| Processes | 100% | 🟢 Excellent |
+| Configurations | 100% | 🟢 Excellent |
+| Evaluation (Basic) | 100% | 🟢 Excellent |
+| Knowledge | 94% | 🟢 Excellent |
+| Integrations | 95% | 🟢 Excellent |
+| Monitoring | 86% | 🟢 Good |
+| Hub | 85% | 🟢 Good |
+| Agents | 83% | 🟢 Good |
+| Memory | 82% | 🟢 Good |
+| Evaluation (Advanced) | 81% | 🟢 Good |
+| Tasks | 80% | 🟢 Good |
+| MCP Tools | 79% | 🟡 Fair |
+| Guardrails | 75% | 🟡 Fair |
+| Security | 74% | 🟡 Fair |
+| Prompts | 71% | 🟡 Fair |
 
 ---
 
-## 🤝 Community & Support
+## 🤝 Contributing
 
-<div align="center">
+We welcome contributions! See our [Contributing Guide](CONTRIBUTING.md) for details.
 
-[![GitHub Issues](https://img.shields.io/github/issues/isathish/agenticaiframework)](https://github.com/isathish/agenticaiframework/issues)
-[![GitHub Discussions](https://img.shields.io/github/discussions/isathish/agenticaiframework)](https://github.com/isathish/agenticaiframework/discussions)
-[![Documentation](https://img.shields.io/badge/docs-latest-blue)](https://isathish.github.io/agenticaiframework/)
+```bash
+# Setup development environment
+git clone https://github.com/isathish/agenticaiframework.git
+cd agenticaiframework
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+pip install -e ".[dev]"
 
-</div>
+# Run tests before submitting
+pytest tests/
 
-<table>
-<tr>
-<td width="33%" align="center">
+# Build documentation locally
+mkdocs serve
+```
 
-### 📞 **Getting Help**
-- 🐛 [Report Bugs](https://github.com/isathish/agenticaiframework/issues)
-- 💬 [Ask Questions](https://github.com/isathish/agenticaiframework/discussions)
-- 📖 [Read Docs](https://isathish.github.io/agenticaiframework/)
+### Ways to Contribute
 
-</td>
-<td width="33%" align="center">
-
-### 🤝 **Contributing**
-- 💻 [Code Contributions](https://github.com/isathish/agenticaiframework/pulls)
-- ✨ [Feature Requests](https://github.com/isathish/agenticaiframework/issues/new)
-- 📝 [Improve Docs](https://github.com/isathish/agenticaiframework)
-
-</td>
-<td width="33%" align="center">
-
-### 🌟 **Support Project**
-- ⭐ [Star on GitHub](https://github.com/isathish/agenticaiframework)
-- 🔗 [Share Project](https://github.com/isathish/agenticaiframework)
-- 📢 [Spread Word](https://twitter.com/intent/tweet?text=Check%20out%20AgenticAI%20Framework)
-
-</td>
-</tr>
-</table>
-
-### 📋 **Development Roadmap**
-- **Q1 2026**: Enhanced multi-modal capabilities and advanced evaluation metrics
-- **Q2 2026**: Distributed agent coordination and multi-region deployment
-- **Q3 2026**: Advanced ML/AI integrations and self-healing capabilities
-- **Q4 2026**: Enterprise security, compliance features, and plugin marketplace
+| Type | Description |
+|------|-------------|
+| 🐛 Bug Reports | [Report issues](https://github.com/isathish/agenticaiframework/issues) |
+| ✨ Feature Requests | [Request features](https://github.com/isathish/agenticaiframework/issues/new) |
+| 📝 Documentation | [Improve docs](https://github.com/isathish/agenticaiframework) |
+| 💻 Code | [Submit PRs](https://github.com/isathish/agenticaiframework/pulls) |
+| 💡 Examples | [Add examples](https://github.com/isathish/agenticaiframework/tree/main/examples) |
 
 ---
 
-<div align="center">
+## 📅 Roadmap
+
+| Quarter | Focus Areas |
+|---------|-------------|
+| **Q1 2026** | Enhanced multi-modal capabilities, advanced evaluation metrics |
+| **Q2 2026** | Distributed agent coordination, multi-region deployment |
+| **Q3 2026** | Advanced ML/AI integrations, self-healing capabilities |
+| **Q4 2026** | Enterprise security enhancements, plugin marketplace |
+
+---
 
 ## 📄 License
 
-**MIT License** - See [LICENSE](LICENSE) file for details
-
----
-
-### 🌟 Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=isathish/agenticaiframework&type=Date)](https://star-history.com/#isathish/agenticaiframework&Date)
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
 ---
 
 ## 🙏 Acknowledgments
 
-<table>
-<tr>
-<td align="center">
-<b>Built with ❤️ by the AgenticAI Framework Team</b><br>
-<sub>Making AI agents accessible, reliable, and production-ready</sub><br><br>
-<sub>Special thanks to all contributors who have helped make this framework better!</sub>
-</td>
-</tr>
-</table>
+<div align="center">
 
-**[⬆ Back to Top](#-agenticai-framework)**
+**Built with ❤️ by the AgenticAI Framework Team**
+
+*Making AI agents accessible, reliable, and production-ready*
 
 ---
 
-<sub>© 2026 AgenticAI Framework. All rights reserved. | [Documentation](https://isathish.github.io/agenticaiframework/) | [GitHub](https://github.com/isathish/agenticaiframework) | [PyPI](https://pypi.org/project/agenticaiframework/)</sub>
+[![GitHub Stars](https://img.shields.io/github/stars/isathish/agenticaiframework?style=social)](https://github.com/isathish/agenticaiframework)
+[![GitHub Forks](https://img.shields.io/github/forks/isathish/agenticaiframework?style=social)](https://github.com/isathish/agenticaiframework/fork)
+[![Twitter Follow](https://img.shields.io/twitter/follow/agenticai?style=social)](https://twitter.com/agenticai)
 
+**[⬆ Back to Top](#-agenticai-framework)**
+
+</div>
+
+---
+
+<div align="center">
+<sub>© 2026 AgenticAI Framework. All rights reserved.</sub>
+<br>
+<sub>
+<a href="https://isathish.github.io/agenticaiframework/">Documentation</a> •
+<a href="https://github.com/isathish/agenticaiframework">GitHub</a> •
+<a href="https://pypi.org/project/agenticaiframework/">PyPI</a>
+</sub>
 </div>
