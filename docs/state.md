@@ -1,760 +1,864 @@
----
-title: State Management
-description: Complete guide to AgenticAI Framework's 7 specialized state managers
----
+# State Management
 
-# 🔄 State Management
+<div class="hero-section">
+<h2 class="hero-title">🔄 Comprehensive State Management</h2>
+<p class="hero-subtitle">Production-ready state management with persistence, recovery, and real-time tracking for agents, workflows, and orchestration</p>
+</div>
 
-AgenticAI Framework provides **7 dedicated state managers** for complete control over agent lifecycles, workflow execution, conversations, and system state.
-
----
-
-## 🎯 Quick Navigation
-
-<div class="grid cards" markdown>
-
--   :robot:{ .lg } **AgentStateManager**
-
-    ---
-
-    Agent lifecycle and runtime state
-
-    [:octicons-arrow-right-24: Jump to section](#agentstatemanager)
-
--   :arrows_counterclockwise:{ .lg } **WorkflowStateManager**
-
-    ---
-
-    Workflow execution tracking
-
-    [:octicons-arrow-right-24: Jump to section](#workflowstatemanager)
-
--   :speech_balloon:{ .lg } **ConversationStateManager**
-
-    ---
-
-    Conversation context and history
-
-    [:octicons-arrow-right-24: Jump to section](#conversationstatemanager)
-
--   :clipboard:{ .lg } **TaskStateManager**
-
-    ---
-
-    Task tracking and progress
-
-    [:octicons-arrow-right-24: Jump to section](#taskstatemanager)
-
--   :window:{ .lg } **ContextStateManager**
-
-    ---
-
-    Context window management
-
-    [:octicons-arrow-right-24: Jump to section](#contextstatemanager)
-
--   :hammer_and_wrench:{ .lg } **ToolStateManager**
-
-    ---
-
-    Tool execution states
-
-    [:octicons-arrow-right-24: Jump to section](#toolstatemanager)
-
--   :floppy_disk:{ .lg } **MemoryStateManager**
-
-    ---
-
-    Memory system states
-
-    [:octicons-arrow-right-24: Jump to section](#memorystatemanager)
-
+<div class="stats-grid">
+<div class="stat-item">
+<div class="stat-number">6</div>
+<div class="stat-label">State Managers</div>
+</div>
+<div class="stat-item">
+<div class="stat-number">3</div>
+<div class="stat-label">Backend Options</div>
+</div>
+<div class="stat-item">
+<div class="stat-number">Auto</div>
+<div class="stat-label">Recovery</div>
+</div>
+<div class="stat-item">
+<div class="stat-number">Real-time</div>
+<div class="stat-label">Checkpointing</div>
+</div>
 </div>
 
 ---
 
-## 📊 State Manager Comparison
+## Overview
 
-| Manager | Scope | Key States | Use Case |
-|---------|-------|------------|----------|
-| **AgentStateManager** | Per-agent | idle, running, paused, error | Agent lifecycle |
-| **WorkflowStateManager** | Per-workflow | pending, active, completed, failed | Workflow orchestration |
-| **ConversationStateManager** | Per-conversation | active, paused, ended | Chat sessions |
-| **TaskStateManager** | Per-task | queued, running, completed, failed | Task execution |
-| **ContextStateManager** | Per-context | open, full, compressed | Context windows |
-| **ToolStateManager** | Per-tool | ready, executing, cooldown | Tool management |
-| **MemoryStateManager** | Per-memory | syncing, synced, stale | Memory operations |
+AgenticAI Framework provides **6 specialized state managers** for complete control over agent lifecycles, workflow execution, and system state with multiple persistence backends.
+
+```python
+from agenticaiframework.state import (
+    StateManager,           # Core state management
+    AgentStateStore,        # Agent state & snapshots
+    WorkflowStateManager,   # Workflow execution state
+    OrchestrationStateManager,  # Multi-agent coordination
+    KnowledgeStateManager,  # Knowledge base state
+    ToolStateManager,       # Tool execution state
+    SpeechStateManager,     # Speech session state
+)
+```
 
 ---
 
-## AgentStateManager
+## State Manager Architecture
 
-The **AgentStateManager** controls agent lifecycle, runtime state, and operational modes.
+<div class="feature-grid">
+<div class="feature-card">
+<h3>🎛️ StateManager</h3>
+<h4>Core State Engine</h4>
+<p>Central state management with pluggable backends</p>
+</div>
+<div class="feature-card">
+<h3>🤖 AgentStateStore</h3>
+<h4>Agent Lifecycle</h4>
+<p>Snapshots, checkpoints, and recovery for agents</p>
+</div>
+<div class="feature-card">
+<h3>🔄 WorkflowStateManager</h3>
+<h4>Workflow Tracking</h4>
+<p>Step-by-step execution state and checkpoints</p>
+</div>
+<div class="feature-card">
+<h3>🎭 OrchestrationStateManager</h3>
+<h4>Team Coordination</h4>
+<p>Multi-agent state and task queue management</p>
+</div>
+<div class="feature-card">
+<h3>📚 KnowledgeStateManager</h3>
+<h4>Knowledge Base</h4>
+<p>Indexing progress and sync status tracking</p>
+</div>
+<div class="feature-card">
+<h3>🛠️ ToolStateManager</h3>
+<h4>Tool Execution</h4>
+<p>Execution state, caching, and retry management</p>
+</div>
+</div>
 
-### Basic Usage
+---
+
+## Core StateManager
+
+The central state management engine with pluggable persistence backends.
+
+### Initialization
 
 ```python
-from agenticaiframework import AgentStateManager, AgentState
+from agenticaiframework.state import (
+    StateManager,
+    StateConfig,
+    MemoryBackend,
+    FileBackend,
+    RedisBackend,
+)
 
-# Initialize state manager
-state_manager = AgentStateManager(agent_id="researcher_01")
+# In-memory state (development)
+state_manager = StateManager(
+    config=StateConfig(
+        backend="memory",
+        auto_save=True,
+        save_interval=30,
+    )
+)
 
-# Get current state
-current_state = state_manager.get_state()
-print(f"Agent state: {current_state}")  # AgentState.IDLE
+# File-based state (single instance)
+state_manager = StateManager(
+    config=StateConfig(
+        backend="file",
+        file_path="./state/app_state.json",
+        auto_save=True,
+    )
+)
 
-# Transition to new state
-state_manager.transition_to(AgentState.RUNNING)
-
-# Check if transition is valid
-can_pause = state_manager.can_transition_to(AgentState.PAUSED)
+# Redis state (production/distributed)
+state_manager = StateManager(
+    config=StateConfig(
+        backend="redis",
+        redis_url="redis://localhost:6379",
+        key_prefix="agenticai:",
+        ttl=3600,
+    )
+)
 ```
 
-### Agent Lifecycle States
+### Basic Operations
 
 ```python
-from agenticaiframework import AgentState
+# Save state
+await state_manager.save("agent:researcher", {
+    "status": "running",
+    "current_task": "analyze_data",
+    "progress": 0.45,
+})
 
-# Available states
-class AgentState:
-    INITIALIZING = "initializing"  # Agent is starting up
-    IDLE = "idle"                  # Ready to receive tasks
-    RUNNING = "running"            # Executing a task
-    PAUSED = "paused"              # Temporarily suspended
-    WAITING = "waiting"            # Waiting for external input
-    ERROR = "error"                # Error state
-    TERMINATED = "terminated"      # Shut down
+# Get state
+agent_state = await state_manager.get("agent:researcher")
+print(f"Status: {agent_state['status']}")
+
+# Update partial state
+await state_manager.update("agent:researcher", {
+    "progress": 0.75,
+})
+
+# Delete state
+await state_manager.delete("agent:researcher")
+
+# List all keys
+keys = await state_manager.list_keys("agent:*")
 ```
 
-### State Transitions
+### State Subscriptions
 
 ```python
-# Define valid transitions
-state_manager = AgentStateManager(
-    agent_id="agent_01",
-    transitions={
-        AgentState.IDLE: [AgentState.RUNNING, AgentState.TERMINATED],
-        AgentState.RUNNING: [AgentState.IDLE, AgentState.PAUSED, AgentState.ERROR],
-        AgentState.PAUSED: [AgentState.RUNNING, AgentState.IDLE],
-        AgentState.ERROR: [AgentState.IDLE, AgentState.TERMINATED],
+# Subscribe to state changes
+async def on_state_change(key: str, old_value: dict, new_value: dict):
+    print(f"State changed for {key}")
+    print(f"  Old: {old_value}")
+    print(f"  New: {new_value}")
+
+state_manager.subscribe("agent:*", on_state_change)
+
+# Unsubscribe
+state_manager.unsubscribe("agent:*", on_state_change)
+```
+
+---
+
+## AgentStateStore
+
+Manages agent snapshots, checkpoints, and recovery.
+
+### Creating Agent Snapshots
+
+```python
+from agenticaiframework.state import (
+    AgentStateStore,
+    AgentSnapshot,
+    AgentCheckpoint,
+)
+
+# Initialize agent state store
+agent_store = AgentStateStore(
+    persistence="redis",
+    redis_url="redis://localhost:6379",
+)
+
+# Create a snapshot of agent state
+snapshot = AgentSnapshot(
+    agent_id="researcher_01",
+    timestamp=datetime.now(),
+    memory_state=agent.memory.export(),
+    tool_state=agent.tools.get_state(),
+    conversation_history=agent.conversation_history,
+    metadata={
+        "version": "1.0",
+        "task_count": 42,
     }
 )
 
-# Transition with callback
-state_manager.on_transition(
-    from_state=AgentState.RUNNING,
-    to_state=AgentState.IDLE,
-    callback=lambda: print("Task completed!")
-)
+# Save snapshot
+await agent_store.save_snapshot(snapshot)
+
+# List available snapshots
+snapshots = await agent_store.list_snapshots("researcher_01")
+for snap in snapshots:
+    print(f"Snapshot: {snap.timestamp} - {snap.metadata}")
 ```
 
-### State Persistence
+### Checkpointing
 
 ```python
-# Enable state persistence
-state_manager = AgentStateManager(
-    agent_id="agent_01",
-    persist=True,
-    persist_path="./state_data"
+# Create checkpoint during long-running tasks
+checkpoint = AgentCheckpoint(
+    agent_id="researcher_01",
+    checkpoint_id="task_step_5",
+    step=5,
+    state={
+        "current_task": "data_analysis",
+        "intermediate_results": results,
+        "tokens_used": 15000,
+    },
+    recoverable=True,
 )
 
-# Save current state
-state_manager.save()
+await agent_store.save_checkpoint(checkpoint)
 
-# Restore state on startup
-state_manager.restore()
+# Resume from checkpoint
+checkpoint = await agent_store.get_checkpoint(
+    agent_id="researcher_01",
+    checkpoint_id="task_step_5"
+)
 
-# Get state history
-history = state_manager.get_history(last_n=10)
-for entry in history:
-    print(f"{entry.timestamp}: {entry.from_state} -> {entry.to_state}")
+if checkpoint:
+    agent.restore_from_checkpoint(checkpoint.state)
+```
+
+### Agent Recovery
+
+```python
+from agenticaiframework.state import AgentRecoveryManager
+
+recovery_manager = AgentRecoveryManager(
+    agent_store=agent_store,
+    auto_recover=True,
+    max_recovery_attempts=3,
+)
+
+# Register agent for recovery
+recovery_manager.register(agent)
+
+# Manual recovery
+try:
+    result = await agent.run(task)
+except Exception as e:
+    # Attempt recovery
+    recovered = await recovery_manager.recover(
+        agent_id=agent.id,
+        from_checkpoint="latest",
+    )
+    
+    if recovered:
+        print("Agent recovered successfully")
+        result = await agent.resume()
 ```
 
 ---
 
 ## WorkflowStateManager
 
-The **WorkflowStateManager** tracks workflow execution, step progress, and branching decisions.
+Tracks workflow execution, steps, and enables pause/resume.
 
-### Basic Usage
+### Workflow State Tracking
 
 ```python
-from agenticaiframework import WorkflowStateManager, WorkflowState
+from agenticaiframework.state import (
+    WorkflowStateManager,
+    WorkflowState,
+    WorkflowStatus,
+    StepState,
+)
 
-# Initialize for workflow
-workflow_state = WorkflowStateManager(workflow_id="content_pipeline")
+# Initialize workflow state manager
+workflow_state = WorkflowStateManager(
+    persistence="redis",
+    checkpoint_interval=5,  # Checkpoint every 5 steps
+)
 
-# Start workflow
-workflow_state.start()
-print(f"State: {workflow_state.get_state()}")  # WorkflowState.ACTIVE
+# Create workflow state
+state = WorkflowState(
+    workflow_id="research_pipeline",
+    status=WorkflowStatus.PENDING,
+    total_steps=10,
+    current_step=0,
+    context={},
+)
+
+await workflow_state.create(state)
 
 # Update step progress
-workflow_state.update_step(
-    step_name="research",
-    status="completed",
-    progress=100
+await workflow_state.update_step(
+    workflow_id="research_pipeline",
+    step=StepState(
+        step_number=1,
+        name="data_collection",
+        status="completed",
+        result={"documents": 150},
+        duration_ms=5400,
+    )
 )
 
-# Get workflow status
-status = workflow_state.get_status()
-print(f"Current step: {status.current_step}")
-print(f"Progress: {status.overall_progress}%")
+# Get current state
+current = await workflow_state.get("research_pipeline")
+print(f"Progress: {current.current_step}/{current.total_steps}")
 ```
 
-### Workflow States
+### Workflow Checkpointing
 
 ```python
-class WorkflowState:
-    PENDING = "pending"        # Not started
-    ACTIVE = "active"          # Currently running
-    PAUSED = "paused"          # Temporarily paused
-    WAITING = "waiting"        # Waiting for input/approval
-    COMPLETED = "completed"    # Successfully finished
-    FAILED = "failed"          # Failed with error
-    CANCELLED = "cancelled"    # Manually cancelled
-```
+from agenticaiframework.state import WorkflowCheckpoint
 
-### Step Tracking
-
-```python
-# Register workflow steps
-workflow_state.register_steps([
-    {"name": "research", "order": 1, "required": True},
-    {"name": "analysis", "order": 2, "required": True},
-    {"name": "writing", "order": 3, "required": True},
-    {"name": "review", "order": 4, "required": False},
-])
-
-# Start a step
-workflow_state.start_step("research")
-
-# Complete a step
-workflow_state.complete_step(
-    step_name="research",
-    output=research_data,
-    metrics={"duration_ms": 5000}
+# Create checkpoint
+checkpoint = WorkflowCheckpoint(
+    workflow_id="research_pipeline",
+    checkpoint_id="step_5_complete",
+    step=5,
+    state=current_state,
+    context=workflow_context,
+    timestamp=datetime.now(),
 )
 
-# Skip optional step
-workflow_state.skip_step("review", reason="Time constraints")
+await workflow_state.checkpoint(checkpoint)
 
-# Get step status
-step_status = workflow_state.get_step_status("research")
-```
+# List checkpoints
+checkpoints = await workflow_state.list_checkpoints("research_pipeline")
 
-### Parallel Step Execution
-
-```python
-# Track parallel steps
-workflow_state.start_parallel_steps(["analysis_a", "analysis_b", "analysis_c"])
-
-# Complete individual parallel step
-workflow_state.complete_step("analysis_a", output=result_a)
-
-# Check if all parallel steps completed
-if workflow_state.are_parallel_steps_complete():
-    workflow_state.proceed_to_next()
-```
-
----
-
-## ConversationStateManager
-
-The **ConversationStateManager** manages conversation context, turn tracking, and session state.
-
-### Basic Usage
-
-```python
-from agenticaiframework import ConversationStateManager, ConversationState
-
-# Initialize conversation
-conv_state = ConversationStateManager(conversation_id="chat_001")
-
-# Start conversation
-conv_state.start()
-
-# Add message
-conv_state.add_message(
-    role="user",
-    content="Hello, I need help with Python",
-    metadata={"intent": "help_request"}
-)
-
-# Add response
-conv_state.add_message(
-    role="assistant",
-    content="I'd be happy to help with Python! What do you need?",
-    metadata={"tokens": 15}
-)
-
-# Get conversation context
-context = conv_state.get_context(last_n_turns=5)
-```
-
-### Conversation States
-
-```python
-class ConversationState:
-    ACTIVE = "active"          # Ongoing conversation
-    PAUSED = "paused"          # User stepped away
-    WAITING = "waiting"        # Waiting for user response
-    ENDED = "ended"            # Conversation concluded
-    TRANSFERRED = "transferred"  # Handed off to another agent
-```
-
-### Turn Management
-
-```python
-# Track turn count
-turn = conv_state.get_current_turn()
-print(f"Current turn: {turn}")
-
-# Set turn timeout
-conv_state.set_turn_timeout(seconds=300)
-
-# Handle timeout
-if conv_state.is_turn_timed_out():
-    conv_state.send_reminder("Are you still there?")
-
-# End conversation
-conv_state.end(
-    reason="user_goodbye",
-    summary="Helped user with Python list comprehensions"
+# Resume from checkpoint
+await workflow_state.resume_from(
+    workflow_id="research_pipeline",
+    checkpoint_id="step_5_complete"
 )
 ```
 
-### Context Summarization
+### Pause and Resume
 
 ```python
-# Get conversation summary
-summary = conv_state.get_summary()
-print(f"Topic: {summary.main_topic}")
-print(f"Turns: {summary.turn_count}")
-print(f"Key points: {summary.key_points}")
+# Pause workflow
+await workflow_state.pause("research_pipeline")
+status = await workflow_state.get_status("research_pipeline")
+print(f"Status: {status}")  # WorkflowStatus.PAUSED
 
-# Compress old context
-conv_state.compress_context(
-    keep_last_n=5,
-    summarize_older=True
+# Resume workflow
+await workflow_state.resume("research_pipeline")
+
+# Cancel workflow
+await workflow_state.cancel(
+    workflow_id="research_pipeline",
+    reason="User requested cancellation"
 )
 ```
 
 ---
 
-## TaskStateManager
+## OrchestrationStateManager
 
-The **TaskStateManager** provides granular control over task execution, queuing, and progress tracking.
+Manages multi-agent coordination and team state.
 
-### Basic Usage
+### Team State Management
 
 ```python
-from agenticaiframework import TaskStateManager, TaskState
-
-# Initialize task state
-task_state = TaskStateManager()
-
-# Create and queue task
-task_id = task_state.create_task(
-    name="data_analysis",
-    priority=1,  # Higher = more priority
-    payload={"data_source": "sales.csv"}
+from agenticaiframework.state import (
+    OrchestrationStateManager,
+    TeamState,
+    AgentCoordinationState,
+    TaskQueueState,
 )
 
-# Start task
-task_state.start_task(task_id)
+# Initialize orchestration state
+orch_state = OrchestrationStateManager(
+    persistence="redis",
+    sync_interval=1.0,
+)
 
-# Update progress
-task_state.update_progress(task_id, progress=50, status_message="Processing...")
+# Create team state
+team_state = TeamState(
+    team_id="research_team",
+    agents={
+        "researcher": AgentCoordinationState(
+            agent_id="researcher",
+            status="idle",
+            capabilities=["research", "analysis"],
+            current_task=None,
+        ),
+        "writer": AgentCoordinationState(
+            agent_id="writer",
+            status="idle",
+            capabilities=["writing", "editing"],
+            current_task=None,
+        ),
+    },
+    task_queue=TaskQueueState(
+        pending=[],
+        in_progress=[],
+        completed=[],
+    ),
+)
 
-# Complete task
-task_state.complete_task(task_id, result=analysis_results)
+await orch_state.create_team(team_state)
 ```
 
-### Task States
+### Agent Coordination
 
 ```python
-class TaskState:
-    QUEUED = "queued"          # Waiting in queue
-    SCHEDULED = "scheduled"    # Scheduled for future
-    RUNNING = "running"        # Currently executing
-    PAUSED = "paused"          # Temporarily paused
-    COMPLETED = "completed"    # Successfully finished
-    FAILED = "failed"          # Failed with error
-    CANCELLED = "cancelled"    # Manually cancelled
-    RETRYING = "retrying"      # Being retried after failure
+# Update agent status
+await orch_state.update_agent_status(
+    team_id="research_team",
+    agent_id="researcher",
+    status="working",
+    current_task="task_001",
+)
+
+# Get team overview
+team = await orch_state.get_team("research_team")
+for agent_id, agent_state in team.agents.items():
+    print(f"{agent_id}: {agent_state.status}")
+
+# Get available agents
+available = await orch_state.get_available_agents(
+    team_id="research_team",
+    capability="research"
+)
 ```
 
 ### Task Queue Management
 
 ```python
+# Add task to queue
+await orch_state.enqueue_task(
+    team_id="research_team",
+    task={
+        "id": "task_002",
+        "type": "analysis",
+        "priority": "high",
+        "data": {"topic": "AI trends"},
+    }
+)
+
+# Assign task to agent
+await orch_state.assign_task(
+    team_id="research_team",
+    task_id="task_002",
+    agent_id="researcher",
+)
+
+# Complete task
+await orch_state.complete_task(
+    team_id="research_team",
+    task_id="task_002",
+    result={"analysis": "..."},
+)
+
 # Get queue status
-queue = task_state.get_queue_status()
-print(f"Queued: {queue.queued_count}")
-print(f"Running: {queue.running_count}")
-print(f"Completed: {queue.completed_count}")
-
-# Get next task by priority
-next_task = task_state.get_next_task()
-
-# Reorder queue
-task_state.reprioritize(task_id, new_priority=10)
-
-# Cancel task
-task_state.cancel_task(task_id, reason="No longer needed")
-```
-
-### Task Dependencies
-
-```python
-# Create task with dependencies
-task_state.create_task(
-    name="generate_report",
-    dependencies=["data_analysis", "data_cleaning"],
-    payload={"format": "pdf"}
-)
-
-# Check if dependencies are met
-if task_state.are_dependencies_met("generate_report"):
-    task_state.start_task("generate_report")
-
-# Get dependent tasks
-dependents = task_state.get_dependents("data_analysis")
-```
-
-### Retry Logic
-
-```python
-# Configure retry policy
-task_state.set_retry_policy(
-    task_id=task_id,
-    max_retries=3,
-    retry_delay_seconds=60,
-    backoff_multiplier=2.0
-)
-
-# Handle failure with retry
-try:
-    result = execute_task(task)
-    task_state.complete_task(task_id, result)
-except Exception as e:
-    task_state.fail_task(task_id, error=str(e))
-    
-    if task_state.should_retry(task_id):
-        task_state.schedule_retry(task_id)
+queue = await orch_state.get_queue_status("research_team")
+print(f"Pending: {len(queue.pending)}")
+print(f"In Progress: {len(queue.in_progress)}")
+print(f"Completed: {len(queue.completed)}")
 ```
 
 ---
 
-## ContextStateManager
+## KnowledgeStateManager
 
-The **ContextStateManager** handles context window management, token tracking, and context compression.
+Tracks knowledge base indexing and synchronization.
 
-### Basic Usage
+### Indexing Progress
 
 ```python
-from agenticaiframework import ContextStateManager, ContextState
-
-# Initialize context manager
-context_state = ContextStateManager(max_tokens=8192)
-
-# Add to context
-context_state.add(
-    content="User request: Help with Python",
-    token_count=8,
-    priority="high"
+from agenticaiframework.state import (
+    KnowledgeStateManager,
+    IndexingProgress,
+    IndexingStatus,
+    SyncStatus,
 )
 
-# Check context status
-status = context_state.get_status()
-print(f"Used tokens: {status.used_tokens}/{status.max_tokens}")
-print(f"State: {status.state}")  # ContextState.OPEN or ContextState.FULL
+# Initialize knowledge state manager
+kb_state = KnowledgeStateManager(
+    persistence="redis",
+)
+
+# Track indexing progress
+progress = IndexingProgress(
+    knowledge_base_id="company_docs",
+    status=IndexingStatus.IN_PROGRESS,
+    total_documents=1000,
+    processed_documents=450,
+    failed_documents=5,
+    started_at=datetime.now(),
+)
+
+await kb_state.update_indexing_progress(progress)
+
+# Check progress
+current = await kb_state.get_indexing_progress("company_docs")
+print(f"Progress: {current.processed_documents}/{current.total_documents}")
+print(f"Failed: {current.failed_documents}")
 ```
 
-### Context States
+### Source Synchronization
 
 ```python
-class ContextState:
-    OPEN = "open"              # Space available
-    NEAR_FULL = "near_full"    # >80% capacity
-    FULL = "full"              # At capacity
-    COMPRESSED = "compressed"  # Has been compressed
-    OVERFLOW = "overflow"      # Exceeded limits
+from agenticaiframework.state import SourceState
+
+# Track source sync status
+source_state = SourceState(
+    source_id="confluence_docs",
+    knowledge_base_id="company_docs",
+    sync_status=SyncStatus.SYNCING,
+    last_sync=datetime.now() - timedelta(hours=1),
+    documents_synced=250,
+    documents_pending=50,
+)
+
+await kb_state.update_source_state(source_state)
+
+# Get all sources for knowledge base
+sources = await kb_state.get_sources("company_docs")
+for source in sources:
+    print(f"{source.source_id}: {source.sync_status}")
 ```
 
-### Token Management
+### Knowledge Base State
 
 ```python
-# Reserve tokens for response
-context_state.reserve_tokens(
-    purpose="response",
-    count=1000
-)
+from agenticaiframework.state import KnowledgeBaseState
 
-# Get available tokens
-available = context_state.get_available_tokens()
-print(f"Available for content: {available}")
+# Get overall knowledge base state
+kb_overview = await kb_state.get_knowledge_base_state("company_docs")
 
-# Estimate token count
-estimated = context_state.estimate_tokens("Sample text content")
-```
-
-### Context Compression
-
-```python
-# Auto-compress when near full
-context_state = ContextStateManager(
-    max_tokens=8192,
-    auto_compress=True,
-    compress_threshold=0.8  # Compress at 80%
-)
-
-# Manual compression
-context_state.compress(
-    strategy="summarize",  # Options: summarize, truncate, prioritize
-    target_ratio=0.5  # Compress to 50% of current
-)
-
-# Priority-based compression
-context_state.compress_by_priority(
-    keep_priorities=["high", "critical"],
-    summarize_priorities=["medium"],
-    drop_priorities=["low"]
-)
-```
-
-### Context Snapshots
-
-```python
-# Create snapshot
-snapshot_id = context_state.create_snapshot(name="before_task")
-
-# Restore snapshot
-context_state.restore_snapshot(snapshot_id)
-
-# List snapshots
-snapshots = context_state.list_snapshots()
+print(f"Total Documents: {kb_overview.total_documents}")
+print(f"Total Embeddings: {kb_overview.total_embeddings}")
+print(f"Last Updated: {kb_overview.last_updated}")
+print(f"Storage Size: {kb_overview.storage_size_mb}MB")
 ```
 
 ---
 
 ## ToolStateManager
 
-The **ToolStateManager** tracks tool availability, execution states, and rate limiting.
+Manages tool execution state and caching.
 
-### Basic Usage
+### Tool Execution Tracking
 
 ```python
-from agenticaiframework import ToolStateManager, ToolState
-
-# Initialize tool state
-tool_state = ToolStateManager()
-
-# Register tool
-tool_state.register_tool(
-    name="web_search",
-    rate_limit=10,  # 10 calls per minute
-    cooldown_seconds=0
+from agenticaiframework.state import (
+    ToolStateManager,
+    ToolExecution,
+    ToolExecutionStatus,
 )
 
-# Check tool availability
-if tool_state.is_available("web_search"):
-    tool_state.start_execution("web_search")
-    result = execute_search(query)
-    tool_state.end_execution("web_search", success=True)
-```
-
-### Tool States
-
-```python
-class ToolState:
-    READY = "ready"            # Available for use
-    EXECUTING = "executing"    # Currently running
-    COOLDOWN = "cooldown"      # Rate limit cooldown
-    DISABLED = "disabled"      # Manually disabled
-    ERROR = "error"            # In error state
-    UNAVAILABLE = "unavailable"  # External service down
-```
-
-### Rate Limiting
-
-```python
-# Configure rate limiting
-tool_state.set_rate_limit(
-    tool_name="api_call",
-    max_calls=100,
-    window_seconds=60,
-    burst_allowed=10
+# Initialize tool state manager
+tool_state = ToolStateManager(
+    persistence="redis",
+    cache_results=True,
+    cache_ttl=3600,
 )
 
-# Check rate limit
-remaining = tool_state.get_remaining_calls("api_call")
-print(f"Remaining calls: {remaining}")
-
-# Wait for rate limit reset
-if not tool_state.is_available("api_call"):
-    wait_time = tool_state.get_reset_time("api_call")
-    print(f"Wait {wait_time} seconds")
-```
-
-### Tool Health Monitoring
-
-```python
-# Set health check
-tool_state.set_health_check(
-    tool_name="external_api",
-    check_interval=60,
-    check_function=lambda: ping_api()
+# Track tool execution
+execution = ToolExecution(
+    execution_id="exec_001",
+    tool_name="search_web",
+    status=ToolExecutionStatus.RUNNING,
+    started_at=datetime.now(),
+    parameters={"query": "AI news"},
 )
 
-# Get tool health
-health = tool_state.get_health("external_api")
-print(f"Status: {health.status}")
-print(f"Last check: {health.last_check}")
-print(f"Uptime: {health.uptime_percent}%")
+await tool_state.start_execution(execution)
 
-# Disable unhealthy tool
-if not health.is_healthy:
-    tool_state.disable("external_api", reason="Health check failed")
+# Update execution
+await tool_state.complete_execution(
+    execution_id="exec_001",
+    result={"results": [...]},
+    duration_ms=1500,
+)
+
+# Get execution history
+history = await tool_state.get_execution_history(
+    tool_name="search_web",
+    limit=100,
+)
+```
+
+### Result Caching
+
+```python
+from agenticaiframework.state import ToolCacheEntry
+
+# Cache tool result
+cache_entry = ToolCacheEntry(
+    tool_name="search_web",
+    parameters_hash="abc123",
+    result={"results": [...]},
+    created_at=datetime.now(),
+    ttl=3600,
+)
+
+await tool_state.cache_result(cache_entry)
+
+# Check cache before execution
+cached = await tool_state.get_cached_result(
+    tool_name="search_web",
+    parameters={"query": "AI news"},
+)
+
+if cached:
+    print("Using cached result")
+    result = cached.result
+else:
+    result = await tool.execute({"query": "AI news"})
+```
+
+### Retry Management
+
+```python
+from agenticaiframework.state import RetryState
+
+# Track retry state
+retry_state = RetryState(
+    execution_id="exec_002",
+    attempts=2,
+    max_attempts=5,
+    last_error="Connection timeout",
+    next_retry_at=datetime.now() + timedelta(seconds=30),
+    backoff_factor=2.0,
+)
+
+await tool_state.update_retry_state(retry_state)
+
+# Get tools needing retry
+pending_retries = await tool_state.get_pending_retries()
+for retry in pending_retries:
+    if retry.next_retry_at <= datetime.now():
+        await retry_tool(retry)
+```
+
+### Tool Statistics
+
+```python
+from agenticaiframework.state import ToolStats
+
+# Get tool statistics
+stats = await tool_state.get_tool_stats("search_web")
+
+print(f"Total Executions: {stats.total_executions}")
+print(f"Success Rate: {stats.success_rate:.2%}")
+print(f"Avg Duration: {stats.avg_duration_ms}ms")
+print(f"Cache Hit Rate: {stats.cache_hit_rate:.2%}")
+print(f"Error Rate: {stats.error_rate:.2%}")
 ```
 
 ---
 
-## MemoryStateManager
+## SpeechStateManager
 
-The **MemoryStateManager** controls memory system states, synchronization, and consistency.
+Manages speech session state for STT/TTS operations.
 
-### Basic Usage
-
-```python
-from agenticaiframework import MemoryStateManager, MemoryState
-
-# Initialize memory state
-memory_state = MemoryStateManager(memory_id="main_memory")
-
-# Get current state
-current = memory_state.get_state()
-print(f"Memory state: {current}")  # MemoryState.SYNCED
-
-# Start sync operation
-memory_state.start_sync()
-# ... perform sync
-memory_state.end_sync(success=True)
-```
-
-### Memory States
+### Session Management
 
 ```python
-class MemoryState:
-    INITIALIZING = "initializing"  # Memory starting up
-    SYNCED = "synced"              # Fully synchronized
-    SYNCING = "syncing"            # Sync in progress
-    STALE = "stale"                # Needs synchronization
-    CORRUPTED = "corrupted"        # Data corruption detected
-    RECOVERING = "recovering"      # Recovery in progress
-```
-
-### Sync Management
-
-```python
-# Configure auto-sync
-memory_state = MemoryStateManager(
-    memory_id="main",
-    auto_sync=True,
-    sync_interval=300  # 5 minutes
+from agenticaiframework.state import (
+    SpeechStateManager,
+    AudioSessionStatus,
+    StreamingMode,
 )
 
-# Check sync status
-sync_status = memory_state.get_sync_status()
-print(f"Last sync: {sync_status.last_sync_time}")
-print(f"Pending changes: {sync_status.pending_changes}")
+# Initialize speech state manager
+speech_state = SpeechStateManager(
+    persistence="redis",
+)
 
-# Force sync
-memory_state.force_sync()
+# Create audio session
+session_id = await speech_state.create_session(
+    session_type="voice_conversation",
+    streaming_mode=StreamingMode.BIDIRECTIONAL,
+    config={
+        "stt_provider": "openai",
+        "tts_provider": "elevenlabs",
+        "language": "en-US",
+    }
+)
+
+# Update session status
+await speech_state.update_session_status(
+    session_id=session_id,
+    status=AudioSessionStatus.ACTIVE,
+)
 ```
 
-### Consistency Checks
+### STT State Tracking
 
 ```python
-# Run consistency check
-result = memory_state.check_consistency()
-if not result.is_consistent:
-    print(f"Issues found: {result.issues}")
-    memory_state.repair(result.issues)
+from agenticaiframework.state import STTState, TranscriptionStatus
 
-# Verify memory integrity
-integrity = memory_state.verify_integrity()
-print(f"Integrity score: {integrity.score}")
+# Track STT state
+stt_state = STTState(
+    session_id=session_id,
+    status=TranscriptionStatus.TRANSCRIBING,
+    audio_received_bytes=45000,
+    transcription_progress=0.6,
+    interim_transcript="Hello, I would like to...",
+)
+
+await speech_state.update_stt_state(stt_state)
+
+# Get current STT state
+current_stt = await speech_state.get_stt_state(session_id)
+print(f"Progress: {current_stt.transcription_progress:.0%}")
+print(f"Interim: {current_stt.interim_transcript}")
 ```
 
-### Recovery Operations
+### TTS State Tracking
 
 ```python
-# Handle corruption
-if memory_state.get_state() == MemoryState.CORRUPTED:
-    # Start recovery
-    memory_state.start_recovery()
-    
-    # Attempt recovery from backup
-    success = memory_state.recover_from_backup(
-        backup_path="./backups/memory_latest.bak"
-    )
-    
-    if success:
-        memory_state.end_recovery(success=True)
-    else:
-        memory_state.reset_to_clean_state()
+from agenticaiframework.state import TTSState
+
+# Track TTS state
+tts_state = TTSState(
+    session_id=session_id,
+    text_queue=["Hello! How can I help you today?"],
+    audio_generated_bytes=12000,
+    audio_played_bytes=8000,
+    is_speaking=True,
+)
+
+await speech_state.update_tts_state(tts_state)
+
+# Check if speaking
+current_tts = await speech_state.get_tts_state(session_id)
+if current_tts.is_speaking:
+    print("Agent is currently speaking...")
+```
+
+### Voice Conversation State
+
+```python
+from agenticaiframework.state import VoiceConversationState
+
+# Track full conversation state
+conversation_state = VoiceConversationState(
+    session_id=session_id,
+    turn_count=5,
+    current_speaker="user",
+    stt_state=stt_state,
+    tts_state=tts_state,
+    transcript=[
+        {"role": "user", "content": "Hello"},
+        {"role": "assistant", "content": "Hi! How can I help?"},
+        # ...
+    ]
+)
+
+await speech_state.update_conversation_state(conversation_state)
+
+# End session
+await speech_state.end_session(
+    session_id=session_id,
+    reason="user_ended",
+)
 ```
 
 ---
 
-## 🔧 State Persistence
+## Persistence Backends
 
-### Centralized State Store
+### Memory Backend (Development)
 
 ```python
-from agenticaiframework import StateStore
+from agenticaiframework.state import MemoryBackend
 
-# Initialize centralized store
-store = StateStore(
-    backend="redis",
-    config={"host": "localhost", "port": 6379}
-)
+backend = MemoryBackend()
 
-# Register state managers
-store.register(agent_state)
-store.register(workflow_state)
-store.register(task_state)
-
-# Auto-persist all states
-store.enable_auto_persist(interval=60)
-
-# Restore all states on startup
-store.restore_all()
+# Fast, no persistence
+# Data lost on restart
+# Best for: Development, testing
 ```
 
-### State Snapshots
+### File Backend (Single Instance)
 
 ```python
-# Create global snapshot
-snapshot = store.create_snapshot(name="before_deployment")
+from agenticaiframework.state import FileBackend
 
-# Restore from snapshot
-store.restore_snapshot(snapshot.id)
+backend = FileBackend(
+    base_path="./state",
+    format="json",  # or "msgpack" for better performance
+    compression=True,
+)
 
-# Export state for debugging
-store.export("./debug/state_dump.json")
+# Persists to local files
+# Best for: Single instance, small deployments
+```
+
+### Redis Backend (Production)
+
+```python
+from agenticaiframework.state import RedisBackend
+
+backend = RedisBackend(
+    url="redis://localhost:6379",
+    db=0,
+    key_prefix="agenticai:",
+    connection_pool_size=10,
+)
+
+# Distributed, high performance
+# Supports pub/sub for state sync
+# Best for: Production, multi-instance
 ```
 
 ---
 
-## 📚 API Reference
+## Best Practices
 
-For complete API documentation, see:
+<div class="feature-grid">
+<div class="feature-card">
+<h3>🔄 Checkpoint Regularly</h3>
+<p>Create checkpoints at logical boundaries in long-running tasks to enable recovery without losing progress.</p>
+</div>
+<div class="feature-card">
+<h3>🗄️ Choose Right Backend</h3>
+<p>Use memory for dev, file for single instance, Redis for distributed production deployments.</p>
+</div>
+<div class="feature-card">
+<h3>🧹 Clean Old State</h3>
+<p>Implement TTLs and cleanup routines to prevent unbounded state growth.</p>
+</div>
+<div class="feature-card">
+<h3>📊 Monitor State Size</h3>
+<p>Track state storage size and set alerts for unusual growth patterns.</p>
+</div>
+</div>
 
-- [AgentStateManager API](API_REFERENCE.md#agentstatemanager)
-- [WorkflowStateManager API](API_REFERENCE.md#workflowstatemanager)
-- [ConversationStateManager API](API_REFERENCE.md#conversationstatemanager)
-- [TaskStateManager API](API_REFERENCE.md#taskstatemanager)
-- [ContextStateManager API](API_REFERENCE.md#contextstatemanager)
-- [ToolStateManager API](API_REFERENCE.md#toolstatemanager)
-- [MemoryStateManager API](API_REFERENCE.md#memorystatemanager)
+---
+
+## Next Steps
+
+<div class="feature-grid">
+<div class="feature-card">
+<h3><a href="memory.md">💾 Memory</a></h3>
+<p>Learn about memory management for agents</p>
+</div>
+<div class="feature-card">
+<h3><a href="orchestration.md">🎭 Orchestration</a></h3>
+<p>Multi-agent team coordination</p>
+</div>
+<div class="feature-card">
+<h3><a href="monitoring.md">📊 Monitoring</a></h3>
+<p>Set up observability for your agents</p>
+</div>
+<div class="feature-card">
+<h3><a href="tracing.md">🔍 Tracing</a></h3>
+<p>Debug agent execution flows</p>
+</div>
+</div>

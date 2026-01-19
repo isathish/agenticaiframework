@@ -32,6 +32,10 @@ Quick Start:
     >>> print(output.response)
 """
 
+__version__ = "1.2.16"
+__author__ = "AgenticAI Framework Contributors"
+__license__ = "MIT"
+
 # Global configuration (import first)
 from .config import (
     FrameworkConfig,
