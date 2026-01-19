@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v1.2.16](https://github.com/isathish/agenticaiframework/releases/tag/v1.2.16) - 2026-01-19
+
+<small>[Compare with v1.2.15](https://github.com/isathish/agenticaiframework/compare/v1.2.15...v1.2.16)</small>
+
+### Added
+
+- Add comprehensive tests for high-impact modules and state management ([ca775a7](https://github.com/isathish/agenticaiframework/commit/ca775a71c039baf4efb9e0c3ebb61db5dc4a1fda) by isathish).
+
 ## [v1.2.15](https://github.com/isathish/agenticaiframework/releases/tag/v1.2.15) - 2026-01-19
 
 <small>[Compare with v1.2.14](https://github.com/isathish/agenticaiframework/compare/v1.2.14...v1.2.15)</small>
