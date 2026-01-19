@@ -52,6 +52,8 @@ from .orchestration import (
 from .prompts import Prompt, PromptManager
 from .processes import Process
 from .tasks import Task, TaskManager
+from .workflows import SequentialWorkflow, ParallelWorkflow
+from .framework import AgenticFramework
 from .mcp_tools import MCPTool, MCPToolManager
 from .monitoring import MonitoringSystem
 
@@ -174,6 +176,7 @@ from .tools import (
     LangChainTool,
     RAGTool,
     CodeInterpreterTool,
+    JavaScriptCodeInterpreterTool,
 )
 from .hub import Hub
 from .configurations import ConfigurationManager
@@ -362,6 +365,8 @@ __all__ = [
     "Prompt", "PromptManager",
     "Process",
     "Task", "TaskManager",
+    "SequentialWorkflow", "ParallelWorkflow",
+    "AgenticFramework",
     "MCPTool", "MCPToolManager",
     "MonitoringSystem",
     "Guardrail", "GuardrailManager",
@@ -449,6 +454,7 @@ __all__ = [
     "LangChainTool",
     "RAGTool",
     "CodeInterpreterTool",
+    "JavaScriptCodeInterpreterTool",
     
     # ========================================================================
     # ACE - Agentic Context Engine

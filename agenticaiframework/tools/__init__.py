@@ -110,6 +110,7 @@ from .ai_ml import (
     LangChainTool,
     RAGTool,
     CodeInterpreterTool,
+    JavaScriptCodeInterpreterTool,
 )
 
 __all__ = [
@@ -194,4 +195,5 @@ __all__ = [
     'LangChainTool',
     'RAGTool',
     'CodeInterpreterTool',
+    'JavaScriptCodeInterpreterTool',
 ]

@@ -4,13 +4,14 @@ SQL Database Tools.
 
 import logging
 from typing import Any, Dict, List, Optional
+from abc import ABC, abstractmethod
 
 from ..base import BaseTool, ToolConfig
 
 logger = logging.getLogger(__name__)
 
 
-class BaseSQLTool(BaseTool):
+class BaseSQLTool(BaseTool, ABC):
     """Base class for SQL database tools."""
     
     def __init__(
@@ -22,6 +23,7 @@ class BaseSQLTool(BaseTool):
         self.connection_string = connection_string
         self._connection = None
     
+    @abstractmethod
     def _get_connection(self):
         """Get or create database connection."""
         raise NotImplementedError
