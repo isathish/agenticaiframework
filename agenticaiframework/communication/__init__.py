@@ -92,7 +92,7 @@ class CommunicationManager:
         if protocol in self.protocols:
             try:
                 return self.protocols[protocol](data)
-            except (TypeError, ValueError, RuntimeError) as e:
+            except (TypeError, ValueError, RuntimeError, ConnectionError, OSError) as e:
                 self._log(f"Error sending data via '{protocol}': {e}")
                 return None
         self._log(f"Protocol '{protocol}' not found")
