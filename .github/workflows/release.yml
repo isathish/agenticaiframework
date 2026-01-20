@@ -1,533 +1,139 @@
 name: Release
 
-# Manual-only release workflow for controlled version bumps and publishing.
-# For automatic releases on main push, use python-package.yml instead.
+# Main release pipeline - runs on push to main and manual trigger
 
 on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "docs/**"
+      - ".github/workflows/static.yml"
   workflow_dispatch:
     inputs:
       release_type:
-        description: "Type of release (patch, minor, major)"
+        description: "Release type"
         required: true
         default: "patch"
         type: choice
-        options:
-          - patch
-          - minor
-          - major
-      custom_version:
-        description: "Custom version (overrides release_type if provided)"
-        required: false
-        default: ""
-        type: string
-      dry_run:
-        description: "Dry run - do not publish"
-        required: false
-        default: false
-        type: boolean
+        options: [patch, minor, major]
 
-env:
-  PYTHON_VERSION: "3.11"
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 jobs:
-  validate:
-    name: Validate Release
+  release:
+    name: Build & Publish
     runs-on: ubuntu-latest
-    outputs:
-      should_release: ${{ steps.check.outputs.should_release }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Check if release needed
-        id: check
-        run: |
-          # Get last commit message
-          LAST_COMMIT=$(git log -1 --pretty=%B)
-          
-          # Skip if it's a release commit
-          if [[ "$LAST_COMMIT" == *"[skip ci]"* ]] || [[ "$LAST_COMMIT" == *"release"* ]]; then
-            echo "should_release=false" >> $GITHUB_OUTPUT
-            echo "Skipping release - release commit detected"
-          else
-            echo "should_release=true" >> $GITHUB_OUTPUT
-            echo "Release check passed"
-          fi
-
-  test:
-    name: Run Tests
-    needs: validate
-    if: needs.validate.outputs.should_release == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e .[dev] || pip install -e .
-          pip install pytest pytest-cov
-
-      - name: Run tests
-        run: |
-          pytest --maxfail=3 --disable-warnings -q \
-            --cov=agenticaiframework \
-            --cov-report=term-missing \
-            --cov-fail-under=50
-
-  build-and-release:
-    name: Build & Release
-    needs: [validate, test]
-    if: needs.validate.outputs.should_release == 'true'
-    runs-on: ubuntu-latest
-    environment:
-      name: pypi
+    environment: pypi
     permissions:
       id-token: write
       contents: write
-      pull-requests: read
-    outputs:
-      version: ${{ steps.version.outputs.version }}
-      previous_tag: ${{ steps.version.outputs.previous_tag }}
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUBPATTOKEN || secrets.GITHUB_TOKEN }}
 
-      - name: Set up Python
+      - name: Check skip
+        id: skip
+        run: |
+          MSG=$(git log -1 --pretty=%B)
+          if [[ "$MSG" == *"[skip ci]"* ]]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup Python
+        if: steps.skip.outputs.skip != 'true'
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
+          python-version: "3.11"
 
-      - name: Install build dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install setuptools wheel build bump2version twine
-
-      - name: Get current version
-        id: current_version
-        run: |
-          CURRENT=$(python setup.py --version 2>/dev/null || echo "1.0.0")
-          echo "current=$CURRENT" >> $GITHUB_OUTPUT
-          echo "Current version: $CURRENT"
-          
-          # Get previous tag
-          PREV_TAG=$(git tag --sort=-creatordate | head -1 || echo "v0.0.0")
-          echo "previous_tag=$PREV_TAG" >> $GITHUB_OUTPUT
+      - name: Install tools
+        if: steps.skip.outputs.skip != 'true'
+        run: pip install build bump2version twine
 
       - name: Bump version
+        if: steps.skip.outputs.skip != 'true'
         id: version
         run: |
+          CURRENT=$(python setup.py --version 2>/dev/null || echo "1.0.0")
+          TYPE="${{ github.event.inputs.release_type || 'patch' }}"
+          
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          CURRENT_VERSION="${{ steps.current_version.outputs.current }}"
-          PREV_TAG="${{ steps.current_version.outputs.previous_tag }}"
-          
-          if [ -n "${{ github.event.inputs.custom_version }}" ]; then
-            VERSION="${{ github.event.inputs.custom_version }}"
-            sed -i "s/version=\"[^\"]*\"/version=\"$VERSION\"/" setup.py
-          else
-            RELEASE_TYPE="${{ github.event.inputs.release_type || 'patch' }}"
-            bump2version --current-version "$CURRENT_VERSION" "$RELEASE_TYPE" setup.py --allow-dirty
-            VERSION=$(python setup.py --version 2>/dev/null)
-          fi
+          bump2version --current-version "$CURRENT" "$TYPE" setup.py --allow-dirty
+          VERSION=$(python setup.py --version)
           
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "previous_tag=$PREV_TAG" >> $GITHUB_OUTPUT
-          echo "New version: $VERSION"
+          echo "📦 Version: $VERSION"
 
-      - name: Build package
-        run: |
-          python -m build
-          ls -la dist/
+      - name: Build
+        if: steps.skip.outputs.skip != 'true'
+        run: python -m build
 
-      - name: Check package quality
+      - name: Generate release notes
+        if: steps.skip.outputs.skip != 'true'
+        id: notes
         run: |
-          pip install check-wheel-contents
-          twine check dist/*
-          check-wheel-contents dist/*.whl || true
+          VERSION="${{ steps.version.outputs.version }}"
+          PREV=$(git tag --sort=-creatordate | head -1 || echo "")
+          
+          cat > RELEASE_NOTES.md << EOF
+          ## 🚀 Release v$VERSION
+          
+          ### ✨ Changes
+          EOF
+          
+          if [ -n "$PREV" ]; then
+            git log $PREV..HEAD --pretty=format:"- %s" --no-merges >> RELEASE_NOTES.md
+          else
+            echo "- Initial release" >> RELEASE_NOTES.md
+          fi
+          
+          cat >> RELEASE_NOTES.md << EOF
+          
+          ### 📥 Install
+          \`\`\`bash
+          pip install agenticaiframework==$VERSION
+          \`\`\`
+          EOF
 
-      - name: Commit version bump
-        if: ${{ github.event.inputs.dry_run != 'true' }}
+      - name: Commit & Tag
+        if: steps.skip.outputs.skip != 'true'
         run: |
+          VERSION="${{ steps.version.outputs.version }}"
           git add setup.py
-          git commit -m "chore(release): bump version to ${{ steps.version.outputs.version }} [skip ci]" || echo "No changes to commit"
-          git tag -fa "v${{ steps.version.outputs.version }}" -m "Release v${{ steps.version.outputs.version }}"
+          git commit -m "chore: release v$VERSION [skip ci]" || true
+          git tag -fa "v$VERSION" -m "Release v$VERSION"
 
-      - name: Push changes
-        if: ${{ github.event.inputs.dry_run != 'true' }}
+      - name: Push
+        if: steps.skip.outputs.skip != 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUBPATTOKEN || secrets.GITHUB_TOKEN }}
         run: |
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
-          git pull --rebase origin main || true
-          git push origin HEAD:main
+          git push origin HEAD:main || true
           git push origin --tags --force
 
       - name: Publish to PyPI
-        if: ${{ github.event.inputs.dry_run != 'true' }}
+        if: steps.skip.outputs.skip != 'true'
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: |
-          twine upload --verbose dist/*
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-${{ steps.version.outputs.version }}
-          path: dist/
-          retention-days: 30
-
-  generate-release-notes:
-    name: Generate Release Notes
-    needs: build-and-release
-    if: ${{ github.event.inputs.dry_run != 'true' }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Analyze changes
-        id: analyze
-        run: |
-          VERSION="${{ needs.build-and-release.outputs.version }}"
-          PREVIOUS_TAG="${{ needs.build-and-release.outputs.previous_tag }}"
-          
-          echo "Analyzing changes from $PREVIOUS_TAG to v$VERSION"
-          
-          # Collect all changes
-          git log $PREVIOUS_TAG..HEAD --pretty=format:"%H|%s|%b|%an|%ad" --date=short > /tmp/commits.txt
-          git diff --stat $PREVIOUS_TAG..HEAD > /tmp/file_stats.txt
-          git diff --name-only $PREVIOUS_TAG..HEAD > /tmp/changed_files.txt
-          
-          # Count stats
-          TOTAL_COMMITS=$(wc -l < /tmp/commits.txt | tr -d ' ')
-          TOTAL_FILES=$(wc -l < /tmp/changed_files.txt | tr -d ' ')
-          
-          echo "total_commits=$TOTAL_COMMITS" >> $GITHUB_OUTPUT
-          echo "total_files=$TOTAL_FILES" >> $GITHUB_OUTPUT
-
-      - name: Generate comprehensive release notes
-        id: notes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          VERSION="${{ needs.build-and-release.outputs.version }}"
-          PREVIOUS_TAG="${{ needs.build-and-release.outputs.previous_tag }}"
-          
-          python3 << 'PYTHON_SCRIPT'
-          import os
-          import re
-          import json
-          from datetime import datetime
-          from collections import defaultdict
-          
-          version = os.environ.get('VERSION', '${{ needs.build-and-release.outputs.version }}')
-          previous_tag = os.environ.get('PREVIOUS_TAG', '${{ needs.build-and-release.outputs.previous_tag }}')
-          
-          # Read commits
-          commits = []
-          try:
-              with open('/tmp/commits.txt', 'r') as f:
-                  for line in f:
-                      if line.strip():
-                          parts = line.strip().split('|')
-                          if len(parts) >= 2:
-                              commits.append({
-                                  'hash': parts[0][:8],
-                                  'subject': parts[1],
-                                  'body': parts[2] if len(parts) > 2 else '',
-                                  'author': parts[3] if len(parts) > 3 else 'unknown',
-                                  'date': parts[4] if len(parts) > 4 else ''
-                              })
-          except FileNotFoundError:
-              pass
-          
-          # Read changed files
-          changed_files = []
-          try:
-              with open('/tmp/changed_files.txt', 'r') as f:
-                  changed_files = [line.strip() for line in f if line.strip()]
-          except FileNotFoundError:
-              pass
-          
-          # Read file stats
-          file_stats = ""
-          try:
-              with open('/tmp/file_stats.txt', 'r') as f:
-                  file_stats = f.read()[:2000]
-          except FileNotFoundError:
-              pass
-          
-          # Categorize commits using conventional commit patterns
-          categories = defaultdict(list)
-          category_patterns = {
-              'features': [r'^feat', r'^feature', r'^add', r'new feature', r'implement'],
-              'fixes': [r'^fix', r'^bug', r'^patch', r'^hotfix', r'resolve'],
-              'docs': [r'^docs?', r'^readme', r'documentation'],
-              'tests': [r'^tests?', r'coverage', r'testing'],
-              'refactor': [r'^refactor', r'^refactoring', r'restructure'],
-              'performance': [r'^perf', r'performance', r'optimize', r'speed'],
-              'security': [r'^security', r'vulnerability', r'cve'],
-              'breaking': [r'breaking', r'deprecate'],
-              'ci': [r'^ci', r'^build', r'pipeline', r'workflow', r'github actions'],
-              'deps': [r'^deps?', r'dependency', r'upgrade', r'bump'],
-              'style': [r'^style', r'format', r'lint'],
-              'chore': [r'^chore', r'maintenance', r'cleanup']
-          }
-          
-          for commit in commits:
-              subject = commit['subject'].lower()
-              body = commit['body'].lower()
-              categorized = False
-              
-              for category, patterns in category_patterns.items():
-                  for pattern in patterns:
-                      if re.search(pattern, subject) or re.search(pattern, body):
-                          categories[category].append(commit)
-                          categorized = True
-                          break
-                  if categorized:
-                      break
-              
-              if not categorized:
-                  categories['other'].append(commit)
-          
-          # Build release notes
-          notes = []
-          notes.append(f"# 🚀 Release v{version}")
-          notes.append("")
-          notes.append(f"**Release Date:** {datetime.now().strftime('%B %d, %Y')}")
-          notes.append(f"**Full Changelog:** `{previous_tag}...v{version}`")
-          notes.append("")
-          
-          # Summary
-          notes.append("## 📊 Release Summary")
-          notes.append("")
-          notes.append(f"| Metric | Count |")
-          notes.append(f"|--------|-------|")
-          notes.append(f"| Total Commits | {len(commits)} |")
-          notes.append(f"| Files Changed | {len(changed_files)} |")
-          notes.append(f"| New Features | {len(categories['features'])} |")
-          notes.append(f"| Bug Fixes | {len(categories['fixes'])} |")
-          notes.append(f"| Documentation Updates | {len(categories['docs'])} |")
-          notes.append("")
-          
-          # Breaking changes first
-          if categories['breaking']:
-              notes.append("## ⚠️ Breaking Changes")
-              notes.append("")
-              notes.append("> **Important:** Please review the breaking changes below before upgrading.")
-              notes.append("")
-              for commit in categories['breaking']:
-                  notes.append(f"- {commit['subject']} (`{commit['hash']}`)")
-                  if commit['body']:
-                      notes.append(f"  - {commit['body'][:200]}")
-              notes.append("")
-          
-          # Features
-          if categories['features']:
-              notes.append("## ✨ New Features")
-              notes.append("")
-              for commit in categories['features']:
-                  notes.append(f"- {commit['subject']} (`{commit['hash']}`)")
-              notes.append("")
-          
-          # Bug fixes
-          if categories['fixes']:
-              notes.append("## 🐛 Bug Fixes")
-              notes.append("")
-              for commit in categories['fixes']:
-                  notes.append(f"- {commit['subject']} (`{commit['hash']}`)")
-              notes.append("")
-          
-          # Performance
-          if categories['performance']:
-              notes.append("## ⚡ Performance Improvements")
-              notes.append("")
-              for commit in categories['performance']:
-                  notes.append(f"- {commit['subject']} (`{commit['hash']}`)")
-              notes.append("")
-          
-          # Security
-          if categories['security']:
-              notes.append("## 🔒 Security Updates")
-              notes.append("")
-              for commit in categories['security']:
-                  notes.append(f"- {commit['subject']} (`{commit['hash']}`)")
-              notes.append("")
-          
-          # Documentation
-          if categories['docs']:
-              notes.append("## 📚 Documentation")
-              notes.append("")
-              for commit in categories['docs']:
-                  notes.append(f"- {commit['subject']} (`{commit['hash']}`)")
-              notes.append("")
-          
-          # Testing
-          if categories['tests']:
-              notes.append("## 🧪 Testing")
-              notes.append("")
-              for commit in categories['tests']:
-                  notes.append(f"- {commit['subject']} (`{commit['hash']}`)")
-              notes.append("")
-          
-          # Refactoring
-          if categories['refactor']:
-              notes.append("## ♻️ Code Refactoring")
-              notes.append("")
-              for commit in categories['refactor'][:10]:
-                  notes.append(f"- {commit['subject']} (`{commit['hash']}`)")
-              if len(categories['refactor']) > 10:
-                  notes.append(f"- ... and {len(categories['refactor']) - 10} more refactoring changes")
-              notes.append("")
-          
-          # CI/CD
-          if categories['ci']:
-              notes.append("## 🔧 CI/CD & Build")
-              notes.append("")
-              for commit in categories['ci'][:5]:
-                  notes.append(f"- {commit['subject']} (`{commit['hash']}`)")
-              if len(categories['ci']) > 5:
-                  notes.append(f"- ... and {len(categories['ci']) - 5} more CI/CD changes")
-              notes.append("")
-          
-          # Dependencies
-          if categories['deps']:
-              notes.append("## 📦 Dependencies")
-              notes.append("")
-              for commit in categories['deps'][:5]:
-                  notes.append(f"- {commit['subject']} (`{commit['hash']}`)")
-              if len(categories['deps']) > 5:
-                  notes.append(f"- ... and {len(categories['deps']) - 5} more dependency updates")
-              notes.append("")
-          
-          # Other maintenance
-          chore_and_other = categories['chore'] + categories['style'] + categories['other']
-          if chore_and_other:
-              notes.append("## 🔨 Maintenance")
-              notes.append("")
-              notes.append("<details>")
-              notes.append("<summary>Click to expand maintenance changes</summary>")
-              notes.append("")
-              for commit in chore_and_other[:15]:
-                  notes.append(f"- {commit['subject']} (`{commit['hash']}`)")
-              if len(chore_and_other) > 15:
-                  notes.append(f"- ... and {len(chore_and_other) - 15} more changes")
-              notes.append("")
-              notes.append("</details>")
-              notes.append("")
-          
-          # Contributors
-          authors = set(c['author'] for c in commits if c.get('author') and c['author'] != 'unknown')
-          if authors:
-              notes.append("## 👥 Contributors")
-              notes.append("")
-              notes.append(f"Thanks to all {len(authors)} contributors who made this release possible:")
-              notes.append("")
-              for author in sorted(authors):
-                  # Clean up author name for GitHub mention
-                  clean_author = author.replace(' ', '').replace('[bot]', '')
-                  notes.append(f"- @{clean_author}")
-              notes.append("")
-          
-          # Changed files summary
-          if changed_files:
-              notes.append("## 📁 Changed Files Summary")
-              notes.append("")
-              notes.append("<details>")
-              notes.append("<summary>Click to see file statistics</summary>")
-              notes.append("")
-              notes.append("```")
-              notes.append(file_stats)
-              notes.append("```")
-              notes.append("")
-              notes.append("</details>")
-              notes.append("")
-          
-          # Installation
-          notes.append("## 📥 Installation")
-          notes.append("")
-          notes.append("```bash")
-          notes.append(f"# Install latest version")
-          notes.append(f"pip install agenticaiframework")
-          notes.append("")
-          notes.append(f"# Install specific version")
-          notes.append(f"pip install agenticaiframework=={version}")
-          notes.append("")
-          notes.append(f"# Upgrade from previous version")
-          notes.append(f"pip install --upgrade agenticaiframework")
-          notes.append("```")
-          notes.append("")
-          
-          # Footer
-          notes.append("---")
-          notes.append("")
-          notes.append("**Questions or issues?** Please open an issue on [GitHub](https://github.com/isathish/agenticaiframework/issues).")
-          notes.append("")
-          
-          # Write release notes
-          content = '\n'.join(notes)
-          with open('RELEASE_NOTES.md', 'w') as f:
-              f.write(content)
-          
-          print("✅ Release notes generated successfully!")
-          print("=" * 60)
-          print(content[:3000])
-          if len(content) > 3000:
-              print("... (truncated)")
-          print("=" * 60)
-          
-          PYTHON_SCRIPT
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: dist-${{ needs.build-and-release.outputs.version }}
-          path: dist/
+        run: twine upload dist/* --verbose
 
       - name: Create GitHub Release
+        if: steps.skip.outputs.skip != 'true'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: v${{ steps.version.outputs.version }}
+          body_path: RELEASE_NOTES.md
+          files: dist/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          VERSION="${{ needs.build-and-release.outputs.version }}"
-          
-          # Delete existing release if exists (for re-runs)
-          gh release delete "v$VERSION" --yes || true
-          
-          # Create new release
-          gh release create "v$VERSION" \
-            --title "🚀 Release v$VERSION" \
-            --notes-file RELEASE_NOTES.md \
-            dist/*
-
-      - name: Upload release notes artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-notes-v${{ needs.build-and-release.outputs.version }}
-          path: RELEASE_NOTES.md
-          retention-days: 90

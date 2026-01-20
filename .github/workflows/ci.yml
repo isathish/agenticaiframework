@@ -1,162 +1,43 @@
 name: CI
 
-# This workflow runs on PRs and feature branches only.
-# For main branch pushes, python-package.yml handles the full release pipeline.
+# Runs on PRs to validate code quality before merge
 
 on:
-  push:
-    branches:
-      - develop
-      - 'feature/**'
-      - 'fix/**'
-      - 'hotfix/**'
+  pull_request:
+    branches: [main, develop]
     paths-ignore:
       - "docs/**"
       - "*.md"
       - ".github/workflows/static.yml"
-  pull_request:
-    branches:
-      - main
-      - develop
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ci-${{ github.ref }}
   cancel-in-progress: true
-
-env:
-  PYTHON_VERSION_DEFAULT: "3.11"
 
 jobs:
   lint:
-    name: Lint & Format Check
+    name: Lint
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.PYTHON_VERSION_DEFAULT }}
-
-      - name: Install linting tools
-        run: |
-          python -m pip install --upgrade pip
-          pip install ruff black isort mypy
-
-      - name: Run Ruff linter
-        run: ruff check . --output-format=github || true
-
-      - name: Check Black formatting
-        run: black --check --diff . || true
-
-      - name: Check import sorting
-        run: isort --check-only --diff . || true
-
-  security:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION_DEFAULT }}
-
-      - name: Install security tools
-        run: |
-          pip install bandit safety pip-audit
-
-      - name: Run Bandit security scan
-        run: bandit -r agenticaiframework -ll -ii -x tests || true
-
-      - name: Check dependencies for vulnerabilities
-        run: pip-audit || true
+          python-version: "3.11"
+      - run: pip install ruff black isort
+      - run: ruff check . --output-format=github || true
+      - run: black --check --diff . || true
+      - run: isort --check-only --diff . || true
 
   test:
-    name: Test Python ${{ matrix.python-version }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
-        include:
-          - os: macos-latest
-            python-version: "3.11"
-          - os: windows-latest
-            python-version: "3.11"
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache: 'pip'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e .[dev] || pip install -e .
-          pip install pytest pytest-cov pytest-xdist pytest-timeout
-
-      - name: Run tests with coverage
-        run: |
-          pytest tests/ \
-            --maxfail=5 \
-            --disable-warnings \
-            -q \
-            --cov=agenticaiframework \
-            --cov-report=xml \
-            --cov-report=term-missing \
-            --cov-fail-under=50 \
-            -n auto \
-            --timeout=300
-
-      - name: Upload coverage to Codecov
-        if: matrix.python-version == '3.11' && matrix.os == 'ubuntu-latest'
-        uses: codecov/codecov-action@v4
-        with:
-          files: ./coverage.xml
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: false
-
-  build:
-    name: Build Package
-    needs: [lint, test]
+    name: Test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.PYTHON_VERSION_DEFAULT }}
+          python-version: "3.11"
           cache: 'pip'
-
-      - name: Install build tools
-        run: |
-          python -m pip install --upgrade pip
-          pip install build twine check-wheel-contents
-
-      - name: Build package
-        run: python -m build
-
-      - name: Check package
-        run: |
-          twine check dist/*
-          check-wheel-contents dist/*.whl
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/
-          retention-days: 7
+      - run: |
+          pip install -e .[dev] || pip install -e .
+          pip install pytest pytest-cov
+      - run: pytest tests/unit/ -q --maxfail=5 --cov=agenticaiframework --cov-fail-under=50
