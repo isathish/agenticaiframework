@@ -2,10 +2,7 @@
 Targeted tests for state management and core runner modules to boost coverage.
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-import time
-import json
+from unittest.mock import Mock
 
 
 # ============================================================================
@@ -538,7 +535,6 @@ class TestMCPCompat:
     def test_mcp_tool_adapter_init(self):
         """Test MCPToolAdapter initialization."""
         from agenticaiframework.tools.mcp_compat import MCPToolAdapter
-        from unittest.mock import Mock
         
         mock_tool = Mock()
         mock_tool.name = "test_tool"
@@ -580,7 +576,7 @@ class TestPromptVersioningManagerMethods:
     def test_prompt_version_creation(self):
         """Test PromptVersion creation."""
         from agenticaiframework.prompt_versioning.types import PromptVersion, PromptStatus
-        import time
+        from time import time as get_time
         
         version = PromptVersion(
             prompt_id="prompt-001",
@@ -589,7 +585,7 @@ class TestPromptVersioningManagerMethods:
             template="Hello {{name}}!",
             variables=["name"],
             status=PromptStatus.ACTIVE,
-            created_at=time.time(),
+            created_at=get_time(),
             created_by="test_user",
             metadata={},
         )

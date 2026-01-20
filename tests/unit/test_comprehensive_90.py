@@ -4,9 +4,7 @@ These tests exercise actual code paths rather than just imports.
 """
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock, AsyncMock
-from typing import Dict, Any, List
-import json
+from typing import Dict, Any
 
 
 # ============================================================================
@@ -113,7 +111,7 @@ class TestTasksComprehensive:
         """Test task status changes."""
         from agenticaiframework.tasks import Task
         
-        def executor(**kwargs):
+        def executor(**_kwargs):
             return "done"
         
         task = Task("status_test", "Test status", executor)
@@ -126,7 +124,7 @@ class TestTasksComprehensive:
         """Test task error handling."""
         from agenticaiframework.tasks import Task
         
-        def failing_executor(**kwargs):
+        def failing_executor(**_kwargs):
             raise ValueError("Test error")
         
         task = Task("failing", "Will fail", failing_executor)
@@ -159,7 +157,7 @@ class TestFrameworkComprehensive:
         framework.add_knowledge("fact1", "The sky is blue")
         
         # Create task
-        def task_executor(**kwargs):
+        def task_executor(**_kwargs):
             return "task done"
         
         task = framework.create_task(
@@ -264,7 +262,7 @@ class TestLLMManagerComprehensive:
         
         manager = LLMManager()
         
-        def mock_inference(prompt: str, kwargs: Dict[str, Any]) -> str:
+        def mock_inference(prompt: str, _kwargs: Dict[str, Any]) -> str:
             return f"Response to: {prompt}"
         
         manager.register_model(
@@ -282,7 +280,7 @@ class TestLLMManagerComprehensive:
         
         manager = LLMManager()
         
-        def mock_inference(prompt: str, kwargs: Dict[str, Any]) -> str:
+        def mock_inference(_prompt: str, _kwargs: Dict[str, Any]) -> str:
             return "response"
         
         manager.register_model("model1", mock_inference)

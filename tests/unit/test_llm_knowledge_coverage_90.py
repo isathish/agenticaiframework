@@ -3,12 +3,7 @@ Comprehensive tests for LLM providers and knowledge modules to achieve 90% cover
 Uses correct class signatures based on actual implementations.
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock, AsyncMock
-from typing import Dict, Any, List
-import json
 import time
-
 
 # ============================================================================
 # LLM Provider Base Tests

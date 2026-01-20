@@ -5,12 +5,8 @@ Tests for core modules, config, framework, tools, and other low-coverage areas.
 """
 
 import pytest
-import time
-import uuid
-import json
 import os
-from unittest.mock import Mock, patch, MagicMock
-from dataclasses import asdict
+from unittest.mock import patch
 
 
 # ============================================================================
@@ -193,7 +189,7 @@ class TestConfigureFunctions:
     
     def test_configure_basic(self):
         """Test basic configure function."""
-        from agenticaiframework.config import configure, get_config, reset_config
+        from agenticaiframework.config import configure, reset_config
         
         reset_config()
         
@@ -343,7 +339,8 @@ class TestWorkflows:
         workflow = SequentialWorkflow(manager=manager)
         
         with pytest.raises(ValueError):
-            workflow._get_agent("nonexistent")
+            # Access protected method for testing internal behavior
+            getattr(workflow, '_get_agent')("nonexistent")
     
     def test_parallel_workflow_init(self):
         """Test parallel workflow initialization."""
@@ -694,15 +691,15 @@ class TestSecurityFiltering:
         """Test profanity filter initialization."""
         from agenticaiframework.security.filtering import ProfanityFilter
         
-        filter = ProfanityFilter()
-        assert filter is not None
+        profanity_filter = ProfanityFilter()
+        assert profanity_filter is not None
     
     def test_profanity_filter_is_allowed(self):
         """Test profanity filter with clean text."""
         from agenticaiframework.security.filtering import ProfanityFilter
         
-        filter = ProfanityFilter()
-        result = filter.is_allowed("This is a clean message")
+        profanity_filter = ProfanityFilter()
+        result = profanity_filter.is_allowed("This is a clean message")
         
         assert result is True
     
@@ -710,25 +707,25 @@ class TestSecurityFiltering:
         """Test adding blocked words."""
         from agenticaiframework.security.filtering import ContentFilter
         
-        filter = ContentFilter()
-        filter.add_blocked_word("spam")
+        content_filter = ContentFilter()
+        content_filter.add_blocked_word("spam")
         
-        assert "spam" in filter.blocked_words
-        assert filter.is_allowed("This is spam content") is False
+        assert "spam" in content_filter.blocked_words
+        assert content_filter.is_allowed("This is spam content") is False
     
     def test_pii_filter_init(self):
         """Test PII filter initialization."""
         from agenticaiframework.security.filtering import PIIFilter
         
-        filter = PIIFilter()
-        assert filter is not None
+        pii_filter = PIIFilter()
+        assert pii_filter is not None
     
     def test_pii_filter_detects_ssn(self):
         """Test PII filter detects SSN."""
         from agenticaiframework.security.filtering import PIIFilter
         
-        filter = PIIFilter()
-        result = filter.is_allowed("My SSN is 123-45-6789")
+        pii_filter = PIIFilter()
+        result = pii_filter.is_allowed("My SSN is 123-45-6789")
         
         assert result is False
     
@@ -736,18 +733,18 @@ class TestSecurityFiltering:
         """Test content filter initialization."""
         from agenticaiframework.security.filtering import ContentFilter
         
-        filter = ContentFilter()
-        assert filter is not None
-        assert len(filter.blocked_words) == 0
+        content_filter = ContentFilter()
+        assert content_filter is not None
+        assert len(content_filter.blocked_words) == 0
     
     def test_content_filter_get_violations(self):
         """Test getting violations."""
         from agenticaiframework.security.filtering import ContentFilter
         
-        filter = ContentFilter()
-        filter.add_blocked_word("bad")
+        content_filter = ContentFilter()
+        content_filter.add_blocked_word("bad")
         
-        violations = filter.get_violations("This is bad content")
+        violations = content_filter.get_violations("This is bad content")
         assert len(violations) > 0
 
 

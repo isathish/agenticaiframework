@@ -3,13 +3,6 @@ Deep mocked tests for low-coverage modules to achieve 90% coverage.
 Uses extensive mocking to test code paths without external dependencies.
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock, AsyncMock, PropertyMock
-from typing import Dict, Any, List
-import json
-import time
-from datetime import datetime
-
 
 # ============================================================================
 # Knowledge Builder Tests
@@ -48,7 +41,7 @@ class TestKnowledgeChunk:
     
     def test_knowledge_chunk_from_dict(self):
         """Test KnowledgeChunk from_dict method."""
-        from agenticaiframework.knowledge.builder import KnowledgeChunk, SourceType
+        from agenticaiframework.knowledge.builder import KnowledgeChunk
         
         data = {
             "id": "test-id-123",
@@ -282,7 +275,7 @@ class TestTaskLifecycle:
         """Test Task status transitions."""
         from agenticaiframework.tasks import Task
         
-        def success_executor(**kwargs):
+        def success_executor(**_kwargs):
             return "success"
         
         task = Task("status_test", "Test", success_executor)
@@ -442,7 +435,7 @@ class TestFrameworkOperations:
         assert agent is not None
         
         # Create task
-        def task_fn(**kwargs):
+        def task_fn(**_kwargs):
             return "done"
         
         task = framework.create_task(

@@ -15,8 +15,6 @@ Targets:
 """
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
-from typing import Dict, Any
 
 
 # ============================================================================
@@ -30,7 +28,7 @@ class TestTaskClass:
         """Test Task initialization."""
         from agenticaiframework.tasks import Task
         
-        def executor(**kwargs):
+        def executor(**_kwargs):
             return "result"
         
         task = Task("test_task", "Test objective", executor)
@@ -62,7 +60,7 @@ class TestTaskClass:
         """Test Task run with no inputs."""
         from agenticaiframework.tasks import Task
         
-        def executor(**kwargs):
+        def executor(**_kwargs):
             return "success"
         
         task = Task("simple", "Simple task", executor)
@@ -128,7 +126,7 @@ class TestTaskManager:
         """Test running all tasks."""
         from agenticaiframework.tasks import TaskManager, Task
         
-        def executor(**kwargs):
+        def executor(**_kwargs):
             return "done"
         
         manager = TaskManager()
@@ -143,7 +141,7 @@ class TestTaskManager:
         """Test executing task by name."""
         from agenticaiframework.tasks import TaskManager, Task
         
-        def executor(**kwargs):
+        def executor(**_kwargs):
             return "success"
         
         manager = TaskManager()
@@ -197,7 +195,7 @@ class TestAgenticFramework:
         
         framework = AgenticFramework()
         
-        def inference_fn(prompt, options):
+        def inference_fn(_prompt, _options):
             return "response"
         
         framework.register_llm("test_llm", inference_fn)
@@ -209,7 +207,7 @@ class TestAgenticFramework:
         
         framework = AgenticFramework()
         
-        def executor(**kwargs):
+        def executor(**_kwargs):
             return "done"
         
         task = framework.create_task(

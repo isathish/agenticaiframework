@@ -3,11 +3,8 @@ Comprehensive tests for low-coverage modules to achieve 90% coverage.
 Tests all data classes, enums, and basic functionality without external dependencies.
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
 import time
 import io
-from datetime import datetime
 
 
 # ============================================================================
@@ -234,7 +231,7 @@ class TestKnowledgeBuilderDeep:
     
     def test_knowledge_chunk_from_dict(self):
         """Test KnowledgeChunk from_dict method."""
-        from agenticaiframework.knowledge.builder import KnowledgeChunk, SourceType
+        from agenticaiframework.knowledge.builder import KnowledgeChunk
         
         data = {
             "id": "chunk-123",
@@ -604,7 +601,7 @@ class TestSecurityDeep:
         assert remaining == 10
         
         # Use some requests
-        for i in range(5):
+        for _ in range(5):
             limiter.is_allowed("user1")
         
         remaining = limiter.get_remaining_requests("user1")
@@ -617,7 +614,7 @@ class TestSecurityDeep:
         limiter = RateLimiter(max_requests=3, time_window=60)
         
         # Use all requests
-        for i in range(3):
+        for _ in range(3):
             limiter.is_allowed("user2")
         
         # Should have wait time now

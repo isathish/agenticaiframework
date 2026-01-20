@@ -3,10 +3,7 @@ High-impact comprehensive tests for the largest low-coverage modules.
 Targets: core/agent.py, communication, formatting, hitl, conversations.
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-import time
-import json
+import time as time_module
 
 
 # ============================================================================
@@ -283,7 +280,6 @@ class TestInfrastructureExtended:
     def test_serverless_function_dataclass(self):
         """Test ServerlessFunction dataclass."""
         from agenticaiframework.infrastructure.types import ServerlessFunction
-        import time
         
         func = ServerlessFunction(
             function_id="func-001",
@@ -294,7 +290,7 @@ class TestInfrastructureExtended:
             timeout_seconds=30,
             environment={"ENV": "test"},
             metadata={"version": "1.0"},
-            created_at=time.time(),
+            created_at=time_module.time(),
         )
         
         assert func.name == "test-function"
@@ -302,9 +298,8 @@ class TestInfrastructureExtended:
     def test_function_invocation_dataclass(self):
         """Test FunctionInvocation dataclass."""
         from agenticaiframework.infrastructure.types import FunctionInvocation
-        import time
         
-        now = time.time()
+        now = time_module.time()
         invocation = FunctionInvocation(
             invocation_id="inv-001",
             function_id="func-001",
@@ -498,7 +493,6 @@ class TestPromptVersioningExtended:
     def test_prompt_version_content_hash(self):
         """Test PromptVersion content_hash property."""
         from agenticaiframework.prompt_versioning.types import PromptVersion, PromptStatus
-        import time
         
         version = PromptVersion(
             prompt_id="prompt-001",
@@ -507,7 +501,7 @@ class TestPromptVersioningExtended:
             template="Hello {{name}}!",
             variables=["name"],
             status=PromptStatus.ACTIVE,
-            created_at=time.time(),
+            created_at=time_module.time(),
             created_by="test_user",
         )
         
@@ -530,7 +524,7 @@ class TestSecurityExtended:
         limiter = RateLimiter(max_requests=5, time_window=1.0)
         
         # All requests should be allowed
-        for i in range(5):
+        for _ in range(5):
             assert limiter.is_allowed("client-1") == True
         
         # 6th request should be denied
@@ -556,9 +550,8 @@ class TestTracingExtended:
     def test_span_duration_ms(self):
         """Test Span duration_ms property."""
         from agenticaiframework.tracing.types import Span
-        import time
         
-        start = time.time()
+        start = time_module.time()
         span = Span(
             span_id="span-001",
             trace_id="trace-001",

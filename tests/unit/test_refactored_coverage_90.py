@@ -3,12 +3,7 @@ Refactored comprehensive tests for 90% coverage.
 Tests low-coverage modules with correct class signatures.
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-from typing import Dict, Any, List
 import time
-from datetime import datetime
-
 
 # ============================================================================
 # Speech Processor Tests (25% coverage)
@@ -664,8 +659,8 @@ class TestSecurityExtended:
         """Test content filtering."""
         from agenticaiframework.security.filtering import ContentFilter
         
-        filter = ContentFilter()
-        assert filter is not None
+        content_filter = ContentFilter()
+        assert content_filter is not None
     
     def test_rate_limiting(self):
         """Test rate limiting."""
@@ -675,7 +670,7 @@ class TestSecurityExtended:
         limiter = RateLimiter(max_requests=10, time_window=60)
         
         # Check rate limit
-        for i in range(10):
+        for _ in range(10):
             result = limiter.is_allowed("user1")
             assert result is True
         

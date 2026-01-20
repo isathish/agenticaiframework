@@ -9,7 +9,6 @@ Covers:
 """
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
 
 
 # ============================================================================
@@ -156,7 +155,7 @@ class TestInMemoryVectorDB:
     
     def test_inmemory_db_import(self):
         """Test InMemoryVectorDB import."""
-        from agenticaiframework.knowledge.vector_db import InMemoryVectorDB, VectorDBConfig
+        from agenticaiframework.knowledge.vector_db import InMemoryVectorDB
         
         assert InMemoryVectorDB is not None
     

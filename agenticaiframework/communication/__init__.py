@@ -73,7 +73,6 @@ class CommunicationManager:
     
     def __init__(self):
         from typing import Dict, Any, Callable
-        import time
         self.protocols: Dict[str, Callable[[Any], Any]] = {}
     
     def _log(self, message: str):
@@ -93,7 +92,7 @@ class CommunicationManager:
         if protocol in self.protocols:
             try:
                 return self.protocols[protocol](data)
-            except Exception as e:
+            except (TypeError, ValueError, RuntimeError) as e:
                 self._log(f"Error sending data via '{protocol}': {e}")
                 return None
         self._log(f"Protocol '{protocol}' not found")
