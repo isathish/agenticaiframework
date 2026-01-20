@@ -78,9 +78,10 @@ jobs:
         run: |
           pip install -e .[dev]
 
-      - name: Run tests with coverage
-        run: |
-          pytest --maxfail=1 --disable-warnings -q --cov=agenticaiframework --cov-report=term-missing --cov-fail-under=50
+      # Tests disabled - run separately in CI workflow for PRs
+      # - name: Run tests with coverage
+      #   run: |
+      #     pytest --maxfail=1 --disable-warnings -q --cov=agenticaiframework --cov-report=term-missing --cov-fail-under=50
 
       - name: Commit version bump and tag
         run: |
