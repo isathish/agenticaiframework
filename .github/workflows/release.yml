@@ -1,13 +1,9 @@
 name: Release
 
-# Main release pipeline - runs on push to main and manual trigger
+# MANUAL ONLY - Trigger via workflow_dispatch to release a new version
+# This prevents infinite loops from auto-triggered version bump commits
 
 on:
-  push:
-    branches: [main]
-    paths-ignore:
-      - "docs/**"
-      - ".github/workflows/static.yml"
   workflow_dispatch:
     inputs:
       release_type:
@@ -36,32 +32,19 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUBPATTOKEN || secrets.GITHUB_TOKEN }}
 
-      - name: Check skip
-        id: skip
-        run: |
-          MSG=$(git log -1 --pretty=%B)
-          if [[ "$MSG" == *"[skip ci]"* ]]; then
-            echo "skip=true" >> $GITHUB_OUTPUT
-          else
-            echo "skip=false" >> $GITHUB_OUTPUT
-          fi
-
       - name: Setup Python
-        if: steps.skip.outputs.skip != 'true'
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Install tools
-        if: steps.skip.outputs.skip != 'true'
         run: pip install build bump2version twine
 
       - name: Bump version
-        if: steps.skip.outputs.skip != 'true'
         id: version
         run: |
           CURRENT=$(python setup.py --version 2>/dev/null || echo "1.0.0")
-          TYPE="${{ github.event.inputs.release_type || 'patch' }}"
+          TYPE="${{ github.event.inputs.release_type }}"
           
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -73,11 +56,9 @@ jobs:
           echo "📦 Version: $VERSION"
 
       - name: Build
-        if: steps.skip.outputs.skip != 'true'
         run: python -m build
 
       - name: Generate release notes
-        if: steps.skip.outputs.skip != 'true'
         id: notes
         run: |
           VERSION="${{ steps.version.outputs.version }}"
@@ -104,7 +85,6 @@ jobs:
           EOF
 
       - name: Commit & Tag
-        if: steps.skip.outputs.skip != 'true'
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           git add setup.py
@@ -112,7 +92,6 @@ jobs:
           git tag -fa "v$VERSION" -m "Release v$VERSION"
 
       - name: Push
-        if: steps.skip.outputs.skip != 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUBPATTOKEN || secrets.GITHUB_TOKEN }}
         run: |
@@ -121,14 +100,12 @@ jobs:
           git push origin --tags --force
 
       - name: Publish to PyPI
-        if: steps.skip.outputs.skip != 'true'
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: twine upload dist/* --verbose
 
       - name: Create GitHub Release
-        if: steps.skip.outputs.skip != 'true'
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.version.outputs.version }}
