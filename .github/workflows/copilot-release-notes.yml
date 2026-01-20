@@ -1,0 +1,482 @@
+name: Generate Copilot Release Notes
+
+on:
+  release:
+    types: [created, published]
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to generate release notes for (e.g., v1.2.3)'
+        required: true
+        type: string
+      enhance_with_ai:
+        description: 'Use AI to enhance release notes'
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: read
+
+env:
+  PYTHON_VERSION: "3.11"
+
+jobs:
+  generate-notes:
+    name: Generate Release Notes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine tag
+        id: tag
+        run: |
+          if [ -n "${{ github.event.inputs.tag }}" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+          elif [ -n "${{ github.event.release.tag_name }}" ]; then
+            TAG="${{ github.event.release.tag_name }}"
+          else
+            TAG="${GITHUB_REF#refs/tags/}"
+          fi
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "Processing tag: $TAG"
+
+      - name: Get previous tag
+        id: previous
+        run: |
+          TAG="${{ steps.tag.outputs.tag }}"
+          PREV=$(git tag --sort=-creatordate | grep -v "$TAG" | head -1)
+          if [ -z "$PREV" ]; then
+            PREV=$(git rev-list --max-parents=0 HEAD)
+          fi
+          echo "tag=$PREV" >> $GITHUB_OUTPUT
+          echo "Previous tag: $PREV"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Collect change data
+        id: collect
+        run: |
+          TAG="${{ steps.tag.outputs.tag }}"
+          PREV="${{ steps.previous.outputs.tag }}"
+          
+          mkdir -p /tmp/release_data
+          
+          # Collect commits with detailed info
+          git log $PREV..$TAG --pretty=format:'{"hash":"%H","short":"%h","subject":"%s","body":"%b","author":"%an","email":"%ae","date":"%ad","files":"%f"}' --date=short 2>/dev/null | head -100 > /tmp/release_data/commits.json || true
+          
+          # Get commit messages for categorization
+          git log $PREV..$TAG --pretty=format:"%s" --no-merges > /tmp/release_data/subjects.txt
+          
+          # Get file change statistics
+          git diff --stat $PREV..$TAG > /tmp/release_data/stats.txt
+          
+          # Get changed file list
+          git diff --name-only $PREV..$TAG > /tmp/release_data/files.txt
+          
+          # Get insertions/deletions
+          STATS=$(git diff --shortstat $PREV..$TAG)
+          echo "stats=$STATS" >> $GITHUB_OUTPUT
+          
+          # Count commits
+          COMMIT_COUNT=$(git rev-list --count $PREV..$TAG)
+          echo "commit_count=$COMMIT_COUNT" >> $GITHUB_OUTPUT
+          
+          # Get contributors
+          git log $PREV..$TAG --pretty=format:"%an" | sort -u > /tmp/release_data/contributors.txt
+          CONTRIBUTOR_COUNT=$(wc -l < /tmp/release_data/contributors.txt | tr -d ' ')
+          echo "contributor_count=$CONTRIBUTOR_COUNT" >> $GITHUB_OUTPUT
+
+      - name: Generate structured release notes
+        id: generate
+        run: |
+          TAG="${{ steps.tag.outputs.tag }}"
+          PREV="${{ steps.previous.outputs.tag }}"
+          COMMIT_COUNT="${{ steps.collect.outputs.commit_count }}"
+          CONTRIBUTOR_COUNT="${{ steps.collect.outputs.contributor_count }}"
+          STATS="${{ steps.collect.outputs.stats }}"
+          
+          python3 << 'PYTHON_SCRIPT'
+          import os
+          import re
+          from datetime import datetime
+          from collections import defaultdict
+          
+          tag = "${{ steps.tag.outputs.tag }}"
+          prev = "${{ steps.previous.outputs.tag }}"
+          commit_count = int("${{ steps.collect.outputs.commit_count }}" or "0")
+          contributor_count = int("${{ steps.collect.outputs.contributor_count }}" or "0")
+          stats = "${{ steps.collect.outputs.stats }}"
+          
+          # Read commit subjects
+          subjects = []
+          try:
+              with open('/tmp/release_data/subjects.txt', 'r') as f:
+                  subjects = [line.strip() for line in f if line.strip()]
+          except:
+              pass
+          
+          # Read contributors
+          contributors = []
+          try:
+              with open('/tmp/release_data/contributors.txt', 'r') as f:
+                  contributors = [line.strip() for line in f if line.strip()]
+          except:
+              pass
+          
+          # Read file stats
+          file_stats = ""
+          try:
+              with open('/tmp/release_data/stats.txt', 'r') as f:
+                  file_stats = f.read()[:3000]
+          except:
+              pass
+          
+          # Read changed files
+          changed_files = []
+          try:
+              with open('/tmp/release_data/files.txt', 'r') as f:
+                  changed_files = [line.strip() for line in f if line.strip()]
+          except:
+              pass
+          
+          # Categorize commits using conventional commit patterns
+          categories = defaultdict(list)
+          
+          patterns = {
+              'features': [
+                  (r'^feat(\(.+\))?:', 'Feature'),
+                  (r'^add(\(.+\))?:', 'Addition'),
+                  (r'^new(\(.+\))?:', 'New'),
+                  (r'implement', 'Implementation'),
+                  (r'introduce', 'Introduction'),
+              ],
+              'fixes': [
+                  (r'^fix(\(.+\))?:', 'Fix'),
+                  (r'^bug(\(.+\))?:', 'Bug fix'),
+                  (r'^patch(\(.+\))?:', 'Patch'),
+                  (r'^hotfix(\(.+\))?:', 'Hotfix'),
+                  (r'resolve', 'Resolution'),
+              ],
+              'docs': [
+                  (r'^docs?(\(.+\))?:', 'Documentation'),
+                  (r'^readme(\(.+\))?:', 'README'),
+                  (r'documentation', 'Documentation'),
+              ],
+              'tests': [
+                  (r'^tests?(\(.+\))?:', 'Test'),
+                  (r'coverage', 'Coverage'),
+                  (r'testing', 'Testing'),
+              ],
+              'refactor': [
+                  (r'^refactor(\(.+\))?:', 'Refactor'),
+                  (r'restructure', 'Restructure'),
+                  (r'reorganize', 'Reorganize'),
+              ],
+              'perf': [
+                  (r'^perf(\(.+\))?:', 'Performance'),
+                  (r'optimize', 'Optimization'),
+                  (r'speed', 'Speed'),
+              ],
+              'security': [
+                  (r'^security(\(.+\))?:', 'Security'),
+                  (r'vulnerability', 'Vulnerability fix'),
+                  (r'cve', 'CVE fix'),
+              ],
+              'breaking': [
+                  (r'^breaking(\(.+\))?:', 'Breaking change'),
+                  (r'breaking change', 'Breaking change'),
+                  (r'deprecate', 'Deprecation'),
+              ],
+              'ci': [
+                  (r'^ci(\(.+\))?:', 'CI'),
+                  (r'^build(\(.+\))?:', 'Build'),
+                  (r'pipeline', 'Pipeline'),
+                  (r'workflow', 'Workflow'),
+                  (r'github.actions', 'GitHub Actions'),
+              ],
+              'deps': [
+                  (r'^deps?(\(.+\))?:', 'Dependency'),
+                  (r'dependency', 'Dependency'),
+                  (r'upgrade', 'Upgrade'),
+                  (r'bump', 'Version bump'),
+              ],
+              'style': [
+                  (r'^style(\(.+\))?:', 'Style'),
+                  (r'^format(\(.+\))?:', 'Format'),
+                  (r'^lint(\(.+\))?:', 'Lint'),
+              ],
+              'chore': [
+                  (r'^chore(\(.+\))?:', 'Chore'),
+                  (r'^maint(\(.+\))?:', 'Maintenance'),
+                  (r'cleanup', 'Cleanup'),
+              ],
+          }
+          
+          for subject in subjects:
+              subject_lower = subject.lower()
+              matched = False
+              
+              for category, pattern_list in patterns.items():
+                  for pattern, _ in pattern_list:
+                      if re.search(pattern, subject_lower):
+                          categories[category].append(subject)
+                          matched = True
+                          break
+                  if matched:
+                      break
+              
+              if not matched:
+                  categories['other'].append(subject)
+          
+          # Analyze changed files for highlights
+          highlights = []
+          for f in changed_files:
+              if 'setup.py' in f or 'pyproject.toml' in f:
+                  highlights.append("📦 Package configuration updated")
+              elif 'requirements' in f:
+                  highlights.append("📋 Dependencies updated")
+              elif '/tests/' in f:
+                  highlights.append("🧪 Test suite improved")
+              elif '/docs/' in f:
+                  highlights.append("📚 Documentation enhanced")
+              elif '__init__' in f:
+                  highlights.append("🔧 Module structure updated")
+          highlights = list(set(highlights))[:5]
+          
+          # Build release notes
+          notes = []
+          
+          # Header
+          notes.append(f"# 🚀 {tag}")
+          notes.append("")
+          notes.append(f"**Released:** {datetime.now().strftime('%B %d, %Y')}")
+          notes.append(f"**Changelog:** [`{prev}...{tag}`](../../compare/{prev}...{tag})")
+          notes.append("")
+          
+          # Quick stats
+          notes.append("## 📊 Quick Stats")
+          notes.append("")
+          notes.append(f"| Metric | Value |")
+          notes.append(f"|--------|-------|")
+          notes.append(f"| Commits | {commit_count} |")
+          notes.append(f"| Contributors | {contributor_count} |")
+          notes.append(f"| Files Changed | {len(changed_files)} |")
+          notes.append(f"| New Features | {len(categories['features'])} |")
+          notes.append(f"| Bug Fixes | {len(categories['fixes'])} |")
+          notes.append("")
+          
+          # Highlights
+          if highlights:
+              notes.append("## 🎯 Highlights")
+              notes.append("")
+              for h in highlights:
+                  notes.append(f"- {h}")
+              notes.append("")
+          
+          # Breaking changes
+          if categories['breaking']:
+              notes.append("## ⚠️ Breaking Changes")
+              notes.append("")
+              notes.append("> **Action Required:** Please review these changes before upgrading.")
+              notes.append("")
+              for item in categories['breaking']:
+                  notes.append(f"- {item}")
+              notes.append("")
+          
+          # Features
+          if categories['features']:
+              notes.append("## ✨ New Features")
+              notes.append("")
+              for item in categories['features']:
+                  notes.append(f"- {item}")
+              notes.append("")
+          
+          # Fixes
+          if categories['fixes']:
+              notes.append("## 🐛 Bug Fixes")
+              notes.append("")
+              for item in categories['fixes']:
+                  notes.append(f"- {item}")
+              notes.append("")
+          
+          # Performance
+          if categories['perf']:
+              notes.append("## ⚡ Performance")
+              notes.append("")
+              for item in categories['perf']:
+                  notes.append(f"- {item}")
+              notes.append("")
+          
+          # Security
+          if categories['security']:
+              notes.append("## 🔒 Security")
+              notes.append("")
+              for item in categories['security']:
+                  notes.append(f"- {item}")
+              notes.append("")
+          
+          # Documentation
+          if categories['docs']:
+              notes.append("## 📚 Documentation")
+              notes.append("")
+              for item in categories['docs'][:10]:
+                  notes.append(f"- {item}")
+              if len(categories['docs']) > 10:
+                  notes.append(f"- _...and {len(categories['docs']) - 10} more_")
+              notes.append("")
+          
+          # Tests
+          if categories['tests']:
+              notes.append("## 🧪 Testing")
+              notes.append("")
+              for item in categories['tests'][:10]:
+                  notes.append(f"- {item}")
+              if len(categories['tests']) > 10:
+                  notes.append(f"- _...and {len(categories['tests']) - 10} more_")
+              notes.append("")
+          
+          # Refactoring
+          if categories['refactor']:
+              notes.append("## ♻️ Refactoring")
+              notes.append("")
+              for item in categories['refactor'][:8]:
+                  notes.append(f"- {item}")
+              if len(categories['refactor']) > 8:
+                  notes.append(f"- _...and {len(categories['refactor']) - 8} more_")
+              notes.append("")
+          
+          # CI/Build
+          if categories['ci']:
+              notes.append("## 🔧 CI/CD")
+              notes.append("")
+              for item in categories['ci'][:5]:
+                  notes.append(f"- {item}")
+              if len(categories['ci']) > 5:
+                  notes.append(f"- _...and {len(categories['ci']) - 5} more_")
+              notes.append("")
+          
+          # Dependencies
+          if categories['deps']:
+              notes.append("## 📦 Dependencies")
+              notes.append("")
+              for item in categories['deps'][:5]:
+                  notes.append(f"- {item}")
+              if len(categories['deps']) > 5:
+                  notes.append(f"- _...and {len(categories['deps']) - 5} more_")
+              notes.append("")
+          
+          # Other changes (collapsible)
+          other_changes = categories['chore'] + categories['style'] + categories['other']
+          if other_changes:
+              notes.append("## 🔨 Other Changes")
+              notes.append("")
+              notes.append("<details>")
+              notes.append("<summary>View all maintenance changes</summary>")
+              notes.append("")
+              for item in other_changes[:20]:
+                  notes.append(f"- {item}")
+              if len(other_changes) > 20:
+                  notes.append(f"- _...and {len(other_changes) - 20} more_")
+              notes.append("")
+              notes.append("</details>")
+              notes.append("")
+          
+          # Contributors
+          if contributors:
+              notes.append("## 👥 Contributors")
+              notes.append("")
+              notes.append(f"Thank you to our {len(contributors)} contributor(s):")
+              notes.append("")
+              for c in sorted(contributors):
+                  clean = c.replace(' ', '').replace('[bot]', '-bot')
+                  notes.append(f"- @{clean}")
+              notes.append("")
+          
+          # File changes (collapsible)
+          if file_stats:
+              notes.append("## 📁 File Changes")
+              notes.append("")
+              notes.append("<details>")
+              notes.append("<summary>View detailed file statistics</summary>")
+              notes.append("")
+              notes.append("```")
+              notes.append(file_stats)
+              notes.append("```")
+              notes.append("")
+              notes.append("</details>")
+              notes.append("")
+          
+          # Installation
+          version = tag.lstrip('v')
+          notes.append("## 📥 Installation")
+          notes.append("")
+          notes.append("```bash")
+          notes.append(f"# Install or upgrade")
+          notes.append(f"pip install --upgrade agenticaiframework")
+          notes.append("")
+          notes.append(f"# Install specific version")
+          notes.append(f"pip install agenticaiframework=={version}")
+          notes.append("```")
+          notes.append("")
+          
+          # Links
+          notes.append("## 🔗 Links")
+          notes.append("")
+          notes.append("- [📦 PyPI Package](https://pypi.org/project/agenticaiframework/)")
+          notes.append("- [📚 Documentation](https://isathish.github.io/agenticaiframework/)")
+          notes.append("- [🐛 Report Issues](https://github.com/isathish/agenticaiframework/issues)")
+          notes.append("")
+          
+          # Footer
+          notes.append("---")
+          notes.append("")
+          notes.append("_This release was automatically generated. Questions? [Open an issue](https://github.com/isathish/agenticaiframework/issues/new)._")
+          
+          # Write output
+          content = '\n'.join(notes)
+          with open('RELEASE_NOTES.md', 'w') as f:
+              f.write(content)
+          
+          print("✅ Release notes generated!")
+          print("=" * 60)
+          print(content[:2000])
+          print("=" * 60)
+          
+          PYTHON_SCRIPT
+
+      - name: Update GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.tag.outputs.tag }}"
+          
+          # Check if release exists
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Updating existing release..."
+            gh release edit "$TAG" --notes-file RELEASE_NOTES.md
+          else
+            echo "Creating new release..."
+            gh release create "$TAG" \
+              --title "🚀 $TAG" \
+              --notes-file RELEASE_NOTES.md
+          fi
+          
+          echo "✅ Release updated: $TAG"
+
+      - name: Upload release notes
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes-${{ steps.tag.outputs.tag }}
+          path: RELEASE_NOTES.md
+          retention-days: 90
