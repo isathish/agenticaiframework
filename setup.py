@@ -10,7 +10,7 @@ def read_requirements(filename):
 
 setup(
     name="agenticaiframework",
-    version="1.2.26",
+    version="1.2.27",
     author="Sathishkumar Nagarajan",
     author_email="mail@sathishkumarnagarajan.com",
     description="AgenticAI - A Python SDK for building agentic applications with comprehensive 12-tier evaluation, advanced orchestration, monitoring, and enterprise capabilities.",
