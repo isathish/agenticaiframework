@@ -1,976 +1,751 @@
 ---
-tags:
-  - agents
-  - core-modules
-  - architecture
-  - API
+title: Agents
+description: Create intelligent AI agents with customizable roles, goals, tools, and behaviors
 ---
 
-# :robot: Agents Module
+# 🤖 Agents
 
-<div class="annotate" markdown>
+Agents are the core building blocks of AgenticAI Framework. They are autonomous AI entities that can reason, plan, use tools, and execute complex tasks.
 
-The Agents module is the cornerstone of the AgenticAI Framework, providing the foundation for creating intelligent, autonomous agents that can reason, interact, and execute tasks across various domains.
+---
+
+## 🎯 Quick Navigation
+
+<div class="grid cards" markdown>
+
+-   :rocket:{ .lg } **Getting Started**
+
+    ---
+
+    Create your first agent in minutes
+
+    [:octicons-arrow-right-24: Quick Start](#creating-agents)
+
+-   :gear:{ .lg } **Configuration**
+
+    ---
+
+    Customize agent behavior and capabilities
+
+    [:octicons-arrow-right-24: Learn Config](#agent-configuration)
+
+-   :hammer_and_wrench:{ .lg } **Tools**
+
+    ---
+
+    Equip agents with powerful tools
+
+    [:octicons-arrow-right-24: Add Tools](#agent-tools)
+
+-   :brain:{ .lg } **Behaviors**
+
+    ---
+
+    Control agent reasoning and actions
+
+    [:octicons-arrow-right-24: Set Behaviors](#agent-behaviors)
 
 </div>
 
+---
 
-## :sparkles: Overview
+## 🏗️ Agent Architecture
 
-!!! abstract "What are Agents?"
-    
-    Agents in AgenticAI Framework are autonomous entities with sophisticated capabilities:
+```
+┌─────────────────────────────────────────────────────────────┐
+│                          Agent                               │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐   │
+│  │   Config     │    │    Memory    │    │    State     │   │
+│  │  (Role/Goal) │    │  (Context)   │    │  (Lifecycle) │   │
+│  └──────────────┘    └──────────────┘    └──────────────┘   │
+│                                                              │
+│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐   │
+│  │    Tools     │    │     LLM      │    │  Guardrails  │   │
+│  │  (Actions)   │    │  (Reasoning) │    │ (Validation) │   │
+│  └──────────────┘    └──────────────┘    └──────────────┘   │
+│                                                              │
+│  ┌─────────────────────────────────────────────────────────┐│
+│  │                    Execution Loop                        ││
+│  │  Observe → Think → Plan → Act → Reflect → Repeat        ││
+│  └─────────────────────────────────────────────────────────┘│
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
 
-<div class="grid" markdown>
+---
 
-:material-play-circle:{ .lg } **Execute Tasks**
-:   Perform specific objectives with defined capabilities and success criteria
+## Creating Agents
 
-:material-database-check:{ .lg } **Maintain State**
-:   Store and manage information through configurable memory systems
+### Basic Agent
 
-:material-chat-processing:{ .lg } **Communicate**
-:   Interact with other agents and external services seamlessly
+```python
+from agenticaiframework import Agent, AgentConfig
 
-:material-brain:{ .lg } **Learn & Adapt**
-:   Evolve based on interactions and feedback over time
+# Create a simple agent
+config = AgentConfig(
+    name="assistant",
+    role="Helpful AI Assistant",
+    goal="Help users with their questions accurately and helpfully"
+)
 
-:material-shield-check:{ .lg } **Operate Safely**
-:   Function within defined guardrails and compliance constraints
+agent = Agent(config=config)
 
-:material-cog-sync:{ .lg } **Coordinate Workflows**
-:   Collaborate with other agents for complex multi-step processes
+# Execute a task
+result = agent.execute("What is the capital of France?")
+print(result.output)
+# Output: The capital of France is Paris.
+```
 
-</div>
+### Agent with Memory
 
+```python
+from agenticaiframework import Agent, AgentConfig, MemoryManager
 
-## :gear: Core Components
+# Initialize memory
+memory = MemoryManager()
 
-### :material-robot-outline: Agent Class
+# Create agent with memory
+agent = Agent(
+    config=AgentConfig(
+        name="remembering_assistant",
+        role="Personal Assistant",
+        goal="Help users while remembering context"
+    ),
+    memory=memory
+)
 
-The `Agent` class is the base implementation for all agent types in the framework.
+# Agent remembers across interactions
+result1 = agent.execute("My name is Alice and I like Python")
+result2 = agent.execute("What's my name and what do I like?")
+print(result2.output)
+# Output: Your name is Alice and you like Python.
+```
 
-!!! info "Constructor"
+### Agent with Tools
 
-    ```python
-    Agent(
-        name: str,
-        role: str,
-        capabilities: List[str],
-        config: Dict[str, Any]
+```python
+from agenticaiframework import Agent, AgentConfig
+from agenticaiframework.tools import SearchTool, CalculatorTool
+
+# Create agent with tools
+agent = Agent(
+    config=AgentConfig(
+        name="research_assistant",
+        role="Research Analyst",
+        goal="Research topics and provide accurate analysis",
+        tools=[SearchTool(), CalculatorTool()]
     )
-    ```
+)
 
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `name` | `str` | Unique identifier for the agent |
-| `role` | `str` | Describes the agent's purpose and domain expertise |
-| `capabilities` | `List[str]` | List of what the agent can do (e.g., `["text_generation", "data_analysis"]`) |
-| `config` | `Dict[str, Any]` | Configuration parameters and settings |
-
-#### Properties
-
-| Property | Type | Description |
-|----------|------|-------------|
-| `id` | str | Auto-generated unique identifier |
-| `name` | str | Agent's human-readable name |
-| `role` | str | Agent's defined role or purpose |
-| `capabilities` | List[str] | List of agent's capabilities |
-| `config` | Dict[str, Any] | Configuration parameters |
-| `status` | str | Current status (initialized, running, paused, stopped) |
-| `memory` | List | Agent's memory storage |
-| `version` | str | Agent version |
-
-
-## :art: Low-Level Design (LLD)
-
-### Agent Class Diagram
-
-!!! info "Complete Agent Architecture"
-    
-    Detailed class relationships and interfaces:
-
-```mermaid
-classDiagram
-    class Agent {
-        -str _id
-        -str name
-        -str role
-        -List~str~ capabilities
-        -Dict~str,Any~ config
-        -str status
-        -List memory
-        -str version
-        -datetime created_at
-        -datetime last_active
-        
-        +__init__(name, role, capabilities, config)
-        +start() void
-        +pause() void
-        +resume() void
-        +stop() void
-        +execute_task(callable, args, kwargs) Any
-        +add_capability(capability) void
-        +remove_capability(capability) void
-        +update_config(config) void
-        +get_status() str
-        +get_metrics() Dict
-        -_validate_state_transition(new_state) bool
-        -_update_status(status) void
-    }
-    
-    class ContextManager {
-        -int max_tokens
-        -List~ContextItem~ contexts
-        -int current_tokens
-        -Dict~str,float~ importance_weights
-        
-        +__init__(max_tokens)
-        +add_context(content, importance) void
-        +get_context_summary() str
-        +get_full_context() List
-        +get_stats() Dict
-        +clear() void
-        +update_importance(index, importance) void
-        -_prune_contexts() void
-        -_calculate_tokens(content) int
-        -_should_prune() bool
-    }
-    
-    class ContextItem {
-        +str content
-        +float importance
-        +datetime timestamp
-        +int tokens
-        +Dict metadata
-    }
-    
-    class AgentManager {
-        -Dict~str,Agent~ _agents
-        -Queue _task_queue
-        -ThreadPoolExecutor _executor
-        -Lock _lock
-        
-        +register_agent(agent) void
-        +unregister_agent(agent_id) void
-        +get_agent(agent_id) Agent
-        +list_agents() List~Agent~
-        +find_agents_by_capability(capability) List~Agent~
-        +broadcast(message) void
-        +assign_task(task, agent_id) Future
-        +get_statistics() Dict
-        -_validate_agent(agent) bool
-    }
-    
-    class AgentPool {
-        -List~Agent~ available_agents
-        -List~Agent~ busy_agents
-        -int max_size
-        -Queue pending_tasks
-        
-        +add_agent(agent) void
-        +remove_agent(agent_id) void
-        +get_available_agent(capabilities) Agent
-        +return_agent(agent) void
-        +get_pool_stats() Dict
-        -_balance_load() void
-    }
-    
-    Agent "1" *-- "1" ContextManager: has
-    Agent "*" --o "1" AgentManager: managed by
-    AgentManager "1" *-- "1" AgentPool: uses
-    AgentPool "1" o-- "*" Agent: contains
-    ContextManager "1" *-- "*" ContextItem: stores
+# Agent uses tools to complete tasks
+result = agent.execute("What's the population of Tokyo and what's 15% of it?")
 ```
 
-### Agent State Machine
+---
 
-```mermaid
-stateDiagram-v2
-    [*] --> Initialized: Agent Created
-    
-    Initialized --> Running: start()
-    Initialized --> Terminated: destroy()
-    
-    Running --> Idle: No Tasks
-    Running --> Paused: pause()
-    Running --> Terminated: stop()
-    
-    Idle --> Executing: execute_task()
-    Idle --> Paused: pause()
-    Idle --> Terminated: stop()
-    
-    Executing --> Idle: Success
-    Executing --> Error: Exception
-    Executing --> Paused: pause()
-    Executing --> Terminated: stop()
-    
-    Paused --> Running: resume()
-    Paused --> Terminated: stop()
-    
-    Error --> Running: retry()
-    Error --> Idle: handle_error()
-    Error --> Terminated: stop()
-    
-    Terminated --> [*]
-    
-    note right of Initialized
-        Configuration loaded
-        Capabilities validated
-        Resources allocated
-    end note
-    
-    note right of Executing
-        Task in progress
-        Memory active
-        LLM calls happening
-    end note
-    
-    note right of Error
-        Error logged
-        Metrics recorded
-        Recovery attempted
-    end note
-```
+## Agent Configuration
 
-### Task Execution Flow
-
-```mermaid
-sequenceDiagram
-    participant Client
-    participant Agent
-    participant ContextMgr as Context Manager
-    participant Memory
-    participant LLM
-    participant Monitor
-    
-    Client->>Agent: execute_task(callable, args)
-    activate Agent
-    
-    Agent->>Agent: _validate_state_transition("executing")
-    Agent->>Monitor: log_event("task_started")
-    
-    Agent->>ContextMgr: get_context_summary()
-    ContextMgr-->>Agent: context_data
-    
-    Agent->>Memory: retrieve_relevant_memory()
-    Memory-->>Agent: historical_data
-    
-    Agent->>LLM: generate(prompt, context)
-    activate LLM
-    LLM-->>Agent: response
-    deactivate LLM
-    
-    Agent->>Memory: store_interaction(task, response)
-    Agent->>ContextMgr: add_context(response, importance=0.8)
-    
-    Agent->>Monitor: record_metric("task_completed")
-    Agent->>Agent: _update_status("idle")
-    
-    Agent-->>Client: result
-    deactivate Agent
-```
-
-#### Core Methods
+### AgentConfig Options
 
 ```python
-def start() -> None
-def pause() -> None
-def resume() -> None
-def stop() -> None
-def execute_task(task_callable: Callable, *args, **kwargs) -> Any
+from agenticaiframework import AgentConfig
+
+config = AgentConfig(
+    # Identity
+    name="research_agent",
+    role="Senior Research Analyst",
+    goal="Conduct thorough research and provide accurate insights",
+    backstory="An expert analyst with 10 years of experience in data research",
+    
+    # LLM Settings
+    model="gpt-4o",
+    temperature=0.7,
+    max_tokens=4096,
+    
+    # Execution Settings
+    max_iterations=10,
+    max_execution_time=300,  # seconds
+    
+    # Tools
+    tools=["search", "calculator", "python_repl"],
+    
+    # Behavior
+    verbose=True,
+    allow_delegation=True,
+    cache_responses=True,
+    
+    # Memory
+    memory_enabled=True,
+    memory_limit=100,  # entries
+    
+    # Guardrails
+    validate_inputs=True,
+    sanitize_outputs=True
+)
 ```
 
-### ContextManager Class
-
-The `ContextManager` provides sophisticated context window management for agents with token tracking and intelligent pruning.
-
-#### Constructor
+### Role and Goal Design
 
 ```python
-ContextManager(max_tokens: int = 4096)
-```
+# Good: Specific role and clear goal
+config = AgentConfig(
+    name="code_reviewer",
+    role="Senior Software Engineer specializing in Python code review",
+    goal="Review code for bugs, security issues, and best practices. "
+         "Provide actionable feedback with examples.",
+    backstory="A senior engineer with expertise in Python, security, "
+              "and software architecture. Known for thorough but constructive reviews."
+)
 
-**Parameters:**
-
-- **`max_tokens`** *(int)*: Maximum tokens to maintain in context (default: 4096)
-
-#### Key Methods
-
-```python
-def add_context(content: str, importance: float = 0.5) -> None
-def get_context_summary() -> str
-def get_stats() -> Dict[str, Any]
-def clear() -> None
-```
-
-**Example:**
-
-```python
-from agenticaiframework.agents import ContextManager
-
-# Create context manager
-ctx = ContextManager(max_tokens=2048)
-
-# Add context with importance weighting
-ctx.add_context("Critical system instruction", importance=0.9)
-ctx.add_context("Background information", importance=0.5)
-ctx.add_context("Optional details", importance=0.3)
-
-# Get context summary
-summary = ctx.get_context_summary()
-print(summary)
-
-# Get statistics
-stats = ctx.get_stats()
-print(f"Context items: {stats['total_items']}")
-print(f"Token utilization: {stats.get('utilization', 0):.2%}")
-```
-
-### AgentManager Class
-
-The `AgentManager` orchestrates multiple agents and handles their coordination.
-
-#### Key Methods
-
-```python
-def register_agent(agent: Agent) -> None
-def get_agent(agent_id: str) -> Optional[Agent]
-def list_agents() -> List[Agent]
-def remove_agent(agent_id: str) -> None
-def broadcast(message: str) -> None
-```
-
-#### Multi-Agent Coordination
-
-```mermaid
-flowchart TB
-    START([Request Received]) --> ROUTE{Route by<br/>Capability}
-    
-    ROUTE -->|Match Found| ASSIGN[Assign to Agent]
-    ROUTE -->|No Match| CREATE[Create New Agent]
-    ROUTE -->|Multiple Matches| BALANCE[Load Balance]
-    
-    CREATE --> REGISTER[Register with Manager]
-    REGISTER --> ASSIGN
-    BALANCE --> ASSIGN
-    
-    ASSIGN --> QUEUE[Add to Task Queue]
-    QUEUE --> AVAIL{Agent<br/>Available?}
-    
-    AVAIL -->|Yes| EXEC[Execute Task]
-    AVAIL -->|No| WAIT[Wait in Queue]
-    WAIT --> AVAIL
-    
-    EXEC --> MONITOR[Monitor Progress]
-    MONITOR --> CHECK{Task<br/>Complete?}
-    
-    CHECK -->|Success| STORE[Store Results]
-    CHECK -->|Error| RETRY{Retry<br/>Possible?}
-    CHECK -->|In Progress| MONITOR
-    
-    RETRY -->|Yes| EXEC
-    RETRY -->|No| FAIL[Mark Failed]
-    
-    STORE --> NOTIFY[Notify Subscribers]
-    FAIL --> NOTIFY
-    
-    NOTIFY --> END([Response Sent])
-    
-    style START fill:#4caf50
-    style END fill:#4caf50
-    style EXEC fill:#2196f3
-    style FAIL fill:#f44336
-    style STORE fill:#ff9800
-```
-
-
-## :rocket: Creating Agents
-
-### :material-plus-circle: Basic Agent Creation
-
-!!! example "Create Your First Agent"
-
-    ```python
-    from agenticaiframework import Agent
-    
-    # Create a basic agent
-    agent = Agent(
-        name="DataAnalyst",
-        role="Data Analysis Specialist",
-        capabilities=[
-            "data_processing",
-            "statistical_analysis",
-            "visualization"
-        ],
-        config={
-            "processing_timeout": 300,
-            "output_format": "json",
-            "precision": "high"
-        }
-    )
-    
-    # Start the agent
-    agent.start()
-    print(f"Agent {agent.name} is now {agent.status}")
-    ```
-
-### Agent Discovery & Registry Pattern
-
-```mermaid
-graph LR
-    subgraph "Agent Registry"
-        REG[(Registry<br/>Database)]
-        INDEX[Search Index]
-    end
-    
-    subgraph "Agents"
-        A1["Agent 1<br/>cap: [A, B]"]
-        A2["Agent 2<br/>cap: [B, C]"]
-        A3["Agent 3<br/>cap: [A, C]"]
-    end
-    
-    subgraph "Discovery"
-        DISC[Discovery Service]
-        MATCH[Capability Matcher]
-        SCORE[Scoring Engine]
-    end
-    
-    A1 & A2 & A3 -->|register| REG
-    REG -->|index| INDEX
-    
-    CLIENT[Client Request] -->|find agent<br/>with cap: [A, C]| DISC
-    DISC --> INDEX
-    INDEX -->|candidates| MATCH
-    MATCH -->|score| SCORE
-    SCORE -->|best match| A3
-    
-    style REG fill:#4caf50
-    style A3 fill:#ff9800
-```
-
-
-### :material-star-circle: Specialized Agent Types
-
-=== ":material-headset: Customer Service"
-
-    ```python
-    customer_agent = Agent(
-        name="CustomerSupport",
-        role="Customer Service Representative",
-        capabilities=[
-            "natural_language_processing",
-            "sentiment_analysis", 
-            "response_generation",
-            "escalation_handling"
-        ],
-        config={
-            "response_tone": "professional_friendly",
-            "max_response_length": 500,
-            "escalation_threshold": 0.8,
-            "supported_languages": ["en", "es", "fr"]
-        }
-    )
-    ```
-    
-    !!! tip "Use Case"
-        Perfect for automated customer support with intelligent escalation to human agents.
-
-=== ":material-book-search: Research"
-
-    ```python
-    research_agent = Agent(
-        name="ResearchAssistant",
-        role="Academic Research Specialist", 
-        capabilities=[
-            "literature_search",
-            "data_extraction",
-            "citation_management",
-            "summary_generation"
-        ],
-        config={
-            "search_depth": "comprehensive",
-            "citation_style": "APA",
-            "fact_checking": True,
-            "source_credibility_threshold": 0.9
-        }
-    )
-    ```
-    
-    !!! tip "Use Case"
-        Ideal for academic research, literature reviews, and knowledge synthesis.
-
-=== ":material-code-braces: Code Generation"
-
-    ```python
-    code_agent = Agent(
-        name="CodeGenerator",
-        role="Software Development Assistant",
-        capabilities=[
-            "code_generation",
-            "code_review",
-            "testing",
-            "documentation_generation"
-        ],
-        config={
-            "programming_languages": ["python", "javascript", "java"],
-            "code_style": "pep8",
-            "test_coverage_target": 90,
-        "documentation_format": "sphinx"
+# Better: Include constraints and preferences
+config = AgentConfig(
+    name="code_reviewer",
+    role="Senior Software Engineer specializing in Python code review",
+    goal="Review code for bugs, security issues, and best practices",
+    constraints=[
+        "Focus on actionable feedback",
+        "Prioritize security issues",
+        "Include code examples in suggestions"
+    ],
+    preferences={
+        "style_guide": "PEP 8",
+        "max_line_length": 88,
+        "prefer_type_hints": True
     }
 )
 ```
 
-## Agent Lifecycle Management
-
-### Lifecycle States
-
-```mermaid
-stateDiagram-v2
-    [*] --> Initialized
-    Initialized --> Running: start()
-    Running --> Paused: pause()
-    Paused --> Running: resume()
-    Running --> Stopped: stop()
-    Stopped --> [*]
-```
-
-### Lifecycle Methods
+### Model Configuration
 
 ```python
-# Create and start an agent
-agent = Agent("WorkerAgent", "Task Processor", ["processing"], {})
+from agenticaiframework import AgentConfig, LLMConfig
 
-# Lifecycle management
-agent.start()        # Status: "running"
-agent.pause()        # Status: "paused" 
-agent.resume()       # Status: "running"
-agent.stop()         # Status: "stopped"
+# Basic model config
+config = AgentConfig(
+    name="assistant",
+    model="gpt-4o-mini"
+)
 
-# Check status at any time
-print(f"Agent status: {agent.status}")
-```
+# Advanced model config
+config = AgentConfig(
+    name="assistant",
+    llm=LLMConfig(
+        provider="openai",
+        model="gpt-4o",
+        temperature=0.7,
+        max_tokens=4096,
+        top_p=0.95,
+        frequency_penalty=0.0,
+        presence_penalty=0.0,
+        stop_sequences=["###"],
+        timeout=60
+    )
+)
 
-### Event Handling
-
-```python
-def on_agent_started(agent):
-    print(f"Agent {agent.name} has started successfully")
-
-def on_agent_error(agent, error):
-    print(f"Agent {agent.name} encountered error: {error}")
-
-# Register event handlers (conceptual - would need implementation)
-agent.on("started", on_agent_started)
-agent.on("error", on_agent_error)
-```
-
-## Multi-Agent Management
-
-### AgentManager Usage
-
-```python
-from agenticaiframework import Agent, AgentManager
-
-# Create agent manager
-manager = AgentManager()
-
-# Create multiple agents
-agents = [
-    Agent("Agent1", "Data Collector", ["data_collection"], {}),
-    Agent("Agent2", "Data Processor", ["data_processing"], {}),
-    Agent("Agent3", "Data Analyzer", ["data_analysis"], {})
-]
-
-# Register all agents
-for agent in agents:
-    manager.register_agent(agent)
-    agent.start()
-
-# Broadcast message to all agents
-manager.broadcast("Starting batch processing job #1234")
-
-# Get specific agent
-data_collector = manager.get_agent("agent_id_here")
-
-# List all active agents
-active_agents = manager.list_agents()
-print(f"Managing {len(active_agents)} agents")
-```
-
-### Agent Coordination Patterns
-
-#### Sequential Processing
-
-```python
-class SequentialWorkflow:
-    def __init__(self, manager: AgentManager):
-        self.manager = manager
-    
-    def execute_sequential(self, data, agent_chain):
-        result = data
-        for agent_name in agent_chain:
-            agent = self.manager.get_agent_by_name(agent_name)
-            result = agent.execute_task(lambda x: process_data(x), result)
-        return result
-
-# Usage
-workflow = SequentialWorkflow(manager)
-result = workflow.execute_sequential(
-    initial_data, 
-    ["DataCollector", "DataProcessor", "DataAnalyzer"]
+# Using different providers
+config = AgentConfig(
+    name="claude_assistant",
+    llm=LLMConfig(
+        provider="anthropic",
+        model="claude-3-5-sonnet-20241022",
+        max_tokens=4096
+    )
 )
 ```
 
-#### Parallel Processing
+---
+
+## Agent Tools
+
+### Adding Built-in Tools
 
 ```python
-import asyncio
+from agenticaiframework import Agent, AgentConfig
+from agenticaiframework.tools import (
+    SearchTool,
+    WikipediaTool,
+    CalculatorTool,
+    PythonREPLTool,
+    FileReadTool,
+    FileWriteTool
+)
 
-class ParallelWorkflow:
-    def __init__(self, manager: AgentManager):
-        self.manager = manager
-    
-    async def execute_parallel(self, data, agent_names):
-        tasks = []
-        for agent_name in agent_names:
-            agent = self.manager.get_agent_by_name(agent_name)
-            task = asyncio.create_task(self.run_agent_task(agent, data))
-            tasks.append(task)
-        
-        results = await asyncio.gather(*tasks)
-        return results
-    
-    async def run_agent_task(self, agent, data):
-        return agent.execute_task(lambda x: process_data(x), data)
+agent = Agent(
+    config=AgentConfig(
+        name="versatile_assistant",
+        role="Multi-skilled Assistant",
+        tools=[
+            SearchTool(),
+            WikipediaTool(),
+            CalculatorTool(),
+            PythonREPLTool(),
+            FileReadTool(),
+            FileWriteTool()
+        ]
+    )
+)
 ```
 
-## Advanced Agent Features
-
-### Custom Agent Behaviors
+### Creating Custom Tools
 
 ```python
-class AdvancedAgent(Agent):
-    def __init__(self, name, role, capabilities, config):
-        super().__init__(name, role, capabilities, config)
-        self.learning_rate = config.get("learning_rate", 0.01)
-        self.experience_buffer = []
+from agenticaiframework.tools import Tool, tool
+
+# Method 1: Using decorator
+@tool
+def get_weather(location: str) -> str:
+    """Get current weather for a location.
     
-    def learn_from_feedback(self, feedback):
-        """Custom learning mechanism"""
-        self.experience_buffer.append(feedback)
-        if len(self.experience_buffer) > 100:
-            self.optimize_behavior()
-    
-    def optimize_behavior(self):
-        """Implement behavior optimization logic"""
-        # Analyze experience buffer and adjust parameters
-        positive_feedback = [f for f in self.experience_buffer if f.rating > 0.8]
-        if len(positive_feedback) > 50:
-            # Increase confidence in current approach
-            self.config["confidence"] = min(1.0, self.config.get("confidence", 0.5) + 0.1)
-    
-    def execute_with_learning(self, task_callable, *args, **kwargs):
-        """Execute task and learn from results"""
-        result = self.execute_task(task_callable, *args, **kwargs)
+    Args:
+        location: City name or coordinates
         
-        # Simulate feedback (in real implementation, this would come externally)
-        feedback = self.evaluate_result(result)
-        self.learn_from_feedback(feedback)
-        
-        return result
+    Returns:
+        Current weather conditions
+    """
+    # Implementation
+    return f"Weather in {location}: Sunny, 72°F"
+
+# Method 2: Using Tool class
+class StockPriceTool(Tool):
+    name = "stock_price"
+    description = "Get current stock price for a ticker symbol"
+    
+    def _run(self, ticker: str) -> dict:
+        # Implementation
+        return {"ticker": ticker, "price": 150.25}
+    
+    async def _arun(self, ticker: str) -> dict:
+        # Async implementation
+        return await self._fetch_price(ticker)
+
+# Add custom tools to agent
+agent = Agent(
+    config=AgentConfig(
+        name="financial_analyst",
+        tools=[get_weather, StockPriceTool()]
+    )
+)
 ```
 
-### Agent Communication
+### Tool Permissions
 
 ```python
-class CommunicatingAgent(Agent):
-    def __init__(self, name, role, capabilities, config):
-        super().__init__(name, role, capabilities, config)
-        self.message_queue = []
-        self.subscribers = []
-    
-    def send_message(self, recipient_agent, message):
-        """Send message to another agent"""
-        recipient_agent.receive_message(self, message)
-    
-    def receive_message(self, sender_agent, message):
-        """Receive message from another agent"""
-        self.message_queue.append({
-            "sender": sender_agent.name,
-            "message": message,
-            "timestamp": time.time()
-        })
-        self.process_message(message)
-    
-    def process_message(self, message):
-        """Process received message"""
-        # Implement message processing logic
-        pass
-    
-    def subscribe_to_events(self, event_type, callback):
-        """Subscribe to specific event types"""
-        self.subscribers.append({"type": event_type, "callback": callback})
-    
-    def emit_event(self, event_type, data):
-        """Emit event to subscribers"""
-        for subscriber in self.subscribers:
-            if subscriber["type"] == event_type:
-                subscriber["callback"](data)
+from agenticaiframework import AgentConfig, ToolPermissions
+
+config = AgentConfig(
+    name="restricted_agent",
+    tools=["search", "calculator", "file_read", "file_write"],
+    tool_permissions=ToolPermissions(
+        allowed_tools=["search", "calculator"],
+        denied_tools=["file_write"],
+        confirmation_required=["file_read"],
+        rate_limits={
+            "search": {"max_calls": 10, "window_seconds": 60}
+        }
+    )
+)
 ```
 
-## Integration with Other Modules
+---
 
-### Memory Integration
+## Agent Behaviors
+
+### Execution Modes
+
+=== "Single Task"
+    ```python
+    # Execute single task and return
+    result = agent.execute("Analyze this data")
+    print(result.output)
+    ```
+
+=== "Iterative"
+    ```python
+    # Execute with multiple iterations
+    result = agent.execute(
+        "Research and write a report",
+        max_iterations=5
+    )
+    ```
+
+=== "Streaming"
+    ```python
+    # Stream responses
+    async for chunk in agent.stream("Tell me a story"):
+        print(chunk, end="", flush=True)
+    ```
+
+=== "Batch"
+    ```python
+    # Process multiple tasks
+    tasks = [
+        "Analyze sales data",
+        "Generate report",
+        "Send summary email"
+    ]
+    results = await agent.execute_batch(tasks)
+    ```
+
+### Reasoning Strategies
 
 ```python
-from agenticaiframework.memory import MemoryManager
+from agenticaiframework import AgentConfig, ReasoningStrategy
 
-class MemoryEnabledAgent(Agent):
-    def __init__(self, name, role, capabilities, config):
-        super().__init__(name, role, capabilities, config)
-        self.memory_manager = MemoryManager()
-    
-    def remember(self, key, value, memory_type="short_term"):
-        """Store information in agent's memory"""
-        self.memory_manager.store(key, value, memory_type)
-    
-    def recall(self, key):
-        """Retrieve information from agent's memory"""
-        return self.memory_manager.retrieve(key)
-    
-    def execute_with_memory(self, task_callable, *args, **kwargs):
-        """Execute task with memory context"""
-        # Retrieve relevant context
-        context = self.recall(f"context_{task_callable.__name__}")
-        
-        # Execute task with context
-        result = self.execute_task(task_callable, context, *args, **kwargs)
-        
-        # Store result for future reference
-        self.remember(f"result_{task_callable.__name__}", result)
-        
-        return result
+# Chain of Thought
+config = AgentConfig(
+    name="analyst",
+    reasoning=ReasoningStrategy.CHAIN_OF_THOUGHT
+)
+
+# ReAct (Reason + Act)
+config = AgentConfig(
+    name="researcher",
+    reasoning=ReasoningStrategy.REACT
+)
+
+# Plan and Execute
+config = AgentConfig(
+    name="planner",
+    reasoning=ReasoningStrategy.PLAN_AND_EXECUTE
+)
+
+# Reflection (Self-critique)
+config = AgentConfig(
+    name="writer",
+    reasoning=ReasoningStrategy.REFLECTION
+)
 ```
 
-### LLM Integration
+### Self-Correction
 
 ```python
-from agenticaiframework.llms import LLMManager
+from agenticaiframework import AgentConfig
 
-class LLMAgent(Agent):
-    def __init__(self, name, role, capabilities, config):
-        super().__init__(name, role, capabilities, config)
-        self.llm = LLMManager()
-        self.setup_llm()
-    
-    def setup_llm(self):
-        """Configure LLM for this agent"""
-        model_config = self.config.get("llm", {})
-        model_name = model_config.get("model", "default")
-        
-        if model_name not in self.llm.models:
-            # Register default model if not exists
-            self.llm.register_model(model_name, self.default_llm_function)
-        
-        self.llm.set_active_model(model_name)
-    
-    def default_llm_function(self, prompt, kwargs):
-        """Default LLM implementation"""
-        return f"[Agent {self.name}] Processed: {prompt}"
-    
-    def generate_response(self, prompt):
-        """Generate response using LLM"""
-        return self.llm.generate(prompt)
-    
-    def intelligent_execute(self, task_description):
-        """Execute task using natural language description"""
-        prompt = f"As a {self.role}, please {task_description}"
-        return self.generate_response(prompt)
+config = AgentConfig(
+    name="self_correcting_agent",
+    enable_self_correction=True,
+    max_self_correction_attempts=3,
+    self_correction_triggers=[
+        "error",
+        "inconsistency",
+        "low_confidence"
+    ]
+)
+
+agent = Agent(config=config)
+
+# Agent will automatically retry and correct errors
+result = agent.execute("Calculate complex analysis")
+print(f"Attempts: {result.attempts}")
+print(f"Self-corrections: {result.corrections}")
 ```
+
+---
+
+## Agent Lifecycle
+
+### States
+
+```python
+from agenticaiframework import Agent, AgentState
+
+agent = Agent(config=config)
+
+# Check agent state
+print(agent.state)  # AgentState.IDLE
+
+# State transitions happen automatically
+result = agent.execute("Task")  # State: RUNNING → IDLE
+
+# Manual state control
+agent.pause()   # AgentState.PAUSED
+agent.resume()  # AgentState.RUNNING
+agent.stop()    # AgentState.TERMINATED
+```
+
+### Lifecycle Hooks
+
+```python
+from agenticaiframework import Agent, AgentConfig
+
+class CustomAgent(Agent):
+    def on_start(self):
+        """Called when agent starts executing."""
+        print("Agent starting...")
+        self.start_time = time.time()
+    
+    def on_complete(self, result):
+        """Called when task completes."""
+        duration = time.time() - self.start_time
+        print(f"Completed in {duration:.2f}s")
+    
+    def on_error(self, error):
+        """Called when an error occurs."""
+        print(f"Error: {error}")
+        self.log_error(error)
+    
+    def on_tool_use(self, tool_name, input_data):
+        """Called before tool execution."""
+        print(f"Using tool: {tool_name}")
+    
+    def on_tool_result(self, tool_name, result):
+        """Called after tool execution."""
+        print(f"Tool result: {result}")
+
+agent = CustomAgent(config=config)
+```
+
+### Context Management
+
+```python
+# Use agent as context manager
+async with Agent(config=config) as agent:
+    result = await agent.execute("Task 1")
+    result = await agent.execute("Task 2")
+# Agent automatically cleaned up
+```
+
+---
+
+## Agent Communication
+
+### Inter-Agent Messaging
+
+```python
+from agenticaiframework import Agent, AgentConfig, Messenger
+
+# Create agents
+researcher = Agent(config=AgentConfig(name="researcher"))
+writer = Agent(config=AgentConfig(name="writer"))
+
+# Set up messenger
+messenger = Messenger()
+researcher.set_messenger(messenger)
+writer.set_messenger(messenger)
+
+# Agent sends message
+researcher.send_message(
+    to="writer",
+    content={"research_data": research_results}
+)
+
+# Other agent receives
+messages = writer.receive_messages()
+```
+
+### Delegation
+
+```python
+from agenticaiframework import Agent, AgentConfig
+
+# Leader agent that can delegate
+leader = Agent(
+    config=AgentConfig(
+        name="leader",
+        role="Team Lead",
+        allow_delegation=True,
+        delegate_to=["researcher", "writer"]
+    )
+)
+
+# Worker agents
+researcher = Agent(config=AgentConfig(name="researcher"))
+writer = Agent(config=AgentConfig(name="writer"))
+
+# Leader delegates sub-tasks automatically
+result = leader.execute(
+    "Research AI trends and write a summary",
+    available_agents=[researcher, writer]
+)
+```
+
+---
+
+## Error Handling
+
+### Retry Configuration
+
+```python
+from agenticaiframework import AgentConfig, RetryConfig
+
+config = AgentConfig(
+    name="resilient_agent",
+    retry=RetryConfig(
+        max_retries=3,
+        retry_delay=1.0,
+        retry_backoff=2.0,
+        retry_on_exceptions=[
+            "RateLimitError",
+            "TimeoutError",
+            "ConnectionError"
+        ]
+    )
+)
+```
+
+### Fallback Behavior
+
+```python
+from agenticaiframework import AgentConfig, FallbackConfig
+
+config = AgentConfig(
+    name="robust_agent",
+    fallback=FallbackConfig(
+        # Fallback model if primary fails
+        fallback_model="gpt-3.5-turbo",
+        
+        # Fallback tools if primary tool fails
+        tool_fallbacks={
+            "web_search": "cached_search",
+            "api_call": "mock_api"
+        },
+        
+        # Default response on complete failure
+        default_response="I'm unable to complete this task at the moment."
+    )
+)
+```
+
+### Exception Handling
+
+```python
+from agenticaiframework import Agent, AgentError, ToolError, LLMError
+
+try:
+    result = agent.execute("Complex task")
+except ToolError as e:
+    print(f"Tool failed: {e.tool_name} - {e.message}")
+except LLMError as e:
+    print(f"LLM error: {e.message}")
+except AgentError as e:
+    print(f"Agent error: {e.message}")
+```
+
+---
+
+## Monitoring & Observability
+
+### Execution Metrics
+
+```python
+result = agent.execute("Task")
+
+# Access metrics
+print(f"Duration: {result.metrics.duration_ms}ms")
+print(f"Tokens used: {result.metrics.total_tokens}")
+print(f"Tool calls: {result.metrics.tool_calls}")
+print(f"LLM calls: {result.metrics.llm_calls}")
+print(f"Cost: ${result.metrics.estimated_cost:.4f}")
+```
+
+### Tracing
+
+```python
+from agenticaiframework import Agent, AgentConfig
+from agenticaiframework.tracing import TracingConfig
+
+config = AgentConfig(
+    name="traced_agent",
+    tracing=TracingConfig(
+        enabled=True,
+        exporter="jaeger",
+        endpoint="http://localhost:14268/api/traces",
+        sample_rate=1.0
+    )
+)
+
+agent = Agent(config=config)
+# All executions are automatically traced
+```
+
+### Logging
+
+```python
+import logging
+from agenticaiframework import Agent, AgentConfig
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+
+config = AgentConfig(
+    name="logged_agent",
+    verbose=True,
+    log_level="DEBUG",
+    log_tool_calls=True,
+    log_llm_calls=True,
+    log_thoughts=True
+)
+
+agent = Agent(config=config)
+```
+
+---
 
 ## Best Practices
 
-### Agent Design Principles
-
-1. **Single Responsibility**: Each agent should have a clear, focused purpose
-2. **Loose Coupling**: Agents should be independent and communicate through well-defined interfaces
-3. **Configuration-Driven**: Use configuration to control behavior rather than hard-coding
-4. **Observability**: Implement comprehensive logging and monitoring
-5. **Error Handling**: Gracefully handle failures and provide meaningful feedback
-
-### Performance Optimization
+### 1. Clear Role Definition
 
 ```python
-class OptimizedAgent(Agent):
-    def __init__(self, name, role, capabilities, config):
-        super().__init__(name, role, capabilities, config)
-        self.task_cache = {}
-        self.performance_metrics = {
-            "tasks_executed": 0,
-            "total_execution_time": 0,
-            "cache_hits": 0
-        }
-    
-    def cached_execute(self, task_callable, *args, **kwargs):
-        """Execute task with caching"""
-        # Create cache key
-        cache_key = self.create_cache_key(task_callable, args, kwargs)
-        
-        # Check cache
-        if cache_key in self.task_cache:
-            self.performance_metrics["cache_hits"] += 1
-            return self.task_cache[cache_key]
-        
-        # Execute and cache
-        start_time = time.time()
-        result = self.execute_task(task_callable, *args, **kwargs)
-        execution_time = time.time() - start_time
-        
-        # Update metrics
-        self.performance_metrics["tasks_executed"] += 1
-        self.performance_metrics["total_execution_time"] += execution_time
-        
-        # Cache result
-        self.task_cache[cache_key] = result
-        
-        return result
-    
-    def create_cache_key(self, task_callable, args, kwargs):
-        """Create cache key for task"""
-        import hashlib
-        key_data = f"{task_callable.__name__}_{str(args)}_{str(kwargs)}"
-        return hashlib.md5(key_data.encode()).hexdigest()
-    
-    def get_performance_stats(self):
-        """Get agent performance statistics"""
-        avg_time = (self.performance_metrics["total_execution_time"] / 
-                   max(1, self.performance_metrics["tasks_executed"]))
-        
-        return {
-            **self.performance_metrics,
-            "average_execution_time": avg_time,
-            "cache_hit_rate": (self.performance_metrics["cache_hits"] / 
-                              max(1, self.performance_metrics["tasks_executed"]))
-        }
+# ✓ Good: Specific and focused
+config = AgentConfig(
+    name="python_expert",
+    role="Python Developer specializing in data processing",
+    goal="Write efficient, clean Python code for data pipelines"
+)
+
+# ✗ Avoid: Vague and broad
+config = AgentConfig(
+    name="helper",
+    role="Assistant",
+    goal="Help with stuff"
+)
 ```
 
-### Error Handling
+### 2. Appropriate Tool Selection
 
 ```python
-class RobustAgent(Agent):
-    def __init__(self, name, role, capabilities, config):
-        super().__init__(name, role, capabilities, config)
-        self.error_count = 0
-        self.max_errors = config.get("max_errors", 10)
-    
-    def safe_execute(self, task_callable, *args, **kwargs):
-        """Execute task with comprehensive error handling"""
-        try:
-            return self.execute_task(task_callable, *args, **kwargs)
-        except Exception as e:
-            self.error_count += 1
-            self.handle_error(e, task_callable)
-            
-            if self.error_count >= self.max_errors:
-                self.emergency_shutdown()
-            
-            return None
-    
-    def handle_error(self, error, task_callable):
-        """Handle and log errors"""
-        error_info = {
-            "error_type": type(error).__name__,
-            "error_message": str(error),
-            "task": task_callable.__name__,
-            "agent": self.name,
-            "error_count": self.error_count
-        }
-        
-        # Log error (would integrate with monitoring system)
-        print(f"Agent error: {error_info}")
-        
-        # Implement recovery strategies
-        if "timeout" in str(error).lower():
-            self.handle_timeout_error()
-        elif "memory" in str(error).lower():
-            self.handle_memory_error()
-    
-    def emergency_shutdown(self):
-        """Emergency shutdown due to too many errors"""
-        print(f"Agent {self.name} shutting down due to {self.error_count} errors")
-        self.stop()
+# Only include tools the agent needs
+config = AgentConfig(
+    name="researcher",
+    tools=[SearchTool(), WikipediaTool()]  # Research-focused tools
+)
+
+# Don't overload with unnecessary tools
 ```
 
-## Troubleshooting
-
-### Common Issues
-
-1. **Agent Not Starting**: Check configuration parameters and ensure all dependencies are available
-2. **Memory Leaks**: Monitor agent memory usage and implement proper cleanup
-3. **Communication Failures**: Verify network connectivity and message formats
-4. **Performance Issues**: Use caching and optimize task execution
-
-### Debugging Tools
+### 3. Set Reasonable Limits
 
 ```python
-class DebuggableAgent(Agent):
-    def __init__(self, name, role, capabilities, config):
-        super().__init__(name, role, capabilities, config)
-        self.debug_mode = config.get("debug", False)
-        self.execution_trace = []
-    
-    def debug_execute(self, task_callable, *args, **kwargs):
-        """Execute task with debug information"""
-        if self.debug_mode:
-            start_time = time.time()
-            
-        result = self.execute_task(task_callable, *args, **kwargs)
-        
-        if self.debug_mode:
-            execution_time = time.time() - start_time
-            trace_entry = {
-                "task": task_callable.__name__,
-                "args": str(args),
-                "kwargs": str(kwargs),
-                "result": str(result)[:100],  # Truncate for readability
-                "execution_time": execution_time,
-                "timestamp": time.time()
-            }
-            self.execution_trace.append(trace_entry)
-            print(f"DEBUG: {trace_entry}")
-        
-        return result
-    
-    def get_debug_info(self):
-        """Get comprehensive debug information"""
-        return {
-            "agent_info": {
-                "name": self.name,
-                "role": self.role,
-                "status": self.status,
-                "capabilities": self.capabilities
-            },
-            "execution_trace": self.execution_trace[-10:],  # Last 10 executions
-            "memory_usage": len(self.memory),
-            "config": self.config
-        }
+config = AgentConfig(
+    name="bounded_agent",
+    max_iterations=10,           # Prevent infinite loops
+    max_execution_time=300,      # 5 minute timeout
+    max_tokens=4096,             # Token limit
+    memory_limit=100             # Memory entries limit
+)
 ```
 
-This comprehensive guide covers the Agents module's core functionality, advanced features, and best practices for building robust agentic applications.
-5. **Execution** — Perform actions until stopped.
+### 4. Enable Appropriate Guardrails
 
+```python
+config = AgentConfig(
+    name="safe_agent",
+    validate_inputs=True,
+    sanitize_outputs=True,
+    pii_detection=True,
+    content_filtering=True
+)
+```
 
-## Best Practices
+---
 
-- Keep agent responsibilities focused (Single Responsibility Principle).
-- Use guardrails to enforce safety and compliance.
-- Leverage the `hub` module to register and retrieve agents dynamically.
+## 📚 API Reference
 
+For complete API documentation, see:
 
-## Related Documentation
-- [Hub Module](hub.md)
-- [Memory Module](memory.md)
-- [Processes Module](processes.md)
+- [Agent API](API_REFERENCE.md#agent)
+- [AgentConfig API](API_REFERENCE.md#agentconfig)
+- [AgentState API](API_REFERENCE.md#agentstate)
+- [Tool API](API_REFERENCE.md#tool)

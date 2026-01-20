@@ -1,765 +1,762 @@
 ---
-tags:
-  - orchestration
-  - supervision
-  - teams
-  - patterns
-  - coordination
+title: Multi-Agent Orchestration
+description: Build complex AI teams with hierarchical workflows, parallel execution, and intelligent routing
 ---
 
-# 🎭 Orchestration
+# 🔄 Multi-Agent Orchestration
 
-<div class="annotate" markdown>
+AgenticAI Framework provides powerful orchestration capabilities for building sophisticated multi-agent systems. Create teams, define workflows, and coordinate agents seamlessly.
 
-**Agent coordination and orchestration patterns**
+---
 
-Sequential, parallel, hierarchical orchestration with Erlang/OTP-style supervision
-
-</div>
-
-## 🎯 Quick Navigation
+## 🎯 Orchestration Overview
 
 <div class="grid cards" markdown>
 
--   :material-transit-connection-variant:{ .lg } **Patterns**
-    
-    Orchestration patterns
-    
-    [:octicons-arrow-right-24: Learn](#orchestration-patterns)
+-   :busts_in_silhouette:{ .lg } **Teams**
 
--   :material-shield-check:{ .lg } **Supervision**
-    
-    Agent supervision
-    
-    [:octicons-arrow-right-24: Supervise](#agent-supervisor)
+    ---
 
--   :material-account-group:{ .lg } **Teams**
-    
-    Agent collaboration
-    
-    [:octicons-arrow-right-24: Collaborate](#agent-teams)
+    Group agents into collaborative teams with shared goals
 
--   :material-engine:{ .lg } **Engine**
-    
-    Central orchestration
-    
-    [:octicons-arrow-right-24: Execute](#orchestration-engine)
+    [:octicons-arrow-right-24: Learn Teams](#agent-teams)
+
+-   :arrows_counterclockwise:{ .lg } **Workflows**
+
+    ---
+
+    Define execution patterns: sequential, parallel, or custom
+
+    [:octicons-arrow-right-24: Learn Workflows](#workflow-patterns)
+
+-   :compass:{ .lg } **Routing**
+
+    ---
+
+    Intelligently route tasks to the right agents
+
+    [:octicons-arrow-right-24: Learn Routing](#intelligent-routing)
+
+-   :crown:{ .lg } **Hierarchies**
+
+    ---
+
+    Build leader-follower structures for complex tasks
+
+    [:octicons-arrow-right-24: Learn Hierarchies](#hierarchical-teams)
 
 </div>
 
-## 📊 Overview
+---
 
-!!! abstract "Orchestration Framework"
-    
-    The Orchestration module provides powerful patterns for coordinating multiple agents, including sequential pipelines, parallel execution, hierarchical delegation, and fault-tolerant supervision.
+## 🏗️ Architecture
 
-### Architecture
-
-```mermaid
-graph TB
-    subgraph "Orchestration Engine"
-        ENGINE[OrchestrationEngine<br/>🎛️ Central Control]
-    end
-    
-    subgraph "Patterns"
-        SEQ[Sequential<br/>➡️]
-        PAR[Parallel<br/>⇉]
-        HIER[Hierarchical<br/>🏛️]
-        CHOR[Choreography<br/>🎭]
-    end
-    
-    subgraph "Supervision"
-        SUP[AgentSupervisor<br/>👁️]
-        RESTART[Restart Strategy]
-        ESCALATE[Escalation]
-    end
-    
-    subgraph "Teams"
-        TEAM[AgentTeam<br/>👥]
-        ROLE[Role Assignment]
-        HANDOFF[Agent Handoff]
-    end
-    
-    subgraph "Agents"
-        A1[Agent 1]
-        A2[Agent 2]
-        A3[Agent 3]
-        A4[Agent 4]
-    end
-    
-    ENGINE --> SEQ & PAR & HIER & CHOR
-    SEQ & PAR & HIER --> SUP
-    SUP --> TEAM
-    TEAM --> A1 & A2 & A3 & A4
-    
-    style ENGINE fill:#e3f2fd,stroke:#1976d2
-    style SUP fill:#fff3e0,stroke:#f57c00
-    style TEAM fill:#e8f5e9,stroke:#43a047
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    Orchestration Layer                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐       │
+│  │    Team      │    │   Workflow   │    │   Router     │       │
+│  │   Manager    │◄──►│   Manager    │◄──►│   Engine     │       │
+│  └──────────────┘    └──────────────┘    └──────────────┘       │
+│         │                   │                   │                │
+│         ▼                   ▼                   ▼                │
+│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐       │
+│  │    Agent     │    │    State     │    │   Message    │       │
+│  │   Registry   │    │   Manager    │    │    Queue     │       │
+│  └──────────────┘    └──────────────┘    └──────────────┘       │
+│                                                                  │
+├─────────────────────────────────────────────────────────────────┤
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐            │
+│  │ Agent 1 │  │ Agent 2 │  │ Agent 3 │  │ Agent N │            │
+│  └─────────┘  └─────────┘  └─────────┘  └─────────┘            │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🔄 Orchestration Patterns
+## Agent Teams
 
-Define how agents coordinate and communicate.
-
-### Sequential Pattern
+### Creating a Basic Team
 
 ```python
-from agenticaiframework.orchestration import (
-    OrchestrationPattern,
-    SequentialOrchestration
-)
-
-# Create sequential pipeline
-pipeline = SequentialOrchestration(
-    name="document_processing",
-    steps=[
-        {"agent": "extractor", "input_key": "document"},
-        {"agent": "analyzer", "input_key": "extracted_data"},
-        {"agent": "summarizer", "input_key": "analysis"},
-        {"agent": "formatter", "input_key": "summary"}
-    ]
-)
-
-# Execute pipeline
-result = await pipeline.execute(
-    input_data={"document": document_content}
-)
-```
-
-### Parallel Pattern
-
-```python
-from agenticaiframework.orchestration import ParallelOrchestration
-
-# Execute agents in parallel
-parallel = ParallelOrchestration(
-    name="multi_analysis",
-    branches=[
-        {"agent": "sentiment_analyzer", "input_key": "text"},
-        {"agent": "entity_extractor", "input_key": "text"},
-        {"agent": "topic_classifier", "input_key": "text"}
-    ],
-    aggregator="result_merger"  # Optional agent to merge results
-)
-
-# All branches execute simultaneously
-results = await parallel.execute(
-    input_data={"text": input_text}
-)
-# results = {"sentiment": ..., "entities": ..., "topics": ...}
-```
-
-### Hierarchical Pattern
-
-```python
-from agenticaiframework.orchestration import HierarchicalOrchestration
-
-# Create hierarchical delegation
-hierarchy = HierarchicalOrchestration(
-    name="research_team",
-    root_agent="research_director",
-    delegation_rules=[
-        {
-            "parent": "research_director",
-            "children": ["data_researcher", "web_researcher"],
-            "condition": "task.requires_research"
-        },
-        {
-            "parent": "research_director",
-            "children": ["analyst", "writer"],
-            "condition": "task.requires_report"
-        }
-    ]
-)
-
-# Director delegates to appropriate children
-result = await hierarchy.execute(
-    input_data={"task": "Research AI trends and write report"}
-)
-```
-
-### Choreography Pattern
-
-```python
-from agenticaiframework.orchestration import ChoreographyOrchestration
-
-# Event-driven choreography
-choreography = ChoreographyOrchestration(
-    name="order_processing",
-    agents=["order_validator", "inventory_checker", "payment_processor", "shipper"],
-    event_handlers={
-        "order.received": "order_validator",
-        "order.validated": "inventory_checker",
-        "inventory.confirmed": "payment_processor",
-        "payment.processed": "shipper"
-    }
-)
-
-# Agents react to events
-await choreography.emit_event("order.received", order_data)
-```
-
----
-
-## 👁️ Agent Supervisor
-
-Erlang/OTP-style fault-tolerant supervision.
-
-### Basic Usage
-
-```python
-from agenticaiframework.orchestration import (
-    AgentSupervisor,
-    SupervisionStrategy,
-    RestartPolicy
-)
-
-# Create supervisor
-supervisor = AgentSupervisor(
-    name="agent_pool_supervisor",
-    strategy=SupervisionStrategy.ONE_FOR_ONE,
-    restart_policy=RestartPolicy(
-        max_restarts=5,
-        within_seconds=60
-    )
-)
-
-# Add agents to supervise
-supervisor.add_child("worker_1", worker_agent_1)
-supervisor.add_child("worker_2", worker_agent_2)
-supervisor.add_child("worker_3", worker_agent_3)
-
-# Start supervision
-await supervisor.start()
-```
-
-### Supervision Strategies
-
-```python
-from agenticaiframework.orchestration import SupervisionStrategy
-
-# ONE_FOR_ONE: Restart only failed agent
-SupervisionStrategy.ONE_FOR_ONE
-
-# ONE_FOR_ALL: Restart all agents if one fails
-SupervisionStrategy.ONE_FOR_ALL
-
-# REST_FOR_ONE: Restart failed and all started after it
-SupervisionStrategy.REST_FOR_ONE
-
-# SIMPLE_ONE_FOR_ONE: Dynamic child management
-SupervisionStrategy.SIMPLE_ONE_FOR_ONE
-```
-
-### Restart Policies
-
-```python
-from agenticaiframework.orchestration import RestartPolicy, RestartType
-
-# Configure restart behavior
-policy = RestartPolicy(
-    type=RestartType.PERMANENT,  # Always restart
-    max_restarts=5,              # Max restart attempts
-    within_seconds=60,           # Time window
-    backoff_type="exponential",  # Backoff strategy
-    initial_delay_ms=100,        # Initial delay
-    max_delay_ms=30000           # Max delay
-)
-
-# Restart types
-RestartType.PERMANENT   # Always restart
-RestartType.TRANSIENT   # Restart only on abnormal exit
-RestartType.TEMPORARY   # Never restart
-```
-
-### Handling Failures
-
-```python
-# Custom failure handler
-@supervisor.on_failure
-async def handle_agent_failure(
-    agent_name: str,
-    error: Exception,
-    restart_count: int
-):
-    print(f"Agent {agent_name} failed: {error}")
-    
-    if restart_count > 3:
-        # Escalate to human
-        await notify_operator(agent_name, error)
-    
-    # Return True to allow restart, False to stop
-    return restart_count < 5
-
-# Escalation handler
-@supervisor.on_max_restarts
-async def handle_max_restarts(agent_name: str):
-    print(f"Max restarts reached for {agent_name}")
-    await supervisor.remove_child(agent_name)
-    await deploy_replacement_agent(agent_name)
-```
-
-### Supervisor Trees
-
-```python
-# Hierarchical supervision
-root_supervisor = AgentSupervisor(
-    name="root",
-    strategy=SupervisionStrategy.ONE_FOR_ONE
-)
-
-# Child supervisors
-processing_supervisor = AgentSupervisor(
-    name="processing",
-    strategy=SupervisionStrategy.ONE_FOR_ALL
-)
-processing_supervisor.add_child("parser", parser_agent)
-processing_supervisor.add_child("transformer", transformer_agent)
-
-io_supervisor = AgentSupervisor(
-    name="io",
-    strategy=SupervisionStrategy.ONE_FOR_ONE
-)
-io_supervisor.add_child("reader", reader_agent)
-io_supervisor.add_child("writer", writer_agent)
-
-# Add child supervisors to root
-root_supervisor.add_supervisor("processing", processing_supervisor)
-root_supervisor.add_supervisor("io", io_supervisor)
-
-await root_supervisor.start()
-```
-
----
-
-## 👥 Agent Teams
-
-Collaborative agent teams with role assignment.
-
-### Basic Usage
-
-```python
-from agenticaiframework.orchestration import (
-    AgentTeam,
-    AgentRole,
-    TeamConfig
-)
-
-# Create team
-team = AgentTeam(
-    name="research_team",
-    config=TeamConfig(
-        max_members=5,
-        communication_style="structured",
-        decision_making="consensus"
-    )
-)
-
-# Define roles
-researcher_role = AgentRole(
-    name="researcher",
-    description="Conducts research and gathers information",
-    capabilities=["web_search", "document_analysis"],
-    max_agents=2
-)
-
-analyst_role = AgentRole(
-    name="analyst",
-    description="Analyzes data and provides insights",
-    capabilities=["data_analysis", "visualization"],
-    max_agents=1
-)
-
-writer_role = AgentRole(
-    name="writer",
-    description="Creates reports and documentation",
-    capabilities=["writing", "formatting"],
-    max_agents=1
-)
-
-# Add roles to team
-team.add_role(researcher_role)
-team.add_role(analyst_role)
-team.add_role(writer_role)
-```
-
-### Assign Agents to Roles
-
-```python
-# Assign agents to roles
-team.assign_agent(research_agent_1, role="researcher")
-team.assign_agent(research_agent_2, role="researcher")
-team.assign_agent(analyst_agent, role="analyst")
-team.assign_agent(writer_agent, role="writer")
-
-# Or auto-assign based on capabilities
-team.auto_assign_agents([
-    research_agent_1,
-    research_agent_2,
-    analyst_agent,
-    writer_agent
-])
-```
-
-### Team Execution
-
-```python
-# Execute team task
-result = await team.execute_task(
-    task="Research AI trends and create comprehensive report",
-    coordinator="researcher"  # Lead agent
-)
-
-# With workflow
-result = await team.execute_workflow(
-    workflow=[
-        {"role": "researcher", "action": "gather_data"},
-        {"role": "analyst", "action": "analyze_data"},
-        {"role": "writer", "action": "create_report"}
-    ],
-    input_data={"topic": "AI trends 2024"}
-)
-```
-
-### Agent Handoffs
-
-```python
-from agenticaiframework.orchestration import AgentHandoff
-
-# Define handoff rules
-team.configure_handoffs([
-    AgentHandoff(
-        from_role="researcher",
-        to_role="analyst",
-        trigger="research_complete",
-        data_transform=lambda data: {"research_data": data}
-    ),
-    AgentHandoff(
-        from_role="analyst",
-        to_role="writer",
-        trigger="analysis_complete",
-        data_transform=lambda data: {"analysis": data}
-    )
-])
-
-# Handoffs happen automatically during execution
-```
-
-### Team Communication
-
-```python
-# Enable team communication
-team.enable_communication(
-    channel="team_chat",
-    protocol="structured"
-)
-
-# Agents can communicate
-@researcher_agent.on_message
-async def handle_message(msg):
-    if msg.type == "question":
-        response = await generate_response(msg.content)
-        await team.broadcast(
-            from_agent="researcher",
-            message=response
-        )
-
-# Team discussions
-discussion = await team.discuss(
-    topic="Should we include prediction models?",
-    participants=["analyst", "writer"],
-    max_rounds=3
-)
-```
-
----
-
-## 🎛️ Orchestration Engine
-
-Central orchestration control.
-
-### Basic Usage
-
-```python
-from agenticaiframework.orchestration import (
-    OrchestrationEngine,
-    EngineConfig
-)
-
-# Create engine
-engine = OrchestrationEngine(
-    config=EngineConfig(
-        max_concurrent_workflows=100,
-        default_timeout_seconds=300,
-        enable_tracing=True
-    )
-)
-
-# Register agents
-engine.register_agent("classifier", classifier_agent)
-engine.register_agent("processor", processor_agent)
-engine.register_agent("responder", responder_agent)
-
-# Register patterns
-engine.register_pattern("sequential", sequential_pattern)
-engine.register_pattern("parallel", parallel_pattern)
-```
-
-### Execute Workflows
-
-```python
-# Define workflow
-workflow = {
-    "name": "customer_support",
-    "steps": [
-        {
-            "id": "classify",
-            "agent": "classifier",
-            "input": {"message": "$input.message"}
-        },
-        {
-            "id": "process",
-            "agent": "processor",
-            "input": {"category": "$classify.category"},
-            "condition": "$classify.category != 'spam'"
-        },
-        {
-            "id": "respond",
-            "agent": "responder",
-            "input": {
-                "category": "$classify.category",
-                "processed": "$process.result"
-            }
-        }
-    ]
-}
-
-# Execute
-result = await engine.execute(
-    workflow=workflow,
-    input_data={"message": "Help with my order"}
-)
-```
-
-### Dynamic Routing
-
-```python
-# Configure dynamic routing
-engine.configure_routing(
-    rules=[
-        {
-            "condition": "input.priority == 'high'",
-            "pattern": "parallel",
-            "agents": ["fast_processor", "backup_processor"]
-        },
-        {
-            "condition": "input.type == 'complex'",
-            "pattern": "hierarchical",
-            "root": "coordinator"
-        },
-        {
-            "condition": "default",
-            "pattern": "sequential",
-            "agents": ["standard_processor"]
-        }
-    ]
-)
-
-# Routing happens automatically
-result = await engine.execute(
-    input_data={"priority": "high", "task": "urgent_analysis"}
-)
-```
-
-### Workflow State Management
-
-```python
-# Long-running workflows with state persistence
-workflow_id = await engine.start_workflow(
-    workflow=workflow,
-    input_data=data,
-    persist_state=True
-)
-
-# Check status
-status = await engine.get_workflow_status(workflow_id)
-print(f"Status: {status.state}")
-print(f"Current step: {status.current_step}")
-print(f"Progress: {status.progress}%")
-
-# Resume workflow
-await engine.resume_workflow(workflow_id)
-
-# Cancel workflow
-await engine.cancel_workflow(workflow_id, reason="User requested")
-```
-
----
-
-## 🎯 Complete Example
-
-```python
-from agenticaiframework import Agent
-from agenticaiframework.orchestration import (
-    OrchestrationEngine,
-    AgentSupervisor,
-    AgentTeam,
-    SequentialOrchestration,
-    ParallelOrchestration,
-    SupervisionStrategy,
-    AgentRole,
-    RestartPolicy
-)
+from agenticaiframework import Agent, AgentConfig, Team
 
 # Create specialized agents
-classifier = Agent(
-    name="Classifier",
-    model="gpt-4o-mini",
-    instructions="Classify incoming requests"
-)
-
 researcher = Agent(
-    name="Researcher",
-    model="gpt-4",
-    instructions="Research topics thoroughly"
-)
-
-analyst = Agent(
-    name="Analyst",
-    model="gpt-4",
-    instructions="Analyze data and provide insights"
+    config=AgentConfig(
+        name="researcher",
+        role="Research Analyst",
+        goal="Gather comprehensive information on topics",
+        tools=["web_search", "wikipedia"]
+    )
 )
 
 writer = Agent(
-    name="Writer",
-    model="gpt-4",
-    instructions="Write clear, concise reports"
+    config=AgentConfig(
+        name="writer",
+        role="Content Writer",
+        goal="Transform research into engaging content",
+        tools=["text_editor"]
+    )
 )
 
-reviewer = Agent(
-    name="Reviewer",
-    model="gpt-4",
-    instructions="Review and improve content"
+editor = Agent(
+    config=AgentConfig(
+        name="editor",
+        role="Quality Editor",
+        goal="Ensure content is polished and error-free",
+        tools=["grammar_check", "readability_analyzer"]
+    )
 )
 
-# Set up supervision
-supervisor = AgentSupervisor(
-    name="research_supervisor",
-    strategy=SupervisionStrategy.ONE_FOR_ONE,
-    restart_policy=RestartPolicy(max_restarts=3, within_seconds=60)
+# Create a team
+team = Team(
+    name="content_team",
+    agents=[researcher, writer, editor],
+    description="A team for creating high-quality content"
 )
-supervisor.add_child("researcher", researcher)
-supervisor.add_child("analyst", analyst)
 
-# Create team
-research_team = AgentTeam(name="research_team")
-research_team.add_role(AgentRole(name="researcher", max_agents=2))
-research_team.add_role(AgentRole(name="analyst", max_agents=1))
-research_team.add_role(AgentRole(name="writer", max_agents=1))
-research_team.assign_agent(researcher, role="researcher")
-research_team.assign_agent(analyst, role="analyst")
-research_team.assign_agent(writer, role="writer")
+# Execute team task
+result = team.execute("Create an article about quantum computing")
+print(result.final_output)
+```
 
-# Create orchestration engine
-engine = OrchestrationEngine()
+### Team Configuration
 
-# Register components
-engine.register_agent("classifier", classifier)
-engine.register_team("research_team", research_team)
-engine.register_agent("reviewer", reviewer)
-engine.register_supervisor("supervisor", supervisor)
+```python
+from agenticaiframework import Team, TeamConfig
 
-# Define complex workflow
-research_workflow = {
-    "name": "comprehensive_research",
-    "steps": [
-        {
-            "id": "classify",
-            "agent": "classifier",
-            "input": {"request": "$input.query"}
-        },
-        {
-            "id": "research",
-            "team": "research_team",
-            "input": {
-                "topic": "$input.query",
-                "category": "$classify.category"
-            },
-            "workflow": [
-                {"role": "researcher", "action": "gather_info"},
-                {"role": "analyst", "action": "analyze"},
-                {"role": "writer", "action": "draft"}
-            ]
-        },
-        {
-            "id": "review",
-            "agent": "reviewer",
-            "input": {"draft": "$research.draft"},
-            "max_iterations": 2
-        }
-    ]
-}
-
-# Execute
-async def run_research(query: str):
-    # Start supervisor
-    await supervisor.start()
-    
-    try:
-        result = await engine.execute(
-            workflow=research_workflow,
-            input_data={"query": query}
-        )
-        return result
-    finally:
-        await supervisor.stop()
-
-# Usage
-result = await run_research(
-    "Analyze the impact of AI on healthcare in 2024"
+team = Team(
+    name="research_team",
+    config=TeamConfig(
+        # Execution settings
+        max_iterations=10,
+        timeout_seconds=300,
+        
+        # Communication
+        allow_agent_communication=True,
+        shared_memory=True,
+        
+        # Error handling
+        fail_fast=False,  # Continue if one agent fails
+        retry_failed_agents=True,
+        max_retries=3,
+        
+        # Logging
+        verbose=True,
+        log_agent_thoughts=True
+    ),
+    agents=[researcher, writer, editor]
 )
-print(f"Final Report:\n{result['review']['final_report']}")
 ```
 
 ---
 
-## 📋 Pattern Selection Guide
+## Workflow Patterns
 
-| Use Case | Pattern | When to Use |
-|----------|---------|-------------|
-| **Pipeline** | Sequential | Linear data transformation |
-| **Multi-source** | Parallel | Independent data gathering |
-| **Complex tasks** | Hierarchical | Delegation and sub-tasks |
-| **Event-driven** | Choreography | Reactive systems |
-| **Fault-tolerance** | Supervision | Production reliability |
-| **Collaboration** | Teams | Multi-agent cooperation |
+### Sequential Workflow
+
+Agents execute one after another, passing output to the next agent.
+
+```python
+from agenticaiframework import Team, WorkflowManager
+
+# Sequential: researcher → writer → editor
+team = Team(
+    name="content_pipeline",
+    agents=[researcher, writer, editor],
+    workflow=WorkflowManager.sequential()
+)
+
+result = team.execute("Write about renewable energy")
+# 1. researcher gathers information
+# 2. writer creates content
+# 3. editor polishes final output
+```
+
+### Parallel Workflow
+
+Agents work simultaneously on the same task.
+
+```python
+from agenticaiframework import WorkflowManager
+
+# Parallel: all analysts work at the same time
+team = Team(
+    name="multi_analyst",
+    agents=[market_analyst, tech_analyst, competitor_analyst],
+    workflow=WorkflowManager.parallel()
+)
+
+result = team.execute("Analyze the AI industry")
+# All three analysts work simultaneously
+# Results are aggregated at the end
+```
+
+### Mixed Workflow
+
+Combine sequential and parallel patterns.
+
+```python
+from agenticaiframework import WorkflowManager, WorkflowStep
+
+workflow = WorkflowManager.custom([
+    # Step 1: Research in parallel
+    WorkflowStep(
+        name="research",
+        agents=["researcher_1", "researcher_2"],
+        execution="parallel"
+    ),
+    # Step 2: Aggregate results
+    WorkflowStep(
+        name="aggregate",
+        agents=["synthesizer"],
+        execution="sequential",
+        depends_on=["research"]
+    ),
+    # Step 3: Write and review in parallel
+    WorkflowStep(
+        name="content",
+        agents=["writer", "reviewer"],
+        execution="parallel",
+        depends_on=["aggregate"]
+    ),
+    # Step 4: Final edit
+    WorkflowStep(
+        name="finalize",
+        agents=["editor"],
+        execution="sequential",
+        depends_on=["content"]
+    )
+])
+
+team = Team(
+    name="content_factory",
+    agents=[researcher_1, researcher_2, synthesizer, writer, reviewer, editor],
+    workflow=workflow
+)
+```
+
+### Conditional Workflow
+
+Execute different paths based on conditions.
+
+```python
+from agenticaiframework import WorkflowManager, ConditionalStep
+
+workflow = WorkflowManager.custom([
+    WorkflowStep(name="analyze", agents=["analyzer"]),
+    ConditionalStep(
+        name="route",
+        condition=lambda result: result.complexity > 0.8,
+        if_true=WorkflowStep(name="expert", agents=["expert_agent"]),
+        if_false=WorkflowStep(name="standard", agents=["standard_agent"])
+    ),
+    WorkflowStep(name="finalize", agents=["finalizer"])
+])
+```
 
 ---
 
-## 🎯 Best Practices
+## Hierarchical Teams
 
-!!! tip "Orchestration Guidelines"
-    
-    1. **Start simple** - Begin with sequential, add complexity as needed
-    2. **Use supervision** - Always supervise production agents
-    3. **Define clear roles** - Explicit role definitions improve team performance
-    4. **Handle failures** - Plan for agent failures and retries
-    5. **Monitor workflows** - Enable tracing for visibility
+### Leader-Follower Structure
 
-!!! warning "Common Pitfalls"
-    
-    - Avoid circular dependencies in hierarchical patterns
-    - Set appropriate timeouts for parallel execution
-    - Don't over-complicate simple workflows
-    - Test failure scenarios in development
+```python
+from agenticaiframework import Team, Agent, AgentConfig
+
+# Create leader agent
+leader = Agent(
+    config=AgentConfig(
+        name="project_manager",
+        role="Project Manager",
+        goal="Coordinate team members and synthesize results",
+        is_leader=True
+    )
+)
+
+# Create team members
+developers = [
+    Agent(config=AgentConfig(name=f"dev_{i}", role="Developer"))
+    for i in range(3)
+]
+
+# Hierarchical team
+team = Team(
+    name="dev_team",
+    leader=leader,
+    agents=developers,
+    workflow=WorkflowManager.hierarchical()
+)
+
+# Leader delegates and coordinates
+result = team.execute("Build a REST API for user management")
+```
+
+### Multi-Level Hierarchy
+
+```python
+from agenticaiframework import Team, TeamHierarchy
+
+# Create department leads
+research_lead = Agent(config=AgentConfig(name="research_lead", role="Research Lead"))
+dev_lead = Agent(config=AgentConfig(name="dev_lead", role="Development Lead"))
+qa_lead = Agent(config=AgentConfig(name="qa_lead", role="QA Lead"))
+
+# Create sub-teams
+research_team = Team(
+    name="research",
+    leader=research_lead,
+    agents=[researcher_1, researcher_2]
+)
+
+dev_team = Team(
+    name="development",
+    leader=dev_lead,
+    agents=[dev_1, dev_2, dev_3]
+)
+
+qa_team = Team(
+    name="qa",
+    leader=qa_lead,
+    agents=[qa_1, qa_2]
+)
+
+# Create executive leader
+cto = Agent(config=AgentConfig(name="cto", role="CTO"))
+
+# Build hierarchy
+hierarchy = TeamHierarchy(
+    leader=cto,
+    sub_teams=[research_team, dev_team, qa_team]
+)
+
+result = hierarchy.execute("Develop a new AI feature")
+```
 
 ---
 
-## 📚 Related Documentation
+## Intelligent Routing
 
-- [Agents](agents.md) - Agent configuration
-- [Processes](processes.md) - Process management
-- [Communication](communication.md) - Agent communication
-- [Monitoring](monitoring.md) - Workflow monitoring
+### Skill-Based Routing
+
+```python
+from agenticaiframework import Router, RoutingStrategy
+
+# Define agent skills
+router = Router(
+    strategy=RoutingStrategy.SKILL_BASED,
+    agents={
+        "python_expert": ["python", "django", "flask"],
+        "js_expert": ["javascript", "react", "nodejs"],
+        "data_scientist": ["ml", "data_analysis", "statistics"],
+        "devops_engineer": ["docker", "kubernetes", "ci/cd"]
+    }
+)
+
+# Route task to appropriate agent
+task = "Create a React component for data visualization"
+selected_agent = router.route(task)
+# Returns: "js_expert"
+```
+
+### Load-Based Routing
+
+```python
+router = Router(
+    strategy=RoutingStrategy.LOAD_BALANCED,
+    agents=[agent_1, agent_2, agent_3],
+    max_concurrent_per_agent=5
+)
+
+# Routes to least busy agent
+agent = router.route(task)
+```
+
+### Quality-Based Routing
+
+```python
+router = Router(
+    strategy=RoutingStrategy.QUALITY_BASED,
+    agents=agents,
+    performance_history=True  # Uses historical performance data
+)
+
+# Routes to agent with best track record for similar tasks
+agent = router.route(task, task_type="code_review")
+```
+
+### Custom Routing Logic
+
+```python
+from agenticaiframework import Router
+
+class CustomRouter(Router):
+    def route(self, task, context=None):
+        # Custom routing logic
+        if "urgent" in task.lower():
+            return self.get_fastest_agent()
+        elif "complex" in task.lower():
+            return self.get_most_skilled_agent(task)
+        else:
+            return self.get_available_agent()
+
+router = CustomRouter(agents=agents)
+```
+
+---
+
+## Agent Communication
+
+### Direct Messaging
+
+```python
+from agenticaiframework import AgentMessenger
+
+messenger = AgentMessenger()
+
+# Send message between agents
+messenger.send(
+    from_agent="researcher",
+    to_agent="writer",
+    message_type="data_handoff",
+    content={
+        "research_data": research_results,
+        "key_findings": findings,
+        "sources": sources
+    }
+)
+
+# Receive messages
+messages = messenger.receive(agent_id="writer")
+```
+
+### Broadcast Communication
+
+```python
+# Broadcast to all team members
+messenger.broadcast(
+    from_agent="leader",
+    message_type="announcement",
+    content={"status": "Project milestone reached"}
+)
+```
+
+### Request-Response Pattern
+
+```python
+# Request help from another agent
+response = messenger.request(
+    from_agent="writer",
+    to_agent="researcher",
+    request={
+        "type": "clarification",
+        "question": "Can you provide more details on point 3?"
+    },
+    timeout_seconds=60
+)
+```
+
+### Shared Context
+
+```python
+from agenticaiframework import SharedContext
+
+# Create shared context for team
+shared = SharedContext(team_id="content_team")
+
+# Agent adds to shared context
+shared.set("research_findings", findings, agent="researcher")
+
+# Another agent reads from shared context
+findings = shared.get("research_findings")
+
+# Watch for updates
+shared.watch("research_findings", callback=on_update)
+```
+
+---
+
+## Task Delegation
+
+### Automatic Delegation
+
+```python
+from agenticaiframework import DelegationManager
+
+delegation = DelegationManager(team=team)
+
+# Leader delegates based on capabilities
+delegation.delegate(
+    task="Analyze market trends and write report",
+    strategy="capability_match"
+)
+# Automatically breaks down task and assigns to appropriate agents
+```
+
+### Manual Delegation
+
+```python
+# Leader explicitly assigns tasks
+delegation.assign(
+    task="Research competitor pricing",
+    agent="researcher",
+    priority="high",
+    deadline="2024-01-15"
+)
+
+delegation.assign(
+    task="Write executive summary",
+    agent="writer",
+    depends_on="Research competitor pricing"
+)
+```
+
+### Delegation Tracking
+
+```python
+# Track delegation status
+status = delegation.get_status()
+print(f"Assigned: {status.assigned}")
+print(f"In Progress: {status.in_progress}")
+print(f"Completed: {status.completed}")
+
+# Get agent workload
+workload = delegation.get_agent_workload("researcher")
+print(f"Current tasks: {workload.current_tasks}")
+print(f"Capacity: {workload.remaining_capacity}")
+```
+
+---
+
+## Result Aggregation
+
+### Aggregation Strategies
+
+```python
+from agenticaiframework import ResultAggregator, AggregationStrategy
+
+# Create aggregator
+aggregator = ResultAggregator(strategy=AggregationStrategy.MERGE)
+
+# Aggregate parallel results
+results = [result_1, result_2, result_3]
+final = aggregator.aggregate(results)
+```
+
+### Available Strategies
+
+=== "Merge"
+    ```python
+    # Combine all outputs into one
+    aggregator = ResultAggregator(strategy=AggregationStrategy.MERGE)
+    # Result: Combined text from all agents
+    ```
+
+=== "Vote"
+    ```python
+    # Use majority voting
+    aggregator = ResultAggregator(strategy=AggregationStrategy.VOTE)
+    # Result: Most common answer
+    ```
+
+=== "Best"
+    ```python
+    # Select best result by score
+    aggregator = ResultAggregator(strategy=AggregationStrategy.BEST)
+    # Result: Highest scored output
+    ```
+
+=== "Synthesize"
+    ```python
+    # AI-powered synthesis
+    aggregator = ResultAggregator(
+        strategy=AggregationStrategy.SYNTHESIZE,
+        synthesizer_agent=synthesizer
+    )
+    # Result: Synthesized output using AI
+    ```
+
+### Custom Aggregation
+
+```python
+class CustomAggregator(ResultAggregator):
+    def aggregate(self, results):
+        # Custom aggregation logic
+        weighted_results = []
+        for result in results:
+            weight = self.get_agent_weight(result.agent)
+            weighted_results.append((result, weight))
+        
+        return self.weighted_merge(weighted_results)
+```
+
+---
+
+## Error Handling
+
+### Team-Level Error Handling
+
+```python
+from agenticaiframework import Team, TeamErrorHandler
+
+handler = TeamErrorHandler(
+    on_agent_failure="retry",  # Options: retry, skip, fail, delegate
+    max_retries=3,
+    fallback_agent="backup_agent"
+)
+
+team = Team(
+    name="robust_team",
+    agents=agents,
+    error_handler=handler
+)
+```
+
+### Recovery Strategies
+
+```python
+from agenticaiframework import RecoveryStrategy
+
+team = Team(
+    name="resilient_team",
+    agents=agents,
+    recovery_strategies=[
+        RecoveryStrategy.RETRY_WITH_BACKOFF,
+        RecoveryStrategy.DELEGATE_TO_BACKUP,
+        RecoveryStrategy.ROLLBACK_TO_CHECKPOINT,
+        RecoveryStrategy.GRACEFUL_DEGRADATION
+    ]
+)
+```
+
+### Circuit Breaker
+
+```python
+from agenticaiframework import CircuitBreaker
+
+# Add circuit breaker to agent
+agent = Agent(
+    config=config,
+    circuit_breaker=CircuitBreaker(
+        failure_threshold=5,
+        reset_timeout_seconds=60
+    )
+)
+
+# Circuit opens after 5 failures, resets after 60 seconds
+```
+
+---
+
+## Monitoring & Observability
+
+### Orchestration Metrics
+
+```python
+from agenticaiframework import OrchestrationMonitor
+
+monitor = OrchestrationMonitor(team=team)
+
+# Get team metrics
+metrics = monitor.get_metrics()
+print(f"Total tasks: {metrics.total_tasks}")
+print(f"Success rate: {metrics.success_rate:.2%}")
+print(f"Avg completion time: {metrics.avg_completion_time_ms}ms")
+
+# Get agent-level metrics
+for agent_id, agent_metrics in metrics.agent_metrics.items():
+    print(f"{agent_id}: {agent_metrics.tasks_completed} tasks")
+```
+
+### Event Streaming
+
+```python
+# Stream orchestration events
+async for event in monitor.stream_events():
+    if event.type == "task_started":
+        print(f"Task started: {event.task_id} by {event.agent_id}")
+    elif event.type == "task_completed":
+        print(f"Task completed: {event.task_id}")
+    elif event.type == "agent_failed":
+        print(f"Agent failed: {event.agent_id}: {event.error}")
+```
+
+### Visualization
+
+```python
+# Generate workflow visualization
+team.visualize(output_file="workflow.png")
+
+# Generate execution timeline
+team.generate_timeline(execution_id="exec_001", output_file="timeline.html")
+```
+
+---
+
+## Best Practices
+
+### 1. Design for Failure
+
+```python
+# Always include fallback agents
+team = Team(
+    name="robust_team",
+    agents=[primary_agent],
+    fallback_agents=[backup_agent_1, backup_agent_2],
+    error_handler=TeamErrorHandler(on_agent_failure="delegate")
+)
+```
+
+### 2. Use Appropriate Workflow Patterns
+
+```python
+# Sequential for dependent tasks
+workflow = WorkflowManager.sequential()  # research → write → edit
+
+# Parallel for independent tasks
+workflow = WorkflowManager.parallel()  # analyze_a | analyze_b | analyze_c
+
+# Hierarchical for complex coordination
+workflow = WorkflowManager.hierarchical()  # leader delegates to workers
+```
+
+### 3. Enable Shared Memory for Collaboration
+
+```python
+team = Team(
+    name="collaborative_team",
+    agents=agents,
+    config=TeamConfig(
+        shared_memory=True,
+        allow_agent_communication=True
+    )
+)
+```
+
+### 4. Set Appropriate Timeouts
+
+```python
+team = Team(
+    name="time_bounded",
+    agents=agents,
+    config=TeamConfig(
+        timeout_seconds=300,  # 5 minute overall timeout
+        per_agent_timeout=60  # 1 minute per agent
+    )
+)
+```
+
+---
+
+## 📚 API Reference
+
+For complete API documentation, see:
+
+- [Team API](API_REFERENCE.md#team)
+- [WorkflowManager API](API_REFERENCE.md#workflowmanager)
+- [Router API](API_REFERENCE.md#router)
+- [DelegationManager API](API_REFERENCE.md#delegationmanager)
+- [ResultAggregator API](API_REFERENCE.md#resultaggregator)
