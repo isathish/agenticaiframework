@@ -1,13 +1,9 @@
 name: Release
 
+# Manual-only release workflow for controlled version bumps and publishing.
+# For automatic releases on main push, use python-package.yml instead.
+
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - "docs/**"
-      - ".github/workflows/static.yml"
-      - ".github/workflows/ci.yml"
   workflow_dispatch:
     inputs:
       release_type:

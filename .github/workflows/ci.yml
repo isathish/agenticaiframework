@@ -1,11 +1,15 @@
 name: CI
 
+# This workflow runs on PRs and feature branches only.
+# For main branch pushes, python-package.yml handles the full release pipeline.
+
 on:
   push:
     branches:
-      - main
       - develop
       - 'feature/**'
+      - 'fix/**'
+      - 'hotfix/**'
     paths-ignore:
       - "docs/**"
       - "*.md"

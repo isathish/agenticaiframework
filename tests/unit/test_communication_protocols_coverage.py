@@ -332,7 +332,7 @@ class TestHTTPProtocol:
         """Test successful HTTP connection."""
         from agenticaiframework.communication.protocols import HTTPProtocol
         
-        with patch('agenticaiframework.communication.protocols.requests.Session') as mock_session_class:
+        with patch('requests.Session') as mock_session_class:
             mock_session = Mock()
             mock_response = Mock()
             mock_response.status_code = 200
@@ -350,7 +350,7 @@ class TestHTTPProtocol:
         """Test HTTP connect with auth token."""
         from agenticaiframework.communication.protocols import HTTPProtocol, ProtocolConfig, ProtocolType
         
-        with patch('agenticaiframework.communication.protocols.requests.Session') as mock_session_class:
+        with patch('requests.Session') as mock_session_class:
             mock_session = Mock()
             mock_session.headers = {}
             mock_response = Mock()
@@ -531,7 +531,7 @@ class TestSSEProtocol:
         """Test successful SSE connection."""
         from agenticaiframework.communication.protocols import SSEProtocol
         
-        with patch('agenticaiframework.communication.protocols.requests.Session') as mock_session_class:
+        with patch('requests.Session') as mock_session_class:
             mock_session = Mock()
             mock_session_class.return_value = mock_session
             

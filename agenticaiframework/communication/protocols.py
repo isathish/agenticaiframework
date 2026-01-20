@@ -272,7 +272,7 @@ class HTTPProtocol(CommunicationProtocol):
                 if resp.status_code < 500:
                     self.is_connected = True
                     return True
-            except:
+            except Exception:  # noqa: BLE001 - Health check failure is non-critical
                 pass
             
             # Even if health check fails, mark as connected
@@ -337,7 +337,7 @@ class HTTPProtocol(CommunicationProtocol):
             response = self._session.get(url, timeout=timeout or self.config.timeout)
             if response.status_code == 200:
                 return response.json()
-        except:
+        except Exception:  # noqa: BLE001 - Receive failures return None
             pass
         return None
     
@@ -516,7 +516,7 @@ class SSEProtocol(CommunicationProtocol):
                     data_str = line[5:].strip()
                     try:
                         yield json.loads(data_str)
-                    except:
+                    except (json.JSONDecodeError, ValueError):
                         yield {"raw": data_str}
                         
         except Exception as e:
@@ -660,7 +660,7 @@ class MQTTProtocol(CommunicationProtocol):
             self._client.unsubscribe(topic)
             self._subscriptions.remove(topic)
             return True
-        except:
+        except (ValueError, KeyError, Exception):  # noqa: BLE001
             return False
     
     def _on_connect(self, client, userdata, flags, rc):
@@ -768,7 +768,7 @@ class WebSocketProtocol(CommunicationProtocol):
         if self._ws:
             try:
                 self._ws.close()
-            except:
+            except Exception:  # noqa: BLE001 - Ignore close errors
                 pass
             self._ws = None
         self.is_connected = False
@@ -805,7 +805,7 @@ class WebSocketProtocol(CommunicationProtocol):
         try:
             self._ws.send(json.dumps(message))
             return True
-        except:
+        except (OSError, ConnectionError, Exception):  # noqa: BLE001
             return False
     
     def receive(self, timeout: Optional[float] = None) -> Optional[Dict[str, Any]]:
