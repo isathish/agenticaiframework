@@ -883,9 +883,18 @@ __all__ = [
     "PromptInjectionDetector",
     "InputValidator",
     "RateLimiter",
+    "TieredRateLimiter",
     "ContentFilter",
+    "ProfanityFilter",
+    "PIIFilter",
     "AuditLogger",
     "SecurityManager",
+    "security_manager",
+    "injection_detector",
+    "input_validator",
+    "rate_limiter",
+    "content_filter",
+    "audit_logger",
     
     # ========================================================================
     # Enterprise: Tracing & Metrics
@@ -943,6 +952,7 @@ __all__ = [
     "PromptLibrary",
     "PromptVersion",
     "PromptStatus",
+    "PromptAuditEntry",
     "prompt_version_manager",
     "prompt_library",
     
@@ -954,7 +964,10 @@ __all__ = [
     "ServerlessExecutor",
     "DistributedCoordinator",
     "Region",
+    "RegionConfig",
     "Tenant",
+    "ServerlessFunction",
+    "FunctionInvocation",
     "multi_region_manager",
     "tenant_manager",
     "serverless_executor",
