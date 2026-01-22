@@ -1169,4 +1169,12 @@ __all__ = [
     # Evaluation
     "EvaluationError",
     "CriterionEvaluationError",
+    
+    # ========================================================================
+    # Enterprise Module (Minimal Code Patterns)
+    # ========================================================================
+    "enterprise",
 ]
+
+# Import enterprise module for submodule access
+from . import enterprise
