@@ -38,7 +38,7 @@ class ContextManager:
     """
     
     # Default type-specific token budgets
-    DEFAULT_TYPE_BUDGETS = {
+    DEFAULT_TYPE_BUDGETS = { # TODO how this was determined?
         ContextType.SYSTEM: 0.15,       # 15% for system prompts
         ContextType.KNOWLEDGE: 0.25,    # 25% for RAG knowledge
         ContextType.MEMORY: 0.15,       # 15% for memories
