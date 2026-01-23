@@ -48,6 +48,10 @@ Share and discover reusable components
 
 ## 📖 Overview
 
+!!! success "Part of 380+ Modules"
+    
+    The Hub enables sharing and discovery across the entire framework with 237 enterprise modules.
+
 !!! abstract "What is the Hub?"
     
     The Hub module acts as a central registry for agents, tools, and processes. It enables dynamic registration, retrieval, and management of these components, allowing for flexible and modular system design.

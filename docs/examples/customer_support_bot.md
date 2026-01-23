@@ -10,6 +10,9 @@ tags:
 
 This example demonstrates building an automated customer support bot using the AgenticAI Framework.
 
+!!! success "Enterprise-Ready Pattern"
+    Part of **380+ modules** with **237 enterprise features** including multi-tenant support, compliance guardrails, and advanced monitoring.
+
 ## Overview
 
 The customer support bot combines LLMs, guardrails, and monitoring to provide helpful, policy-compliant responses to customer inquiries.

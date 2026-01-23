@@ -48,6 +48,10 @@ Extend agent capabilities with standardized tool interfaces
 
 ## 📖 Overview
 
+!!! success "Enterprise Tools"
+    
+    MCP Tools work alongside **35+ built-in tools** and **18 enterprise integration connectors** for comprehensive capabilities.
+
 !!! abstract "What is MCP?"
     
     Model Context Protocol (MCP) provides a standardized way for AI agents to interact with external systems, APIs, and resources. The MCP Tools module enables dynamic tool discovery and execution.

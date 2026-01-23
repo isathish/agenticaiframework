@@ -10,6 +10,9 @@ tags:
 
 This guide provides a **professional, step-by-step walkthrough** of using the `MemoryManager` in the `agenticaiframework` package to efficiently store, retrieve, inspect, and clear different types of memory. It is designed for developers building intelligent agents that require persistent or temporary state management.
 
+!!! info "7 Memory Managers Available"
+    Part of **380+ modules** with **7 specialized memory managers** including Redis, PostgreSQL, and vector store backends. See [Enterprise Documentation](../enterprise.md).
+
 
 ## Prerequisites & Configuration
 

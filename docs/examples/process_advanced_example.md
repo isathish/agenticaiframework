@@ -8,6 +8,9 @@ tags:
 
 # Advanced Process Example
 
+!!! tip "Enterprise Orchestration"
+    Part of **380+ modules** with 12 workflow types including DAG, parallel, and consensus-based orchestration. See [Processes Documentation](../processes.md).
+
 ```python
 from agenticaiframework.processes import Process
 

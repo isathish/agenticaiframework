@@ -7,6 +7,10 @@ description: 6 communication protocols for connecting agents - HTTP, WebSocket, 
 
 AgenticAI Framework supports **6 communication protocols** for connecting agents to external services, each other, and client applications.
 
+!!! tip "Enterprise Messaging"
+    
+    The framework also includes **12 enterprise messaging & events modules** for Pub/Sub, Event Sourcing, CQRS, and Kafka integration.
+
 ---
 
 ## 🎯 Protocol Overview

@@ -10,11 +10,14 @@ tags:
 
 <div class="annotate" markdown>
 
-**Complete API documentation for all modules**
+**Complete API documentation for all 380+ modules**
 
-Detailed reference for classes, methods, and functions
+Detailed reference for classes, methods, and functions across **237 enterprise features**
 
 </div>
+
+!!! success "Enterprise API"
+    Full API coverage for all enterprise modules. See [Enterprise Documentation](enterprise.md) for advanced APIs.
 
 ## 🎯 Quick Navigation
 

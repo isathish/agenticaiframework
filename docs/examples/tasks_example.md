@@ -11,6 +11,9 @@ tags:
 This guide provides a **professional, step-by-step walkthrough** for creating, registering, and executing a custom task using the `TaskManager` and `Task` classes from the `agenticaiframework` package.  
 It is intended for developers who want to define reusable, modular units of work for their agents.
 
+!!! success "Enterprise Workflow Support"
+    Part of **380+ modules** with 12 workflow types including DAG orchestration and parallel execution. See [Tasks Documentation](../tasks.md).
+
 
 ## Prerequisites & Configuration
 

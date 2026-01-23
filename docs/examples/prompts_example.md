@@ -11,6 +11,9 @@ tags:
 This guide provides a **professional, step-by-step walkthrough** for using the `Prompt` class in the `agenticaiframework` package to create and render dynamic text templates.  
 It is intended for developers building AI-driven applications that require flexible, parameterized prompt generation.
 
+!!! info "Enterprise ML/AI Features"
+    Part of **380+ modules** with 14 ML/AI modules including prompt versioning and A/B testing. See [Prompts Documentation](../prompts.md).
+
 
 ## Prerequisites & Configuration
 

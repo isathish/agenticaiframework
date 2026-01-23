@@ -8,6 +8,9 @@ tags:
 
 # Guardrail Manager Example
 
+!!! warning "Enterprise Compliance"
+    Part of **237 enterprise modules** with 18 compliance/audit modules and 12 guardrail types. See [Guardrails Documentation](../guardrails.md).
+
 ```python
 from agenticaiframework.guardrails import Guardrail, GuardrailManager
 

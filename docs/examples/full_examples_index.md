@@ -9,6 +9,10 @@ tags:
 
 This document lists **all available examples** in the `examples/` directory, covering every major module and feature of the framework.
 
+!!! success "Framework Overview"
+    
+    **380+ modules** | **237 enterprise features** | **35+ tools** | **12-tier evaluation**
+
 !!! tip "Quick Navigation"
     Use this index to quickly find examples for specific framework components. Each example is self-contained and includes detailed explanations.
 

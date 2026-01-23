@@ -7,6 +7,9 @@ tags:
 
 # Evaluation System Example
 
+!!! tip "12-Tier Evaluation System"
+    Part of **380+ modules** with a comprehensive **12-tier evaluation system** and 100+ metrics. See [Evaluation Documentation](../evaluation.md).
+
 ```python
 from agenticaiframework.evaluation import EvaluationSystem
 

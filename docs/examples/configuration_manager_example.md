@@ -7,6 +7,9 @@ tags:
 
 # Configuration Manager Example
 
+!!! tip "Enterprise Configuration"
+    Part of **380+ modules** supporting multi-environment configs, feature flags, and secrets management. See [Configuration Reference](../configuration-reference.md).
+
 ```python
 from agenticaiframework.configurations import ConfigurationManager
 

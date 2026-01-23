@@ -55,6 +55,10 @@ Protect your AI applications with intelligent validation and content moderation
     
     Guardrails enforce safety, compliance, and quality constraints on AI-generated outputs, ensuring responses adhere to predefined rules, ethical guidelines, and domain-specific requirements.
 
+!!! success "Enterprise Security"
+    
+    The framework includes **18 security & compliance modules** for enterprise-grade protection with encryption, authentication, PII detection, and audit logging.
+
 <div class="grid" markdown>
 
 :material-shield-alert:{ .lg } **Input Validation**

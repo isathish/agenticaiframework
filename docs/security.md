@@ -10,6 +10,10 @@ tags:
 
 The Security module provides comprehensive security features for AI agents, including prompt injection detection, input validation, rate limiting, content filtering, and audit logging.
 
+!!! success "Enterprise Security"
+    
+    The framework includes **18 security & compliance modules** providing enterprise-grade protection.
+
 ## Overview
 
 The Security module protects your AI applications from:

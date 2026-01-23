@@ -48,6 +48,10 @@ Define, schedule, and execute work units with precision
 
 ## :sparkles: Overview
 
+!!! success "Enterprise Workflow"
+    
+    Part of **12 workflow & orchestration modules** including workflow engine, state machine, saga patterns, and job queue management.
+
 !!! abstract "What are Tasks?"
     
     Tasks are the fundamental work units that agents execute. They provide structure, tracking, and coordination capabilities.

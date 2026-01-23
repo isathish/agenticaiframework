@@ -49,6 +49,10 @@ Create, manage, and render safe prompts for LLMs
 
 ## 📖 Overview
 
+!!! tip "Enterprise ML/AI"
+    
+    Prompt management is part of **14 ML/AI infrastructure modules** including LLM gateway, model versioning, and A/B testing.
+
 !!! abstract "What is the Prompts Module?"
     
     The Prompts module provides comprehensive prompt management with security features, version control, and safe rendering for Large Language Models (LLMs).

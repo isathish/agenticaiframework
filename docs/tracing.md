@@ -49,6 +49,10 @@ Track agent execution, measure performance, and debug complex workflows
 
 ## 📊 Overview
 
+!!! success "Enterprise Observability"
+    
+    Part of **16 observability modules** including distributed tracing, metrics collection, log aggregation, alerting, and APM.
+
 !!! abstract "Tracing Architecture"
     
     The Tracing module provides OpenTelemetry-compatible distributed tracing for AI agent applications. Track every step of agent execution with detailed spans, measure latency percentiles, and export traces to your observability platform.

@@ -51,7 +51,7 @@ Multi-region deployment, tenant isolation, serverless execution, and distributed
 
 !!! abstract "Infrastructure Framework"
     
-    The Infrastructure module provides enterprise-grade capabilities for deploying and managing AI agents at scale across multiple regions, tenants, and execution environments.
+    The Infrastructure module provides **20 enterprise-grade infrastructure modules** for deploying and managing AI agents at scale across multiple regions, tenants, and execution environments.
 
 ### Architecture
 

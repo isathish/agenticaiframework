@@ -13,7 +13,7 @@ setup(
     version="2.0.0",
     author="Sathishkumar Nagarajan",
     author_email="mail@sathishkumarnagarajan.com",
-    description="AgenticAI - A Python SDK for building agentic applications with comprehensive 12-tier evaluation, advanced orchestration, monitoring, and enterprise capabilities.",
+    description="AgenticAI - Enterprise-grade Python SDK with 380+ modules, 237 enterprise features, 12-tier evaluation, advanced orchestration, monitoring, and production-ready AI agent capabilities.",
     long_description=open("README.md", encoding='utf-8').read() if __import__("os").path.exists("README.md") else "",
     long_description_content_type="text/markdown",
     url="https://github.com/isathish/agenticaiframework",

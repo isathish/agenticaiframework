@@ -7,6 +7,10 @@ description: Comprehensive guide to AgenticAI Framework's 7 specialized memory m
 
 AgenticAI Framework provides **7 specialized memory managers** designed for different use cases, from general-purpose storage to specialized domain-specific memory systems.
 
+!!! tip "Enterprise Storage"
+    
+    The framework also includes **14 enterprise storage & caching modules** for production deployments including Redis, distributed cache, and multi-tier caching.
+
 ---
 
 ## 🎯 Quick Navigation

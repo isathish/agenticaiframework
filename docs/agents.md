@@ -7,6 +7,10 @@ description: Create intelligent AI agents with customizable roles, goals, tools,
 
 Agents are the core building blocks of AgenticAI Framework. They are autonomous AI entities that can reason, plan, use tools, and execute complex tasks.
 
+!!! success "Enterprise-Ready"
+    
+    Part of a **380+ module framework** with 237 enterprise modules, 7 memory managers, 7 state managers, and 35+ built-in tools.
+
 ---
 
 ## 🎯 Quick Navigation

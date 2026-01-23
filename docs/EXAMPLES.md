@@ -14,6 +14,10 @@ Runnable examples for every feature of the AgenticAI Framework. Copy, paste, and
 
 </div>
 
+!!! success "Framework Overview"
+    
+    AgenticAI Framework includes **380+ modules** with **237 enterprise features**. These examples cover core functionality and advanced patterns.
+
 !!! tip "Quick Start"
     All examples use the `agenticaiframework` namespace and are production-ready. Each example is self-contained and can be run independently.
 

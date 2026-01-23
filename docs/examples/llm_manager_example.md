@@ -7,6 +7,9 @@ tags:
 
 # LLM Manager Example
 
+!!! success "18+ LLM Providers"
+    Part of **380+ modules** supporting OpenAI, Anthropic, Gemini, Azure, AWS Bedrock, and more. See [LLM Documentation](../llms.md).
+
 ```python
 from agenticaiframework.llms import LLMManager
 

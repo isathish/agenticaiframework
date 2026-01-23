@@ -11,6 +11,9 @@ tags:
 This guide provides a **professional, step-by-step walkthrough** for using the `MonitoringSystem` in the `agenticaiframework` package to log events and record metrics.  
 It is intended for developers who want to track agent activities, performance, and operational metrics in real-time.
 
+!!! info "Enterprise Observability"
+    Part of **237 enterprise modules** with 16 observability modules including distributed tracing, APM integration, and real-time dashboards.
+
 
 ## Prerequisites & Configuration
 

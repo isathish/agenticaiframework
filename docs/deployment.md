@@ -9,7 +9,9 @@ tags:
 
 <div align="center">
 
-[![Version](https://img.shields.io/badge/version-1.2.11-blue.svg)](https://github.com/isathish/agenticaiframework)
+[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/isathish/agenticaiframework)
+[![Modules](https://img.shields.io/badge/Modules-380%2B-purple.svg)](https://github.com/isathish/agenticaiframework)
+[![Enterprise](https://img.shields.io/badge/Enterprise-237%20Modules-green.svg)](https://github.com/isathish/agenticaiframework)
 [![Docker](https://img.shields.io/badge/Docker-Supported-2496ED?logo=docker&logoColor=white)](https://hub.docker.com)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-Ready-326CE5?logo=kubernetes&logoColor=white)](https://kubernetes.io)
 [![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://isathish.github.io/agenticaiframework/)

@@ -7,12 +7,12 @@
 
 <div class="stats-grid">
 <div class="stat-item">
-<div class="stat-number">6</div>
+<div class="stat-number">7</div>
 <div class="stat-label">State Managers</div>
 </div>
 <div class="stat-item">
-<div class="stat-number">3</div>
-<div class="stat-label">Backend Options</div>
+<div class="stat-number">14</div>
+<div class="stat-label">Enterprise Caching</div>
 </div>
 <div class="stat-item">
 <div class="stat-number">Auto</div>

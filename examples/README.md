@@ -2,6 +2,8 @@
 
 Organized examples demonstrating the framework's capabilities.
 
+> **380+ Modules** | **237 Enterprise Features** | **35+ Built-in Tools** | **12-Tier Evaluation**
+
 ## 📁 Directory Structure
 
 ```

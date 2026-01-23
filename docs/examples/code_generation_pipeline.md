@@ -10,6 +10,9 @@ tags:
 
 This example demonstrates a complete code generation and evaluation pipeline using multiple framework components.
 
+!!! tip "Enterprise Evaluation System"
+    Uses the **12-tier evaluation system** from our 237 enterprise modules. See [Enterprise Documentation](../enterprise.md) for advanced evaluation patterns.
+
 ## Overview
 
 This pipeline combines LLMs, guardrails, monitoring, and evaluation to create a robust code generation system.

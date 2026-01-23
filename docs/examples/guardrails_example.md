@@ -11,6 +11,9 @@ tags:
 This guide provides a **professional, step-by-step walkthrough** for adding and validating guardrails using the `GuardrailManager` in the `agenticaiframework` package.  
 It is intended for developers who want to enforce content safety, compliance, or quality rules in AI-generated outputs.
 
+!!! warning "Enterprise Compliance"
+    Part of **237 enterprise modules** including 18 compliance/audit modules and 12 guardrail types. See [Enterprise Documentation](../enterprise.md).
+
 
 ## Prerequisites & Configuration
 

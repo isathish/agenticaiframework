@@ -7,6 +7,9 @@ tags:
 
 # Memory Manager Example
 
+!!! success "7 Memory Managers"
+    Part of **380+ modules** with Redis, PostgreSQL, SQLite, and vector store backends. See [Memory Documentation](../memory.md).
+
 ```python
 from agenticaiframework.memory import MemoryManager
 

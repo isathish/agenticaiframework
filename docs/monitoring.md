@@ -50,7 +50,7 @@ Track, log, and analyze performance with comprehensive monitoring
 
 !!! abstract "What is the Monitoring Module?"
     
-    The Monitoring module provides comprehensive tools for tracking, logging, and analyzing the performance and behavior of AI agents. It enables developers to observe system health, detect anomalies, and optimize workflows.
+    The Monitoring module provides comprehensive tools for tracking, logging, and analyzing the performance and behavior of AI agents. With **16 observability modules**, it enables developers to observe system health, detect anomalies, and optimize workflows.
 
 <div class="grid" markdown>
 

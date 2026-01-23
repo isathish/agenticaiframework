@@ -15,6 +15,14 @@
 <div class="stat-label">Metrics</div>
 </div>
 <div class="stat-item">
+<div class="stat-number">380+</div>
+<div class="stat-label">Total Modules</div>
+</div>
+<div class="stat-item">
+<div class="stat-number">237</div>
+<div class="stat-label">Enterprise Features</div>
+</div>
+<div class="stat-item">
 <div class="stat-number">Real-time</div>
 <div class="stat-label">Online Monitoring</div>
 </div>

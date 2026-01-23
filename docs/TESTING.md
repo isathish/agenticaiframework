@@ -19,7 +19,7 @@ Comprehensive testing strategies and best practices for building reliable AI age
 
 !!! success "Test Coverage"
     
-    The AgenticAI Framework maintains **66% test coverage** with **1036+ tests** ensuring reliability and quality.
+    The AgenticAI Framework maintains **66% test coverage** with **1036+ tests** across **380+ modules** ensuring reliability and quality.
 
 <div class="grid" markdown>
 

@@ -7,6 +7,9 @@ tags:
 
 # Task Manager Example
 
+!!! success "Enterprise Task Orchestration"
+    Part of **380+ modules** with 12 workflow types and advanced scheduling. See [Tasks Documentation](../tasks.md).
+
 ```python
 from agenticaiframework.tasks import Task, TaskManager
 

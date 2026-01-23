@@ -8,6 +8,9 @@ tags:
 
 # Agent Manager Example
 
+!!! success "Enterprise Agent Management"
+    Part of **380+ modules** with advanced agent lifecycle management, pooling, and multi-tenant isolation. See [Agents Documentation](../agents.md).
+
 ```python
 from agenticaiframework.agents import Agent, AgentManager
 

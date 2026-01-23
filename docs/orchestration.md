@@ -7,6 +7,10 @@ description: Build complex AI teams with hierarchical workflows, parallel execut
 
 AgenticAI Framework provides powerful orchestration capabilities for building sophisticated multi-agent systems. Create teams, define workflows, and coordinate agents seamlessly.
 
+!!! success "Enterprise Orchestration"
+    
+    The framework includes **12 workflow & orchestration modules** for enterprise deployments including workflow engine, state machine, saga patterns, and job queue management.
+
 ---
 
 ## 🎯 Orchestration Overview

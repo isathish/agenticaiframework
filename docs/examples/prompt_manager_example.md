@@ -7,6 +7,9 @@ tags:
 
 # Prompt Manager Example
 
+!!! info "Prompt Versioning & A/B Testing"
+    Part of **380+ modules** with prompt versioning, templates, and A/B testing support. See [Prompts Documentation](../prompts.md).
+
 ```python
 from agenticaiframework.prompts import Prompt, PromptManager
 

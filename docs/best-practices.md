@@ -12,9 +12,12 @@ tags:
 
 **Production-ready patterns and expert recommendations**
 
-Build scalable, reliable AI agent applications
+Build scalable, reliable AI agent applications with **380+ modules** and **237 enterprise features**
 
 </div>
+
+!!! success "Enterprise Best Practices"
+    For enterprise-specific patterns including multi-tenant architectures, compliance workflows, and high-availability deployments, see [Enterprise Documentation](enterprise.md).
 
 ## 🎯 Quick Navigation
 

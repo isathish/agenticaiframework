@@ -51,7 +51,7 @@ Ensure regulatory compliance with comprehensive audit logging, policy enforcemen
 
 !!! abstract "Compliance Framework"
     
-    The Compliance module provides enterprise-grade governance features including tamper-evident audit trails, configurable policy enforcement, and intelligent data masking for PII protection.
+    The Compliance module provides **10 enterprise governance modules** including tamper-evident audit trails, configurable policy enforcement, and intelligent data masking for PII protection.
 
 ### Architecture
 

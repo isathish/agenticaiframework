@@ -76,23 +76,24 @@ Make an informed decision for your AI project
 
 | Feature | AgenticAI | LangChain | AutoGen | CrewAI | Haystack |
 |---------|-----------|-----------|---------|--------|----------|
+| **📦 Total Modules** | ✅ 380+ | ⚠️ ~50 | ⚠️ ~30 | ⚠️ ~20 | ⚠️ ~40 |
+| **🏢 Enterprise Modules** | ✅ 237 | ⚠️ Limited | ❌ None | ❌ None | ⚠️ Few |
 | **🤖 Multi-Agent Coordination** | ✅ Native | ⚠️ Limited | ✅ Yes | ✅ Yes | ❌ No |
-| **🧠 Memory Systems** | ✅ Advanced | 🔌 Plugin | ❌ Basic | ⚠️ Limited | 🔌 Plugin |
+| **🧠 Memory Systems** | ✅ 7 Managers | 🔌 Plugin | ❌ Basic | ⚠️ Limited | 🔌 Plugin |
+| **📊 State Managers** | ✅ 7 Managers | ❌ No | ❌ No | ❌ No | ❌ No |
 | **🛡️ Guardrails & Safety** | ✅ Built-in | ❌ No | ❌ No | ❌ No | ⚠️ Basic |
 | **🔧 MCP Tools** | ✅ Native | ❌ No | ❌ No | ❌ No | ❌ No |
-| **📊 Monitoring** | ✅ Production | ⚠️ Basic | ❌ No | ⚠️ Basic | ⚠️ Basic |
-| **🔄 Process Orchestration** | ✅ 4 Types | ⚠️ Chains | ⚠️ Limited | ⚠️ Limited | ⚠️ Pipelines |
+| **📊 Monitoring** | ✅ 16 Modules | ⚠️ Basic | ❌ No | ⚠️ Basic | ⚠️ Basic |
+| **🔄 Process Orchestration** | ✅ 12 Modules | ⚠️ Chains | ⚠️ Limited | ⚠️ Limited | ⚠️ Pipelines |
 | **💾 Vector Search** | ✅ Yes | ✅ Yes | ❌ No | ⚠️ Limited | ✅ Yes |
 | **🎯 Task Management** | ✅ Advanced | ⚠️ Basic | ⚠️ Basic | ⚠️ Basic | ⚠️ Basic |
-| **📝 Prompt Templates** | ✅ Yes | ✅ Yes | ⚠️ Limited | ⚠️ Limited | ✅ Yes |
-| **🔌 LLM Support** | ✅ 10+ | ✅ 20+ | ⚠️ 5+ | ⚠️ 5+ | ✅ 15+ |
-| **🧪 Testing Tools** | ✅ Built-in | ⚠️ Limited | ❌ No | ❌ No | ⚠️ Basic |
-| **📈 Evaluation** | ✅ Framework | 🔌 Plugin | ❌ No | ❌ No | ⚠️ Limited |
+| **📈 12-Tier Evaluation** | ✅ Built-in | ❌ No | ❌ No | ❌ No | ⚠️ Limited |
+| **🧠 ML/AI Infrastructure** | ✅ 14 Modules | ⚠️ Basic | ❌ No | ❌ No | ⚠️ Basic |
+| **📐 DDD Patterns** | ✅ 12 Modules | ❌ No | ❌ No | ❌ No | ❌ No |
 | **🐳 Docker Support** | ✅ Official | ⚠️ Community | ❌ No | ⚠️ Community | ✅ Yes |
 | **☸️ Kubernetes** | ✅ Charts | ❌ No | ❌ No | ❌ No | ⚠️ Basic |
 | **📖 Documentation** | ✅ Excellent | ✅ Good | ⚠️ Fair | ✅ Good | ✅ Good |
 | **🎓 Learning Curve** | 🟢 Easy | 🟡 Medium | 🔴 Hard | 🟢 Easy | 🟡 Medium |
-| **🌐 Community** | 🟡 Growing | 🟢 Large | 🟢 Active | 🟡 Medium | 🟡 Medium |
 | **💰 License** | MIT | MIT | MIT | MIT | Apache 2.0 |
 
 **Legend:**  
@@ -150,14 +151,17 @@ graph TB
 
 !!! success "Perfect Fit"
 
+    - 📦 **380+ modules** with comprehensive coverage
+    - 🏢 **237 enterprise modules** across 14 categories
     - ✨ **Multiple agents** coordinating together
-    - 🛡️ **Production-grade safety** and content moderation
-    - 📊 **Enterprise monitoring** and observability
-    - 💾 **Advanced memory** with persistence
+    - 🛡️ **Production-grade safety** with 18 security modules
+    - 📊 **Enterprise monitoring** with 16 observability modules
+    - 💾 **Advanced memory** with 7 specialized managers
     - 🔧 **MCP Tools** for external integrations
-    - 🎯 **Complex task orchestration** with multiple patterns
-    - 🏢 **Enterprise deployment** with Kubernetes
-    - 📈 **Built-in evaluation** framework
+    - 🎯 **Complex task orchestration** with 12 workflow modules
+    - 📐 **Domain-Driven Design** with 12 DDD patterns
+    - 🧠 **ML/AI Infrastructure** with 14 modules
+    - 📈 **Built-in 12-tier evaluation** framework
 
 ### 🔗 Choose LangChain if you need:
 

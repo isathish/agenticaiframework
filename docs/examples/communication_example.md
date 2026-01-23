@@ -7,6 +7,9 @@ tags:
 
 # Communication Example
 
+!!! success "12 Communication Modules"
+    Part of **380+ modules** with 12 enterprise messaging modules including Kafka, RabbitMQ, and Redis Pub/Sub. See [Communication Documentation](../communication.md).
+
 ```python
 from agenticaiframework.communication import CommunicationManager
 

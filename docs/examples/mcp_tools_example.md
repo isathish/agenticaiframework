@@ -11,6 +11,9 @@ tags:
 This guide provides a **professional, step-by-step walkthrough** for creating, registering, and executing a custom MCP (Model Context Protocol) tool using the `MCPToolManager` and `MCPTool` classes from the `agenticaiframework` package.  
 It is intended for developers who want to extend their agent's capabilities with modular, reusable tools.
 
+!!! tip "35+ Built-in Tools"
+    Part of **380+ modules** with 35+ built-in tools and 18 external connectors. See [MCP Tools Documentation](../mcp_tools.md).
+
 
 ## Prerequisites & Configuration
 

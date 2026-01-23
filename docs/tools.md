@@ -7,6 +7,10 @@ description: 35+ built-in tools for search, code execution, file operations, and
 
 AgenticAI Framework includes **35+ production-ready tools** that extend agent capabilities. From web search to code execution, database operations to AI services.
 
+!!! success "Enterprise Integrations"
+    
+    The framework also includes **18 enterprise integration connectors** for ServiceNow, GitHub, Slack, Salesforce, AWS, Azure, GCP, and more.
+
 ---
 
 ## 🎯 Tool Categories

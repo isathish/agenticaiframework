@@ -49,6 +49,10 @@ Semantic indexing, context windows, compression strategies, and intelligent retr
 
 ## 📊 Overview
 
+!!! success "Part of 380+ Modules"
+    
+    Context engineering works seamlessly with **7 memory managers**, **7 state managers**, and **14 ML/AI infrastructure modules**.
+
 !!! abstract "Context Engineering Framework"
     
     The Context module provides sophisticated tools for managing and optimizing the context provided to AI agents, ensuring relevant information is available while staying within token limits.

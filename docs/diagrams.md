@@ -10,7 +10,7 @@ tags:
 
 <div class="annotate" markdown>
 
-Comprehensive collection of High-Level Design (HLD) and Low-Level Design (LLD) diagrams for AgenticAI Framework. All diagrams are created using Mermaid.js and are fully compatible with GitHub wiki.
+Comprehensive collection of High-Level Design (HLD) and Low-Level Design (LLD) diagrams for AgenticAI Framework (**380+ modules, 237 enterprise features**). All diagrams are created using Mermaid.js and are fully compatible with GitHub wiki.
 
 </div>
 

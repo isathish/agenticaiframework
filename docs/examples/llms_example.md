@@ -10,6 +10,9 @@ tags:
 This guide provides a **professional, step-by-step walkthrough** for registering, setting, and using a language model with the `LLMManager` in the `agenticaiframework` package.  
 It is intended for developers integrating custom or third-party LLMs into their applications.
 
+!!! success "18+ LLM Providers Supported"
+    Part of **380+ modules** supporting OpenAI, Anthropic, Gemini, Azure, AWS Bedrock, Ollama, and more. See [LLM Documentation](../llms.md).
+
 
 ## Prerequisites & Configuration
 

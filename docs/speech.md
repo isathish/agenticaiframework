@@ -7,6 +7,10 @@ description: Full-featured speech-to-text and text-to-speech capabilities for vo
 
 AgenticAI Framework provides comprehensive speech processing capabilities including speech-to-text (STT), text-to-speech (TTS), and voice interaction management.
 
+!!! success "Part of 380+ Modules"
+    
+    Speech processing is one component of the comprehensive framework with 237 enterprise modules.
+
 ---
 
 ## 🎯 Overview

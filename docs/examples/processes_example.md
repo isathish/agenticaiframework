@@ -7,6 +7,9 @@ tags:
 
 # Process Example
 
+!!! tip "12 Workflow Types"
+    Part of **380+ modules** with sequential, parallel, DAG, and consensus-based orchestration. See [Processes Documentation](../processes.md).
+
 ```python
 from agenticaiframework.processes import Process
 

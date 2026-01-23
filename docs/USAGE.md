@@ -10,8 +10,10 @@ tags:
 
 <div align="center">
 
-**Complete guide to using AgenticAI Framework**
+**Complete guide to using AgenticAI Framework (380+ Modules)**
 
+[![Modules](https://img.shields.io/badge/modules-380%2B-brightgreen.svg)](https://github.com/isathish/agenticaiframework)
+[![Enterprise](https://img.shields.io/badge/enterprise-237%20modules-gold.svg)](https://github.com/isathish/agenticaiframework)
 [![PyPI Version](https://img.shields.io/pypi/v/agenticaiframework?color=blue&label=PyPI&logo=python&logoColor=white)](https://pypi.org/project/agenticaiframework/)
 [![Downloads](https://img.shields.io/pypi/dm/agenticaiframework?color=green&label=Downloads&logo=python&logoColor=white)](https://pypi.org/project/agenticaiframework/)
 [![Build](https://img.shields.io/github/actions/workflow/status/isathish/agenticaiframework/python-package.yml?branch=main&label=Build&logo=github)](https://github.com/isathish/agenticaiframework/actions)

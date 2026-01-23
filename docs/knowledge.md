@@ -52,6 +52,10 @@ Manage structured and unstructured knowledge sources with vector search
     
     The Knowledge module manages structured and unstructured knowledge sources for AI agents, enabling retrieval, storage, and querying of domain-specific information to enhance reasoning and contextual understanding.
 
+!!! tip "Enterprise ML/AI"
+    
+    The framework includes **14 ML/AI infrastructure modules** with feature store, model registry, RAG, embeddings, and recommendation engine.
+
 <div class="grid" markdown>
 
 :material-file-document-multiple:{ .lg } **Document Management**

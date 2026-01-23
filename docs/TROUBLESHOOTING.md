@@ -8,7 +8,7 @@ tags:
 
 # 🔧 Troubleshooting Guide
 
-This guide lists common issues you may encounter when using **AgenticAI Framework** and how to resolve them.
+This guide lists common issues you may encounter when using **AgenticAI Framework** (380+ modules, 237 enterprise features) and how to resolve them.
 
 ---
 

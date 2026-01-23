@@ -12,9 +12,16 @@ tags:
 
 **Join our community of contributors**
 
-Help us build the future of AI agent frameworks
+Help us build the most comprehensive AI agent framework with 380+ modules
 
 </div>
+
+!!! success "Framework Statistics"
+    
+    - **380+ Total Modules** - Comprehensive coverage
+    - **237 Enterprise Modules** - Production-ready
+    - **1036+ Tests** - 66% coverage
+    - **14 Enterprise Categories** - Full enterprise support
 
 ## 🎯 Quick Navigation
 

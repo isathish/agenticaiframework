@@ -11,6 +11,9 @@ tags:
 This guide provides a **professional, step-by-step walkthrough** for creating, registering, and controlling an agent using the `AgentManager` and `Agent` classes from the `agenticaiframework` package.  
 It is intended for developers building intelligent systems that require autonomous or semi-autonomous agents.
 
+!!! info "Part of 380+ Module Framework"
+    This example uses core agent modules. For enterprise agent patterns including multi-tenant agents and advanced orchestration, see [Enterprise Documentation](../enterprise.md).
+
 
 ## Prerequisites & Configuration
 

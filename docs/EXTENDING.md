@@ -10,6 +10,9 @@ tags:
 
 This guide explains how to extend the **AgenticAI Framework** to add new capabilities, integrate with external systems, and customize its behavior.
 
+!!! info "Enterprise Extensibility"
+    Part of **380+ modules** with **237 enterprise features**. See [Enterprise Documentation](enterprise.md) for advanced extensibility patterns.
+
 ---
 
 ## 🏗️ Understanding the Architecture

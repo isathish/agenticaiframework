@@ -55,6 +55,10 @@ Comprehensive integration guide for APIs, databases, and message queues
 
 This guide demonstrates various integration patterns for connecting AgenticAI Framework with external systems, APIs, databases, and services.
 
+!!! success "Enterprise Connectors"
+    
+    The framework includes **18 pre-built enterprise integration connectors** for ServiceNow, GitHub, Azure DevOps, Slack, Teams, Salesforce, AWS, Azure, GCP, and more.
+
 
 ## 🎯 Integration Architecture
 

@@ -7,7 +7,10 @@ tags:
 
 # ⚙️ AgenticAI Configuration Guide
 
-This document explains how to configure **AgenticAI Framework** for different environments and use cases.
+This document explains how to configure **AgenticAI Framework** (380+ modules, 237 enterprise features) for different environments and use cases.
+
+!!! info "Enterprise Configuration"
+    For advanced configuration options including multi-tenant, high-availability, and compliance settings, see [Enterprise Documentation](enterprise.md).
 
 ---
 

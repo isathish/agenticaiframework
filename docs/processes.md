@@ -48,6 +48,10 @@ Sequential, hierarchical, consensus, and parallel execution
 
 ## 📖 Overview
 
+!!! success "Enterprise Orchestration"
+    
+    Process orchestration is part of **12 workflow modules** in the enterprise layer for mission-critical workflows.
+
 !!! abstract "What are Processes?"
     
     Processes define how multiple agents coordinate and execute workflows. The framework supports four powerful orchestration patterns:

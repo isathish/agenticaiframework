@@ -11,6 +11,9 @@ tags:
 This guide provides a **professional, step-by-step walkthrough** for using the `ConfigManager` in the `agenticaiframework` package to set, retrieve, and manage configuration values.  
 It is intended for developers who need a centralized way to handle application settings and environment-specific parameters.
 
+!!! tip "Enterprise Configuration"
+    Part of **380+ modules** supporting multi-tenant configurations, feature flags, and environment management. See [Configuration Reference](../configuration-reference.md).
+
 
 ## Prerequisites & Configuration
 

@@ -50,6 +50,10 @@ Connect to 10+ LLM providers with intelligent fallbacks and monitoring
 
 The `llms` module provides enterprise-grade integration with Large Language Models (LLMs) featuring reliability patterns, monitoring, and intelligent fallback mechanisms. It abstracts away the complexity of model management while providing advanced features like circuit breakers, retry logic, response caching, and performance tracking.
 
+!!! tip "Enterprise ML/AI"
+    
+    The framework includes **14 ML/AI infrastructure modules** with LLM gateway, prompt management, model versioning, and A/B testing.
+
 
 ## :art: High-Level Design (HLD)
 
