@@ -1,4 +1,6 @@
 ---
+title: Agent Example
+description: Step-by-step walkthrough for creating, registering, and controlling agents with AgentManager
 tags:
   - example
   - agents
@@ -6,7 +8,7 @@ tags:
   - tutorial
 ---
 
-# Agent Management Example
+# 🤖 Agent Management Example
 
 This guide provides a **professional, step-by-step walkthrough** for creating, registering, and controlling an agent using the `AgentManager` and `Agent` classes from the `agenticaiframework` package.  
 It is intended for developers building intelligent systems that require autonomous or semi-autonomous agents.

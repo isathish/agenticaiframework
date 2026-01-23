@@ -1,11 +1,13 @@
 ---
+title: Configuration Manager Example
+description: Set, update, and retrieve configurations with ConfigurationManager
 tags:
   - examples
   - configuration
   - settings
 ---
 
-# Configuration Manager Example
+# ⚙️ Configuration Manager Example
 
 !!! tip "Enterprise Configuration"
     Part of **380+ modules** supporting multi-environment configs, feature flags, and secrets management. See [Configuration Reference](../configuration-reference.md).

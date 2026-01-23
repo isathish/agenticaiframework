@@ -1,4 +1,6 @@
 ---
+title: Knowledge Retrieval Example
+description: Retrieve and summarize knowledge with RAG pipelines and semantic search
 tags:
   - examples
   - knowledge
@@ -6,7 +8,7 @@ tags:
   - summarization
 ---
 
-# Knowledge Retrieval Example
+# 📚 Knowledge Retrieval Example
 
 !!! info "Enterprise Knowledge Management"
     Part of **380+ modules** with 15 knowledge management modules supporting vector stores, RAG pipelines, and semantic search. See [Knowledge Documentation](../knowledge.md).

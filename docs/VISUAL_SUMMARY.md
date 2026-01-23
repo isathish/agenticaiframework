@@ -1,3 +1,12 @@
+---
+title: Visual Summary
+description: Archived visual summary of documentation redesign metrics and statistics
+tags:
+  - archive
+  - internal
+  - metrics
+---
+
 # 📊 Documentation Redesign - Visual Summary
 
 !!! warning "Historical Document"

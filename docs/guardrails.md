@@ -1,4 +1,6 @@
 ---
+title: Guardrails
+description: Enforce safety, compliance, and quality constraints on AI-generated outputs
 tags:
   - guardrails
   - safety
@@ -9,15 +11,20 @@ tags:
   - validation
 ---
 
-# 🛡️ Guardrails Module
+# 🛡️ Guardrails
 
 <div class="annotate" markdown>
 
 **Enforce safety, compliance, and quality constraints**
 
-Protect your AI applications with intelligent validation and content moderation
+Protect your AI applications with intelligent validation and content moderation across **380+ modules**
 
 </div>
+
+!!! success "Enterprise Compliance"
+    Part of **237 enterprise modules** with **18 compliance & audit features**. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## 🎯 Quick Navigation
 

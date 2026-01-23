@@ -1,11 +1,13 @@
 ---
+title: Examples Index
+description: Complete index of all code examples covering agents, tasks, memory, tools, and enterprise features
 tags:
   - examples
   - index
   - overview
 ---
 
-# Full Examples Index
+# 📚 Examples Index
 
 This document lists **all available examples** in the `examples/` directory, covering every major module and feature of the framework.
 

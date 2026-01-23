@@ -1,11 +1,14 @@
 ---
+title: Deployment
+description: Deploy AgenticAI Framework applications with Docker, Kubernetes, and cloud platforms
 tags:
   - deployment
   - production
   - operations
   - guide
 ---
-# 🚢 Deployment Guide
+
+# 🚢 Deployment
 
 <div align="center">
 
@@ -14,10 +17,13 @@ tags:
 [![Enterprise](https://img.shields.io/badge/Enterprise-237%20Modules-green.svg)](https://github.com/isathish/agenticaiframework)
 [![Docker](https://img.shields.io/badge/Docker-Supported-2496ED?logo=docker&logoColor=white)](https://hub.docker.com)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-Ready-326CE5?logo=kubernetes&logoColor=white)](https://kubernetes.io)
-[![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://isathish.github.io/agenticaiframework/)
 
 </div>
 
+!!! success "Enterprise Deployment"
+    Part of **237 enterprise modules** with **20 infrastructure features** for production deployments. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## 📊 Overview
 

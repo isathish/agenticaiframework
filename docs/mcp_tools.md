@@ -1,4 +1,6 @@
 ---
+title: MCP Tools
+description: Model Context Protocol integration for extending agent capabilities with standardized tool interfaces
 tags:
   - mcp-tools
   - tools
@@ -6,15 +8,20 @@ tags:
   - protocol
 ---
 
-# 🔧 MCP Tools Module
+# 🔧 MCP Tools
 
 <div class="annotate" markdown>
 
 **Model Context Protocol integration for external systems**
 
-Extend agent capabilities with standardized tool interfaces
+Extend agent capabilities with standardized tool interfaces across **380+ modules**
 
 </div>
+
+!!! success "Enterprise Tools"
+    Part of **237 enterprise modules** with **35+ built-in tools** and **18 enterprise connectors**. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## 🎯 Quick Navigation
 

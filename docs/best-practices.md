@@ -1,4 +1,6 @@
 ---
+title: Best Practices
+description: Production-ready patterns, recommendations, and expert guidance for building scalable AI agent applications
 tags:
   - best-practices
   - patterns
@@ -6,7 +8,7 @@ tags:
   - guide
 ---
 
-# ⭐ Best Practices Guide
+# ⭐ Best Practices
 
 <div class="annotate" markdown>
 

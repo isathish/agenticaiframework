@@ -1,4 +1,6 @@
 ---
+title: Usage Guide
+description: Complete guide to using AgenticAI Framework for building AI agent applications
 tags:
   - usage
   - guide
@@ -15,11 +17,13 @@ tags:
 [![Modules](https://img.shields.io/badge/modules-380%2B-brightgreen.svg)](https://github.com/isathish/agenticaiframework)
 [![Enterprise](https://img.shields.io/badge/enterprise-237%20modules-gold.svg)](https://github.com/isathish/agenticaiframework)
 [![PyPI Version](https://img.shields.io/pypi/v/agenticaiframework?color=blue&label=PyPI&logo=python&logoColor=white)](https://pypi.org/project/agenticaiframework/)
-[![Downloads](https://img.shields.io/pypi/dm/agenticaiframework?color=green&label=Downloads&logo=python&logoColor=white)](https://pypi.org/project/agenticaiframework/)
-[![Build](https://img.shields.io/github/actions/workflow/status/isathish/agenticaiframework/python-package.yml?branch=main&label=Build&logo=github)](https://github.com/isathish/agenticaiframework/actions)
-[![Documentation](https://img.shields.io/badge/Documentation-Online-blue?logo=readthedocs&logoColor=white)](https://isathish.github.io/agenticaiframework/)
 
 </div>
+
+!!! success "Enterprise Framework"
+    Part of **237 enterprise modules** with comprehensive features. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## 🚀 Quick Navigation
 

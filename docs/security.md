@@ -1,4 +1,6 @@
 ---
+title: Security
+description: Enterprise-grade security features for AI agents including injection detection, validation, and compliance
 tags:
   - security
   - privacy
@@ -6,15 +8,56 @@ tags:
   - best-practices
 ---
 
-# Security Module
+# 🔐 Security
 
-The Security module provides comprehensive security features for AI agents, including prompt injection detection, input validation, rate limiting, content filtering, and audit logging.
+AgenticAI Framework provides **comprehensive security features** for AI agents, including prompt injection detection, input validation, rate limiting, content filtering, and audit logging.
 
 !!! success "Enterprise Security"
-    
-    The framework includes **18 security & compliance modules** providing enterprise-grade protection.
+    Part of **380+ modules** with **18 security & compliance modules** providing enterprise-grade protection. See [Enterprise Documentation](enterprise.md).
 
-## Overview
+---
+
+## 🎯 Quick Navigation
+
+<div class="grid cards" markdown>
+
+-   :shield:{ .lg } **Injection Detection**
+
+    ---
+
+    Detect and prevent prompt injection attacks
+
+    [:octicons-arrow-right-24: Learn More](#promptinjectiondetector)
+
+-   :white_check_mark:{ .lg } **Input Validation**
+
+    ---
+
+    Validate and sanitize user inputs
+
+    [:octicons-arrow-right-24: Validate](#inputvalidator)
+
+-   :stopwatch:{ .lg } **Rate Limiting**
+
+    ---
+
+    Prevent abuse and system overload
+
+    [:octicons-arrow-right-24: Configure](#rate-limiting)
+
+-   :clipboard:{ .lg } **Audit Logging**
+
+    ---
+
+    Track security events for compliance
+
+    [:octicons-arrow-right-24: Enable](#audit-logging)
+
+</div>
+
+---
+
+## 📋 Overview
 
 The Security module protects your AI applications from:
 

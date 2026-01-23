@@ -1,11 +1,13 @@
 ---
+title: Task Manager Example
+description: Register and execute tasks with TaskManager for workflow orchestration
 tags:
   - examples
   - tasks
   - execution
 ---
 
-# Task Manager Example
+# ✅ Task Manager Example
 
 !!! success "Enterprise Task Orchestration"
     Part of **380+ modules** with 12 workflow types and advanced scheduling. See [Tasks Documentation](../tasks.md).

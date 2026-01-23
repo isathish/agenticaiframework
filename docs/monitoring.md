@@ -1,4 +1,6 @@
 ---
+title: Monitoring
+description: Production-grade observability for AI agent systems with metrics, logging, and distributed tracing
 tags:
   - monitoring
   - observability
@@ -6,15 +8,20 @@ tags:
   - logging
 ---
 
-# 📊 Monitoring Module
+# 📊 Monitoring
 
 <div class="annotate" markdown>
 
 **Production-grade observability for AI agent systems**
 
-Track, log, and analyze performance with comprehensive monitoring
+Track, log, and analyze performance with comprehensive monitoring across **380+ modules**
 
 </div>
+
+!!! success "Enterprise Observability"
+    Part of **237 enterprise modules** with **16 observability features** including APM, distributed tracing, and real-time dashboards. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## 🎯 Quick Navigation
 

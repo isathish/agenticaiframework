@@ -1,4 +1,6 @@
 ---
+title: Integration Patterns
+description: Connect to external systems with 18+ enterprise connectors for APIs, databases, and message queues
 tags:
   - integration
   - external-services
@@ -16,9 +18,14 @@ tags:
 
 **Connect to external systems and services**
 
-Comprehensive integration guide for APIs, databases, and message queues
+Comprehensive integration guide for APIs, databases, and message queues across **380+ modules**
 
 </div>
+
+!!! success "Enterprise Integrations"
+    Part of **237 enterprise modules** with **18 pre-built connectors** for ServiceNow, GitHub, Azure DevOps, Slack, Salesforce, and more. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## 🎯 Quick Navigation
 

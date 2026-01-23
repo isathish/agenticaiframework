@@ -1,4 +1,6 @@
 ---
+title: Guardrail Manager Example
+description: Create and validate content with GuardrailManager for compliance and safety
 tags:
   - examples
   - guardrails
@@ -6,7 +8,7 @@ tags:
   - safety
 ---
 
-# Guardrail Manager Example
+# 🛡️ Guardrail Manager Example
 
 !!! warning "Enterprise Compliance"
     Part of **237 enterprise modules** with 18 compliance/audit modules and 12 guardrail types. See [Guardrails Documentation](../guardrails.md).

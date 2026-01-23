@@ -1,4 +1,6 @@
 ---
+title: Architecture
+description: Comprehensive architectural overview of AgenticAI Framework's 5-layer design and 380+ modules
 tags:
   - architecture
   - design
@@ -6,15 +8,20 @@ tags:
   - system-design
 ---
 
-# 🏛️ Architecture Guide
+# 🏛️ Architecture
 
 <div class="annotate" markdown>
 
 **Comprehensive architectural overview**
 
-Understand the design and structure of AgenticAI Framework
+Understand the design and structure of **380+ modules** and **237 enterprise features**
 
 </div>
+
+!!! success "Enterprise Architecture"
+    Part of **237 enterprise modules** with production-ready infrastructure patterns. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## 🎯 Quick Navigation
 

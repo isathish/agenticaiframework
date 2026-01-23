@@ -1,4 +1,6 @@
 ---
+title: Agent Manager Example
+description: Manage agent lifecycle, pooling, and registration with AgentManager
 tags:
   - examples
   - agents
@@ -6,7 +8,7 @@ tags:
   - lifecycle
 ---
 
-# Agent Manager Example
+# 🤖 Agent Manager Example
 
 !!! success "Enterprise Agent Management"
     Part of **380+ modules** with advanced agent lifecycle management, pooling, and multi-tenant isolation. See [Agents Documentation](../agents.md).

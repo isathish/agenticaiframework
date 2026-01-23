@@ -1,4 +1,6 @@
 ---
+title: Processes
+description: Orchestrate multi-agent workflows with sequential, hierarchical, consensus, and parallel execution patterns
 tags:
   - processes
   - workflows
@@ -6,15 +8,20 @@ tags:
   - multi-agent
 ---
 
-# 🔄 Processes Module
+# 🔄 Processes
 
 <div class="annotate" markdown>
 
 **Orchestrate multi-agent workflows with powerful coordination patterns**
 
-Sequential, hierarchical, consensus, and parallel execution
+Sequential, hierarchical, consensus, and parallel execution across **380+ modules**
 
 </div>
+
+!!! success "Enterprise Orchestration"
+    Part of **237 enterprise modules** with **12 workflow & orchestration features**. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## 🎯 Quick Navigation
 

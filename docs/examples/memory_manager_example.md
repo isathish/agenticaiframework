@@ -1,11 +1,13 @@
 ---
+title: Memory Manager Example
+description: Store and retrieve memory entries with MemoryManager for agent state
 tags:
   - examples
   - memory
   - storage
 ---
 
-# Memory Manager Example
+# 🧠 Memory Manager Example
 
 !!! success "7 Memory Managers"
     Part of **380+ modules** with Redis, PostgreSQL, SQLite, and vector store backends. See [Memory Documentation](../memory.md).

@@ -1,4 +1,6 @@
 ---
+title: API Reference
+description: Complete API documentation for all 380+ modules including classes, methods, and functions
 tags:
   - API
   - reference

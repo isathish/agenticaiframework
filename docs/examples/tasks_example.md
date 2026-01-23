@@ -1,4 +1,6 @@
 ---
+title: Tasks Example
+description: Create, register, and execute custom tasks with TaskManager and Task classes
 tags:
   - example
   - tasks
@@ -6,7 +8,7 @@ tags:
   - tutorial
 ---
 
-# Task Management Example
+# ✅ Task Management Example
 
 This guide provides a **professional, step-by-step walkthrough** for creating, registering, and executing a custom task using the `TaskManager` and `Task` classes from the `agenticaiframework` package.  
 It is intended for developers who want to define reusable, modular units of work for their agents.

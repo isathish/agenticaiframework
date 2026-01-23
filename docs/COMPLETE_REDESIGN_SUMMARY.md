@@ -1,3 +1,12 @@
+---
+title: Documentation Redesign Summary
+description: Archived summary of the December 2025 documentation redesign project
+tags:
+  - archive
+  - internal
+  - documentation
+---
+
 # 🎉 Complete Documentation Redesign Summary
 
 !!! warning "Historical Document"

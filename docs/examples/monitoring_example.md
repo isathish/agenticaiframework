@@ -1,4 +1,6 @@
 ---
+title: Monitoring Example
+description: Log events and record metrics with MonitoringSystem for observability
 tags:
   - example
   - monitoring
@@ -6,7 +8,7 @@ tags:
   - tutorial
 ---
 
-# Monitoring System Example
+# 📊 Monitoring System Example
 
 This guide provides a **professional, step-by-step walkthrough** for using the `MonitoringSystem` in the `agenticaiframework` package to log events and record metrics.  
 It is intended for developers who want to track agent activities, performance, and operational metrics in real-time.

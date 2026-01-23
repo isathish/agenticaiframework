@@ -1,11 +1,13 @@
 ---
+title: Tags
+description: Browse AgenticAI Framework documentation by topics and categories
 tags:
   - tags
   - navigation
   - index
 ---
 
-# Tags
+# 🏷️ Tags
 
 Browse documentation by topics and categories:
 

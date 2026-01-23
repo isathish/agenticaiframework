@@ -1,4 +1,6 @@
 ---
+title: Code Generation Pipeline
+description: Complete code generation and evaluation pipeline using LLMs, guardrails, and monitoring
 tags:
   - example
   - code-generation
@@ -6,7 +8,7 @@ tags:
   - workflow
 ---
 
-# Code Generation Pipeline Example
+# 💻 Code Generation Pipeline Example
 
 This example demonstrates a complete code generation and evaluation pipeline using multiple framework components.
 

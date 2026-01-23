@@ -1,4 +1,6 @@
 ---
+title: Contributing
+description: Contribute to AgenticAI Framework - report bugs, suggest features, submit code, and improve documentation
 tags:
   - contributing
   - development
@@ -6,22 +8,23 @@ tags:
   - guide
 ---
 
-# 🤝 Contributing to AgenticAI Framework
+# 🤝 Contributing
 
 <div class="annotate" markdown>
 
 **Join our community of contributors**
 
-Help us build the most comprehensive AI agent framework with 380+ modules
+Help us build the most comprehensive AI agent framework with **380+ modules**
 
 </div>
 
 !!! success "Framework Statistics"
-    
     - **380+ Total Modules** - Comprehensive coverage
     - **237 Enterprise Modules** - Production-ready
     - **1036+ Tests** - 66% coverage
     - **14 Enterprise Categories** - Full enterprise support
+
+---
 
 ## 🎯 Quick Navigation
 

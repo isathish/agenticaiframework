@@ -1,11 +1,13 @@
 ---
+title: Hub Example
+description: Register and discover services with Hub for centralized service management
 tags:
   - examples
   - hub
   - services
 ---
 
-# Hub Example
+# 🏛️ Hub Example
 
 !!! success "Central Service Registry"
     The Hub provides service discovery across **380+ modules** and **237 enterprise features**. See [Hub Documentation](../hub.md).

@@ -1,4 +1,6 @@
 ---
+title: Tasks
+description: Comprehensive task orchestration and workflow management for AI agents
 tags:
   - tasks
   - core-modules
@@ -6,15 +8,20 @@ tags:
   - scheduling
 ---
 
-# ✅ Tasks Module
+# ✅ Tasks
 
 <div class="annotate" markdown>
 
 **Comprehensive task orchestration and workflow management**
 
-Define, schedule, and execute work units with precision
+Define, schedule, and execute work units with precision across **380+ modules**
 
 </div>
+
+!!! success "Enterprise Workflow"
+    Part of **237 enterprise modules** with **12 workflow & orchestration features**. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## 🎯 Quick Navigation
 

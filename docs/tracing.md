@@ -1,4 +1,6 @@
 ---
+title: Distributed Tracing
+description: OpenTelemetry-compatible distributed tracing and latency metrics for AI agents
 tags:
   - tracing
   - monitoring
@@ -7,15 +9,20 @@ tags:
   - spans
 ---
 
-# 📡 Tracing Module
+# 📡 Distributed Tracing
 
 <div class="annotate" markdown>
 
 **Distributed tracing and latency metrics for AI agents**
 
-Track agent execution, measure performance, and debug complex workflows
+Track agent execution, measure performance, and debug complex workflows across **380+ modules**
 
 </div>
+
+!!! success "Enterprise Observability"
+    Part of **237 enterprise modules** with **16 observability features** including APM integration, real-time dashboards, and alerting. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## 🎯 Quick Navigation
 

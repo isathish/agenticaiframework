@@ -1,4 +1,6 @@
 ---
+title: Knowledge Management
+description: Retrieval-Augmented Generation (RAG) and intelligent knowledge management for AI agents
 tags:
   - knowledge
   - RAG
@@ -6,15 +8,20 @@ tags:
   - retrieval
 ---
 
-# 📚 Knowledge Module
+# 📚 Knowledge Management
 
 <div class="annotate" markdown>
 
 **Retrieval-Augmented Generation (RAG) for intelligent agents**
 
-Manage structured and unstructured knowledge sources with vector search
+Manage structured and unstructured knowledge sources with vector search across **380+ modules**
 
 </div>
+
+!!! success "Enterprise Knowledge"
+    Part of **237 enterprise modules** with **15 knowledge management features** including RAG pipelines, vector stores, and semantic search. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## 🎯 Quick Navigation
 

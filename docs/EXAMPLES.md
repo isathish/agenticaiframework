@@ -1,4 +1,6 @@
 ---
+title: Code Examples
+description: Runnable code examples for every feature including agents, tasks, memory, tools, and enterprise patterns
 tags:
   - examples
   - tutorials
@@ -6,17 +8,18 @@ tags:
   - learning
 ---
 
-# 📚 Code Examples Collection
+# 📚 Code Examples
 
 <div class="annotate" markdown>
 
-Runnable examples for every feature of the AgenticAI Framework. Copy, paste, and run!
+**Runnable examples for every feature**
+
+Copy, paste, and run with **380+ modules** and **237 enterprise features**
 
 </div>
 
-!!! success "Framework Overview"
-    
-    AgenticAI Framework includes **380+ modules** with **237 enterprise features**. These examples cover core functionality and advanced patterns.
+!!! success "Enterprise Examples"
+    These examples cover core functionality and advanced production patterns. See [Enterprise Documentation](enterprise.md) for more.
 
 !!! tip "Quick Start"
     All examples use the `agenticaiframework` namespace and are production-ready. Each example is self-contained and can be run independently.

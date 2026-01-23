@@ -1,4 +1,6 @@
 ---
+title: Architecture Diagrams
+description: High-Level and Low-Level Design diagrams for AgenticAI Framework using Mermaid.js
 tags:
   - diagrams
   - architecture
@@ -6,15 +8,20 @@ tags:
   - visualization
 ---
 
-# :art: Architecture Diagrams Reference
+# :art: Architecture Diagrams
 
 <div class="annotate" markdown>
 
-Comprehensive collection of High-Level Design (HLD) and Low-Level Design (LLD) diagrams for AgenticAI Framework (**380+ modules, 237 enterprise features**). All diagrams are created using Mermaid.js and are fully compatible with GitHub wiki.
+**Comprehensive HLD and LLD diagrams**
+
+Visualize system design across **380+ modules** and **237 enterprise features**
 
 </div>
 
+!!! success "Enterprise Diagrams"
+    Part of **237 enterprise modules** with comprehensive architecture documentation. See [Enterprise Documentation](enterprise.md).
 
+---
 
 ## :sparkles: Overview
 

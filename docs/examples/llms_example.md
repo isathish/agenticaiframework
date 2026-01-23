@@ -1,11 +1,13 @@
 ---
+title: LLMs Example
+description: Register, configure, and use language models with LLMManager for 18+ providers
 tags:
   - examples
   - llms
   - language-models
 ---
 
-# Language Model Management Example
+# 🧠 Language Model Management Example
 
 This guide provides a **professional, step-by-step walkthrough** for registering, setting, and using a language model with the `LLMManager` in the `agenticaiframework` package.  
 It is intended for developers integrating custom or third-party LLMs into their applications.

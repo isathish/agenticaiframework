@@ -1,4 +1,6 @@
 ---
+title: Extending AgenticAI
+description: Add new capabilities, integrate external systems, and customize framework behavior with plugins
 tags:
   - extending
   - customization
@@ -8,10 +10,16 @@ tags:
 
 # 🔧 Extending AgenticAI
 
-This guide explains how to extend the **AgenticAI Framework** to add new capabilities, integrate with external systems, and customize its behavior.
+<div class="annotate" markdown>
 
-!!! info "Enterprise Extensibility"
-    Part of **380+ modules** with **237 enterprise features**. See [Enterprise Documentation](enterprise.md) for advanced extensibility patterns.
+**Extend and customize the framework**
+
+Add new capabilities, integrate external systems across **380+ modules**
+
+</div>
+
+!!! success "Enterprise Extensibility"
+    Part of **237 enterprise modules** with advanced extensibility patterns. See [Enterprise Documentation](enterprise.md).
 
 ---
 

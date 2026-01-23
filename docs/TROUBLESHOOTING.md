@@ -1,4 +1,6 @@
 ---
+title: Troubleshooting
+description: Common issues, solutions, and debugging tips for AgenticAI Framework applications
 tags:
   - troubleshooting
   - help
@@ -6,9 +8,18 @@ tags:
   - issues
 ---
 
-# 🔧 Troubleshooting Guide
+# 🔧 Troubleshooting
 
-This guide lists common issues you may encounter when using **AgenticAI Framework** (380+ modules, 237 enterprise features) and how to resolve them.
+<div class="annotate" markdown>
+
+**Quick solutions to common issues**
+
+Resolve problems quickly with **380+ modules** and **237 enterprise features**
+
+</div>
+
+!!! success "Enterprise Support"
+    Part of **237 enterprise modules** with comprehensive debugging tools. See [Enterprise Documentation](enterprise.md).
 
 ---
 

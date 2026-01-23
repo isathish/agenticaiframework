@@ -1,4 +1,6 @@
 ---
+title: FAQ
+description: Frequently asked questions about AgenticAI Framework - installation, usage, troubleshooting, and best practices
 tags:
   - FAQ
   - help
@@ -6,15 +8,20 @@ tags:
   - questions
 ---
 
-# ❓ Frequently Asked Questions (FAQ)
+# ❓ Frequently Asked Questions
 
 <div class="annotate" markdown>
 
 **Quick answers to common questions**
 
-Find solutions and learn best practices
+Find solutions and learn best practices for **380+ modules** and **237 enterprise features**
 
 </div>
+
+!!! success "Enterprise Framework"
+    Part of the most comprehensive AI agent framework. See [Enterprise Documentation](enterprise.md) for advanced features.
+
+---
 
 ## 🎯 Quick Navigation
 

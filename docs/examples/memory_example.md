@@ -1,4 +1,6 @@
 ---
+title: Memory Example
+description: Step-by-step walkthrough for using MemoryManager to store, retrieve, and clear memory
 tags:
   - example
   - memory
@@ -6,7 +8,7 @@ tags:
   - tutorial
 ---
 
-# Memory Management Example
+# 🧠 Memory Management Example
 
 This guide provides a **professional, step-by-step walkthrough** of using the `MemoryManager` in the `agenticaiframework` package to efficiently store, retrieve, inspect, and clear different types of memory. It is designed for developers building intelligent agents that require persistent or temporary state management.
 

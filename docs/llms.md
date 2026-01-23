@@ -1,4 +1,6 @@
 ---
+title: LLM Integration
+description: Enterprise-grade integration with 18+ LLM providers including OpenAI, Anthropic, Azure, and more
 tags:
   - llms
   - language-models
@@ -6,15 +8,20 @@ tags:
   - AI
 ---
 
-# 🧠 LLMs Module
+# 🧠 LLM Integration
 
 <div class="annotate" markdown>
 
 **Enterprise-grade LLM integration with reliability patterns**
 
-Connect to 10+ LLM providers with intelligent fallbacks and monitoring
+Connect to **18+ LLM providers** with intelligent fallbacks and monitoring across **380+ modules**
 
 </div>
+
+!!! success "Enterprise ML/AI"
+    Part of **237 enterprise modules** with **14 ML/AI infrastructure features** including model gateway, prompt management, and A/B testing. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## 🎯 Quick Navigation
 

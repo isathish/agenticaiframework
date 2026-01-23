@@ -1,4 +1,6 @@
 ---
+title: Testing
+description: Comprehensive testing strategies, pytest configurations, and coverage best practices for AI agent applications
 tags:
   - testing
   - quality
@@ -6,14 +8,20 @@ tags:
   - coverage
 ---
 
-# :test_tube: Testing Guide
+# :test_tube: Testing
 
 <div class="annotate" markdown>
 
-Comprehensive testing strategies and best practices for building reliable AI agent applications with AgenticAI Framework.
+**Comprehensive testing strategies and best practices**
+
+Build reliable AI agent applications with **380+ modules** and **66% test coverage**
 
 </div>
 
+!!! success "Enterprise Quality"
+    Part of **237 enterprise modules** with **1036+ tests**. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## :sparkles: Overview
 

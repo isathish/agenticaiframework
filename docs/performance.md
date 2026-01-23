@@ -1,4 +1,6 @@
 ---
+title: Performance Optimization
+description: Maximize speed, efficiency, and scalability for AI agent systems with latency, memory, and throughput optimization
 tags:
   - performance
   - optimization
@@ -6,15 +8,20 @@ tags:
   - best-practices
 ---
 
-# ⚡ Performance Optimization Guide
+# ⚡ Performance Optimization
 
 <div class="annotate" markdown>
 
 **Maximize speed, efficiency, and scalability**
 
-From microseconds to enterprise scale
+From microseconds to enterprise scale with **380+ optimized modules**
 
 </div>
+
+!!! success "Enterprise Performance"
+    Part of **237 enterprise modules** with production-optimized patterns. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## 🎯 Performance Metrics
 

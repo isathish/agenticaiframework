@@ -1,4 +1,6 @@
 ---
+title: Framework Comparison
+description: Compare AgenticAI Framework with LangChain, AutoGen, CrewAI, and other AI agent frameworks
 tags:
   - comparison
   - alternatives
@@ -12,9 +14,14 @@ tags:
 
 **How AgenticAI Framework compares to alternatives**
 
-Make an informed decision for your AI project
+Make an informed decision with **380+ modules** vs competitors
 
 </div>
+
+!!! success "Enterprise-Grade Framework"
+    AgenticAI Framework offers **237 enterprise modules** in **14 categories** - the most comprehensive AI agent solution. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## 🎯 Quick Comparison
 

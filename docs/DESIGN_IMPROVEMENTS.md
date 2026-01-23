@@ -1,3 +1,12 @@
+---
+title: Design Improvements
+description: Archived summary of documentation design improvements and visual enhancements
+tags:
+  - archive
+  - internal
+  - design
+---
+
 # 🎨 Documentation Design Improvements Summary
 
 !!! warning "Historical Document"

@@ -1,4 +1,6 @@
 ---
+title: Context Engineering
+description: Advanced context management with semantic indexing, compression strategies, and intelligent retrieval
 tags:
   - context
   - context-engineering
@@ -13,9 +15,14 @@ tags:
 
 **Advanced context management for AI agents**
 
-Semantic indexing, context windows, compression strategies, and intelligent retrieval
+Semantic indexing, context windows, compression strategies, and intelligent retrieval across **380+ modules**
 
 </div>
+
+!!! success "Enterprise Context Management"
+    Part of **237 enterprise modules** with **7 memory managers** and **7 state managers**. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## 🎯 Quick Navigation
 

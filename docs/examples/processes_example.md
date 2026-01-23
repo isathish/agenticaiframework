@@ -1,11 +1,13 @@
 ---
+title: Processes Example
+description: Create and execute sequential, parallel, and DAG processes with Process class
 tags:
   - examples
   - processes
   - workflows
 ---
 
-# Process Example
+# ⚙️ Process Example
 
 !!! tip "12 Workflow Types"
     Part of **380+ modules** with sequential, parallel, DAG, and consensus-based orchestration. See [Processes Documentation](../processes.md).

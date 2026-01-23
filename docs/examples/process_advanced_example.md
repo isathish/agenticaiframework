@@ -1,4 +1,6 @@
 ---
+title: Advanced Process Example
+description: Create advanced multi-step processes with DAG and parallel orchestration
 tags:
   - examples
   - processes
@@ -6,7 +8,7 @@ tags:
   - advanced
 ---
 
-# Advanced Process Example
+# ⚙️ Advanced Process Example
 
 !!! tip "Enterprise Orchestration"
     Part of **380+ modules** with 12 workflow types including DAG, parallel, and consensus-based orchestration. See [Processes Documentation](../processes.md).

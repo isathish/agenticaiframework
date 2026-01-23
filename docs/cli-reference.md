@@ -1,4 +1,6 @@
 ---
+title: CLI Reference
+description: Complete command-line interface reference for managing agents, tasks, and configurations
 tags:
   - CLI
   - reference
@@ -14,10 +16,13 @@ tags:
 [![Modules](https://img.shields.io/badge/modules-380%2B-brightgreen.svg)](https://github.com/isathish/agenticaiframework)
 [![Enterprise](https://img.shields.io/badge/enterprise-237%20modules-gold.svg)](https://github.com/isathish/agenticaiframework)
 [![CLI](https://img.shields.io/badge/CLI-Command--Line-success.svg)](https://github.com/isathish/agenticaiframework)
-[![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://isathish.github.io/agenticaiframework/)
 
 </div>
 
+!!! success "Enterprise CLI"
+    Part of **237 enterprise modules** with comprehensive CLI tools. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## 📊 Overview
 

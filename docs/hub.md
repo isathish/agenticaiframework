@@ -1,4 +1,6 @@
 ---
+title: Hub
+description: Central registry for sharing and discovering agents, tools, and processes
 tags:
   - hub
   - agent-marketplace
@@ -6,15 +8,20 @@ tags:
   - community
 ---
 
-# 🌐 Hub Module
+# 🌐 Hub
 
 <div class="annotate" markdown>
 
 **Central registry for agents, tools, and processes**
 
-Share and discover reusable components
+Share and discover reusable components across **380+ modules**
 
 </div>
+
+!!! success "Enterprise Hub"
+    Part of **237 enterprise modules** enabling sharing across the entire framework. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## 🎯 Quick Navigation
 

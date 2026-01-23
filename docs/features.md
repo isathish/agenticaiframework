@@ -1,4 +1,6 @@
 ---
+title: Features
+description: Complete feature set of AgenticAI Framework including agents, tasks, memory, LLMs, and enterprise capabilities
 tags:
   - features
   - capabilities
@@ -6,15 +8,20 @@ tags:
   - comparison
 ---
 
-# ✨ Feature Overview
+# ✨ Features
 
 <div class="annotate" markdown>
 
-**Complete feature set of AgenticAI Framework**
+**Complete feature set across 380+ modules**
 
-Everything you need to build intelligent multi-agent systems
+Everything you need to build intelligent multi-agent systems with **237 enterprise features**
 
 </div>
+
+!!! success "Enterprise Features"
+    See [Enterprise Documentation](enterprise.md) for advanced enterprise capabilities.
+
+---
 
 ## 🎯 Core Features
 

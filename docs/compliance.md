@@ -1,4 +1,6 @@
 ---
+title: Compliance & Governance
+description: Enterprise compliance, audit trails, policy enforcement, and data governance for AI systems
 tags:
   - compliance
   - governance
@@ -13,9 +15,14 @@ tags:
 
 **Enterprise compliance, audit trails, and data governance**
 
-Ensure regulatory compliance with comprehensive audit logging, policy enforcement, and data masking
+Ensure regulatory compliance with comprehensive audit logging, policy enforcement, and data masking across **380+ modules**
 
 </div>
+
+!!! success "Enterprise Compliance"
+    Part of **237 enterprise modules** with **18 compliance & audit features** including PII detection, GDPR tools, and tamper-evident logging. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## 🎯 Quick Navigation
 

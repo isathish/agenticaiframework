@@ -1,11 +1,13 @@
 ---
+title: MCP Tools Manager Example
+description: Register and execute MCP tools with MCPToolManager for extensibility
 tags:
   - examples
   - mcp
   - tools
 ---
 
-# MCP Tools Manager Example
+# 🔧 MCP Tools Manager Example
 
 !!! success "35+ Built-in Tools"
     Part of **380+ modules** with 35+ built-in tools and 18 external connectors. See [MCP Tools Documentation](../mcp_tools.md).

@@ -1,9 +1,27 @@
-# Evaluation System
+---
+title: Evaluation
+description: 12-tier comprehensive evaluation system with 100+ metrics for AI agent quality assessment
+tags:
+  - evaluation
+  - metrics
+  - quality
+  - assessment
+---
 
-<div class="hero-section">
-<h2 class="hero-title">🎯 12-Tier Comprehensive Evaluation</h2>
-<p class="hero-subtitle">Industry-leading evaluation framework with real-time monitoring, offline analysis, and continuous improvement capabilities for production AI systems</p>
+# 🎯 Evaluation System
+
+<div class="annotate" markdown>
+
+**12-Tier Comprehensive Evaluation**
+
+Industry-leading evaluation with **100+ metrics** across **380+ modules**
+
 </div>
+
+!!! success "Enterprise Evaluation"
+    Part of **237 enterprise modules** with real-time monitoring, offline analysis, and continuous improvement. See [Enterprise Documentation](enterprise.md).
+
+---
 
 <div class="stats-grid">
 <div class="stat-item">

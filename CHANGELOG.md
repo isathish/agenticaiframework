@@ -1,4 +1,27 @@
-# Changelog
+---
+title: Changelog
+description: Release history and notable changes for AgenticAI Framework versions
+tags:
+  - changelog
+  - releases
+  - history
+  - updates
+---
+
+# 📝 Changelog
+
+<div class="annotate" markdown>
+
+**Release history and notable changes**
+
+Track evolution across **380+ modules** and **237 enterprise features**
+
+</div>
+
+!!! success "Latest: v2.0.0"
+    Enterprise Layer with **237 modules** across **14 categories**. See [Enterprise Documentation](enterprise.md).
+
+---
 
 All notable changes to this project will be documented in this file.
 

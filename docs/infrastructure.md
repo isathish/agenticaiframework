@@ -1,4 +1,6 @@
 ---
+title: Infrastructure
+description: Enterprise-scale infrastructure with multi-region deployment, tenant isolation, and serverless execution
 tags:
   - infrastructure
   - multi-region
@@ -13,9 +15,14 @@ tags:
 
 **Enterprise-scale infrastructure management**
 
-Multi-region deployment, tenant isolation, serverless execution, and distributed coordination
+Multi-region deployment, tenant isolation, serverless execution, and distributed coordination across **380+ modules**
 
 </div>
+
+!!! success "Enterprise Infrastructure"
+    Part of **237 enterprise modules** with **20 infrastructure features** including load balancing, circuit breakers, and service mesh. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## 🎯 Quick Navigation
 

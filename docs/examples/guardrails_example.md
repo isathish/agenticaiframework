@@ -1,4 +1,6 @@
 ---
+title: Guardrails Example
+description: Add and validate guardrails for content safety and compliance with GuardrailManager
 tags:
   - examples
   - guardrails
@@ -6,7 +8,7 @@ tags:
   - compliance
 ---
 
-# Guardrail Management Example
+# 🛡️ Guardrail Management Example
 
 This guide provides a **professional, step-by-step walkthrough** for adding and validating guardrails using the `GuardrailManager` in the `agenticaiframework` package.  
 It is intended for developers who want to enforce content safety, compliance, or quality rules in AI-generated outputs.

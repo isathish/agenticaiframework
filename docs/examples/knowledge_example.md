@@ -1,11 +1,13 @@
 ---
+title: Knowledge Example
+description: Add and retrieve knowledge entries with KnowledgeRetriever
 tags:
   - examples
   - knowledge
   - retrieval
 ---
 
-# Knowledge Retriever Example
+# 📚 Knowledge Retriever Example
 
 !!! info "15 Knowledge Modules"
     Part of **380+ modules** with vector stores, semantic search, and RAG pipeline support. See [Knowledge Documentation](../knowledge.md).

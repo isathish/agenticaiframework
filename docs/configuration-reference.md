@@ -1,4 +1,6 @@
 ---
+title: Configuration Reference
+description: Complete reference for environment variables, configuration files, and runtime settings
 tags:
   - configuration
   - reference
@@ -13,11 +15,13 @@ tags:
 [![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/isathish/agenticaiframework)
 [![Modules](https://img.shields.io/badge/modules-380%2B-brightgreen.svg)](https://github.com/isathish/agenticaiframework)
 [![Enterprise](https://img.shields.io/badge/enterprise-237%20modules-gold.svg)](https://github.com/isathish/agenticaiframework)
-[![Configuration](https://img.shields.io/badge/Configuration-Complete-success.svg)](https://github.com/isathish/agenticaiframework)
-[![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://isathish.github.io/agenticaiframework/)
 
 </div>
 
+!!! success "Enterprise Configuration"
+    Part of **237 enterprise modules** with comprehensive configuration options. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## 📊 Overview
 

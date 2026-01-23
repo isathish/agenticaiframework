@@ -1,4 +1,6 @@
 ---
+title: Prompts
+description: Comprehensive prompt management with security, versioning, and template rendering for LLMs
 tags:
   - prompts
   - templates
@@ -7,15 +9,20 @@ tags:
   - prompt-library
 ---
 
-# 📝 Prompts Module
+# 📝 Prompts
 
 <div class="annotate" markdown>
 
 **Comprehensive prompt management with security and versioning**
 
-Create, manage, and render safe prompts for LLMs
+Create, manage, and render safe prompts for LLMs across **380+ modules**
 
 </div>
+
+!!! success "Enterprise ML/AI"
+    Part of **237 enterprise modules** with **14 ML/AI infrastructure features** including prompt versioning and A/B testing. See [Enterprise Documentation](enterprise.md).
+
+---
 
 ## 🎯 Quick Navigation
 
