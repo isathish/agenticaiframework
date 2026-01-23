@@ -221,6 +221,8 @@ nav:
   - 🛡️ Guardrails: guardrails.md
   - 🏛️ Compliance: compliance.md
   - 🏗️ Infrastructure: infrastructure.md
+- 🏢 Enterprise:
+  - 🏢 Enterprise Features: enterprise.md
 - 📖 Examples & Tutorials:
   - 📋 Overview: EXAMPLES.md
   - 🎯 Basic Examples:

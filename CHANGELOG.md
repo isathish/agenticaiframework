@@ -6,6 +6,35 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v2.0.0](https://github.com/isathish/agenticaiframework/releases/tag/v2.0.0) - 2026-01-20
+
+<small>[Compare with v1.2.16](https://github.com/isathish/agenticaiframework/compare/v1.2.16...v2.0.0)</small>
+
+### Added
+
+- **Enterprise Layer with 237 Modules** - Comprehensive enterprise-grade capabilities
+  - API Management (15 modules): Gateway, Versioning, Lifecycle, Analytics
+  - Security & Compliance (18 modules): Encryption, Auth, RBAC, PII Detection
+  - Data Processing (16 modules): Pipeline, ETL, Lineage, Quality
+  - ML/AI Infrastructure (14 modules): Inference, Feature Store, RAG, Embeddings
+  - Messaging & Events (12 modules): Broker, Pub/Sub, Event Sourcing, CQRS
+  - Infrastructure (20 modules): Load Balancer, Circuit Breaker, Service Mesh
+  - DevOps & Deployment (15 modules): Canary, Blue-Green, Chaos Engineering
+  - Domain-Driven Design (12 modules): Aggregate, Saga, Bounded Context
+  - Storage & Caching (14 modules): Cache Manager, Redis, Distributed Cache
+  - Observability (16 modules): Tracing, Metrics, Alerting, APM
+  - Workflow & Orchestration (12 modules): Engine, Scheduler, State Machine
+  - Integration Connectors (18 modules): ServiceNow, GitHub, Cloud APIs
+  - Governance (10 modules): Policy, Access Control, Quota Manager
+  - Performance (15 modules): Router, Connection Pooling, Throttle
+
+### Changed
+
+- Updated README with comprehensive enterprise module documentation
+- Updated architecture diagram to include enterprise layer
+- Updated framework comparison table with accurate metrics
+- Expanded from 50+ modules to 380+ total modules
+
 ## [v1.2.16](https://github.com/isathish/agenticaiframework/releases/tag/v1.2.16) - 2026-01-19
 
 <small>[Compare with v1.2.15](https://github.com/isathish/agenticaiframework/compare/v1.2.15...v1.2.16)</small>

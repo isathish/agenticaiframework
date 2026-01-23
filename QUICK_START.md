@@ -2,6 +2,8 @@
 
 **Get started with AgenticAI Framework in minutes!**
 
+🎯 **380+ Modules** | 🏢 **237 Enterprise Features** | 🔧 **35+ Built-in Tools** | 📊 **12-Tier Evaluation**
+
 For the complete quick start guide, please see our [full documentation](https://isathish.github.io/agenticaiframework/quick-start/).
 
 ## Quick Installation
@@ -41,8 +43,11 @@ print(f"Agent {agent.name} is {agent.status}")
 
 ## Features
 
+- ✅ **380+ Total Modules** - Comprehensive framework coverage
+- ✅ **237 Enterprise Modules** - Production-ready enterprise capabilities
 - ✅ **35+ Built-in Tools** - File, web, database, AI/ML tools
 - ✅ **12-Tier Evaluation** - Comprehensive quality assessment
+- ✅ **14 Enterprise Categories** - API, Security, ML/AI, DDD, and more
 - ✅ **Enterprise Security** - Guardrails, PII protection, audit logging
 - ✅ **Multi-Agent Orchestration** - Coordinate agent teams
 - ✅ **Memory Management** - Short-term, long-term, and external storage

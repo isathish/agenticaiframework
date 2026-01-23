@@ -7,6 +7,9 @@ description: Get started with AgenticAI Framework in minutes
 
 Get up and running with AgenticAI Framework in under 5 minutes. This guide covers installation, basic agent creation, and key concepts.
 
+!!! success "Framework Overview"
+    AgenticAI Framework includes **380+ modules** with **237 enterprise-grade features** covering API management, security, ML/AI infrastructure, and more.
+
 ---
 
 ## 📦 Installation

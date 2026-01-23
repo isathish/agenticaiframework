@@ -34,12 +34,12 @@ hide:
 
 <div class="stats-grid">
   <div class="stat-card">
-    <div class="stat-number">7</div>
-    <div class="stat-label">Memory Managers</div>
+    <div class="stat-number">380+</div>
+    <div class="stat-label">Total Modules</div>
   </div>
   <div class="stat-card">
-    <div class="stat-number">7</div>
-    <div class="stat-label">State Managers</div>
+    <div class="stat-number">237</div>
+    <div class="stat-label">Enterprise Modules</div>
   </div>
   <div class="stat-card">
     <div class="stat-number">35+</div>
@@ -54,8 +54,8 @@ hide:
     <div class="stat-label">Communication Protocols</div>
   </div>
   <div class="stat-card">
-    <div class="stat-number">21</div>
-    <div class="stat-label">Enterprise Features</div>
+    <div class="stat-number">14</div>
+    <div class="stat-label">Enterprise Categories</div>
   </div>
 </div>
 

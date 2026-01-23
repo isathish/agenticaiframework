@@ -50,31 +50,54 @@ Understand the design and structure of AgenticAI Framework
 
 !!! abstract "Design Philosophy"
     
-    AgenticAI Framework is built on a **modular, event-driven architecture** that enables scalable and maintainable agentic applications.
+    AgenticAI Framework is built on a **modular, event-driven architecture** that enables scalable and maintainable agentic applications with **380+ modules** including **237 enterprise-grade modules**.
 
 ### :star: Core Design Principles
 
 <div class="grid" markdown>
 
 :material-puzzle:{ .lg } **Modularity**
-:   Each component has a single, well-defined responsibility
+:   380+ independently composable modules with single responsibilities
 
 :material-plus-circle:{ .lg } **Extensibility**
-:   Easy to add new capabilities and integrations
+:   237 enterprise modules across 14 categories
 
 :material-eye:{ .lg } **Observability**
-:   Built-in monitoring and logging throughout
+:   Built-in monitoring, tracing, and APM throughout
 
 :material-shield-check:{ .lg } **Safety**
-:   Guardrails and validation at every layer
+:   Guardrails, security, and compliance at every layer
 
 :material-lightning-bolt:{ .lg } **Performance**
-:   Optimized for single and multi-agent scenarios
+:   Optimized for high-throughput enterprise scenarios
 
 :material-scale-balance:{ .lg } **Scalability**
-:   Horizontal and vertical scaling capabilities
+:   Horizontal scaling with DDD patterns and CQRS
 
 </div>
+
+## 🏢 Enterprise Architecture
+
+!!! success "237 Enterprise Modules"
+    
+    The framework includes a comprehensive enterprise layer with modules organized into 14 categories:
+
+| Category | Modules | Key Components |
+|----------|---------|----------------|
+| **API Management** | 15 | Gateway, Versioning, Lifecycle, Analytics |
+| **Security & Compliance** | 18 | Encryption, Auth, RBAC, PII Detection |
+| **Data Processing** | 16 | Pipeline, ETL, Lineage, Quality |
+| **ML/AI Infrastructure** | 14 | Inference, Feature Store, RAG, Embeddings |
+| **Messaging & Events** | 12 | Broker, Pub/Sub, Event Sourcing, CQRS |
+| **Infrastructure** | 20 | Load Balancer, Circuit Breaker, Service Mesh |
+| **DevOps & Deployment** | 15 | Canary, Blue-Green, Chaos Engineering |
+| **Domain-Driven Design** | 12 | Aggregate, Saga, Bounded Context |
+| **Storage & Caching** | 14 | Cache Manager, Redis, Distributed Cache |
+| **Observability** | 16 | Tracing, Metrics, Alerting, APM |
+| **Workflow & Orchestration** | 12 | Engine, Scheduler, State Machine |
+| **Integration Connectors** | 18 | ServiceNow, GitHub, Cloud APIs |
+| **Governance** | 10 | Policy, Access Control, Quota Manager |
+| **Performance** | 15 | Router, Connection Pooling, Throttle |
 
 ## :art: High-Level Design (HLD)
 
