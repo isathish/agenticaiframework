@@ -8,7 +8,7 @@ tags:
   - questions
 ---
 
-# ❓ Frequently Asked Questions
+# Frequently Asked Questions
 
 <div class="annotate" markdown>
 
@@ -23,38 +23,37 @@ Find solutions and learn best practices for **400+ modules** and **237 enterpris
 
 ---
 
-## 🎯 Quick Navigation
+## Quick Navigation
 
 <div class="grid cards" markdown>
 
--   :material-information:{ .lg } **General**
-    
+- :material-information:{ .lg } **General**
+
     About the framework
-    
+
     [:octicons-arrow-right-24: Learn More](#general-questions)
 
--   :material-rocket-launch:{ .lg } **Getting Started**
-    
+- :material-rocket-launch:{ .lg } **Getting Started**
+
     Installation and setup
-    
+
     [:octicons-arrow-right-24: Get Started](#getting-started)
 
--   :material-bug:{ .lg } **Troubleshooting**
-    
+- :material-bug:{ .lg } **Troubleshooting**
+
     Common issues and fixes
-    
+
     [:octicons-arrow-right-24: Fix Issues](#troubleshooting)
 
--   :material-code-tags:{ .lg } **Usage**
-    
+- :material-code-tags:{ .lg } **Usage**
+
     How-to questions
-    
+
     [:octicons-arrow-right-24: Learn How](#agent-questions)
 
 </div>
 
-
-## 📊 General Questions
+## General Questions
 
 ### What is AgenticAI Framework?
 
@@ -79,20 +78,19 @@ AgenticAI Framework is an enterprise-grade Python SDK with **400+ modules** for 
 
 | Feature | AgenticAI | CrewAI | LangChain | AutoGPT |
 |---------|-----------|---------|-----------|---------|
-| Total Modules | ✅ 400+ | ⚠️ ~20 | ⚠️ ~50 | ⚠️ ~30 |
-| Enterprise Modules | ✅ 237 | ❌ None | ⚠️ Limited | ❌ None |
-| Multi-Agent Orchestration | ✅ | ✅ | ⚠️ | ✅ |
-| Memory Managers | ✅ 7 | ⚠️ Basic | ✅ | ⚠️ |
-| State Managers | ✅ 7 | ❌ | ❌ | ❌ |
-| 12-Tier Evaluation | ✅ | ❌ | ❌ | ❌ |
-| Guardrails & Safety | ✅ | ❌ | ⚠️ | ❌ |
-| Production Monitoring | ✅ 16 Modules | ❌ | ⚠️ | ❌ |
-| MCP Tools Support | ✅ | ❌ | ❌ | ❌ |
-| Agent Hub | ✅ | ❌ | ❌ | ❌ |
-| 12-Tier Evaluation | ✅ | ❌ | ❌ | ❌ |
+| Total Modules | 400+ | ~20 | ~50 | ~30 |
+| Enterprise Modules | 237 | None | Limited | None |
+| Multi-Agent Orchestration | | | | |
+| Memory Managers | 7 | Basic | | |
+| State Managers | 7 | | | |
+| 12-Tier Evaluation | | | | |
+| Guardrails & Safety | | | | |
+| Production Monitoring | 16 Modules | | | |
+| MCP Tools Support | | | | |
+| Agent Hub | | | | |
+| 12-Tier Evaluation | | | | |
 
-
-## 🚀 Getting Started
+## Getting Started
 
 ### How do I install AgenticAI Framework?
 
@@ -140,8 +138,7 @@ result = agent.execute_task(lambda: "Hello!")
 - **GitHub**: [examples/ directory](https://github.com/isathish/agenticaiframework/tree/main/examples)
 - **Tutorials**: [Quick Start Guide](quick-start.md)
 
-
-## 🤖 Agent Questions
+## Agent Questions
 
 ### How many agents can I run simultaneously?
 
@@ -150,7 +147,7 @@ Default: 50 agents. Configurable via:
 ```python
 from agenticaiframework.agents import AgentManager
 
-manager = AgentManager(max_agents=100)  # Increase limit
+manager = AgentManager(max_agents=100) # Increase limit
 ```
 
 Actual limit depends on:
@@ -208,8 +205,7 @@ class CustomLLM(BaseLLM):
 agent = Agent(name="agent", llm=CustomLLM())
 ```
 
-
-## 💾 Memory Questions
+## Memory Questions
 
 ### What memory backends are supported?
 
@@ -237,7 +233,7 @@ Configurable via TTL (Time-To-Live):
 memory.store(
     key="session_data",
     value={"user": "john"},
-    ttl=3600  # 1 hour
+    ttl=3600 # 1 hour
 )
 ```
 
@@ -264,8 +260,7 @@ results = memory.retrieve(
 )
 ```
 
-
-## 🧠 LLM Questions
+## LLM Questions
 
 ### Which LLM providers are supported?
 
@@ -279,7 +274,7 @@ results = memory.retrieve(
 
 1. **Use Cheaper Models**:
 ```python
-llm_manager.set_model("gpt-3.5-turbo")  # vs gpt-4
+llm_manager.set_model("gpt-3.5-turbo") # vs gpt-4
 ```
 
 2. **Enable Caching**:
@@ -290,7 +285,7 @@ llm_manager.enable_cache(ttl=3600)
 3. **Reduce Token Usage**:
 ```python
 # Shorter prompts
-llm_manager.generate(prompt, max_tokens=500)  # vs 4000
+llm_manager.generate(prompt, max_tokens=500) # vs 4000
 ```
 
 4. **Batch Requests**:
@@ -325,8 +320,7 @@ llm = LLMManager(
 )
 ```
 
-
-## 📊 Performance Questions
+## Performance Questions
 
 ### What's the typical latency?
 
@@ -359,8 +353,7 @@ Yes! Designed for production:
 - **Rate Limiting**: Protect APIs
 - **Monitoring**: Prometheus/Grafana integration
 
-
-## 🛡️ Security Questions
+## Security Questions
 
 ### Is it secure for production use?
 
@@ -405,8 +398,7 @@ guardrails.add_rule("pii_detection", enabled=True)
 is_safe = guardrails.validate(user_input)
 ```
 
-
-## 🧪 Testing Questions
+## Testing Questions
 
 ### How do I test my agents?
 
@@ -457,8 +449,7 @@ pytest --cov=agenticaiframework
 pytest tests/test_agents.py
 ```
 
-
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Agent not starting?
 
@@ -490,7 +481,7 @@ monitor.get_system_stats()
 memory_manager.clear_expired()
 
 # Reduce TTL
-memory_manager.set_default_ttl(1800)  # 30 minutes
+memory_manager.set_default_ttl(1800) # 30 minutes
 
 # Use disk-based backend
 memory_manager.switch_backend("sqlite")
@@ -502,7 +493,7 @@ memory_manager.switch_backend("sqlite")
 from agenticaiframework.llms import LLMManager
 
 llm = LLMManager(
-    rate_limit=10,  # requests per minute
+    rate_limit=10, # requests per minute
     retry_on_rate_limit=True,
     backoff_factor=2
 )
@@ -515,8 +506,7 @@ llm = LLMManager(
 - **Discussions**: [Ask questions](https://github.com/isathish/agenticaiframework/discussions)
 - **Discord**: Coming soon!
 
-
-## 📚 Advanced Topics
+## Advanced Topics
 
 ### Can I deploy to production?
 
@@ -566,38 +556,36 @@ Currently open-source. Enterprise support coming soon:
 - SLA guarantees
 - Training & onboarding
 
-
-## 💡 Best Practices
+## Best Practices
 
 ### Agent Design
 
-- ✅ Single responsibility per agent
-- ✅ Clear role definition
-- ✅ Comprehensive error handling
-- ✅ Appropriate timeout values
-- ❌ Don't create too many agents
-- ❌ Avoid circular dependencies
+- Single responsibility per agent
+- Clear role definition
+- Comprehensive error handling
+- Appropriate timeout values
+- Don't create too many agents
+- Avoid circular dependencies
 
 ### Memory Management
 
-- ✅ Set appropriate TTLs
-- ✅ Use tiered storage (hot/warm/cold)
-- ✅ Regular cleanup of stale data
-- ✅ Monitor memory usage
-- ❌ Don't store large objects
-- ❌ Avoid memory leaks
+- Set appropriate TTLs
+- Use tiered storage (hot/warm/cold)
+- Regular cleanup of stale data
+- Monitor memory usage
+- Don't store large objects
+- Avoid memory leaks
 
 ### LLM Usage
 
-- ✅ Cache responses
-- ✅ Use appropriate models
-- ✅ Optimize prompts
-- ✅ Handle rate limits
-- ❌ Don't use GPT-4 for simple tasks
-- ❌ Avoid redundant API calls
+- Cache responses
+- Use appropriate models
+- Optimize prompts
+- Handle rate limits
+- Don't use GPT-4 for simple tasks
+- Avoid redundant API calls
 
-
-## 🔗 Additional Resources
+## Additional Resources
 
 - **Quick Start**: [Get started in 5 minutes](quick-start.md)
 - **API Reference**: [Complete API docs](API_REFERENCE.md)
@@ -606,8 +594,7 @@ Currently open-source. Enterprise support coming soon:
 - **Architecture**: [System design](architecture.md)
 - **Contributing**: [Contribution guide](contributing.md)
 
-
-## ❓ Still Have Questions?
+## Still Have Questions?
 
 **Can't find your answer?**
 
@@ -616,9 +603,8 @@ Currently open-source. Enterprise support coming soon:
 3. Ask in [discussions](https://github.com/isathish/agenticaiframework/discussions)
 4. Open a [new issue](https://github.com/isathish/agenticaiframework/issues/new)
 
-
 <div align="center">
 
-**[⬆ Back to Top](#-frequently-asked-questions-faq)**
+**[Back to Top](#frequently-asked-questions-faq)**
 
 </div>

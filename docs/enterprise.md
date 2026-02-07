@@ -8,7 +8,7 @@ tags:
   - compliance
 ---
 
-# 🏢 Enterprise Features
+# Enterprise Features
 
 <div class="annotate" markdown>
 
@@ -20,10 +20,10 @@ Build mission-critical AI applications with enterprise capabilities
 
 ---
 
-## 📊 Enterprise Module Overview
+## Enterprise Module Overview
 
 !!! success "Comprehensive Enterprise Layer"
-    
+
     AgenticAI Framework includes 237 enterprise-grade modules organized into 14 categories, providing everything needed for production AI deployments.
 
 <div class="stats-grid">
@@ -43,7 +43,7 @@ Build mission-critical AI applications with enterprise capabilities
 
 ---
 
-## 🔌 API Management (15 Modules)
+## API Management (15 Modules)
 
 Comprehensive API management capabilities for building and managing AI-powered APIs.
 
@@ -77,14 +77,14 @@ gateway = APIGateway(
 
 # Version your APIs
 versioning = APIVersioning(
-    strategy="header",  # or "url", "query"
+    strategy="header", # or "url", "query"
     default_version="v2"
 )
 ```
 
 ---
 
-## 🔐 Security & Compliance (18 Modules)
+## Security & Compliance (18 Modules)
 
 Enterprise-grade security with comprehensive compliance features.
 
@@ -132,7 +132,7 @@ audit.log_action("data_access", user="admin", resource="customer_data")
 
 ---
 
-## 📊 Data Processing (16 Modules)
+## Data Processing (16 Modules)
 
 Complete data processing pipeline for AI applications.
 
@@ -176,7 +176,7 @@ lineage.record(source="raw_data", transform="aggregation", output="summary")
 
 ---
 
-## 🧠 ML/AI Infrastructure (14 Modules)
+## ML/AI Infrastructure (14 Modules)
 
 Production-ready ML/AI infrastructure components.
 
@@ -223,7 +223,7 @@ response = await rag.query("What is the status of order #12345?")
 
 ---
 
-## 📨 Messaging & Events (12 Modules)
+## Messaging & Events (12 Modules)
 
 Event-driven architecture components for distributed systems.
 
@@ -266,7 +266,7 @@ order = await cqrs.handle_query(GetOrder(order_id="order-123"))
 
 ---
 
-## 🏗️ Infrastructure (20 Modules)
+## Infrastructure (20 Modules)
 
 Production infrastructure components for reliable deployments.
 
@@ -295,7 +295,7 @@ Production infrastructure components for reliable deployments.
 
 ---
 
-## 🚀 DevOps & Deployment (15 Modules)
+## DevOps & Deployment (15 Modules)
 
 Comprehensive deployment and operations tooling.
 
@@ -343,7 +343,7 @@ await chaos.inject_fault(
 
 ---
 
-## 📐 Domain-Driven Design (12 Modules)
+## Domain-Driven Design (12 Modules)
 
 DDD patterns for complex business domains.
 
@@ -364,7 +364,7 @@ DDD patterns for complex business domains.
 
 ---
 
-## 💾 Storage & Caching (14 Modules)
+## Storage & Caching (14 Modules)
 
 High-performance storage and caching solutions.
 
@@ -387,7 +387,7 @@ High-performance storage and caching solutions.
 
 ---
 
-## 📈 Observability (16 Modules)
+## Observability (16 Modules)
 
 Complete observability stack for production systems.
 
@@ -412,7 +412,7 @@ Complete observability stack for production systems.
 
 ---
 
-## 🔄 Workflow & Orchestration (12 Modules)
+## Workflow & Orchestration (12 Modules)
 
 Workflow automation and orchestration capabilities.
 
@@ -433,7 +433,7 @@ Workflow automation and orchestration capabilities.
 
 ---
 
-## 🌐 Integration Connectors (18 Modules)
+## Integration Connectors (18 Modules)
 
 Pre-built connectors for enterprise systems.
 
@@ -460,7 +460,7 @@ Pre-built connectors for enterprise systems.
 
 ---
 
-## 🏛️ Governance (10 Modules)
+## Governance (10 Modules)
 
 Enterprise governance and policy management.
 
@@ -479,7 +479,7 @@ Enterprise governance and policy management.
 
 ---
 
-## ⚡ Performance (15 Modules)
+## Performance (15 Modules)
 
 Performance optimization components.
 
@@ -503,7 +503,7 @@ Performance optimization components.
 
 ---
 
-## 🚀 Getting Started with Enterprise Modules
+## Getting Started with Enterprise Modules
 
 ### Installation
 
@@ -534,23 +534,23 @@ async def process_request(request):
     # Rate limit check
     if not await gateway.allow(request):
         raise RateLimitExceeded()
-    
+
     # Encrypt sensitive data
     encrypted = encryption.encrypt(request.data)
-    
+
     # Process with circuit breaker
     async with circuit_breaker:
         result = await inference.predict(encrypted)
-    
+
     # Publish event
     await events.publish("request.processed", result)
-    
+
     return result
 ```
 
 ---
 
-## 📚 Additional Resources
+## Additional Resources
 
 - [Architecture Guide](architecture.md)
 - [Security Best Practices](security.md)

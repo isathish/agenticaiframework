@@ -8,7 +8,7 @@ tags:
   - summarization
 ---
 
-# 📚 Knowledge Retrieval Example
+# Knowledge Retrieval Example
 
 !!! info "Enterprise Knowledge Management"
     Part of **400+ modules** with 15 knowledge management modules supporting vector stores, RAG pipelines, and semantic search. See [Knowledge Documentation](../knowledge.md).
@@ -34,8 +34,7 @@ if __name__ == "__main__":
     guardrail = Guardrail(rules=["Provide factual information", "Cite sources"])
     monitor = Monitor()
     knowledge_base = KnowledgeRetriever()
-    knowledge_base.register_source("local_corpus", lambda query: [
-        {"title": "Quantum Computing History", "content": "Quantum computing research began in the 1980s... [Source 1]"},
+    knowledge_base.register_source("local_corpus", lambda query: [{"title": "Quantum Computing History", "content": "Quantum computing research began in the 1980s... [Source 1]"},
         {"title": "Quantum Computing Milestones", "content": "Key milestones include Shor's algorithm in 1994... [Source 2]"}
     ])
 

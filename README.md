@@ -1,10 +1,10 @@
 <div align="center">
 
-# 🤖 AgenticAI Framework
+# AgenticAI Framework
 
 ### *Enterprise-Grade Multi-Agent AI Orchestration Platform*
 
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://isathish.github.io/agenticaiframework/)
 [![PyPI version](https://badge.fury.io/py/agenticaiframework.svg)](https://badge.fury.io/py/agenticaiframework)
@@ -12,13 +12,13 @@
 [![Tests](https://img.shields.io/badge/tests-1036%20passing-success.svg)](https://github.com/isathish/agenticaiframework)
 [![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-**The most comprehensive Python SDK for building production-ready AI agent systems with 380+ modules, 237 enterprise features, advanced orchestration, intelligent memory management, speech processing, state management, and enterprise-grade monitoring.**
+**The most comprehensive Python SDK for building production-ready AI agent systems with 400+ modules, 237 enterprise features, advanced orchestration, intelligent memory management, speech processing, state management, and enterprise-grade monitoring.**
 
-[📚 Documentation](https://isathish.github.io/agenticaiframework/) • [🚀 Quick Start](#-quick-start) • [💡 Examples](#-examples) • [🤝 Contributing](#-contributing)
+[Documentation](https://isathish.github.io/agenticaiframework/) | [Quick Start](#quick-start) | [Examples](#examples) | [Contributing](#contributing)
 
 ---
 
-<img src="https://img.shields.io/badge/Modules-380%2B%20Total-blue?style=for-the-badge" alt="380+ Modules"/>
+<img src="https://img.shields.io/badge/Modules-400%2B%20Total-blue?style=for-the-badge" alt="400+ Modules"/>
 <img src="https://img.shields.io/badge/Enterprise-237%20Modules-purple?style=for-the-badge" alt="237 Enterprise Modules"/>
 <img src="https://img.shields.io/badge/Tools-35%2B%20Built--in-green?style=for-the-badge" alt="35+ Tools"/>
 <img src="https://img.shields.io/badge/Protocols-6%20Supported-orange?style=for-the-badge" alt="6 Protocols"/>
@@ -27,43 +27,43 @@
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
-- [✨ Key Features](#-key-features)
-- [🏗️ Architecture](#️-architecture)
-- [📦 Installation](#-installation)
-- [🚀 Quick Start](#-quick-start)
-- [🧠 Core Modules](#-core-modules)
-- [🔧 Advanced Features](#-advanced-features)
-- [🏢 Enterprise Features](#-enterprise-features)
-- [📊 Evaluation Framework](#-evaluation-framework)
-- [🔄 Framework Comparison](#-framework-comparison)
-- [📚 Documentation](#-documentation)
-- [🤝 Contributing](#-contributing)
-- [📄 License](#-license)
+- [Key Features](#key-features)
+- [Architecture](#architecture)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Core Modules](#core-modules)
+- [Advanced Features](#advanced-features)
+- [Enterprise Features](#enterprise-features)
+- [Evaluation Framework](#evaluation-framework)
+- [Framework Comparison](#framework-comparison)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 <table>
 <tr>
 <td width="50%">
 
-### 🚀 **Production-First Design**
+### **Production-First Design**
 - Enterprise-grade reliability with **66% test coverage**
 - **1036+ tests** ensuring stability
 - Circuit breaker patterns & automatic retry
 - Comprehensive error handling
 
-### 🧩 **Modular Architecture**
-- **380+ independently composable modules**
+### **Modular Architecture**
+- **400+ independently composable modules**
 - **237 enterprise-grade modules**
 - Plug-and-play component system
 - Clean separation of concerns
 - Easy customization & extension
 
-### 🧠 **Intelligent Memory**
+### **Intelligent Memory**
 - **7 specialized memory managers**
 - Multi-tier storage with TTL
 - Context compression & windowing
@@ -72,25 +72,25 @@
 </td>
 <td width="50%">
 
-### 🎯 **Multi-Agent Orchestration**
+### **Multi-Agent Orchestration**
 - Team-based coordination
 - Supervisor & peer patterns
 - Task handoff & delegation
 - Shared context management
 
-### 🔊 **Speech Processing**
+### **Speech Processing**
 - STT/TTS integration
 - Voice profile management
 - Multi-language support
 - Audio caching & optimization
 
-### 📊 **12-Tier Evaluation**
+### **12-Tier Evaluation**
 - Model quality assessment
 - RAG evaluation
 - Security risk scoring
 - Business outcome tracking
 
-### 🏢 **Enterprise Ready**
+### **Enterprise Ready**
 - 15+ API Management modules
 - 18+ Security & Compliance modules
 - 14+ ML/AI Infrastructure modules
@@ -102,69 +102,69 @@
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                         AgenticAI Framework (380+ Modules)                       │
+│ AgenticAI Framework (400+ Modules) │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐            │
-│  │   Agents    │  │  Workflows  │  │Orchestration│  │   Speech    │            │
-│  │  • Context  │  │  • Steps    │  │  • Teams    │  │  • STT/TTS  │            │
-│  │  • Memory   │  │  • Routing  │  │  • Handoffs │  │  • Profiles │            │
-│  │  • Tools    │  │  • State    │  │  • Messages │  │  • Cache    │            │
-│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘            │
+│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│ │ Agents │ │ Workflows │ │Orchestration│ │ Speech │ │
+│ │ • Context │ │ • Steps │ │ • Teams │ │ • STT/TTS │ │
+│ │ • Memory │ │ • Routing │ │ • Handoffs │ │ • Profiles │ │
+│ │ • Tools │ │ • State │ │ • Messages │ │ • Cache │ │
+│ └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐            │
-│  │   Memory    │  │    State    │  │Communication│  │  Knowledge  │            │
-│  │ • Agent     │  │ • Agent     │  │ • HTTP/WS   │  │ • Retrieval │            │
-│  │ • Workflow  │  │ • Workflow  │  │ • MQTT/SSE  │  │ • Embedding │            │
-│  │ • Orch.     │  │ • Orch.     │  │ • gRPC      │  │ • RAG       │            │
-│  │ • Knowledge │  │ • Tools     │  │ • STDIO     │  │ • Search    │            │
-│  │ • Tools     │  │ • Speech    │  │ • Remote    │  │ • Indexing  │            │
-│  │ • Speech    │  │ • Knowledge │  │   Agents    │  │             │            │
-│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘            │
+│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│ │ Memory │ │ State │ │Communication│ │ Knowledge │ │
+│ │ • Agent │ │ • Agent │ │ • HTTP/WS │ │ • Retrieval │ │
+│ │ • Workflow │ │ • Workflow │ │ • MQTT/SSE │ │ • Embedding │ │
+│ │ • Orch. │ │ • Orch. │ │ • gRPC │ │ • RAG │ │
+│ │ • Knowledge │ │ • Tools │ │ • STDIO │ │ • Search │ │
+│ │ • Tools │ │ • Speech │ │ • Remote │ │ • Indexing │ │
+│ │ • Speech │ │ • Knowledge │ │ Agents │ │ │ │
+│ └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐            │
-│  │  Guardrails │  │  Security   │  │  Evaluation │  │  Monitoring │            │
-│  │ • Content   │  │ • Injection │  │ • 12-Tier   │  │ • Metrics   │            │
-│  │ • Policy    │  │ • PII       │  │ • A/B Test  │  │ • Tracing   │            │
-│  │ • Semantic  │  │ • Rate Lim  │  │ • Canary    │  │ • Events    │            │
-│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘            │
+│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│ │ Guardrails │ │ Security │ │ Evaluation │ │ Monitoring │ │
+│ │ • Content │ │ • Injection │ │ • 12-Tier │ │ • Metrics │ │
+│ │ • Policy │ │ • PII │ │ • A/B Test │ │ • Tracing │ │
+│ │ • Semantic │ │ • Rate Lim │ │ • Canary │ │ • Events │ │
+│ └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐            │
-│  │    LLMs     │  │    Tools    │  │   Prompts   │  │ Compliance  │            │
-│  │ • Routing   │  │ • 35+ Built │  │ • Versioning│  │ • Audit     │            │
-│  │ • Caching   │  │ • Registry  │  │ • Templates │  │ • Masking   │            │
-│  │ • Fallback  │  │ • MCP       │  │ • Security  │  │ • Policy    │            │
-│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘            │
+│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│ │ LLMs │ │ Tools │ │ Prompts │ │ Compliance │ │
+│ │ • Routing │ │ • 35+ Built │ │ • Versioning│ │ • Audit │ │
+│ │ • Caching │ │ • Registry │ │ • Templates │ │ • Masking │ │
+│ │ • Fallback │ │ • MCP │ │ • Security │ │ • Policy │ │
+│ └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                        🏢 Enterprise Layer (237 Modules)                         │
+│ Enterprise Layer (237 Modules) │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐    │
-│  │ API Management│  │   Security    │  │Data Processing│  │ML/AI Infra    │    │
-│  │ • Gateway     │  │ • Encryption  │  │ • Pipeline    │  │ • Inference   │    │
-│  │ • Versioning  │  │ • Vault       │  │ • Lineage     │  │ • Feature Str │    │
-│  │ • Lifecycle   │  │ • Auth/RBAC   │  │ • ETL         │  │ • RAG/Vector  │    │
-│  └───────────────┘  └───────────────┘  └───────────────┘  └───────────────┘    │
-│  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐    │
-│  │  Messaging    │  │Infrastructure │  │    DevOps     │  │      DDD      │    │
-│  │ • Event Bus   │  │ • Load Bal.   │  │ • Canary      │  │ • Aggregate   │    │
-│  │ • Pub/Sub     │  │ • Circuit Brk │  │ • Blue-Green  │  │ • Saga        │    │
-│  │ • CQRS        │  │ • Service Msh │  │ • Chaos       │  │ • Repository  │    │
-│  └───────────────┘  └───────────────┘  └───────────────┘  └───────────────┘    │
-│  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐    │
-│  │    Caching    │  │ Observability │  │   Workflow    │  │  Integrations │    │
-│  │ • Redis       │  │ • Tracing     │  │ • Engine      │  │ • ServiceNow  │    │
-│  │ • Distributed │  │ • Metrics     │  │ • Scheduler   │  │ • Cloud APIs  │    │
-│  │ • Multi-tier  │  │ • APM         │  │ • State Mach  │  │ • Webhooks    │    │
-│  └───────────────┘  └───────────────┘  └───────────────┘  └───────────────┘    │
+│ ┌───────────────┐ ┌───────────────┐ ┌───────────────┐ ┌───────────────┐ │
+│ │ API Management│ │ Security │ │Data Processing│ │ML/AI Infra │ │
+│ │ • Gateway │ │ • Encryption │ │ • Pipeline │ │ • Inference │ │
+│ │ • Versioning │ │ • Vault │ │ • Lineage │ │ • Feature Str │ │
+│ │ • Lifecycle │ │ • Auth/RBAC │ │ • ETL │ │ • RAG/Vector │ │
+│ └───────────────┘ └───────────────┘ └───────────────┘ └───────────────┘ │
+│ ┌───────────────┐ ┌───────────────┐ ┌───────────────┐ ┌───────────────┐ │
+│ │ Messaging │ │Infrastructure │ │ DevOps │ │ DDD │ │
+│ │ • Event Bus │ │ • Load Bal. │ │ • Canary │ │ • Aggregate │ │
+│ │ • Pub/Sub │ │ • Circuit Brk │ │ • Blue-Green │ │ • Saga │ │
+│ │ • CQRS │ │ • Service Msh │ │ • Chaos │ │ • Repository │ │
+│ └───────────────┘ └───────────────┘ └───────────────┘ └───────────────┘ │
+│ ┌───────────────┐ ┌───────────────┐ ┌───────────────┐ ┌───────────────┐ │
+│ │ Caching │ │ Observability │ │ Workflow │ │ Integrations │ │
+│ │ • Redis │ │ • Tracing │ │ • Engine │ │ • ServiceNow │ │
+│ │ • Distributed │ │ • Metrics │ │ • Scheduler │ │ • Cloud APIs │ │
+│ │ • Multi-tier │ │ • APM │ │ • State Mach │ │ • Webhooks │ │
+│ └───────────────┘ └───────────────┘ └───────────────┘ └───────────────┘ │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 📦 Installation
+## Installation
 
 ### Quick Install
 
@@ -187,15 +187,15 @@ pip install -e ".[dev]"
 pip install "agenticaiframework[all]"
 
 # Specific feature sets
-pip install "agenticaiframework[monitoring]"  # Enhanced observability
-pip install "agenticaiframework[memory]"      # Advanced memory features
-pip install "agenticaiframework[speech]"      # Speech processing
-pip install "agenticaiframework[docs]"        # Documentation building
+pip install "agenticaiframework[monitoring]" # Enhanced observability
+pip install "agenticaiframework[memory]" # Advanced memory features
+pip install "agenticaiframework[speech]" # Speech processing
+pip install "agenticaiframework[docs]" # Documentation building
 ```
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Create an Agent
 
@@ -386,7 +386,7 @@ with monitoring.trace("process_request") as span:
 
 ---
 
-## 🧠 Core Modules
+## Core Modules
 
 ### Memory Management (7 Specialized Managers)
 
@@ -449,7 +449,7 @@ recent = window.get_recent(5)
 
 ---
 
-## 🔧 Advanced Features
+## Advanced Features
 
 ### Tools Framework (35+ Built-in Tools)
 
@@ -466,7 +466,7 @@ from agenticaiframework.tools import (
 class DataAnalysisTool(BaseTool):
     name = "data_analysis"
     description = "Analyze data and generate insights"
-    
+
     def execute(self, data: dict) -> dict:
         # Your analysis logic
         return {"insights": [...], "metrics": {...}}
@@ -513,7 +513,7 @@ from agenticaiframework.hitl import HITLManager
 # Setup HITL manager
 hitl = HITLManager(
     approval_required=["high_risk_actions"],
-    timeout=300,  # 5 minutes
+    timeout=300, # 5 minutes
     escalation_policy="notify_admin"
 )
 
@@ -573,7 +573,7 @@ formatted = formatter.format(
 
 ---
 
-## 🏢 Enterprise Features
+## Enterprise Features
 
 ### 237 Enterprise-Grade Modules
 
@@ -583,27 +583,27 @@ The AgenticAI Framework includes a comprehensive enterprise module library organ
 <tr>
 <td width="50%">
 
-**🔌 API Management (15 Modules)**
+** API Management (15 Modules)**
 - API Gateway, Versioning, Lifecycle Manager
 - API Client, Docs Generator, Rate Limiting
 - GraphQL, REST, gRPC Support
 - API Analytics, Monitoring, Testing
 
-**🔐 Security & Compliance (18 Modules)**
+** Security & Compliance (18 Modules)**
 - Encryption Service, Secret Manager, Vault
 - Authentication (OAuth, JWT, SAML, SSO)
 - Authorization (RBAC, ABAC, Policies)
 - PII Detection, Data Masking, Audit Trails
 - Prompt Injection Detection (15+ patterns)
 
-**📊 Data Processing (16 Modules)**
+** Data Processing (16 Modules)**
 - Data Pipeline, ETL, Data Lineage
 - Data Validator, Transformer, Aggregator
 - Data Privacy Manager, Masking
 - Data Quality, Profiling, Catalog
 - Stream Processing, Batch Processing
 
-**🧠 ML/AI Infrastructure (14 Modules)**
+** ML/AI Infrastructure (14 Modules)**
 - ML Inference, Feature Store, Model Registry
 - RAG, Embeddings, Recommendation Engine
 - Vector Store, Semantic Search
@@ -613,14 +613,14 @@ The AgenticAI Framework includes a comprehensive enterprise module library organ
 </td>
 <td width="50%">
 
-**📨 Messaging & Events (12 Modules)**
+** Messaging & Events (12 Modules)**
 - Message Broker, Pub/Sub, Event Bus
 - Event Sourcing, Event Store, CQRS
 - Message Queue, Kafka Integration
 - Webhook Manager, Notification Hub
 - Real-time Sync, Change Data Capture
 
-**🏗️ Infrastructure (20 Modules)**
+** Infrastructure (20 Modules)**
 - Load Balancer, Circuit Breaker, Rate Limiter
 - Service Discovery, Service Registry, Mesh
 - Health Check, Health Monitor
@@ -628,14 +628,14 @@ The AgenticAI Framework includes a comprehensive enterprise module library organ
 - Container Orchestration, Kubernetes
 - Auto-scaling, Capacity Planning
 
-**🚀 DevOps & Deployment (15 Modules)**
+** DevOps & Deployment (15 Modules)**
 - Deployment Manager, Canary Releases
 - Blue-Green Deployment, Rolling Updates
 - Chaos Engineering, Fault Injection
 - CI/CD Integration, GitOps
 - Environment Manager, Config Manager
 
-**📐 Domain-Driven Design (12 Modules)**
+** Domain-Driven Design (12 Modules)**
 - Aggregate, Aggregate Root, Entities
 - Bounded Context, Domain Events, Saga
 - Repository Pattern, Unit of Work
@@ -650,14 +650,14 @@ The AgenticAI Framework includes a comprehensive enterprise module library organ
 <tr>
 <td width="50%">
 
-**💾 Storage & Caching (14 Modules)**
+** Storage & Caching (14 Modules)**
 - Cache Manager, Redis, Memcached
 - Database Abstraction, ORM Support
 - Object Storage, File Manager
 - Backup Manager, Archive
 - Distributed Cache, Cache Sync
 
-**📈 Observability (16 Modules)**
+** Observability (16 Modules)**
 - Distributed Tracing, Span Hierarchy
 - Metrics Collector, Custom Dashboards
 - Log Aggregator, Log Analysis
@@ -665,7 +665,7 @@ The AgenticAI Framework includes a comprehensive enterprise module library organ
 - Performance Profiling, APM
 - Latency Percentiles (P50, P95, P99)
 
-**🔄 Workflow & Orchestration (12 Modules)**
+** Workflow & Orchestration (12 Modules)**
 - Workflow Engine, State Machine
 - Task Scheduler, Job Queue Manager
 - Process Orchestrator, Saga Pattern
@@ -675,7 +675,7 @@ The AgenticAI Framework includes a comprehensive enterprise module library organ
 </td>
 <td width="50%">
 
-**🌐 Integration Connectors (18 Modules)**
+** Integration Connectors (18 Modules)**
 - ServiceNow (ITSM), GitHub/Azure DevOps
 - Snowflake, Databricks, BigQuery
 - Slack, Teams, Email Integration
@@ -683,14 +683,14 @@ The AgenticAI Framework includes a comprehensive enterprise module library organ
 - AWS, Azure, GCP Connectors
 - Webhooks (Inbound/Outbound)
 
-**🏛️ Governance (10 Modules)**
+** Governance (10 Modules)**
 - Policy Enforcer, Compliance Manager
 - Governance Framework, Standards
 - Access Control, Permission Manager
 - Quota Manager, Usage Tracking
 - License Manager, Cost Allocation
 
-**⚡ Performance (15 Modules)**
+** Performance (15 Modules)**
 - Request Router, Load Balancer
 - Connection Pooling, Query Optimizer
 - Lazy Loading, Eager Loading
@@ -727,7 +727,7 @@ masked = masker.mask("Contact: john@example.com, SSN: 123-45-6789")
 
 ---
 
-## 📊 Evaluation Framework
+## Evaluation Framework
 
 ### 12-Tier Comprehensive Evaluation
 
@@ -741,19 +741,18 @@ evaluator = EvaluationSystem()
 results = evaluator.evaluate(
     agent=my_agent,
     test_cases=test_suite,
-    tiers=[
-        "model_quality",      # Hallucination, reasoning, coherence
-        "task_skill",         # Success rates, completion
-        "tool_api",           # Tool usage, latency
-        "workflow",           # Orchestration, handoffs
-        "memory_context",     # Context quality, retrieval
-        "rag",                # Faithfulness, groundedness
-        "autonomy_planning",  # Plan optimality
-        "performance",        # Latency P50/P95/P99
-        "cost_finops",        # Token usage, cost
-        "human_loop",         # Acceptance rates
-        "business_outcomes",  # ROI, impact
-        "security_risk"       # Risk scoring
+    tiers=["model_quality", # Hallucination, reasoning, coherence
+        "task_skill", # Success rates, completion
+        "tool_api", # Tool usage, latency
+        "workflow", # Orchestration, handoffs
+        "memory_context", # Context quality, retrieval
+        "rag", # Faithfulness, groundedness
+        "autonomy_planning", # Plan optimality
+        "performance", # Latency P50/P95/P99
+        "cost_finops", # Token usage, cost
+        "human_loop", # Acceptance rates
+        "business_outcomes", # ROI, impact
+        "security_risk" # Risk scoring
     ]
 )
 
@@ -783,56 +782,56 @@ canary.deploy(
 
 ---
 
-## 🔄 Framework Comparison
+## Framework Comparison
 
 | Feature | AgenticAI | LangChain | CrewAI | AutoGen |
 |:--------|:---------:|:---------:|:------:|:-------:|
-| **Production Ready** | ✅ Enterprise | ⚠️ Experimental | ⚠️ Limited | ⚠️ Research |
-| **Total Modules** | ✅ 380+ | ⚠️ ~50 | ❌ ~20 | ⚠️ ~30 |
-| **Test Coverage** | ✅ 66% (1036 tests) | ⚠️ Variable | ❌ Limited | ⚠️ Basic |
-| **Built-in Tools** | ✅ 35+ | ⚠️ Community | ❌ Limited | ⚠️ Basic |
-| **Memory Managers** | ✅ 7 Specialized | ⚠️ 1 Basic | ❌ None | ⚠️ Simple |
-| **State Managers** | ✅ 7 Specialized | ❌ None | ❌ None | ❌ None |
-| **Speech Processing** | ✅ Full STT/TTS | ❌ None | ❌ None | ❌ None |
-| **Communication Protocols** | ✅ 6 Protocols | ⚠️ HTTP only | ❌ None | ⚠️ Basic |
-| **12-Tier Evaluation** | ✅ Built-in | ❌ None | ❌ None | ❌ None |
-| **Multi-Agent Orchestration** | ✅ Advanced | ⚠️ Simple | ✅ Team-based | ✅ Group chat |
-| **Enterprise Modules** | ✅ 237 Modules | ⚠️ Limited | ❌ None | ❌ None |
-| **HITL Support** | ✅ Built-in | ⚠️ Manual | ❌ None | ⚠️ Basic |
-| **Compliance/Audit** | ✅ Full | ❌ None | ❌ None | ❌ None |
-| **ML/AI Infrastructure** | ✅ 14 Modules | ⚠️ Basic | ❌ None | ⚠️ Limited |
-| **Domain-Driven Design** | ✅ 12 Modules | ❌ None | ❌ None | ❌ None |
-| **Conversation Management** | ✅ Advanced | ⚠️ Basic | ❌ None | ⚠️ Basic |
-| **Context Compression** | ✅ Built-in | ⚠️ Manual | ❌ None | ❌ None |
+| **Production Ready** | Enterprise | Experimental | Limited | Research |
+| **Total Modules** | 380+ | ~50 | ~20 | ~30 |
+| **Test Coverage** | 66% (1036 tests) | Variable | Limited | Basic |
+| **Built-in Tools** | 35+ | Community | Limited | Basic |
+| **Memory Managers** | 7 Specialized | 1 Basic | None | Simple |
+| **State Managers** | 7 Specialized | None | None | None |
+| **Speech Processing** | Full STT/TTS | None | None | None |
+| **Communication Protocols** | 6 Protocols | HTTP only | None | Basic |
+| **12-Tier Evaluation** | Built-in | None | None | None |
+| **Multi-Agent Orchestration** | Advanced | Simple | Team-based | Group chat |
+| **Enterprise Modules** | 237 Modules | Limited | None | None |
+| **HITL Support** | Built-in | Manual | None | Basic |
+| **Compliance/Audit** | Full | None | None | None |
+| **ML/AI Infrastructure** | 14 Modules | Basic | None | Limited |
+| **Domain-Driven Design** | 12 Modules | None | None | None |
+| **Conversation Management** | Advanced | Basic | None | Basic |
+| **Context Compression** | Built-in | Manual | None | None |
 
 ---
 
-## 📚 Documentation
+## Documentation
 
-### 📖 Core Documentation
+### Core Documentation
 - **[Complete Documentation](https://isathish.github.io/agenticaiframework/)** - Full framework docs
 - **[API Reference](https://isathish.github.io/agenticaiframework/API_REFERENCE/)** - Detailed API docs
 - **[Quick Start Guide](https://isathish.github.io/agenticaiframework/quick-start/)** - Get started fast
 - **[Best Practices](https://isathish.github.io/agenticaiframework/best-practices/)** - Production patterns
 
-### 🎯 Module Guides
+### Module Guides
 
 | Module | Description | Link |
 |--------|-------------|------|
-| Agents | Creating intelligent agents | [📚 Docs](https://isathish.github.io/agenticaiframework/agents/) |
-| Memory | 7 specialized memory systems | [📚 Docs](https://isathish.github.io/agenticaiframework/memory/) |
-| State | 7 state management systems | [📚 Docs](https://isathish.github.io/agenticaiframework/state/) |
-| Orchestration | Multi-agent coordination | [📚 Docs](https://isathish.github.io/agenticaiframework/orchestration/) |
-| Speech | STT/TTS processing | [📚 Docs](https://isathish.github.io/agenticaiframework/speech/) |
-| Tools | 35+ built-in tools | [📚 Docs](https://isathish.github.io/agenticaiframework/tools/) |
-| Evaluation | 12-tier assessment | [📚 Docs](https://isathish.github.io/agenticaiframework/evaluation/) |
-| Guardrails | Safety & compliance | [📚 Docs](https://isathish.github.io/agenticaiframework/guardrails/) |
-| Monitoring | Observability & tracing | [📚 Docs](https://isathish.github.io/agenticaiframework/monitoring/) |
-| Communication | 6 protocol support | [📚 Docs](https://isathish.github.io/agenticaiframework/communication/) |
-| HITL | Human-in-the-loop | [📚 Docs](https://isathish.github.io/agenticaiframework/hitl/) |
-| Compliance | Audit & policy | [📚 Docs](https://isathish.github.io/agenticaiframework/compliance/) |
+| Agents | Creating intelligent agents | [Docs](https://isathish.github.io/agenticaiframework/agents/) |
+| Memory | 7 specialized memory systems | [Docs](https://isathish.github.io/agenticaiframework/memory/) |
+| State | 7 state management systems | [Docs](https://isathish.github.io/agenticaiframework/state/) |
+| Orchestration | Multi-agent coordination | [Docs](https://isathish.github.io/agenticaiframework/orchestration/) |
+| Speech | STT/TTS processing | [Docs](https://isathish.github.io/agenticaiframework/speech/) |
+| Tools | 35+ built-in tools | [Docs](https://isathish.github.io/agenticaiframework/tools/) |
+| Evaluation | 12-tier assessment | [Docs](https://isathish.github.io/agenticaiframework/evaluation/) |
+| Guardrails | Safety & compliance | [Docs](https://isathish.github.io/agenticaiframework/guardrails/) |
+| Monitoring | Observability & tracing | [Docs](https://isathish.github.io/agenticaiframework/monitoring/) |
+| Communication | 6 protocol support | [Docs](https://isathish.github.io/agenticaiframework/communication/) |
+| HITL | Human-in-the-loop | [Docs](https://isathish.github.io/agenticaiframework/hitl/) |
+| Compliance | Audit & policy | [Docs](https://isathish.github.io/agenticaiframework/compliance/) |
 
-### 🏢 Enterprise Module Categories
+### Enterprise Module Categories
 
 | Category | Modules | Key Features |
 |----------|---------|--------------|
@@ -853,7 +852,7 @@ canary.deploy(
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Run all tests
@@ -863,36 +862,36 @@ pytest tests/
 pytest tests/ --cov=agenticaiframework --cov-report=html
 
 # Run specific test suites
-pytest tests/unit/ -v                         # Unit tests
-pytest tests/integration/ -v                  # Integration tests
-pytest tests/test_memory_coverage.py -v       # Memory tests
-pytest tests/test_all_evaluation_types.py -v  # Evaluation tests
+pytest tests/unit/ -v # Unit tests
+pytest tests/integration/ -v # Integration tests
+pytest tests/test_memory_coverage.py -v # Memory tests
+pytest tests/test_all_evaluation_types.py -v # Evaluation tests
 ```
 
 ### Test Coverage Summary
 
 | Module | Coverage | Status |
 |--------|----------|--------|
-| Communication | 100% | 🟢 Excellent |
-| Processes | 100% | 🟢 Excellent |
-| Configurations | 100% | 🟢 Excellent |
-| Evaluation (Basic) | 100% | 🟢 Excellent |
-| Knowledge | 94% | 🟢 Excellent |
-| Integrations | 95% | 🟢 Excellent |
-| Monitoring | 86% | 🟢 Good |
-| Hub | 85% | 🟢 Good |
-| Agents | 83% | 🟢 Good |
-| Memory | 82% | 🟢 Good |
-| Evaluation (Advanced) | 81% | 🟢 Good |
-| Tasks | 80% | 🟢 Good |
-| MCP Tools | 79% | 🟡 Fair |
-| Guardrails | 75% | 🟡 Fair |
-| Security | 74% | 🟡 Fair |
-| Prompts | 71% | 🟡 Fair |
+| Communication | 100% | Excellent |
+| Processes | 100% | Excellent |
+| Configurations | 100% | Excellent |
+| Evaluation (Basic) | 100% | Excellent |
+| Knowledge | 94% | Excellent |
+| Integrations | 95% | Excellent |
+| Monitoring | 86% | Good |
+| Hub | 85% | Good |
+| Agents | 83% | Good |
+| Memory | 82% | Good |
+| Evaluation (Advanced) | 81% | Good |
+| Tasks | 80% | Good |
+| MCP Tools | 79% | Fair |
+| Guardrails | 75% | Fair |
+| Security | 74% | Fair |
+| Prompts | 71% | Fair |
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! See our [Contributing Guide](CONTRIBUTING.md) for details.
 
@@ -901,7 +900,7 @@ We welcome contributions! See our [Contributing Guide](CONTRIBUTING.md) for deta
 git clone https://github.com/isathish/agenticaiframework.git
 cd agenticaiframework
 python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
+source .venv/bin/activate # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
 
 # Run tests before submitting
@@ -915,15 +914,15 @@ mkdocs serve
 
 | Type | Description |
 |------|-------------|
-| 🐛 Bug Reports | [Report issues](https://github.com/isathish/agenticaiframework/issues) |
-| ✨ Feature Requests | [Request features](https://github.com/isathish/agenticaiframework/issues/new) |
-| 📝 Documentation | [Improve docs](https://github.com/isathish/agenticaiframework) |
-| 💻 Code | [Submit PRs](https://github.com/isathish/agenticaiframework/pulls) |
-| 💡 Examples | [Add examples](https://github.com/isathish/agenticaiframework/tree/main/examples) |
+| Bug Reports | [Report issues](https://github.com/isathish/agenticaiframework/issues) |
+| Feature Requests | [Request features](https://github.com/isathish/agenticaiframework/issues/new) |
+| Documentation | [Improve docs](https://github.com/isathish/agenticaiframework) |
+| Code | [Submit PRs](https://github.com/isathish/agenticaiframework/pulls) |
+| Examples | [Add examples](https://github.com/isathish/agenticaiframework/tree/main/examples) |
 
 ---
 
-## 📅 Roadmap
+## Roadmap
 
 | Quarter | Focus Areas |
 |---------|-------------|
@@ -934,17 +933,17 @@ mkdocs serve
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 <div align="center">
 
-**Built with ❤️ by the AgenticAI Framework Team**
+**Built with love by the AgenticAI Framework Team**
 
 *Making AI agents accessible, reliable, and production-ready*
 
@@ -954,7 +953,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 [![GitHub Forks](https://img.shields.io/github/forks/isathish/agenticaiframework?style=social)](https://github.com/isathish/agenticaiframework/fork)
 [![Twitter Follow](https://img.shields.io/twitter/follow/agenticai?style=social)](https://twitter.com/agenticai)
 
-**[⬆ Back to Top](#-agenticai-framework)**
+**[Back to Top](#agenticai-framework)**
 
 </div>
 

@@ -3,7 +3,7 @@ title: State Management
 description: Production-ready state management with 7 specialized managers for agents, workflows, and orchestration
 ---
 
-# 🔄 State Management
+# State Management
 
 <div class="hero-section">
 <h2 class="hero-title">Comprehensive State Management</h2>
@@ -40,13 +40,13 @@ AgenticAI Framework provides **6 specialized state managers** for complete contr
 
 ```python
 from agenticaiframework.state import (
-    StateManager,           # Core state management
-    AgentStateStore,        # Agent state & snapshots
-    WorkflowStateManager,   # Workflow execution state
-    OrchestrationStateManager,  # Multi-agent coordination
-    KnowledgeStateManager,  # Knowledge base state
-    ToolStateManager,       # Tool execution state
-    SpeechStateManager,     # Speech session state
+    StateManager, # Core state management
+    AgentStateStore, # Agent state & snapshots
+    WorkflowStateManager, # Workflow execution state
+    OrchestrationStateManager, # Multi-agent coordination
+    KnowledgeStateManager, # Knowledge base state
+    ToolStateManager, # Tool execution state
+    SpeechStateManager, # Speech session state
 )
 ```
 
@@ -56,32 +56,32 @@ from agenticaiframework.state import (
 
 <div class="feature-grid">
 <div class="feature-card">
-<h3>🎛️ StateManager</h3>
+<h3> StateManager</h3>
 <h4>Core State Engine</h4>
 <p>Central state management with pluggable backends</p>
 </div>
 <div class="feature-card">
-<h3>🤖 AgentStateStore</h3>
+<h3> AgentStateStore</h3>
 <h4>Agent Lifecycle</h4>
 <p>Snapshots, checkpoints, and recovery for agents</p>
 </div>
 <div class="feature-card">
-<h3>🔄 WorkflowStateManager</h3>
+<h3> WorkflowStateManager</h3>
 <h4>Workflow Tracking</h4>
 <p>Step-by-step execution state and checkpoints</p>
 </div>
 <div class="feature-card">
-<h3>🎭 OrchestrationStateManager</h3>
+<h3> OrchestrationStateManager</h3>
 <h4>Team Coordination</h4>
 <p>Multi-agent state and task queue management</p>
 </div>
 <div class="feature-card">
-<h3>📚 KnowledgeStateManager</h3>
+<h3> KnowledgeStateManager</h3>
 <h4>Knowledge Base</h4>
 <p>Indexing progress and sync status tracking</p>
 </div>
 <div class="feature-card">
-<h3>🛠️ ToolStateManager</h3>
+<h3> ToolStateManager</h3>
 <h4>Tool Execution</h4>
 <p>Execution state, caching, and retry management</p>
 </div>
@@ -173,8 +173,8 @@ logger = logging.getLogger(__name__)
 # Subscribe to state changes
 async def on_state_change(key: str, old_value: dict, new_value: dict):
     logger.info(f"State changed for {key}")
-    logger.info(f"  Old: {old_value}")
-    logger.info(f"  New: {new_value}")
+    logger.info(f" Old: {old_value}")
+    logger.info(f" New: {new_value}")
 
 state_manager.subscribe("agent:*", on_state_change)
 
@@ -284,7 +284,7 @@ except Exception as e:
         agent_id=agent.id,
         from_checkpoint="latest",
     )
-    
+
     if recovered:
         logger.info("Agent recovered successfully")
         result = await agent.resume()
@@ -313,7 +313,7 @@ from agenticaiframework.state import (
 # Initialize workflow state manager
 workflow_state = WorkflowStateManager(
     persistence="redis",
-    checkpoint_interval=5,  # Checkpoint every 5 steps
+    checkpoint_interval=5, # Checkpoint every 5 steps
 )
 
 # Create workflow state
@@ -381,7 +381,7 @@ logger = logging.getLogger(__name__)
 # Pause workflow
 await workflow_state.pause("research_pipeline")
 status = await workflow_state.get_status("research_pipeline")
-logger.info(f"Status: {status}")  # WorkflowStatus.PAUSED
+logger.info(f"Status: {status}") # WorkflowStatus.PAUSED
 
 # Resume workflow
 await workflow_state.resume("research_pipeline")
@@ -821,8 +821,7 @@ conversation_state = VoiceConversationState(
     current_speaker="user",
     stt_state=stt_state,
     tts_state=tts_state,
-    transcript=[
-        {"role": "user", "content": "Hello"},
+    transcript=[{"role": "user", "content": "Hello"},
         {"role": "assistant", "content": "Hi! How can I help?"},
         # ...
     ]
@@ -860,7 +859,7 @@ from agenticaiframework.state import FileBackend
 
 backend = FileBackend(
     base_path="./state",
-    format="json",  # or "msgpack" for better performance
+    format="json", # or "msgpack" for better performance
     compression=True,
 )
 
@@ -891,19 +890,19 @@ backend = RedisBackend(
 
 <div class="feature-grid">
 <div class="feature-card">
-<h3>🔄 Checkpoint Regularly</h3>
+<h3> Checkpoint Regularly</h3>
 <p>Create checkpoints at logical boundaries in long-running tasks to enable recovery without losing progress.</p>
 </div>
 <div class="feature-card">
-<h3>🗄️ Choose Right Backend</h3>
+<h3> Choose Right Backend</h3>
 <p>Use memory for dev, file for single instance, Redis for distributed production deployments.</p>
 </div>
 <div class="feature-card">
-<h3>🧹 Clean Old State</h3>
+<h3> Clean Old State</h3>
 <p>Implement TTLs and cleanup routines to prevent unbounded state growth.</p>
 </div>
 <div class="feature-card">
-<h3>📊 Monitor State Size</h3>
+<h3> Monitor State Size</h3>
 <p>Track state storage size and set alerts for unusual growth patterns.</p>
 </div>
 </div>
@@ -914,19 +913,19 @@ backend = RedisBackend(
 
 <div class="feature-grid">
 <div class="feature-card">
-<h3><a href="memory.md">💾 Memory</a></h3>
+<h3><a href="memory.md"> Memory</a></h3>
 <p>Learn about memory management for agents</p>
 </div>
 <div class="feature-card">
-<h3><a href="orchestration.md">🎭 Orchestration</a></h3>
+<h3><a href="orchestration.md"> Orchestration</a></h3>
 <p>Multi-agent team coordination</p>
 </div>
 <div class="feature-card">
-<h3><a href="monitoring.md">📊 Monitoring</a></h3>
+<h3><a href="monitoring.md"> Monitoring</a></h3>
 <p>Set up observability for your agents</p>
 </div>
 <div class="feature-card">
-<h3><a href="tracing.md">🔍 Tracing</a></h3>
+<h3><a href="tracing.md"> Tracing</a></h3>
 <p>Debug agent execution flows</p>
 </div>
 </div>

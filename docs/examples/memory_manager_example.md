@@ -7,7 +7,7 @@ tags:
   - storage
 ---
 
-# 🧠 Memory Manager Example
+# Memory Manager Example
 
 !!! success "7 Memory Managers"
     Part of **400+ modules** with Redis, PostgreSQL, SQLite, and vector store backends. See [Memory Documentation](../memory.md).

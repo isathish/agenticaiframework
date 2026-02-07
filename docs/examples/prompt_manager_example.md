@@ -7,7 +7,7 @@ tags:
   - templates
 ---
 
-# 📝 Prompt Manager Example
+# Prompt Manager Example
 
 !!! info "Prompt Versioning & A/B Testing"
     Part of **400+ modules** with prompt versioning, templates, and A/B testing support. See [Prompts Documentation](../prompts.md).

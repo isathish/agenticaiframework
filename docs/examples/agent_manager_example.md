@@ -8,7 +8,7 @@ tags:
   - lifecycle
 ---
 
-# 🤖 Agent Manager Example
+# Agent Manager Example
 
 !!! success "Enterprise Agent Management"
     Part of **400+ modules** with advanced agent lifecycle management, pooling, and multi-tenant isolation. See [Agents Documentation](../agents.md).

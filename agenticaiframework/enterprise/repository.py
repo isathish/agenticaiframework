@@ -563,7 +563,7 @@ class AuditingRepository(GenericRepository[T, ID]):
         return result
     
     def _default_audit(self, action: str, entity: T) -> None:
-        print(f"[AUDIT] {action}: {entity}")
+        logging.getLogger(__name__).info("[AUDIT] %s: %s", action, entity)
 
 
 class BatchRepository(GenericRepository[T, ID]):

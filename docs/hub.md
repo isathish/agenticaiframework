@@ -54,7 +54,7 @@ agent = hub.get("agents", "researcher")
 tool = hub.get("tools", "web_search")
 
 # List all items in a category
-all_agents = hub.list_items("agents")  # dict of {name: item}
+all_agents = hub.list_items("agents") # dict of {name: item}
 
 # Remove
 hub.remove("tools", "web_search")
@@ -107,8 +107,7 @@ hub = Hub()
 def register_agent(name, agent):
     hub.register("agents", name, agent)
 
-threads = [
-    threading.Thread(target=register_agent, args=(f"agent_{i}", obj))
+threads = [threading.Thread(target=register_agent, args=(f"agent_{i}", obj))
     for i, obj in enumerate(agent_list)
 ]
 for t in threads:

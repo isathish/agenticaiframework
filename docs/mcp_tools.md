@@ -49,8 +49,8 @@ tool = MCPTool(
 manager = MCPToolManager()
 manager.register_tool(tool)
 
-result = manager.execute_tool("sum_tool", a=5, b=3)   # 8
-result = manager.execute_tool_by_name("Calculator Sum", a=10, b=20)  # 30
+result = manager.execute_tool("sum_tool", a=5, b=3) # 8
+result = manager.execute_tool_by_name("Calculator Sum", a=10, b=20) # 30
 ```
 
 ---
@@ -96,7 +96,7 @@ manager.register_tool(tool)
 ### List
 
 ```python
-tools = manager.list_tools()  # list of MCPTool objects
+tools = manager.list_tools() # list of MCPTool objects
 for t in tools:
     logger.info(f"{t.id}: {t.name} - {t.capability}")
 ```

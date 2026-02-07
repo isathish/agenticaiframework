@@ -8,7 +8,7 @@ tags:
   - advanced
 ---
 
-# 💬 Customer Support Bot Example
+# Customer Support Bot Example
 
 This example demonstrates building an automated customer support bot using the AgenticAI Framework.
 

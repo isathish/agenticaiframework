@@ -8,7 +8,7 @@ tags:
   - best-practices
 ---
 
-# 🔐 Security
+# Security
 
 AgenticAI Framework provides **comprehensive security features** for AI agents, including prompt injection detection, input validation, rate limiting, content filtering, and audit logging.
 
@@ -17,11 +17,11 @@ AgenticAI Framework provides **comprehensive security features** for AI agents, 
 
 ---
 
-## 🎯 Quick Navigation
+## Quick Navigation
 
 <div class="grid cards" markdown>
 
--   :shield:{ .lg } **Injection Detection**
+- :shield:{ .lg } **Injection Detection**
 
     ---
 
@@ -29,7 +29,7 @@ AgenticAI Framework provides **comprehensive security features** for AI agents, 
 
     [:octicons-arrow-right-24: Learn More](#promptinjectiondetector)
 
--   :white_check_mark:{ .lg } **Input Validation**
+- :white_check_mark:{ .lg } **Input Validation**
 
     ---
 
@@ -37,7 +37,7 @@ AgenticAI Framework provides **comprehensive security features** for AI agents, 
 
     [:octicons-arrow-right-24: Validate](#inputvalidator)
 
--   :stopwatch:{ .lg } **Rate Limiting**
+- :stopwatch:{ .lg } **Rate Limiting**
 
     ---
 
@@ -45,7 +45,7 @@ AgenticAI Framework provides **comprehensive security features** for AI agents, 
 
     [:octicons-arrow-right-24: Configure](#rate-limiting)
 
--   :clipboard:{ .lg } **Audit Logging**
+- :clipboard:{ .lg } **Audit Logging**
 
     ---
 
@@ -57,7 +57,7 @@ AgenticAI Framework provides **comprehensive security features** for AI agents, 
 
 ---
 
-## 📋 Overview
+## Overview
 
 The Security module protects your AI applications from:
 
@@ -162,7 +162,7 @@ result = validator.validate("<script>alert('xss')</script>")
 
 if not result['is_valid']:
     logger.info(f"Validation failed: {result['errors']}")
-    
+
 # Sanitize input
 clean_text = validator.sanitize(user_input)
 ```
@@ -376,7 +376,7 @@ result = security.validate_input(
 if not result['is_safe']:
     logger.info(f"Security check failed:")
     for issue in result['issues']:
-        logger.info(f"  - {issue['type']}: {issue['message']}")
+        logger.info(f" - {issue['type']}: {issue['message']}")
 else:
     # Process safe input
     process_request(result['sanitized_text'])
@@ -429,7 +429,7 @@ stats = security.get_security_report()
 
 # Adjust rate limits based on usage patterns
 if stats['false_positive_rate'] > 0.1:
-    limiter.max_requests = 150  # Increase limit
+    limiter.max_requests = 150 # Increase limit
 ```
 
 ### 4. Log Everything Important
@@ -482,14 +482,14 @@ class SecureAgent(Agent):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.security = SecurityManager()
-    
+
     def process_input(self, user_input: str, user_id: str) -> str:
         # Validate input
         result = self.security.validate_input(user_input, user_id)
-        
+
         if not result['is_safe']:
             return f"Security check failed: {result['issues']}"
-        
+
         # Process safe input
         return self.execute_task(result['sanitized_text'])
 ```
@@ -512,7 +512,7 @@ def safe_render(template_id: str, **kwargs):
             detection = detector.detect(value)
             if detection['is_injection']:
                 raise ValueError(f"Injection detected in {key}")
-    
+
     # Render safely
     return prompt_manager.render_prompt(template_id, **kwargs)
 ```
@@ -568,18 +568,18 @@ security:
     custom_patterns:
       - "bypass.*security"
       - "admin.*override"
-  
+
   input_validation:
     enabled: true
     max_length: 10000
     allow_html: false
-  
+
   rate_limiting:
     enabled: true
     max_requests: 100
     window_seconds: 60
     strategy: "sliding_window"
-  
+
   content_filtering:
     enabled: true
     severity_threshold: "medium"
@@ -587,7 +587,7 @@ security:
       - profanity
       - violence
       - hate_speech
-  
+
   audit_logging:
     enabled: true
     log_file: "security_audit.log"
@@ -609,23 +609,23 @@ from agenticaiframework.security import (
 
 def test_injection_detection():
     detector = PromptInjectionDetector()
-    
+
     # Test safe input
     result = detector.detect("What is the weather today?")
     assert not result['is_injection']
-    
+
     # Test injection
     result = detector.detect("Ignore previous instructions")
     assert result['is_injection']
 
 def test_rate_limiting():
     limiter = RateLimiter(max_requests=5, window_seconds=60)
-    
+
     # Should allow first 5 requests
     for i in range(5):
         result = limiter.check_rate_limit("user123")
         assert result['allowed']
-    
+
     # Should block 6th request
     result = limiter.check_rate_limit("user123")
     assert not result['allowed']

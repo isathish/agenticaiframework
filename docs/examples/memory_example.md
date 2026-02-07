@@ -8,20 +8,18 @@ tags:
   - tutorial
 ---
 
-# 🧠 Memory Management Example
+# Memory Management Example
 
 This guide provides a **professional, step-by-step walkthrough** of using the `MemoryManager` in the `agenticaiframework` package to efficiently store, retrieve, inspect, and clear different types of memory. It is designed for developers building intelligent agents that require persistent or temporary state management.
 
 !!! info "7 Memory Managers Available"
     Part of **400+ modules** with **7 specialized memory managers** including Redis, PostgreSQL, and vector store backends. See [Enterprise Documentation](../enterprise.md).
 
-
 ## Prerequisites & Configuration
 
 - **Installation**: Ensure `agenticaiframework` is installed and accessible in your Python environment.
 - **No additional configuration** is required for this example.
 - **Python Version**: Compatible with Python 3.10+.
-
 
 ## Code
 
@@ -54,34 +52,31 @@ if __name__ == "__main__":
     logger.info("Memory cleared. Keys now:", list(memory.short_term.keys()) + list(memory.long_term.keys()) + list(memory.external.keys()))
 ```
 
-
 ## Step-by-Step Execution
 
-1. **Import the Class**  
+1. **Import the Class** 
    Import `MemoryManager` from `agenticaiframework.memory`.
 
-2. **Instantiate the Manager**  
+2. **Instantiate the Manager** 
    Create an instance of `MemoryManager` to handle all memory operations.
 
-3. **Store Data**  
+3. **Store Data** 
    Use `store_short_term` to save temporary key-value pairs (e.g., user session data).
 
-4. **Retrieve Data**  
+4. **Retrieve Data** 
    Access stored values using `retrieve` by providing the key.
 
-5. **Inspect Stored Keys**  
+5. **Inspect Stored Keys** 
    Combine keys from `short_term`, `long_term`, and `external` memory to get a complete view of stored data.
 
-6. **Clear Memory**  
+6. **Clear Memory** 
    Use `clear_short_term`, `clear_long_term`, and `clear_external` to remove stored data when no longer needed.
 
 > **Best Practice:** Always clear sensitive data from memory after use to prevent leaks in long-running applications.
 
-
 ## Expected Input
 
 No user input is required; the script uses hardcoded values for demonstration purposes. In production, these values could come from user interactions, API calls, or other runtime events.
-
 
 ## Expected Output
 
@@ -96,7 +91,6 @@ Stored Keys: ['user_name', 'last_query']
 [YYYY-MM-DD HH:MM:SS] [MemoryManager] Cleared external memory
 Memory cleared. Keys now: []
 ```
-
 
 ## How to Run
 

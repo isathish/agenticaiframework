@@ -7,7 +7,7 @@ tags:
   - index
 ---
 
-# 🏷️ Tags
+# Tags
 
 Browse documentation by topics and categories:
 

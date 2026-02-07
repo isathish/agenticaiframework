@@ -7,7 +7,7 @@ tags:
   - tools
 ---
 
-# 🔧 MCP Tools Manager Example
+# MCP Tools Manager Example
 
 !!! success "35+ Built-in Tools"
     Part of **400+ modules** with 35+ built-in tools and 18 external connectors. See [MCP Tools Documentation](../mcp_tools.md).

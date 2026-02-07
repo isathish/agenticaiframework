@@ -14,23 +14,23 @@ hide:
 </style>
 
 <div class="hero-section">
-  <h1>🤖 AgenticAI Framework</h1>
+  <h1> AgenticAI Framework</h1>
   <p class="hero-subtitle">The Enterprise-Grade Python Framework for Building Production AI Agent Systems</p>
-  
+
   <div class="hero-badges">
     <a href="https://pypi.org/project/agenticaiframework/"><img src="https://img.shields.io/pypi/v/agenticaiframework.svg?style=for-the-badge&logo=python&logoColor=white&color=6366f1" alt="PyPI Version"></a>
     <a href="https://github.com/isathish/agenticaiframework/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981.svg?style=for-the-badge" alt="License"></a>
     <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.10+-06b6d4.svg?style=for-the-badge&logo=python&logoColor=white" alt="Python"></a>
     <a href="https://github.com/isathish/agenticaiframework"><img src="https://img.shields.io/badge/Enterprise-Ready-f59e0b.svg?style=for-the-badge" alt="Enterprise Ready"></a>
   </div>
-  
+
   <div style="position: relative; z-index: 1;">
-    <a href="quick-start/" class="md-button md-button--primary">🚀 Get Started</a>
-    <a href="https://github.com/isathish/agenticaiframework" class="md-button" style="margin-left: 1rem;">⭐ Star on GitHub</a>
+    <a href="quick-start/" class="md-button md-button--primary"> Get Started</a>
+    <a href="https://github.com/isathish/agenticaiframework" class="md-button" style="margin-left: 1rem;"> Star on GitHub</a>
   </div>
 </div>
 
-## 📊 Framework at a Glance
+## Framework at a Glance
 
 <div class="stats-grid">
   <div class="stat-card">
@@ -61,11 +61,11 @@ hide:
 
 ---
 
-## 🌟 Why AgenticAI Framework?
+## Why AgenticAI Framework?
 
 <div class="grid cards" markdown>
 
--   :brain:{ .lg .middle } **Advanced Memory System**
+- :brain:{ .lg .middle } **Advanced Memory System**
 
     ---
 
@@ -73,7 +73,7 @@ hide:
 
     [:octicons-arrow-right-24: Explore Memory](memory.md)
 
--   :arrows_counterclockwise:{ .lg .middle } **Multi-Agent Orchestration**
+- :arrows_counterclockwise:{ .lg .middle } **Multi-Agent Orchestration**
 
     ---
 
@@ -81,7 +81,7 @@ hide:
 
     [:octicons-arrow-right-24: Learn Orchestration](orchestration.md)
 
--   :satellite:{ .lg .middle } **6 Communication Protocols**
+- :satellite:{ .lg .middle } **6 Communication Protocols**
 
     ---
 
@@ -89,7 +89,7 @@ hide:
 
     [:octicons-arrow-right-24: View Protocols](communication.md)
 
--   :hammer_and_wrench:{ .lg .middle } **35+ Production Tools**
+- :hammer_and_wrench:{ .lg .middle } **35+ Production Tools**
 
     ---
 
@@ -97,7 +97,7 @@ hide:
 
     [:octicons-arrow-right-24: Browse Tools](tools.md)
 
--   :shield:{ .lg .middle } **Enterprise Security**
+- :shield:{ .lg .middle } **Enterprise Security**
 
     ---
 
@@ -105,7 +105,7 @@ hide:
 
     [:octicons-arrow-right-24: Security Guide](security.md)
 
--   :chart_with_upwards_trend:{ .lg .middle } **12-Tier Evaluation**
+- :chart_with_upwards_trend:{ .lg .middle } **12-Tier Evaluation**
 
     ---
 
@@ -117,49 +117,49 @@ hide:
 
 ---
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AgenticAI Framework Architecture                     │
+│ AgenticAI Framework Architecture │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
-│  │   Agent 1   │  │   Agent 2   │  │   Agent 3   │  │   Agent N   │        │
-│  │  (Leader)   │  │ (Researcher)│  │  (Writer)   │  │ (Specialist)│        │
-│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘        │
-│         │                │                │                │               │
-│         └────────────────┼────────────────┼────────────────┘               │
-│                          │                │                                 │
-│  ┌───────────────────────┴────────────────┴───────────────────────┐        │
-│  │                    Orchestration Layer                          │        │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐              │        │
-│  │  │  Workflow   │  │    Team     │  │   Router    │              │        │
-│  │  │  Manager    │  │   Manager   │  │   Engine    │              │        │
-│  │  └─────────────┘  └─────────────┘  └─────────────┘              │        │
-│  └─────────────────────────────────────────────────────────────────┘        │
-│                                    │                                        │
-│  ┌─────────────────────────────────┴─────────────────────────────────┐     │
-│  │                        Core Services Layer                         │     │
-│  ├────────────┬────────────┬────────────┬────────────┬───────────────┤     │
-│  │  Memory    │  State     │ Knowledge  │   Tool     │  LLM          │     │
-│  │  Managers  │  Managers  │  Base      │   Registry │  Providers    │     │
-│  │  (7 types) │  (7 types) │            │  (35+)     │  (Multiple)   │     │
-│  └────────────┴────────────┴────────────┴────────────┴───────────────┘     │
-│                                    │                                        │
-│  ┌─────────────────────────────────┴─────────────────────────────────┐     │
-│  │                    Infrastructure Layer                            │     │
-│  ├──────────────┬──────────────┬──────────────┬──────────────────────┤     │
-│  │ Communication│  Tracing &   │  Security &  │  Guardrails &        │     │
-│  │ (6 protocols)│  Monitoring  │  Compliance  │  Validation          │     │
-│  └──────────────┴──────────────┴──────────────┴──────────────────────┘     │
-│                                                                             │
+│ │
+│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│ │ Agent 1 │ │ Agent 2 │ │ Agent 3 │ │ Agent N │ │
+│ │ (Leader) │ │ (Researcher)│ │ (Writer) │ │ (Specialist)│ │
+│ └──────┬──────┘ └──────┬──────┘ └──────┬──────┘ └──────┬──────┘ │
+│ │ │ │ │ │
+│ └────────────────┼────────────────┼────────────────┘ │
+│ │ │ │
+│ ┌───────────────────────┴────────────────┴───────────────────────┐ │
+│ │ Orchestration Layer │ │
+│ │ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │ │
+│ │ │ Workflow │ │ Team │ │ Router │ │ │
+│ │ │ Manager │ │ Manager │ │ Engine │ │ │
+│ │ └─────────────┘ └─────────────┘ └─────────────┘ │ │
+│ └─────────────────────────────────────────────────────────────────┘ │
+│ │ │
+│ ┌─────────────────────────────────┴─────────────────────────────────┐ │
+│ │ Core Services Layer │ │
+│ ├────────────┬────────────┬────────────┬────────────┬───────────────┤ │
+│ │ Memory │ State │ Knowledge │ Tool │ LLM │ │
+│ │ Managers │ Managers │ Base │ Registry │ Providers │ │
+│ │ (7 types) │ (7 types) │ │ (35+) │ (Multiple) │ │
+│ └────────────┴────────────┴────────────┴────────────┴───────────────┘ │
+│ │ │
+│ ┌─────────────────────────────────┴─────────────────────────────────┐ │
+│ │ Infrastructure Layer │ │
+│ ├──────────────┬──────────────┬──────────────┬──────────────────────┤ │
+│ │ Communication│ Tracing & │ Security & │ Guardrails & │ │
+│ │ (6 protocols)│ Monitoring │ Compliance │ Validation │ │
+│ └──────────────┴──────────────┴──────────────┴──────────────────────┘ │
+│ │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
@@ -222,11 +222,11 @@ for a in manager.list_agents():
 
 ---
 
-## 💡 Core Modules
+## Core Modules
 
 <div class="grid cards" markdown>
 
--   :robot:{ .lg } **Agents**
+- :robot:{ .lg } **Agents**
 
     ---
 
@@ -234,7 +234,7 @@ for a in manager.list_agents():
 
     ```python
     from agenticaiframework import Agent, AgentConfig
-    
+
     agent = Agent(config=AgentConfig(
         name="assistant",
         role="AI Assistant",
@@ -244,7 +244,7 @@ for a in manager.list_agents():
 
     [:octicons-arrow-right-24: Learn More](agents.md)
 
--   :floppy_disk:{ .lg } **Memory**
+- :floppy_disk:{ .lg } **Memory**
 
     ---
 
@@ -262,7 +262,7 @@ for a in manager.list_agents():
 
     [:octicons-arrow-right-24: Explore Memory](memory.md)
 
--   :gear:{ .lg } **State Management**
+- :gear:{ .lg } **State Management**
 
     ---
 
@@ -278,7 +278,7 @@ for a in manager.list_agents():
 
     [:octicons-arrow-right-24: State Guide](state.md)
 
--   :satellite_antenna:{ .lg } **Communication**
+- :satellite_antenna:{ .lg } **Communication**
 
     ---
 
@@ -297,7 +297,7 @@ for a in manager.list_agents():
 
 ---
 
-## 🔧 35+ Built-in Tools
+## 35+ Built-in Tools
 
 <div class="grid" markdown>
 
@@ -349,7 +349,7 @@ for a in manager.list_agents():
 
 ---
 
-## 📈 12-Tier Evaluation System
+## 12-Tier Evaluation System
 
 Comprehensive evaluation framework for production AI systems:
 
@@ -372,11 +372,11 @@ Comprehensive evaluation framework for production AI systems:
 
 ---
 
-## 🛡️ Enterprise Features
+## Enterprise Features
 
 <div class="grid cards" markdown>
 
--   :shield:{ .lg } **Security & Compliance**
+- :shield:{ .lg } **Security & Compliance**
 
     ---
 
@@ -387,7 +387,7 @@ Comprehensive evaluation framework for production AI systems:
     - PII detection & masking
     - SOC 2, HIPAA, GDPR ready
 
--   :chart_with_upwards_trend:{ .lg } **Monitoring & Observability**
+- :chart_with_upwards_trend:{ .lg } **Monitoring & Observability**
 
     ---
 
@@ -398,7 +398,7 @@ Comprehensive evaluation framework for production AI systems:
     - Performance profiling
     - Error tracking & analysis
 
--   :zap:{ .lg } **Scalability & Performance**
+- :zap:{ .lg } **Scalability & Performance**
 
     ---
 
@@ -409,7 +409,7 @@ Comprehensive evaluation framework for production AI systems:
     - Rate limiting
     - Circuit breakers
 
--   :rocket:{ .lg } **DevOps & Deployment**
+- :rocket:{ .lg } **DevOps & Deployment**
 
     ---
 
@@ -424,7 +424,7 @@ Comprehensive evaluation framework for production AI systems:
 
 ---
 
-## 🎤 Speech Processing
+## Speech Processing
 
 Full-featured speech-to-text and text-to-speech capabilities:
 
@@ -459,11 +459,11 @@ audio = agent.synthesize_speech(response.output)
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 <div class="grid cards" markdown>
 
--   :rocket:{ .lg } **Getting Started**
+- :rocket:{ .lg } **Getting Started**
 
     ---
 
@@ -472,7 +472,7 @@ audio = agent.synthesize_speech(response.output)
     - [First Agent](quick-start.md#create-your-first-agent)
     - [Configuration](configuration-reference.md)
 
--   :book:{ .lg } **Core Concepts**
+- :book:{ .lg } **Core Concepts**
 
     ---
 
@@ -481,7 +481,7 @@ audio = agent.synthesize_speech(response.output)
     - [State Management](state.md)
     - [Orchestration](orchestration.md)
 
--   :hammer_and_wrench:{ .lg } **Advanced Topics**
+- :hammer_and_wrench:{ .lg } **Advanced Topics**
 
     ---
 
@@ -490,7 +490,7 @@ audio = agent.synthesize_speech(response.output)
     - [Security](security.md)
     - [Performance](performance.md)
 
--   :books:{ .lg } **Reference**
+- :books:{ .lg } **Reference**
 
     ---
 
@@ -503,7 +503,7 @@ audio = agent.synthesize_speech(response.output)
 
 ---
 
-## 🤝 Community & Support
+## Community & Support
 
 <div class="quick-links">
   <a href="https://github.com/isathish/agenticaiframework">
@@ -522,7 +522,7 @@ audio = agent.synthesize_speech(response.output)
 
 ---
 
-## 📄 License
+## License
 
 AgenticAI Framework is released under the **MIT License**.
 
@@ -544,7 +544,7 @@ copies of the Software...
 
 <div style="text-align: center; margin-top: 3rem;">
   <p style="font-size: 1.25rem; color: var(--md-default-fg-color--light);">
-    Built with ❤️ for the AI Agent Community
+    Built with for the AI Agent Community
   </p>
   <p>
     <a href="quick-start/" class="md-button md-button--primary">Get Started Now</a>

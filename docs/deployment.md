@@ -8,7 +8,7 @@ tags:
   - guide
 ---
 
-# 🚢 Deployment
+# Deployment
 
 <div align="center">
 
@@ -25,12 +25,11 @@ tags:
 
 ---
 
-## 📊 Overview
+## Overview
 
 This comprehensive guide covers deploying AgenticAI Framework applications across various environments, from local development to production-scale cloud deployments.
 
-
-## 🎯 Deployment Options
+## Deployment Options
 
 ```mermaid
 graph TB
@@ -38,36 +37,35 @@ graph TB
         LOCAL[Local Development<br/>Python + venv]
         DOCKER_LOCAL[Docker Compose<br/>Multi-container]
     end
-    
+
     subgraph "Staging/Testing"
         VM[Virtual Machines<br/>EC2, Azure VM]
         CONTAINER[Container Registry<br/>Docker Hub, ACR, ECR]
     end
-    
+
     subgraph "Production - Compute"
         K8S[Kubernetes<br/>EKS, AKS, GKE]
         SERVERLESS[Serverless<br/>Lambda, Functions]
         APP_PLATFORM[App Platform<br/>App Engine, Elastic Beanstalk]
     end
-    
+
     subgraph "Production - Managed"
         PAAS[Platform as Service<br/>Heroku, Render]
         FAAS[Functions as Service<br/>AWS Lambda, Azure Functions]
     end
-    
+
     LOCAL --> DOCKER_LOCAL
     DOCKER_LOCAL --> CONTAINER
     CONTAINER --> K8S
     CONTAINER --> APP_PLATFORM
     VM --> K8S
-    
+
     style LOCAL fill:#4caf50
     style K8S fill:#2196f3
     style SERVERLESS fill:#ff9800
 ```
 
-
-## 🐳 Docker Deployment
+## Docker Deployment
 
 ### 1. Dockerfile
 
@@ -242,8 +240,7 @@ docker-compose down
 docker-compose down -v
 ```
 
-
-## ☸️ Kubernetes Deployment
+## Kubernetes Deployment
 
 ### 1. Kubernetes Manifests
 
@@ -419,8 +416,7 @@ kubectl delete -f kubernetes/
 helm uninstall agenticai
 ```
 
-
-## ☁️ Cloud Platform Deployments
+## Cloud Platform Deployments
 
 ### 1. AWS Deployment
 
@@ -461,8 +457,7 @@ eb terminate agenticai-env
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "1024",
   "memory": "2048",
-  "containerDefinitions": [
-    {
+  "containerDefinitions": [{
       "name": "agenticai",
       "image": "your-registry/agenticai-framework:latest",
       "portMappings": [
@@ -471,14 +466,12 @@ eb terminate agenticai-env
           "protocol": "tcp"
         }
       ],
-      "environment": [
-        {
+      "environment": [{
           "name": "LOG_LEVEL",
           "value": "INFO"
         }
       ],
-      "secrets": [
-        {
+      "secrets": [{
           "name": "OPENAI_API_KEY",
           "valueFrom": "arn:aws:secretsmanager:region:account:secret:openai-key"
         }
@@ -621,8 +614,7 @@ kubectl expose deployment agenticai-deployment \
   --target-port 8000
 ```
 
-
-## 🔐 Security Configuration
+## Security Configuration
 
 ### 1. Environment Variables
 
@@ -665,8 +657,7 @@ def get_gcp_secret(project_id: str, secret_id: str):
     return response.payload.data.decode('UTF-8')
 ```
 
-
-## 📊 Monitoring & Health Checks
+## Monitoring & Health Checks
 
 ### 1. Health Check Endpoints
 
@@ -684,16 +675,16 @@ async def health_check():
 @app.get("/ready")
 async def readiness_check():
     """Readiness check with dependencies"""
-    
+
     checks = {
         "database": check_database(),
         "redis": check_redis(),
         "llm_service": check_llm_service()
     }
-    
+
     all_healthy = all(checks.values())
     status_code = status.HTTP_200_OK if all_healthy else status.HTTP_503_SERVICE_UNAVAILABLE
-    
+
     return JSONResponse(
         status_code=status_code,
         content={
@@ -718,8 +709,7 @@ import sys
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler(sys.stdout),
+    handlers=[logging.StreamHandler(sys.stdout),
         logging.FileHandler('app.log')
     ]
 )
@@ -741,8 +731,7 @@ def log_structured(level: str, message: str, **kwargs):
 log_structured("INFO", "Agent started", agent_id="agent_001", task="analysis")
 ```
 
-
-## 🔄 CI/CD Pipeline
+## CI/CD Pipeline
 
 ### GitHub Actions
 
@@ -757,35 +746,35 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
-    
+
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
         pip install pytest pytest-cov
-    
+
     - name: Run tests
       run: pytest --cov=agenticaiframework tests/
-    
+
     - name: Build Docker image
       run: |
         docker build -t ${{ secrets.REGISTRY }}/agenticai:${{ github.sha }} .
         docker tag ${{ secrets.REGISTRY }}/agenticai:${{ github.sha }} \
                    ${{ secrets.REGISTRY }}/agenticai:latest
-    
+
     - name: Push to registry
       run: |
         echo ${{ secrets.REGISTRY_PASSWORD }} | docker login -u ${{ secrets.REGISTRY_USERNAME }} --password-stdin
         docker push ${{ secrets.REGISTRY }}/agenticai:${{ github.sha }}
         docker push ${{ secrets.REGISTRY }}/agenticai:latest
-    
+
     - name: Deploy to Kubernetes
       uses: azure/k8s-deploy@v4
       with:
@@ -797,8 +786,7 @@ jobs:
         kubectl-version: 'latest'
 ```
 
-
-## 📚 Related Documentation
+## Related Documentation
 
 - [Performance Optimization](performance.md) - Speed and efficiency
 - [Architecture Overview](architecture.md) - System design
@@ -806,9 +794,8 @@ jobs:
 - [Security](security.md) - Security best practices
 - [Best Practices](best-practices.md) - Development guidelines
 
-
 <div align="center">
 
-**[⬆ Back to Top](#-deployment-guide)**
+**[Back to Top](#deployment-guide)**
 
 </div>

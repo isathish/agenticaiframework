@@ -7,7 +7,7 @@ tags:
   - models
 ---
 
-# 🧠 LLM Manager Example
+# LLM Manager Example
 
 !!! success "18+ LLM Providers"
     Part of **400+ modules** supporting OpenAI, Anthropic, Gemini, Azure, AWS Bedrock, and more. See [LLM Documentation](../llms.md).

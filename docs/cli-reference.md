@@ -8,7 +8,7 @@ tags:
   - tools
 ---
 
-# 💻 CLI Reference
+# CLI Reference
 
 <div align="center">
 
@@ -24,12 +24,11 @@ tags:
 
 ---
 
-## 📊 Overview
+## Overview
 
 Complete command-line interface (CLI) reference for AgenticAI Framework. This guide covers all CLI commands, options, and usage examples for managing agents, tasks, and configurations.
 
-
-## 🚀 Installation
+## Installation
 
 ```bash
 # Install AgenticAI with CLI tools
@@ -42,8 +41,7 @@ agenticai --version
 agenticai --help
 ```
 
-
-## 📖 Global Options
+## Global Options
 
 Options available for all commands:
 
@@ -73,7 +71,7 @@ agenticai --verbose agent create --name my_agent
 agenticai --output json agent list
 ```
 
-## 🤖 Agent Commands
+## Agent Commands
 
 ### `agenticai agent create`
 
@@ -239,7 +237,6 @@ agenticai agent delete agent_001
 # Delete without confirmation
 agenticai agent delete agent_001 --confirm
 ```
-
 
 ### `agenticai task create`
 
@@ -554,7 +551,6 @@ agenticai llm models
 agenticai llm models --provider openai
 ```
 
-
 Show system status.
 
 ```bash
@@ -635,7 +631,7 @@ agenticai monitor logs --level ERROR --follow
 agenticai monitor logs --agent agent_001 --follow
 ```
 
-## ⚙️ Config Commands
+## Config Commands
 ### `agenticai config show`
 Show current configuration.
 
@@ -709,8 +705,6 @@ agenticai config validate
 # Validate specific file
 agenticai config validate --config staging-config.yaml
 ```
-
-
 
 Run test suite.
 
@@ -797,12 +791,12 @@ agenticai doctor
 ```
 Running diagnostics...
 
-✓ Python version: 3.11.5
-✓ Dependencies: All installed
-✓ Configuration: Valid
-✓ API keys: Configured
-✗ Redis connection: Failed (Connection refused)
-⚠ Disk space: Low (15% remaining)
+ Python version: 3.11.5
+ Dependencies: All installed
+ Configuration: Valid
+ API keys: Configured
+ Redis connection: Failed (Connection refused)
+ Disk space: Low (15% remaining)
 
 2 issues found, 4 checks passed
 ```
@@ -824,8 +818,6 @@ agenticai version
 # Full version info
 agenticai version --full
 ```
-
-
 
 ```bash
 # 1. Initialize project
@@ -871,8 +863,7 @@ agenticai agent list --format json | jq '.[] | .id'
 agenticai agent list --format json | jq -r '.[] | .id' | xargs -I {} agenticai agent stop {}
 ```
 
-
-## 🔗 Shell Completion
+## Shell Completion
 ```bash
 # Bash
 agenticai --install-completion bash
@@ -886,10 +877,8 @@ source ~/.zshrc
 agenticai --install-completion fish
 ```
 
-## 📚 Related Documentation
+## Related Documentation
 
 - [Examples](EXAMPLES.md) - Code examples
 
-
-
-**[⬆ Back to Top](#cli-reference)**
+**[Back to Top](#cli-reference)**

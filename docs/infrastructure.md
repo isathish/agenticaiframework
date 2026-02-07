@@ -9,7 +9,7 @@ tags:
   - distributed
 ---
 
-# 🏗️ Infrastructure
+# Infrastructure
 
 <div class="annotate" markdown>
 
@@ -24,40 +24,40 @@ Multi-region deployment, tenant isolation, serverless execution, and distributed
 
 ---
 
-## 🎯 Quick Navigation
+## Quick Navigation
 
 <div class="grid cards" markdown>
 
--   :material-earth:{ .lg } **Multi-Region**
-    
+- :material-earth:{ .lg } **Multi-Region**
+
     Geographic distribution
-    
+
     [:octicons-arrow-right-24: Deploy](#multi-region-manager)
 
--   :material-account-group:{ .lg } **Multi-Tenant**
-    
+- :material-account-group:{ .lg } **Multi-Tenant**
+
     Tenant isolation
-    
+
     [:octicons-arrow-right-24: Isolate](#tenant-manager)
 
--   :material-cloud-outline:{ .lg } **Serverless**
-    
+- :material-cloud-outline:{ .lg } **Serverless**
+
     Function execution
-    
+
     [:octicons-arrow-right-24: Execute](#serverless-executor)
 
--   :material-sitemap:{ .lg } **Coordination**
-    
+- :material-sitemap:{ .lg } **Coordination**
+
     Distributed systems
-    
+
     [:octicons-arrow-right-24: Coordinate](#distributed-coordinator)
 
 </div>
 
-## 📊 Overview
+## Overview
 
 !!! abstract "Infrastructure Framework"
-    
+
     The Infrastructure module provides **20 enterprise-grade infrastructure modules** for deploying and managing AI agents at scale across multiple regions, tenants, and execution environments.
 
 ### Architecture
@@ -68,32 +68,32 @@ graph TB
         LB[Load Balancer]
         DNS[DNS Routing]
     end
-    
+
     subgraph "Region US-East"
         R1_MR[MultiRegionManager]
         R1_TM[TenantManager]
         R1_SE[ServerlessExecutor]
     end
-    
+
     subgraph "Region EU-West"
         R2_MR[MultiRegionManager]
         R2_TM[TenantManager]
         R2_SE[ServerlessExecutor]
     end
-    
+
     subgraph "Coordination"
         DC[DistributedCoordinator]
         SYNC[State Sync]
         LOCK[Distributed Locks]
     end
-    
+
     DNS --> LB
     LB --> R1_MR & R2_MR
     R1_MR --> R1_TM --> R1_SE
     R2_MR --> R2_TM --> R2_SE
     R1_MR & R2_MR <--> DC
     DC --> SYNC & LOCK
-    
+
     style R1_MR fill:#e3f2fd,stroke:#1976d2
     style R2_MR fill:#e3f2fd,stroke:#1976d2
     style DC fill:#fff3e0,stroke:#f57c00
@@ -101,7 +101,7 @@ graph TB
 
 ---
 
-## 🌍 Multi-Region Manager
+## Multi-Region Manager
 
 The `MultiRegionManager` handles geographic distribution and failover.
 
@@ -193,10 +193,10 @@ logger = logging.getLogger(__name__)
 health_status = manager.get_health_status()
 for region_name, status in health_status.items():
     logger.info(f"{region_name}:")
-    logger.info(f"  Status: {status.state}")
-    logger.info(f"  Latency: {status.avg_latency_ms}ms")
-    logger.info(f"  Capacity: {status.available_capacity}/{status.total_capacity}")
-    logger.info(f"  Error Rate: {status.error_rate}%")
+    logger.info(f" Status: {status.state}")
+    logger.info(f" Latency: {status.avg_latency_ms}ms")
+    logger.info(f" Capacity: {status.available_capacity}/{status.total_capacity}")
+    logger.info(f" Error Rate: {status.error_rate}%")
 
 # Set health check configuration
 manager.configure_health_checks(
@@ -213,16 +213,16 @@ manager.configure_health_checks(
 # Configure automatic failover
 manager.configure_failover(
     enabled=True,
-    failover_threshold_ms=500,     # Trigger if latency > 500ms
-    failover_error_rate=0.1,       # Trigger if error rate > 10%
-    cooldown_seconds=60,           # Wait before failing back
+    failover_threshold_ms=500, # Trigger if latency > 500ms
+    failover_error_rate=0.1, # Trigger if error rate > 10%
+    cooldown_seconds=60, # Wait before failing back
     notification_webhook="https://alerts.example.com/failover"
 )
 ```
 
 ---
 
-## 👥 Tenant Manager
+## Tenant Manager
 
 The `TenantManager` provides complete tenant isolation and management.
 
@@ -264,11 +264,11 @@ tenant_mgr.register_tenant(tenant)
 from agenticaiframework.infrastructure import IsolationLevel
 
 # Available isolation levels
-IsolationLevel.NAMESPACE    # Logical separation (schemas)
-IsolationLevel.DATABASE     # Separate databases
-IsolationLevel.CONTAINER    # Separate containers
-IsolationLevel.CLUSTER      # Dedicated clusters
-IsolationLevel.REGION       # Separate regions
+IsolationLevel.NAMESPACE # Logical separation (schemas)
+IsolationLevel.DATABASE # Separate databases
+IsolationLevel.CONTAINER # Separate containers
+IsolationLevel.CLUSTER # Dedicated clusters
+IsolationLevel.REGION # Separate regions
 ```
 
 ### Tenant Context
@@ -279,7 +279,7 @@ async with tenant_mgr.tenant_context("tenant-acme") as ctx:
     # All operations scoped to tenant
     agents = ctx.list_agents()
     data = ctx.query_data("SELECT * FROM logs")
-    
+
     # Tenant-specific configuration
     config = ctx.get_config()
 
@@ -345,7 +345,7 @@ for tenant in tenant_mgr.list_tenants():
 
 ---
 
-## ☁️ Serverless Executor
+## Serverless Executor
 
 The `ServerlessExecutor` enables function-as-a-service execution.
 
@@ -364,7 +364,7 @@ from agenticaiframework.infrastructure import (
 
 # Create executor
 executor = ServerlessExecutor(
-    provider="aws_lambda",  # or "azure_functions", "gcp_functions"
+    provider="aws_lambda", # or "azure_functions", "gcp_functions"
     credentials=credentials
 )
 
@@ -490,7 +490,7 @@ result = await executor.invoke(
 
 ---
 
-## 🔗 Distributed Coordinator
+## Distributed Coordinator
 
 The `DistributedCoordinator` manages distributed state and coordination.
 
@@ -504,7 +504,7 @@ from agenticaiframework.infrastructure import (
 
 # Create coordinator
 coordinator = DistributedCoordinator(
-    backend="redis",  # or "etcd", "zookeeper", "consul"
+    backend="redis", # or "etcd", "zookeeper", "consul"
     config=CoordinatorConfig(
         hosts=["redis1:6379", "redis2:6379", "redis3:6379"],
         cluster_name="agent-cluster"
@@ -633,7 +633,7 @@ if task:
         await process_task(task)
         await queue.ack(task)
     except Exception:
-        await queue.nack(task)  # Return to queue
+        await queue.nack(task) # Return to queue
 
 # Priority queue
 priority_queue = coordinator.priority_queue("priority-tasks")
@@ -643,7 +643,7 @@ await priority_queue.put({"urgent": False}, priority=1)
 
 ---
 
-## 🎯 Complete Example
+## Complete Example
 
 ```python
 import logging
@@ -678,7 +678,7 @@ async def setup_infrastructure():
         priority=2
     ))
     region_mgr.set_routing_strategy(RoutingStrategy.LOWEST_LATENCY)
-    
+
     # 2. Multi-tenant setup
     tenant_mgr = TenantManager()
     tenant_mgr.register_tenant(Tenant(
@@ -689,14 +689,14 @@ async def setup_infrastructure():
             resource_limits={"max_agents": 50}
         )
     ))
-    
+
     # 3. Serverless setup
     executor = ServerlessExecutor(provider="aws_lambda")
-    
+
     # 4. Distributed coordination
     coordinator = DistributedCoordinator(backend="redis")
     await coordinator.connect()
-    
+
     return region_mgr, tenant_mgr, executor, coordinator
 
 # Global agent service
@@ -706,15 +706,15 @@ class GlobalAgentService:
         self.tenant_mgr = tenant_mgr
         self.executor = executor
         self.coordinator = coordinator
-    
+
     async def run_agent_task(self, tenant_id: str, task: dict):
         """Run agent task with full infrastructure support."""
-        
+
         # Get optimal region
         region = self.region_mgr.get_optimal_region(
             client_location=task.get("location")
         )
-        
+
         # Execute in tenant context
         async with self.tenant_mgr.tenant_context(tenant_id) as ctx:
             # Acquire distributed lock
@@ -728,20 +728,20 @@ class GlobalAgentService:
                         "region": region.name
                     }
                 )
-                
+
                 # Update distributed state
                 await self.coordinator.set_state(
                     f"tasks/{task['id']}/status",
                     "completed"
                 )
-                
+
                 return result
 
 # Usage
 async def main():
     infra = await setup_infrastructure()
     service = GlobalAgentService(*infra)
-    
+
     result = await service.run_agent_task(
         tenant_id="enterprise-client",
         task={
@@ -756,7 +756,7 @@ async def main():
 
 ---
 
-## 📋 Infrastructure Patterns
+## Infrastructure Patterns
 
 ### High Availability
 
@@ -781,8 +781,8 @@ coordinator.configure_consensus(
 # Configure DR
 region_mgr.configure_disaster_recovery(
     backup_region="us-west-2",
-    rpo_seconds=60,  # Recovery Point Objective
-    rto_seconds=300  # Recovery Time Objective
+    rpo_seconds=60, # Recovery Point Objective
+    rto_seconds=300 # Recovery Time Objective
 )
 
 # Trigger failover
@@ -795,7 +795,7 @@ await region_mgr.trigger_failover(
 
 ---
 
-## 📚 Related Documentation
+## Related Documentation
 
 - [Deployment](deployment.md) - Production deployment
 - [Monitoring](monitoring.md) - System monitoring

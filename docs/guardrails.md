@@ -11,7 +11,7 @@ tags:
   - validation
 ---
 
-# 🛡️ Guardrails
+# Guardrails
 
 <div class="annotate" markdown>
 
@@ -26,59 +26,59 @@ Protect your AI applications with intelligent validation and content moderation 
 
 ---
 
-## 🎯 Quick Navigation
+## Quick Navigation
 
 <div class="grid cards" markdown>
 
--   :material-shield-check:{ .lg } **Core Guardrails**
-    
+- :material-shield-check:{ .lg } **Core Guardrails**
+
     Basic validation and enforcement
-    
+
     [:octicons-arrow-right-24: Configure](#core-components)
 
--   :material-brain:{ .lg } **Specialized**
-    
+- :material-brain:{ .lg } **Specialized**
+
     Semantic, safety, format validation
-    
+
     [:octicons-arrow-right-24: Explore](#specialized-guardrails)
 
--   :material-pipe:{ .lg } **Pipeline**
-    
+- :material-pipe:{ .lg } **Pipeline**
+
     Chain multiple guardrails
-    
+
     [:octicons-arrow-right-24: Build](#guardrail-pipeline)
 
--   :material-gavel:{ .lg } **Policies**
-    
+- :material-gavel:{ .lg } **Policies**
+
     Behavior and resource policies
-    
+
     [:octicons-arrow-right-24: Define](#agent-policy-framework)
 
 </div>
 
-## 📖 Overview
+## Overview
 
 !!! abstract "What are Guardrails?"
-    
+
     Guardrails enforce safety, compliance, and quality constraints on AI-generated outputs, ensuring responses adhere to predefined rules, ethical guidelines, and domain-specific requirements.
 
 !!! success "Enterprise Security"
-    
+
     The framework includes **18 security & compliance modules** for enterprise-grade protection with encryption, authentication, PII detection, and audit logging.
 
 <div class="grid" markdown>
 
 :material-shield-alert:{ .lg } **Input Validation**
-:   Check user inputs before processing
+: Check user inputs before processing
 
 :material-filter:{ .lg } **Content Filtering**
-:   Remove harmful or inappropriate content
+: Remove harmful or inappropriate content
 
 :material-gavel:{ .lg } **Policy Enforcement**
-:   Ensure compliance with regulations
+: Ensure compliance with regulations
 
 :material-check-circle:{ .lg } **Output Verification**
-:   Validate AI responses before delivery
+: Validate AI responses before delivery
 
 </div>
 
@@ -193,7 +193,7 @@ logger.info(f"Violations: {result.get('violations', [])}")
 
 ---
 
-## 🎯 Specialized Guardrails
+## Specialized Guardrails
 
 The framework provides pre-built guardrails for common validation scenarios.
 
@@ -332,7 +332,7 @@ logger.info(f"Tool allowed: {result.is_valid}")
 
 ---
 
-## 🔗 Guardrail Pipeline
+## Guardrail Pipeline
 
 Chain multiple guardrails for comprehensive validation:
 
@@ -376,7 +376,7 @@ logger.info(f"Failed guardrails: {result.failures}")
 
 ---
 
-## 📜 Agent Policy Framework
+## Agent Policy Framework
 
 Define and enforce policies on agent behavior.
 
@@ -393,10 +393,10 @@ Define and enforce policies on agent behavior.
 ```python
 from agenticaiframework.guardrails import PolicyScope
 
-PolicyScope.GLOBAL    # Applies to all agents
-PolicyScope.TEAM      # Applies to agent team
-PolicyScope.AGENT     # Applies to specific agent
-PolicyScope.TASK      # Applies to specific task
+PolicyScope.GLOBAL # Applies to all agents
+PolicyScope.TEAM # Applies to agent team
+PolicyScope.AGENT # Applies to specific agent
+PolicyScope.TASK # Applies to specific task
 ```
 
 ### PolicyEnforcement
@@ -404,9 +404,9 @@ PolicyScope.TASK      # Applies to specific task
 ```python
 from agenticaiframework.guardrails import PolicyEnforcement
 
-PolicyEnforcement.STRICT   # Block on violation
-PolicyEnforcement.WARN     # Warn but allow
-PolicyEnforcement.LOG      # Log only
+PolicyEnforcement.STRICT # Block on violation
+PolicyEnforcement.WARN # Warn but allow
+PolicyEnforcement.LOG # Log only
 ```
 
 ### Creating Policies
@@ -487,7 +487,7 @@ if not compliance.is_allowed:
 
 ---
 
-## 📊 Guardrail Types Summary
+## Guardrail Types Summary
 
 | Guardrail | Purpose |
 |-----------|---------|

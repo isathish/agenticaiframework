@@ -284,12 +284,12 @@ from agenticaiframework.memory import MemoryManager
 
 ```python
 from agenticaiframework.exceptions import (
-    AgenticAIError,          # Base exception
-    ConfigurationError,      # Configuration issues
-    ProcessExecutionError,   # Process execution failures
-    AgentError,              # Agent-related errors
-    AgentNotFoundError,      # Agent not found
-    AgentExecutionError,     # Agent execution failures
+    AgenticAIError, # Base exception
+    ConfigurationError, # Configuration issues
+    ProcessExecutionError, # Process execution failures
+    AgentError, # Agent-related errors
+    AgentNotFoundError, # Agent not found
+    AgentExecutionError, # Agent execution failures
 )
 ```
 

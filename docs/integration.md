@@ -12,7 +12,7 @@ tags:
   - enterprise
 ---
 
-# 🔌 Integration Patterns
+# Integration Patterns
 
 <div class="annotate" markdown>
 
@@ -27,47 +27,45 @@ Comprehensive integration guide for APIs, databases, and message queues across *
 
 ---
 
-## 🎯 Quick Navigation
+## Quick Navigation
 
 <div class="grid cards" markdown>
 
--   :material-api:{ .lg } **REST APIs**
-    
+- :material-api:{ .lg } **REST APIs**
+
     HTTP/REST integration patterns
-    
+
     [:octicons-arrow-right-24: Integrate](#rest-api-integration)
 
--   :material-database:{ .lg } **Databases**
-    
+- :material-database:{ .lg } **Databases**
+
     SQL and NoSQL connections
-    
+
     [:octicons-arrow-right-24: Connect](#database-integration)
 
--   :material-message:{ .lg } **Message Queues**
-    
+- :material-message:{ .lg } **Message Queues**
+
     Kafka, RabbitMQ integration
-    
+
     [:octicons-arrow-right-24: Setup](#message-queue-integration)
 
--   :material-office-building:{ .lg } **Enterprise**
-    
+- :material-office-building:{ .lg } **Enterprise**
+
     ServiceNow, GitHub, Azure DevOps
-    
+
     [:octicons-arrow-right-24: Connect](#enterprise-integrations)
 
 </div>
 
-
-## 📊 Overview
+## Overview
 
 This guide demonstrates various integration patterns for connecting AgenticAI Framework with external systems, APIs, databases, and services.
 
 !!! success "Enterprise Connectors"
-    
+
     The framework includes **18 pre-built enterprise integration connectors** for ServiceNow, GitHub, Azure DevOps, Slack, Teams, Salesforce, AWS, Azure, GCP, and more.
 
-
-## 🎯 Integration Architecture
+## Integration Architecture
 
 ```mermaid
 graph TB
@@ -76,14 +74,14 @@ graph TB
         TASK[Task Manager]
         MEMORY[Memory Manager]
     end
-    
+
     subgraph "Integration Layer"
         API[API Connectors]
         DB[Database Adapters]
         MSG[Message Queue]
         WEBHOOK[Webhook Manager]
     end
-    
+
     subgraph "External Systems"
         REST[REST APIs]
         GRAPHQL[GraphQL APIs]
@@ -95,26 +93,25 @@ graph TB
         RABBITMQ[RabbitMQ]
         S3[S3/Blob Storage]
     end
-    
+
     AGENT --> API
     AGENT --> DB
     TASK --> MSG
     MEMORY --> DB
-    
+
     API --> REST & GRAPHQL & GRPC
     DB --> POSTGRES & MONGO & REDIS
     MSG --> KAFKA & RABBITMQ
     WEBHOOK --> REST
-    
+
     S3 -.backup/restore.-> DB
-    
+
     style AGENT fill:#4caf50
     style API fill:#2196f3
     style REST fill:#ff9800
 ```
 
-
-## 🌐 REST API Integration
+## REST API Integration
 
 ### 1. Basic HTTP Client
 
@@ -124,7 +121,7 @@ import asyncio
 
 class RESTAPIClient:
     """Async REST API client"""
-    
+
     def __init__(self, base_url: str, api_key: str = None):
         self.base_url = base_url
         self.headers = {
@@ -132,14 +129,14 @@ class RESTAPIClient:
             "Authorization": f"Bearer {api_key}" if api_key else None
         }
         self.session = None
-    
+
     async def __aenter__(self):
         self.session = aiohttp.ClientSession(headers=self.headers)
         return self
-    
+
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.session.close()
-    
+
     async def get(self, endpoint: str, params: Dict = None) -> Dict:
         """GET request"""
         async with self.session.get(
@@ -148,7 +145,7 @@ class RESTAPIClient:
         ) as response:
             response.raise_for_status()
             return await response.json()
-    
+
     async def post(self, endpoint: str, data: Dict) -> Dict:
         """POST request"""
         async with self.session.post(
@@ -157,7 +154,7 @@ class RESTAPIClient:
         ) as response:
             response.raise_for_status()
             return await response.json()
-    
+
     async def put(self, endpoint: str, data: Dict) -> Dict:
         """PUT request"""
         async with self.session.put(
@@ -166,7 +163,7 @@ class RESTAPIClient:
         ) as response:
             response.raise_for_status()
             return await response.json()
-    
+
     async def delete(self, endpoint: str) -> Dict:
         """DELETE request"""
         async with self.session.delete(
@@ -180,10 +177,10 @@ async def fetch_data_example():
     async with RESTAPIClient("https://api.example.com", api_key="your-key") as client:
         # GET request
         users = await client.get("users", params={"limit": 10})
-        
+
         # POST request
         new_user = await client.post("users", data={"name": "John", "email": "john@example.com"})
-        
+
         return users, new_user
 ```
 
@@ -194,27 +191,27 @@ from agenticaiframework.agents import Agent
 
 class APIIntegrationAgent(Agent):
     """Agent that integrates with external APIs"""
-    
+
     def __init__(self, name: str, api_client: RESTAPIClient):
         super().__init__(name=name, role="api_integrator", capabilities=["api_calls"])
         self.api_client = api_client
-    
+
     async def fetch_user_data(self, user_id: str):
         """Fetch user data from external API"""
         try:
             user_data = await self.api_client.get(f"users/{user_id}")
-            
+
             # Store in memory
             self.memory_manager.store(
                 key=f"user_{user_id}",
                 value=user_data
             )
-            
+
             return user_data
         except Exception as e:
             self.logger.error(f"Failed to fetch user data: {e}")
             raise
-    
+
     async def create_resource(self, resource_type: str, data: dict):
         """Create resource via API"""
         result = await self.api_client.post(resource_type, data=data)
@@ -224,10 +221,10 @@ class APIIntegrationAgent(Agent):
 async def main():
     async with RESTAPIClient("https://api.example.com", "api-key") as client:
         agent = APIIntegrationAgent("api_agent", api_client=client)
-        
+
         # Fetch data
         user = await agent.fetch_user_data("user_123")
-        
+
         # Create resource
         resource = await agent.create_resource("projects", {
             "name": "New Project",
@@ -235,8 +232,7 @@ async def main():
         })
 ```
 
-
-## 🔗 GraphQL Integration
+## GraphQL Integration
 
 ### 1. GraphQL Client
 
@@ -246,21 +242,21 @@ from gql.transport.aiohttp import AIOHTTPTransport
 
 class GraphQLClient:
     """GraphQL API client"""
-    
+
     def __init__(self, endpoint: str, api_key: str = None):
         headers = {}
         if api_key:
             headers["Authorization"] = f"Bearer {api_key}"
-        
+
         transport = AIOHTTPTransport(url=endpoint, headers=headers)
         self.client = Client(transport=transport, fetch_schema_from_transport=True)
-    
+
     async def query(self, query_string: str, variables: dict = None):
         """Execute GraphQL query"""
         query = gql(query_string)
         result = await self.client.execute_async(query, variable_values=variables)
         return result
-    
+
     async def mutate(self, mutation_string: str, variables: dict = None):
         """Execute GraphQL mutation"""
         mutation = gql(mutation_string)
@@ -297,8 +293,7 @@ new_user = await graphql_client.mutate(mutation, variables={
 })
 ```
 
-
-## 🗄️ Database Integration
+## Database Integration
 
 ### 1. PostgreSQL Integration
 
@@ -307,11 +302,11 @@ import asyncpg
 
 class PostgreSQLAdapter:
     """PostgreSQL database adapter"""
-    
+
     def __init__(self, connection_string: str):
         self.connection_string = connection_string
         self.pool = None
-    
+
     async def connect(self):
         """Create connection pool"""
         self.pool = await asyncpg.create_pool(
@@ -320,28 +315,28 @@ class PostgreSQLAdapter:
             max_size=50,
             command_timeout=60
         )
-    
+
     async def close(self):
         """Close connection pool"""
         await self.pool.close()
-    
+
     async def execute(self, query: str, *args) -> str:
         """Execute query without returning results"""
         async with self.pool.acquire() as conn:
             return await conn.execute(query, *args)
-    
+
     async def fetch_one(self, query: str, *args) -> Dict:
         """Fetch single row"""
         async with self.pool.acquire() as conn:
             row = await conn.fetchrow(query, *args)
             return dict(row) if row else None
-    
+
     async def fetch_all(self, query: str, *args) -> list[Dict]:
         """Fetch all rows"""
         async with self.pool.acquire() as conn:
             rows = await conn.fetch(query, *args)
             return [dict(row) for row in rows]
-    
+
     async def transaction(self, queries: list[tuple]):
         """Execute multiple queries in transaction"""
         async with self.pool.acquire() as conn:
@@ -355,11 +350,11 @@ class PostgreSQLAdapter:
 # Usage with Agent
 class DatabaseAgent(Agent):
     """Agent with database integration"""
-    
+
     def __init__(self, name: str, db_adapter: PostgreSQLAdapter):
         super().__init__(name=name, role="data_manager", capabilities=["database"])
         self.db = db_adapter
-    
+
     async def store_result(self, task_id: str, result: dict):
         """Store task result in database"""
         query = """
@@ -369,7 +364,7 @@ class DatabaseAgent(Agent):
         """
         result_id = await self.db.fetch_one(query, task_id, json.dumps(result))
         return result_id
-    
+
     async def get_user_history(self, user_id: str):
         """Retrieve user history from database"""
         query = """
@@ -389,48 +384,48 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 class MongoDBAdapter:
     """MongoDB database adapter"""
-    
+
     def __init__(self, connection_string: str, database_name: str):
         self.client = AsyncIOMotorClient(connection_string)
         self.db = self.client[database_name]
-    
+
     async def insert_one(self, collection: str, document: Dict) -> str:
         """Insert single document"""
         result = await self.db[collection].insert_one(document)
         return str(result.inserted_id)
-    
+
     async def insert_many(self, collection: str, documents: list[Dict]) -> list[str]:
         """Insert multiple documents"""
         result = await self.db[collection].insert_many(documents)
         return [str(id) for id in result.inserted_ids]
-    
+
     async def find_one(self, collection: str, filter: Dict) -> Dict:
         """Find single document"""
         document = await self.db[collection].find_one(filter)
         if document:
             document['_id'] = str(document['_id'])
         return document
-    
+
     async def find_many(self, collection: str, filter: Dict, limit: int = 100) -> list[Dict]:
         """Find multiple documents"""
         cursor = self.db[collection].find(filter).limit(limit)
         documents = await cursor.to_list(length=limit)
-        
+
         for doc in documents:
             doc['_id'] = str(doc['_id'])
-        
+
         return documents
-    
+
     async def update_one(self, collection: str, filter: Dict, update: Dict) -> int:
         """Update single document"""
         result = await self.db[collection].update_one(filter, {'$set': update})
         return result.modified_count
-    
+
     async def delete_one(self, collection: str, filter: Dict) -> int:
         """Delete single document"""
         result = await self.db[collection].delete_one(filter)
         return result.deleted_count
-    
+
     async def aggregate(self, collection: str, pipeline: list[Dict]) -> list[Dict]:
         """Execute aggregation pipeline"""
         cursor = self.db[collection].aggregate(pipeline)
@@ -458,11 +453,11 @@ import json
 
 class RedisAdapter:
     """Redis cache adapter"""
-    
+
     def __init__(self, redis_url: str):
         self.redis_url = redis_url
         self.redis = None
-    
+
     async def connect(self):
         """Connect to Redis"""
         self.redis = await aioredis.from_url(
@@ -470,16 +465,16 @@ class RedisAdapter:
             encoding="utf-8",
             decode_responses=True
         )
-    
+
     async def close(self):
         """Close Redis connection"""
         await self.redis.close()
-    
+
     async def get(self, key: str) -> Any:
         """Get value from cache"""
         value = await self.redis.get(key)
         return json.loads(value) if value else None
-    
+
     async def set(self, key: str, value: Any, ttl: int = None):
         """Set value in cache"""
         serialized = json.dumps(value)
@@ -487,19 +482,19 @@ class RedisAdapter:
             await self.redis.setex(key, ttl, serialized)
         else:
             await self.redis.set(key, serialized)
-    
+
     async def delete(self, key: str):
         """Delete key from cache"""
         await self.redis.delete(key)
-    
+
     async def exists(self, key: str) -> bool:
         """Check if key exists"""
         return await self.redis.exists(key)
-    
+
     async def expire(self, key: str, ttl: int):
         """Set expiration on key"""
         await self.redis.expire(key, ttl)
-    
+
     async def get_many(self, keys: list[str]) -> dict[str, Any]:
         """Get multiple values"""
         values = await self.redis.mget(keys)
@@ -507,12 +502,12 @@ class RedisAdapter:
             key: json.loads(value) if value else None
             for key, value in zip(keys, values)
         }
-    
+
     async def set_many(self, mapping: dict[str, Any], ttl: int = None):
         """Set multiple values"""
         serialized = {k: json.dumps(v) for k, v in mapping.items()}
         await self.redis.mset(serialized)
-        
+
         if ttl:
             for key in mapping.keys():
                 await self.redis.expire(key, ttl)
@@ -520,29 +515,28 @@ class RedisAdapter:
 # Usage with caching
 class CachedAgent(Agent):
     """Agent with Redis caching"""
-    
+
     def __init__(self, name: str, redis: RedisAdapter):
         super().__init__(name=name, role="cached_agent", capabilities=["caching"])
         self.redis = redis
-    
+
     async def get_with_cache(self, key: str, fetch_fn):
         """Get data with caching"""
         # Check cache
         cached = await self.redis.get(key)
         if cached:
             return cached
-        
+
         # Cache miss - fetch data
         data = await fetch_fn()
-        
+
         # Store in cache (TTL: 1 hour)
         await self.redis.set(key, data, ttl=3600)
-        
+
         return data
 ```
 
-
-## 📨 Message Queue Integration
+## Message Queue Integration
 
 ### 1. Kafka Integration
 
@@ -556,12 +550,12 @@ import json
 
 class KafkaAdapter:
     """Kafka message broker adapter"""
-    
+
     def __init__(self, bootstrap_servers: str):
         self.bootstrap_servers = bootstrap_servers
         self.producer = None
         self.consumers = {}
-    
+
     async def connect_producer(self):
         """Connect Kafka producer"""
         self.producer = AIOKafkaProducer(
@@ -569,7 +563,7 @@ class KafkaAdapter:
             value_serializer=lambda v: json.dumps(v).encode('utf-8')
         )
         await self.producer.start()
-    
+
     async def send_message(self, topic: str, message: dict, key: str = None):
         """Send message to topic"""
         await self.producer.send(
@@ -577,7 +571,7 @@ class KafkaAdapter:
             value=message,
             key=key.encode('utf-8') if key else None
         )
-    
+
     async def connect_consumer(self, topic: str, group_id: str):
         """Connect Kafka consumer"""
         consumer = AIOKafkaConsumer(
@@ -589,21 +583,21 @@ class KafkaAdapter:
         await consumer.start()
         self.consumers[topic] = consumer
         return consumer
-    
+
     async def consume_messages(self, topic: str, callback):
         """Consume messages from topic"""
         consumer = self.consumers.get(topic)
         if not consumer:
             raise ValueError(f"No consumer for topic: {topic}")
-        
+
         async for message in consumer:
             await callback(message.value)
-    
+
     async def close(self):
         """Close all connections"""
         if self.producer:
             await self.producer.stop()
-        
+
         for consumer in self.consumers.values():
             await consumer.stop()
 
@@ -639,17 +633,17 @@ import json
 
 class RabbitMQAdapter:
     """RabbitMQ message broker adapter"""
-    
+
     def __init__(self, connection_string: str):
         self.connection_string = connection_string
         self.connection = None
         self.channel = None
-    
+
     async def connect(self):
         """Connect to RabbitMQ"""
         self.connection = await aio_pika.connect_robust(self.connection_string)
         self.channel = await self.connection.channel()
-    
+
     async def publish(self, queue_name: str, message: dict):
         """Publish message to queue"""
         await self.channel.default_exchange.publish(
@@ -659,17 +653,17 @@ class RabbitMQAdapter:
             ),
             routing_key=queue_name
         )
-    
+
     async def consume(self, queue_name: str, callback):
         """Consume messages from queue"""
         queue = await self.channel.declare_queue(queue_name, durable=True)
-        
+
         async with queue.iterator() as queue_iter:
             async for message in queue_iter:
                 async with message.process():
                     data = json.loads(message.body.decode())
                     await callback(data)
-    
+
     async def close(self):
         """Close connection"""
         await self.connection.close()
@@ -691,8 +685,7 @@ async def process_task(task):
 await rabbitmq.consume("task_queue", process_task)
 ```
 
-
-## 🔔 Webhook Integration
+## Webhook Integration
 
 ```python
 import logging
@@ -705,42 +698,42 @@ import hmac
 
 class WebhookManager:
     """Webhook management system"""
-    
+
     def __init__(self, app: FastAPI):
         self.app = app
         self.handlers = {}
         self.secrets = {}
-    
+
     def register_webhook(self, path: str, secret: str, handler: Callable):
         """Register webhook endpoint"""
         self.handlers[path] = handler
         self.secrets[path] = secret
-        
+
         @self.app.post(path)
         async def webhook_endpoint(request: Request):
             # Verify signature
             if not await self.verify_signature(request, path):
                 raise HTTPException(status_code=401, detail="Invalid signature")
-            
+
             # Get payload
             payload = await request.json()
-            
+
             # Call handler
             result = await handler(payload)
-            
+
             return {"status": "success", "result": result}
-    
+
     async def verify_signature(self, request: Request, path: str) -> bool:
         """Verify webhook signature"""
         secret = self.secrets.get(path)
         if not secret:
             return False
-        
+
         # Get signature from header
         signature_header = request.headers.get("X-Webhook-Signature")
         if not signature_header:
             return False
-        
+
         # Calculate expected signature
         body = await request.body()
         expected_signature = hmac.new(
@@ -748,13 +741,13 @@ class WebhookManager:
             body,
             hashlib.sha256
         ).hexdigest()
-        
+
         return hmac.compare_digest(signature_header, expected_signature)
-    
+
     async def send_webhook(self, url: str, payload: dict, secret: str = None):
         """Send webhook to external service"""
         headers = {"Content-Type": "application/json"}
-        
+
         if secret:
             # Calculate signature
             body = json.dumps(payload).encode()
@@ -764,7 +757,7 @@ class WebhookManager:
                 hashlib.sha256
             ).hexdigest()
             headers["X-Webhook-Signature"] = signature
-        
+
         async with aiohttp.ClientSession() as session:
             async with session.post(url, json=payload, headers=headers) as response:
                 return await response.json()
@@ -778,12 +771,12 @@ async def handle_github_webhook(payload: dict):
     """Handle GitHub webhook"""
     event_type = payload.get("action")
     repository = payload.get("repository", {}).get("name")
-    
+
     logger.info(f"GitHub event: {event_type} on {repository}")
-    
+
     # Process webhook
     # ...
-    
+
     return {"processed": True}
 
 webhook_manager.register_webhook(
@@ -802,7 +795,7 @@ await webhook_manager.send_webhook(
 
 ---
 
-## 🏢 Enterprise Integrations
+## Enterprise Integrations
 
 The AgenticAI Framework provides built-in connectors for popular enterprise systems.
 
@@ -1041,17 +1034,15 @@ await webhook_manager.send(
 )
 ```
 
-
-## 📚 Related Documentation
+## Related Documentation
 
 - [Deployment Guide](deployment.md) - Production deployment
 - [Architecture Overview](architecture.md) - System design
 - [Security](security.md) - Security best practices
 - [Best Practices](best-practices.md) - Development guidelines
 
-
 <div align="center">
 
-**[⬆ Back to Top](#-integration-patterns)**
+**[Back to Top](#integration-patterns)**
 
 </div>

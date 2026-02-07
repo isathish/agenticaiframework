@@ -3,21 +3,21 @@ title: Speech Processing
 description: Full-featured speech-to-text and text-to-speech capabilities for voice-enabled agents
 ---
 
-# 🎤 Speech Processing
+# Speech Processing
 
 AgenticAI Framework provides comprehensive speech processing capabilities including speech-to-text (STT), text-to-speech (TTS), and voice interaction management.
 
 !!! success "Part of 400+ Modules"
-    
+
     Speech processing is one component of the comprehensive framework with 237 enterprise modules.
 
 ---
 
-## 🎯 Overview
+## Overview
 
 <div class="grid cards" markdown>
 
--   :microphone:{ .lg } **Speech-to-Text**
+- :microphone:{ .lg } **Speech-to-Text**
 
     ---
 
@@ -25,7 +25,7 @@ AgenticAI Framework provides comprehensive speech processing capabilities includ
 
     [:octicons-arrow-right-24: Learn STT](#speech-to-text)
 
--   :speaker:{ .lg } **Text-to-Speech**
+- :speaker:{ .lg } **Text-to-Speech**
 
     ---
 
@@ -33,7 +33,7 @@ AgenticAI Framework provides comprehensive speech processing capabilities includ
 
     [:octicons-arrow-right-24: Learn TTS](#text-to-speech)
 
--   :studio_microphone:{ .lg } **Real-time Processing**
+- :studio_microphone:{ .lg } **Real-time Processing**
 
     ---
 
@@ -41,7 +41,7 @@ AgenticAI Framework provides comprehensive speech processing capabilities includ
 
     [:octicons-arrow-right-24: Learn Streaming](#real-time-streaming)
 
--   :brain:{ .lg } **Voice Memory**
+- :brain:{ .lg } **Voice Memory**
 
     ---
 
@@ -53,16 +53,16 @@ AgenticAI Framework provides comprehensive speech processing capabilities includ
 
 ---
 
-## 🔊 Supported Providers
+## Supported Providers
 
 | Provider | STT | TTS | Languages | Best For |
 |----------|-----|-----|-----------|----------|
-| **OpenAI Whisper** | ✅ | ❌ | 99+ | High accuracy, multilingual |
-| **Google Cloud** | ✅ | ✅ | 125+ | Enterprise, real-time |
-| **Azure Cognitive** | ✅ | ✅ | 100+ | Enterprise, custom voices |
-| **Amazon (Transcribe/Polly)** | ✅ | ✅ | 75+ | AWS integration |
-| **ElevenLabs** | ❌ | ✅ | 29 | Ultra-realistic voices |
-| **Deepgram** | ✅ | ❌ | 36+ | Real-time, low latency |
+| **OpenAI Whisper** | | | 99+ | High accuracy, multilingual |
+| **Google Cloud** | | | 125+ | Enterprise, real-time |
+| **Azure Cognitive** | | | 100+ | Enterprise, custom voices |
+| **Amazon (Transcribe/Polly)** | | | 75+ | AWS integration |
+| **ElevenLabs** | | | 29 | Ultra-realistic voices |
+| **Deepgram** | | | 36+ | Real-time, low latency |
 
 ---
 
@@ -92,21 +92,21 @@ logger.info(f"Confidence: {result.confidence:.2f}")
 === "OpenAI Whisper"
     ```python
     from agenticaiframework.speech import SpeechToText, OpenAISTTConfig
-    
+
     config = OpenAISTTConfig(
         model="whisper-1",
-        language="en",  # Optional, auto-detect if not set
+        language="en", # Optional, auto-detect if not set
         temperature=0.0,
         response_format="verbose_json"
     )
-    
+
     stt = SpeechToText(provider="openai", config=config)
     ```
 
 === "Google Cloud"
     ```python
     from agenticaiframework.speech import SpeechToText, GoogleSTTConfig
-    
+
     config = GoogleSTTConfig(
         language_code="en-US",
         model="latest_long",
@@ -114,28 +114,28 @@ logger.info(f"Confidence: {result.confidence:.2f}")
         enable_word_time_offsets=True,
         use_enhanced=True
     )
-    
+
     stt = SpeechToText(provider="google", config=config)
     ```
 
 === "Azure"
     ```python
     from agenticaiframework.speech import SpeechToText, AzureSTTConfig
-    
+
     config = AzureSTTConfig(
         region="eastus",
         language="en-US",
         profanity_option="masked",
         enable_dictation=True
     )
-    
+
     stt = SpeechToText(provider="azure", config=config)
     ```
 
 === "Deepgram"
     ```python
     from agenticaiframework.speech import SpeechToText, DeepgramSTTConfig
-    
+
     config = DeepgramSTTConfig(
         model="nova-2",
         language="en",
@@ -143,7 +143,7 @@ logger.info(f"Confidence: {result.confidence:.2f}")
         punctuate=True,
         diarize=True
     )
-    
+
     stt = SpeechToText(provider="deepgram", config=config)
     ```
 
@@ -190,7 +190,7 @@ supported = stt.get_supported_formats()
 # Transcribe from bytes
 with open("audio.wav", "rb") as f:
     audio_bytes = f.read()
-    
+
 result = stt.transcribe_bytes(
     audio_bytes,
     format="wav"
@@ -227,37 +227,37 @@ audio_bytes = audio.to_bytes()
 === "OpenAI"
     ```python
     from agenticaiframework.speech import TextToSpeech, OpenAITTSConfig
-    
+
     config = OpenAITTSConfig(
-        model="tts-1-hd",  # or "tts-1" for faster
-        voice="alloy",    # alloy, echo, fable, onyx, nova, shimmer
-        speed=1.0,        # 0.25 to 4.0
+        model="tts-1-hd", # or "tts-1" for faster
+        voice="alloy", # alloy, echo, fable, onyx, nova, shimmer
+        speed=1.0, # 0.25 to 4.0
         response_format="mp3"
     )
-    
+
     tts = TextToSpeech(provider="openai", config=config)
     ```
 
 === "ElevenLabs"
     ```python
     from agenticaiframework.speech import TextToSpeech, ElevenLabsConfig
-    
+
     config = ElevenLabsConfig(
-        voice_id="21m00Tcm4TlvDq8ikWAM",  # Rachel
+        voice_id="21m00Tcm4TlvDq8ikWAM", # Rachel
         model_id="eleven_multilingual_v2",
         stability=0.5,
         similarity_boost=0.75,
         style=0.5,
         use_speaker_boost=True
     )
-    
+
     tts = TextToSpeech(provider="elevenlabs", config=config)
     ```
 
 === "Google Cloud"
     ```python
     from agenticaiframework.speech import TextToSpeech, GoogleTTSConfig
-    
+
     config = GoogleTTSConfig(
         language_code="en-US",
         voice_name="en-US-Neural2-A",
@@ -265,14 +265,14 @@ audio_bytes = audio.to_bytes()
         pitch=0.0,
         audio_encoding="MP3"
     )
-    
+
     tts = TextToSpeech(provider="google", config=config)
     ```
 
 === "Azure"
     ```python
     from agenticaiframework.speech import TextToSpeech, AzureTTSConfig
-    
+
     config = AzureTTSConfig(
         region="eastus",
         voice_name="en-US-JennyNeural",
@@ -280,7 +280,7 @@ audio_bytes = audio.to_bytes()
         pitch="+0Hz",
         style="cheerful"
     )
-    
+
     tts = TextToSpeech(provider="azure", config=config)
     ```
 
@@ -352,7 +352,7 @@ async def process_microphone():
         # Send audio chunks
         async for audio_chunk in microphone.record():
             await stream.send(audio_chunk)
-            
+
             # Receive interim results
             if stream.has_result():
                 result = await stream.receive()
@@ -368,7 +368,7 @@ async def process_microphone():
 from agenticaiframework.speech import VoiceActivityDetector
 
 vad = VoiceActivityDetector(
-    sensitivity=0.5,  # 0.0 to 1.0
+    sensitivity=0.5, # 0.0 to 1.0
     min_speech_duration=0.25,
     min_silence_duration=0.5
 )
@@ -403,20 +403,20 @@ chat = VoiceChat(
 # Run voice conversation
 async def voice_conversation():
     await chat.start()
-    
+
     try:
         while True:
             # Listen for user speech
             user_text = await chat.listen()
             logger.info(f"User: {user_text}")
-            
+
             # Get agent response
             response = await chat.respond(user_text)
             logger.info(f"Agent: {response}")
-            
+
             # Speak response
             await chat.speak(response)
-            
+
     except KeyboardInterrupt:
         await chat.stop()
 ```
@@ -469,7 +469,7 @@ history = speech_memory.get_conversation(session_id="voice_001")
 speech_memory.store_voice_profile(
     user_id="user_123",
     profile={
-        "voice_embedding": voice_embedding,  # For speaker recognition
+        "voice_embedding": voice_embedding, # For speaker recognition
         "language": "en-US",
         "accent": "american",
         "speaking_rate": 1.2,
@@ -659,8 +659,7 @@ from agenticaiframework.speech import SpeechToText, FallbackChain
 # Configure fallback chain
 stt = SpeechToText(
     primary_provider="openai",
-    fallback_chain=FallbackChain([
-        "google",
+    fallback_chain=FallbackChain(["google",
         "azure",
         "deepgram"
     ])
@@ -679,7 +678,7 @@ logger.info(f"Transcribed using: {result.provider}")
 
 ```python
 # High accuracy, async processing
-stt = SpeechToText(provider="openai")  # Whisper
+stt = SpeechToText(provider="openai") # Whisper
 
 # Real-time, low latency
 stt = SpeechToText(provider="deepgram")
@@ -712,8 +711,8 @@ from agenticaiframework.speech import LongAudioProcessor
 
 processor = LongAudioProcessor(
     stt=stt,
-    chunk_duration=30,  # 30 second chunks
-    overlap=2  # 2 second overlap
+    chunk_duration=30, # 30 second chunks
+    overlap=2 # 2 second overlap
 )
 
 result = await processor.transcribe("long_recording.wav")
@@ -721,7 +720,7 @@ result = await processor.transcribe("long_recording.wav")
 
 ---
 
-## 📚 API Reference
+## API Reference
 
 For complete API documentation, see:
 

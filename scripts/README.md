@@ -2,7 +2,7 @@
 
 This directory contains scripts and workflows for automatically generating AI-powered release notes using GitHub Copilot and other AI services.
 
-## 📁 Files
+## Files
 
 ### GitHub Actions Workflows
 
@@ -26,7 +26,7 @@ This directory contains scripts and workflows for automatically generating AI-po
    - Rich commit analysis and categorization
    - Command-line interface
 
-## 🚀 Usage
+## Usage
 
 ### Automatic (CI/CD Pipeline)
 
@@ -83,7 +83,7 @@ Trigger the release notes workflow manually:
 gh workflow run release-notes.yml -f tag=v0.2.0
 ```
 
-## 🤖 AI Enhancement
+## AI Enhancement
 
 The scripts support AI-powered enhancement of release notes using:
 
@@ -103,52 +103,52 @@ Set up OpenAI API key as a repository secret:
 - **Consistency**: Ensures professional tone
 - **Prioritization**: Emphasizes important changes
 
-## 📋 Release Notes Structure
+## Release Notes Structure
 
 Generated release notes include:
 
 ```markdown
 # Release vX.Y.Z
 
-## 📊 Release Summary
+## Release Summary
 - Commit count, file changes, line changes
 - Summary by category
 
-## ⚠️ Breaking Changes (if any)
+## Breaking Changes (if any)
 - Critical changes that require user action
 
-## 🔒 Security
+## Security
 - Security fixes and updates
 
-## ✨ New Features
+## New Features
 - New capabilities and features
 
-## 🐛 Bug Fixes
+## Bug Fixes
 - Issues resolved
 
-## ⚡ Performance Improvements
+## Performance Improvements
 - Speed and efficiency gains
 
-## 📚 Documentation
+## Documentation
 - Docs updates
 
-## 🧪 Testing
+## Testing
 - Test improvements
 
-## ♻️ Code Refactoring
+## Code Refactoring
 - Internal improvements
 
-## 🔧 Maintenance
+## Maintenance
 - Chores, CI, dependencies
 
-## 👥 Contributors
+## Contributors
 - All contributors
 
-## 📦 Installation
+## Installation
 - How to install/upgrade
 ```
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -171,7 +171,7 @@ Configure in repository settings:
 - `GITHUBPATTOKEN` - Personal access token for pushing changes
 - `PYPI_TOKEN` - PyPI API token for publishing
 
-## 📝 Commit Message Format
+## Commit Message Format
 
 For best categorization, use conventional commit format:
 
@@ -186,7 +186,7 @@ refactor: Refactor code
 security: Fix security issue
 ```
 
-## 🎯 Examples
+## Examples
 
 ### Example 1: Basic Release Notes
 
@@ -230,7 +230,7 @@ Output includes:
     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 ```
 
-## 🔍 How It Works
+## How It Works
 
 ### 1. Data Collection
 - Extract commits between tags
@@ -262,7 +262,7 @@ Output includes:
 - Update CHANGELOG.md
 - Commit changes
 
-## 🎨 Customization
+## Customization
 
 ### Modify Templates
 
@@ -283,7 +283,7 @@ def generate_basic_notes(self, ...):
 categories = {
     'features': [],
     'fixes': [],
-    'custom_category': [],  # Add your category
+    'custom_category': [], # Add your category
 }
 ```
 
@@ -295,7 +295,7 @@ prompt = """Your custom instructions for AI
 to generate release notes in your preferred style..."""
 ```
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Issue: No commits found
 
@@ -333,14 +333,14 @@ gh auth status
 gh release create v0.2.0 --notes-file RELEASE_NOTES.md
 ```
 
-## 📚 Related Documentation
+## Related Documentation
 
 - [GitHub Actions Workflows](../.github/workflows/)
 - [CHANGELOG.md](../CHANGELOG.md)
 - [Contributing Guidelines](../CONTRIBUTING.md)
 - [Version Management](../docs/VERSIONING.md)
 
-## 🤝 Contributing
+## Contributing
 
 To improve the release notes generation:
 
@@ -349,6 +349,6 @@ To improve the release notes generation:
 3. Add examples
 4. Submit PR with description
 
-## 📄 License
+## License
 
 Same as main project - see [LICENSE](../LICENSE)

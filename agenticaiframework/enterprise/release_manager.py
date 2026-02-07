@@ -249,15 +249,15 @@ class Release:
             by_type[item_type].append(item)
         
         type_titles = {
-            "breaking_change": "⚠️ Breaking Changes",
-            "security": "🔒 Security",
-            "feature": "✨ Features",
-            "bug_fix": "🐛 Bug Fixes",
-            "improvement": "📈 Improvements",
-            "performance": "⚡ Performance",
-            "deprecation": "📦 Deprecations",
-            "documentation": "📚 Documentation",
-            "other": "🔧 Other Changes",
+            "breaking_change": "Breaking Changes",
+            "security": "Security",
+            "feature": "Features",
+            "bug_fix": "Bug Fixes",
+            "improvement": "Improvements",
+            "performance": "Performance",
+            "deprecation": "Deprecations",
+            "documentation": "Documentation",
+            "other": "Other Changes",
         }
         
         for item_type, title in type_titles.items():

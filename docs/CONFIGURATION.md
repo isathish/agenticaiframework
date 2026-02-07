@@ -7,7 +7,7 @@ tags:
   - guide
 ---
 
-# ⚙️ Configuration Guide
+# Configuration Guide
 
 <div class="annotate" markdown>
 
@@ -104,7 +104,7 @@ logger.info(config.get_config("LLM"))
 Maintain separate configurations for different environments:
 
 - `config_dev.py` for development
-- `config_staging.py` for staging  
+- `config_staging.py` for staging 
 - `config_prod.py` for production
 
 Load dynamically based on environment:
@@ -167,7 +167,7 @@ api_key = os.getenv("OPENAI_API_KEY")
 
 ---
 
-## 📚 Related Documentation
+## Related Documentation
 
 - [Configuration Reference](configuration-reference.md) - Complete reference for all settings
 - [Deployment](deployment.md) - Production deployment configuration

@@ -67,11 +67,10 @@ import time
 from agenticaiframework import Process
 
 def fetch(url: str) -> str:
-    time.sleep(0.5)  # simulate network I/O
+    time.sleep(0.5) # simulate network I/O
     return f"fetched:{url}"
 
-urls = [
-    "https://api.example.com/a",
+urls = ["https://api.example.com/a",
     "https://api.example.com/b",
     "https://api.example.com/c",
 ]
@@ -80,7 +79,7 @@ proc = Process(name="fetch_all", strategy="parallel", max_workers=8)
 for url in urls:
     proc.add_task(fetch, url)
 
-results = proc.execute()  # completes in ~0.5 s instead of ~1.5 s
+results = proc.execute() # completes in ~0.5 s instead of ~1.5 s
 ```
 
 !!! warning "Thread Safety"
@@ -125,9 +124,9 @@ results = proc.execute()
 Every `Process` instance transitions through these states:
 
 ```text
-initialized  ──▶  running  ──▶  completed
+initialized ──▶ running ──▶ completed
                       │
-                      └──▶  failed  (on unhandled exception)
+                      └──▶ failed (on unhandled exception)
 ```
 
 Check the current state via `process.status`.

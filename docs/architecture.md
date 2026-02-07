@@ -8,7 +8,7 @@ tags:
   - system-design
 ---
 
-# 🏛️ Architecture
+# Architecture
 
 <div class="annotate" markdown>
 
@@ -23,32 +23,32 @@ Understand the design and structure of **400+ modules** and **237 enterprise fea
 
 ---
 
-## 🎯 Quick Navigation
+## Quick Navigation
 
 <div class="grid cards" markdown>
 
--   :material-layers:{ .lg } **System Layers**
-    
+- :material-layers:{ .lg } **System Layers**
+
     5-layer architecture
-    
+
     [:octicons-arrow-right-24: Explore](#high-level-design-hld)
 
--   :material-vector-triangle:{ .lg } **Components**
-    
+- :material-vector-triangle:{ .lg } **Components**
+
     Core building blocks
-    
+
     [:octicons-arrow-right-24: View](#core-components)
 
--   :material-chart-timeline:{ .lg } **Data Flow**
-    
+- :material-chart-timeline:{ .lg } **Data Flow**
+
     Request lifecycle
-    
+
     [:octicons-arrow-right-24: Understand](#data-flow)
 
--   :material-chart-box:{ .lg } **Diagrams**
-    
+- :material-chart-box:{ .lg } **Diagrams**
+
     Visual architecture
-    
+
     [:octicons-arrow-right-24: View All](diagrams.md)
 
 </div>
@@ -56,7 +56,7 @@ Understand the design and structure of **400+ modules** and **237 enterprise fea
 ## :sparkles: Overview
 
 !!! abstract "Design Philosophy"
-    
+
     AgenticAI Framework is built on a **modular, event-driven architecture** that enables scalable and maintainable agentic applications with **400+ modules** including **237 enterprise-grade modules**.
 
 ### :star: Core Design Principles
@@ -64,29 +64,29 @@ Understand the design and structure of **400+ modules** and **237 enterprise fea
 <div class="grid" markdown>
 
 :material-puzzle:{ .lg } **Modularity**
-:   400+ independently composable modules with single responsibilities
+: 400+ independently composable modules with single responsibilities
 
 :material-plus-circle:{ .lg } **Extensibility**
-:   237 enterprise modules across 14 categories
+: 237 enterprise modules across 14 categories
 
 :material-eye:{ .lg } **Observability**
-:   Built-in monitoring, tracing, and APM throughout
+: Built-in monitoring, tracing, and APM throughout
 
 :material-shield-check:{ .lg } **Safety**
-:   Guardrails, security, and compliance at every layer
+: Guardrails, security, and compliance at every layer
 
 :material-lightning-bolt:{ .lg } **Performance**
-:   Optimized for high-throughput enterprise scenarios
+: Optimized for high-throughput enterprise scenarios
 
 :material-scale-balance:{ .lg } **Scalability**
-:   Horizontal scaling with DDD patterns and CQRS
+: Horizontal scaling with DDD patterns and CQRS
 
 </div>
 
-## 🏢 Enterprise Architecture
+## Enterprise Architecture
 
 !!! success "237 Enterprise Modules"
-    
+
     The framework includes a comprehensive enterprise layer with modules organized into 14 categories:
 
 | Category | Modules | Key Components |
@@ -111,50 +111,50 @@ Understand the design and structure of **400+ modules** and **237 enterprise fea
 ### System Overview
 
 !!! info "Architecture Layers"
-    
+
     The framework is organized into 5 distinct layers, each with specific responsibilities:
 
 ```mermaid
 graph TB
     subgraph "Layer 1: Application Layer"
-        UA["👤 User Application<br/>Custom AI Applications"]
-        API["🔌 Framework APIs<br/>Python SDK Interface"]
+        UA[" User Application<br/>Custom AI Applications"]
+        API[" Framework APIs<br/>Python SDK Interface"]
     end
-    
+
     subgraph "Layer 2: Agent Orchestration"
-        AM["🤖 Agent Manager<br/>Lifecycle & Coordination"]
-        A1["🎯 Specialized Agent 1<br/>Domain Expert"]
-        A2["🎯 Specialized Agent 2<br/>Task Executor"]
-        AN["🎯 Agent N<br/>Custom Role"]
+        AM[" Agent Manager<br/>Lifecycle & Coordination"]
+        A1[" Specialized Agent 1<br/>Domain Expert"]
+        A2[" Specialized Agent 2<br/>Task Executor"]
+        AN[" Agent N<br/>Custom Role"]
     end
-    
+
     subgraph "Layer 3: Task & Process Management"
-        TM["✅ Task Manager<br/>Task Queue & Scheduling"]
-        PM["🔄 Process Manager<br/>Workflow Orchestration"]
-        CM["💬 Communication Manager<br/>Inter-Agent Messages"]
+        TM[" Task Manager<br/>Task Queue & Scheduling"]
+        PM[" Process Manager<br/>Workflow Orchestration"]
+        CM[" Communication Manager<br/>Inter-Agent Messages"]
     end
-    
+
     subgraph "Layer 4: Core Intelligence Services"
-        LM["🧠 LLM Manager<br/>Model Integration"]
-        MM["💾 Memory Manager<br/>State Persistence"]
-        KM["📚 Knowledge Manager<br/>Information Retrieval"]
-        GM["🛡️ Guardrail Manager<br/>Safety & Compliance"]
+        LM[" LLM Manager<br/>Model Integration"]
+        MM[" Memory Manager<br/>State Persistence"]
+        KM[" Knowledge Manager<br/>Information Retrieval"]
+        GM[" Guardrail Manager<br/>Safety & Compliance"]
     end
-    
+
     subgraph "Layer 5: Infrastructure & Integration"
-        MON["📊 Monitoring System<br/>Metrics & Logs"]
-        CONFIG["⚙️ Configuration Manager<br/>Settings & Secrets"]
-        HUB["🌐 Hub<br/>Agent Discovery"]
-        SEC["🔒 Security Manager<br/>Auth & Validation"]
+        MON[" Monitoring System<br/>Metrics & Logs"]
+        CONFIG[" Configuration Manager<br/>Settings & Secrets"]
+        HUB[" Hub<br/>Agent Discovery"]
+        SEC[" Security Manager<br/>Auth & Validation"]
     end
-    
+
     subgraph "External Systems"
-        LLMS["🤖 LLM Providers<br/>OpenAI, Anthropic, Azure"]
-        DB["💾 Databases<br/>Redis, PostgreSQL, MongoDB"]
-        APIS["🌐 External APIs<br/>REST, GraphQL"]
-        TOOLS["🔧 MCP Tools<br/>External Tools"]
+        LLMS[" LLM Providers<br/>OpenAI, Anthropic, Azure"]
+        DB[" Databases<br/>Redis, PostgreSQL, MongoDB"]
+        APIS[" External APIs<br/>REST, GraphQL"]
+        TOOLS[" MCP Tools<br/>External Tools"]
     end
-    
+
     UA --> API
     API --> AM
     AM --> A1 & A2 & AN
@@ -170,14 +170,14 @@ graph TB
     MM & KM --> DB
     CM --> APIS
     PM --> TOOLS
-    
+
     classDef layer1 fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
     classDef layer2 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
     classDef layer3 fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
     classDef layer4 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
     classDef layer5 fill:#fce4ec,stroke:#c2185b,stroke-width:2px
     classDef external fill:#eceff1,stroke:#455a64,stroke-width:2px
-    
+
     class UA,API layer1
     class AM,A1,A2,AN layer2
     class TM,PM,CM layer3
@@ -189,54 +189,54 @@ graph TB
 ### Component Interaction Diagram
 
 !!! example "Request Flow Through the System"
-    
+
     This sequence diagram demonstrates how a **typical user request flows through all layers** of the AgenticAI Framework, showcasing the interaction between components.
-    
+
     **Request Flow Steps:**
-    
+
     1. **User Submits Request** (Step 1-2)
        - User sends request through API
        - API validates and routes to Agent Manager
-    
+
     2. **Agent Assignment** (Step 3-4)
        - Agent Manager selects appropriate agent based on capabilities
        - Agent receives task assignment
        - Task created in Task Manager queue
-    
+
     3. **Input Validation** (Step 5-6)
        - Guardrails validates user input for safety
        - Checks for malicious content, PII, policy violations
        - Returns validation result (pass/fail)
-    
+
     4. **Context Retrieval** (Step 7-8)
        - Task Manager queries Memory for relevant historical data
        - Retrieves past interactions, user preferences, learned patterns
        - Provides context for better response generation
-    
+
     5. **Response Generation** (Step 9-12)
        - LLM Manager called to generate response
        - Before returning, output passes through Guardrails
        - Guardrails ensures response is safe, compliant, and appropriate
        - Approved output returned to Task Manager
-    
+
     6. **Result Storage & Monitoring** (Step 13-14)
        - Generated response stored in Memory for future context
        - Metrics logged to Monitoring system:
          - Latency, token usage, cost
          - Agent performance, success rate
          - Resource utilization
-    
+
     7. **Response Return** (Step 15-18)
        - Task marked as complete
        - Agent reports status to Agent Manager
        - Response flows back through API
        - User receives final result
-    
+
     **Continuous Monitoring:**
     - All operations continuously observed by Monitoring system
     - Real-time metrics, alerts, and health checks
     - Full traceability for debugging and optimization
-    
+
     **Key Principles:**
     - \ud83d\udd12 **Security First**: Guardrails validate at input and output
     - \ud83d\udcbe **Context-Aware**: Memory provides historical context
@@ -255,94 +255,94 @@ sequenceDiagram
     participant Memory
     participant Guardrails
     participant Monitor
-    
+
     User->>API: Submit Request
     API->>AgentMgr: Route to Agent
     AgentMgr->>Agent: Assign Task
     Agent->>TaskMgr: Create Task
-    
+
     TaskMgr->>Guardrails: Validate Input
     Guardrails-->>TaskMgr: Validation Result
-    
+
     TaskMgr->>Memory: Retrieve Context
     Memory-->>TaskMgr: Historical Data
-    
+
     TaskMgr->>LLMMgr: Generate Response
     LLMMgr->>Guardrails: Validate Output
     Guardrails-->>LLMMgr: Approved Output
     LLMMgr-->>TaskMgr: Generated Response
-    
+
     TaskMgr->>Memory: Store Result
     TaskMgr->>Monitor: Log Metrics
-    
+
     TaskMgr-->>Agent: Task Complete
     Agent-->>AgentMgr: Report Status
     AgentMgr-->>API: Response
     API-->>User: Final Result
-    
+
     Note over Monitor: Continuous observability
 ```
 
 ### Data Flow Architecture
 
 !!! info "End-to-End Data Processing Pipeline"
-    
+
     This flowchart illustrates how **data flows from input to output** through various processing stages and storage layers.
-    
+
     **Input Stage:**
     - \ud83d\udc65 **User Input**: Direct user requests via UI/API
     - \ud83c\udf10 **External Data**: Third-party APIs, webhooks, integrations
-    
+
     **Processing Pipeline:**
-    
+
     1. **Input Validation**
        - Schema validation
        - Type checking
        - Sanitization
        - Security scanning
-    
+
     2. **Context Enrichment**
        - Add user profile data
        - Inject relevant historical context
        - Append system state
-    
+
     3. **Task Processing**
        - Execute business logic
        - Coordinate with other services
        - Apply transformations
-    
+
     4. **Response Generation**
        - LLM invocation
        - Template rendering
        - Data formatting
-    
+
     5. **Output Filtering**
        - PII masking
        - Content moderation
        - Quality checks
-    
+
     **Storage Layers:**
-    
+
     - **Cache Layer**: Hot data for <1ms access
       - Active sessions
       - Frequently accessed data
       - LLM response cache
-    
+
     - **Short-term Memory**: Fast access (1-10ms)
       - Recent interactions
       - Session state
       - Temporary results
-    
+
     - **Long-term Storage**: Persistent data (10-100ms)
       - User profiles
       - Historical records
       - Audit trail
-    
+
     **Output Channels:**
     - \u2705 **User Response**: Primary output to user
     - \ud83d\udcdd **Audit Logs**: Compliance and security tracking
     - \ud83d\udcca **Metrics**: Performance and business analytics
-    
+
     **Data Flow Guarantees:**
     - \ud83d\udd12 All sensitive data encrypted in transit and at rest
     - \ud83d\udcbe All state changes persisted to durable storage
@@ -355,7 +355,7 @@ flowchart LR
         UI[User Input]
         EXT[External Data]
     end
-    
+
     subgraph Processing
         VAL[Input Validation]
         CTX[Context Enrichment]
@@ -363,37 +363,37 @@ flowchart LR
         GEN[Response Generation]
         FILTER[Output Filtering]
     end
-    
+
     subgraph Storage
         MEM[(Short-term Memory)]
         LTM[(Long-term Storage)]
         CACHE[(Cache Layer)]
     end
-    
+
     subgraph Output
         RES[User Response]
         LOG[Audit Logs]
         METRIC[Metrics]
     end
-    
+
     UI --> VAL
     EXT --> VAL
     VAL --> CTX
-    
+
     CTX --> MEM
     MEM --> PROC
     CACHE --> PROC
-    
+
     PROC --> GEN
     GEN --> FILTER
-    
+
     FILTER --> RES
     FILTER --> LOG
     PROC --> METRIC
-    
+
     PROC --> LTM
     LTM --> CTX
-    
+
     style VAL fill:#ffeb3b
     style FILTER fill:#ffeb3b
     style MEM fill:#4caf50
@@ -404,58 +404,58 @@ flowchart LR
 ### Deployment Architecture
 
 !!! tip "Scalability Options"
-    
+
     The framework supports multiple deployment patterns:
 
 ```mermaid
 graph TB
     subgraph "Development Environment"
-        DEV["💻 Local Development<br/>Single Process<br/>In-Memory Storage"]
+        DEV[" Local Development<br/>Single Process<br/>In-Memory Storage"]
     end
-    
+
     subgraph "Production - Single Node"
-        API1["🌐 API Server<br/>FastAPI/Flask"]
-        AGENT1["🤖 Agent Pool<br/>ThreadPool Executor"]
-        REDIS1[("💾 Redis<br/>Memory & Cache")]
-        DB1[("🗄️ PostgreSQL<br/>Persistent Storage")]
-        
+        API1[" API Server<br/>FastAPI/Flask"]
+        AGENT1[" Agent Pool<br/>ThreadPool Executor"]
+        REDIS1[(" Redis<br/>Memory & Cache")]
+        DB1[(" PostgreSQL<br/>Persistent Storage")]
+
         API1 --> AGENT1
         AGENT1 --> REDIS1
         AGENT1 --> DB1
     end
-    
+
     subgraph "Production - Distributed"
-        LB["⚖️ Load Balancer<br/>nginx/ALB"]
-        
+        LB[" Load Balancer<br/>nginx/ALB"]
+
         subgraph "API Tier"
-            API2["🌐 API 1"]
-            API3["🌐 API 2"]
-            API4["🌐 API N"]
+            API2[" API 1"]
+            API3[" API 2"]
+            API4[" API N"]
         end
-        
+
         subgraph "Agent Tier"
-            WORKER1["🤖 Worker 1<br/>Agent Pool"]
-            WORKER2["🤖 Worker 2<br/>Agent Pool"]
-            WORKER3["🤖 Worker N<br/>Agent Pool"]
+            WORKER1[" Worker 1<br/>Agent Pool"]
+            WORKER2[" Worker 2<br/>Agent Pool"]
+            WORKER3[" Worker N<br/>Agent Pool"]
         end
-        
+
         subgraph "Message Queue"
-            MQ["📬 RabbitMQ/Redis Queue<br/>Task Distribution"]
+            MQ[" RabbitMQ/Redis Queue<br/>Task Distribution"]
         end
-        
+
         subgraph "Storage Tier"
-            REDIS2[("💾 Redis Cluster<br/>Distributed Cache")]
-            DB2[("🗄️ PostgreSQL<br/>Primary DB")]
-            DB3[("🗄️ PostgreSQL<br/>Replica")]
-            VECTOR[("🔍 Vector DB<br/>Pinecone/Weaviate")]
+            REDIS2[(" Redis Cluster<br/>Distributed Cache")]
+            DB2[(" PostgreSQL<br/>Primary DB")]
+            DB3[(" PostgreSQL<br/>Replica")]
+            VECTOR[(" Vector DB<br/>Pinecone/Weaviate")]
         end
-        
+
         subgraph "Monitoring"
-            PROM["📊 Prometheus<br/>Metrics"]
-            GRAF["📈 Grafana<br/>Dashboards"]
-            ELK["📋 ELK Stack<br/>Logs"]
+            PROM[" Prometheus<br/>Metrics"]
+            GRAF[" Grafana<br/>Dashboards"]
+            ELK[" ELK Stack<br/>Logs"]
         end
-        
+
         LB --> API2 & API3 & API4
         API2 & API3 & API4 --> MQ
         MQ --> WORKER1 & WORKER2 & WORKER3
@@ -463,22 +463,22 @@ graph TB
         WORKER1 & WORKER2 & WORKER3 --> DB2
         DB2 -."replication".-> DB3
         WORKER1 & WORKER2 & WORKER3 --> VECTOR
-        
+
         API2 & API3 & API4 --> PROM
         WORKER1 & WORKER2 & WORKER3 --> PROM
         PROM --> GRAF
         API2 & API3 & API4 --> ELK
         WORKER1 & WORKER2 & WORKER3 --> ELK
     end
-    
+
     DEV -."evolves to".-> API1
     API1 -."scales to".-> LB
-    
+
     classDef dev fill:#e1f5fe,stroke:#01579b
     classDef prod fill:#f3e5f5,stroke:#4a148c
     classDef storage fill:#e8f5e9,stroke:#1b5e20
     classDef monitor fill:#fff3e0,stroke:#e65100
-    
+
     class DEV dev
     class API1,AGENT1 prod
     class REDIS1,DB1 storage
@@ -487,13 +487,12 @@ graph TB
     class PROM,GRAF,ELK monitor
 ```
 
-
 ## :gear: Core Components
 
 ### Agent Manager
 
 !!! abstract "Central Orchestration"
-    
+
     The Agent Manager is the central orchestrator for all agents in the system.agents in the system.agents in the system.
 
 #### Class Diagram - Agent Management
@@ -514,7 +513,7 @@ classDiagram
         +stop() void
         +execute_task(callable, args) Any
     }
-    
+
     class AgentManager {
         -Dict~str,Agent~ agents
         -Queue task_queue
@@ -525,7 +524,7 @@ classDiagram
         +broadcast(str) void
         +assign_task(Task, Agent) void
     }
-    
+
     class ContextManager {
         -int max_tokens
         -List~Context~ contexts
@@ -536,7 +535,7 @@ classDiagram
         +clear() void
         -prune_contexts() void
     }
-    
+
     class Task {
         +str id
         +str name
@@ -549,49 +548,48 @@ classDiagram
         +cancel() void
         +retry() void
     }
-    
+
     AgentManager "1" --> "*" Agent: manages
     Agent "1" --> "1" ContextManager: uses
     Agent "1" --> "*" Task: executes
     AgentManager "1" --> "*" Task: queues agents in the system.
 ```
 
-
 #### Agent Lifecycle State Machine
 
 ```mermaid
 stateDiagram-v2
     [*] --> Initialized: create()
-    
+
     Initialized --> Running: start()
     Initialized --> Terminated: destroy()
-    
+
     Running --> Paused: pause()
     Running --> Executing: execute_task()
     Running --> Terminated: stop()
-    
+
     Paused --> Running: resume()
     Paused --> Terminated: stop()
-    
+
     Executing --> Running: task_complete()
     Executing --> Error: task_failed()
     Executing --> Terminated: stop()
-    
+
     Error --> Running: retry()
     Error --> Terminated: stop()
-    
+
     Terminated --> [*]
-    
+
     note right of Initialized
         Agent created with
         name, role, capabilities
     end note
-    
+
     note right of Running
         Agent ready to
         accept tasks
     end note
-    
+
     note right of Executing
         Agent actively
         processing task
@@ -747,7 +745,7 @@ sequenceDiagram
     participant ST as Short-term
     participant LT as Long-term
     participant EXT as External
-    
+
     A->>M: retrieve("key")
     M->>ST: check short-term
     alt found in short-term
@@ -796,7 +794,7 @@ sequenceDiagram
 agent = Agent(
     name="SecureAgent",
     role="DataProcessor",
-    capabilities=["read_data", "process_data"],  # No write permissions
+    capabilities=["read_data", "process_data"], # No write permissions
     config={
         "security_level": "high",
         "allowed_resources": ["database_read", "api_public"]
@@ -841,7 +839,7 @@ agent = Agent(
 class MyCustomAgent(Agent):
     def __init__(self, name, specialized_config):
         super().__init__(name, "CustomRole", ["custom_capability"], specialized_config)
-    
+
     def custom_method(self):
         # Custom implementation
         pass
@@ -850,7 +848,7 @@ class MyCustomAgent(Agent):
 class BusinessLogicGuardrail(Guardrail):
     def __init__(self):
         super().__init__("BusinessLogic", self.validate_business_rules)
-    
+
     def validate_business_rules(self, data):
         # Custom validation logic
         return True

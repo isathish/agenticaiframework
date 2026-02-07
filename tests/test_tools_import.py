@@ -11,32 +11,32 @@ try:
     from agenticaiframework.tools import (
         BaseTool, AsyncBaseTool, ToolResult, ToolConfig, ToolStatus
     )
-    print("✅ Base classes imported")
+    print(" Base classes imported")
     
     # Test registry imports
     from agenticaiframework.tools import (
         ToolCategory, ToolMetadata, ToolRegistry, tool_registry, register_tool
     )
-    print("✅ Registry classes imported")
+    print(" Registry classes imported")
     
     # Test executor imports
     from agenticaiframework.tools import (
         ExecutionContext, ExecutionPlan, ToolExecutor, tool_executor
     )
-    print("✅ Executor classes imported")
+    print(" Executor classes imported")
     
     # Test agent integration imports
     from agenticaiframework.tools import (
         AgentToolBinding, AgentToolManager, agent_tool_manager
     )
-    print("✅ Agent integration classes imported")
+    print(" Agent integration classes imported")
     
     # Test MCP compatibility imports
     from agenticaiframework.tools import (
         MCPToolAdapter, MCPBridge, LegacyMCPToolWrapper,
         wrap_mcp_tool, convert_to_mcp, mcp_bridge
     )
-    print("✅ MCP compatibility classes imported")
+    print(" MCP compatibility classes imported")
     
     # Test file/document tools
     from agenticaiframework.tools import (
@@ -46,7 +46,7 @@ try:
         TXTRAGSearchTool, JSONRAGSearchTool, CSVRAGSearchTool,
         DirectoryRAGSearchTool
     )
-    print("✅ File & Document tools imported (14 tools)")
+    print(" File & Document tools imported (14 tools)")
     
     # Test web scraping tools
     from agenticaiframework.tools import (
@@ -56,7 +56,7 @@ try:
         FirecrawlCrawlWebsiteTool, FirecrawlScrapeWebsiteTool,
         OxylabsScraperTool, BrightDataTool
     )
-    print("✅ Web Scraping tools imported (13 tools)")
+    print(" Web Scraping tools imported (13 tools)")
     
     # Test database tools
     from agenticaiframework.tools import (
@@ -64,24 +64,24 @@ try:
         NL2SQLTool, QdrantVectorSearchTool, WeaviateVectorSearchTool,
         MongoDBVectorSearchTool, SingleStoreSearchTool
     )
-    print("✅ Database tools imported (8 tools)")
+    print(" Database tools imported (8 tools)")
     
     # Test AI/ML tools
     from agenticaiframework.tools import (
         DALLETool, VisionTool, AIMindTool,
         LlamaIndexTool, LangChainTool, RAGTool, CodeInterpreterTool
     )
-    print("✅ AI/ML tools imported (7 tools)")
+    print(" AI/ML tools imported (7 tools)")
     
     # Test main package exports
     from agenticaiframework import (
         BaseTool, FileReadTool, DALLETool,
         tool_registry, tool_executor, agent_tool_manager, mcp_bridge
     )
-    print("✅ Main package exports work")
+    print(" Main package exports work")
     
     print("\n" + "="*50)
-    print("✅ All tools and integration components imported!")
+    print(" All tools and integration components imported!")
     print("="*50)
     
     # Summary
@@ -129,7 +129,7 @@ try:
     print("  • AI/ML Tools: 7")
     
 except Exception as e:
-    print(f"❌ Import error: {e}")
+    print(f" Import error: {e}")
     import traceback
     traceback.print_exc()
     sys.exit(1)

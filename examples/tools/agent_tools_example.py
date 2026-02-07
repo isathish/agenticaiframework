@@ -118,26 +118,26 @@ def demonstrate_registry():
     tool_registry.register(ScrapeWebsiteTool, category=ToolCategory.WEB_SCRAPING)
     
     # List all registered tools
-    print("\n📋 All Registered Tools:")
+    print("\n All Registered Tools:")
     for name in tool_registry.list_tools():
         metadata = tool_registry.get_metadata(name)
         print(f"  • {name} [{metadata.category.value}]")
     
     # List by category
-    print("\n📂 Tools by Category:")
+    print("\n Tools by Category:")
     by_category = tool_registry.list_by_category()
     for category, tools in by_category.items():
         print(f"  {category}: {len(tools)} tools")
     
     # Search tools
-    print("\n🔍 Search 'search' tools:")
+    print("\n Search 'search' tools:")
     search_results = tool_registry.search_tools("search")
     for name in search_results:
         print(f"  • {name}")
     
     # Get registry stats
     stats = tool_registry.get_stats()
-    print(f"\n📊 Registry Stats: {stats['total_tools']} total tools")
+    print(f"\n Registry Stats: {stats['total_tools']} total tools")
 
 
 # =============================================================================
@@ -165,18 +165,18 @@ def demonstrate_agent_tools():
         permissions={"file.read", "web.access"}
     )
     
-    print(f"\n🤖 Agent: {agent.name}")
+    print(f"\n Agent: {agent.name}")
     print(f"   Bound tools: {list(binding.tools)}")
     
     # Discover available tools
-    print("\n🔎 Discovering tools for agent:")
+    print("\n Discovering tools for agent:")
     available = agent_tool_manager.discover_tools(agent)
     for tool_info in available[:5]:
-        bound_marker = "✓" if tool_info['bound'] else "○"
+        bound_marker = "" if tool_info['bound'] else "○"
         print(f"   [{bound_marker}] {tool_info['name']}: {tool_info['description'][:50]}...")
     
     # Execute tool through agent
-    print("\n⚡ Executing CalculatorTool through agent:")
+    print("\n Executing CalculatorTool through agent:")
     result = agent_tool_manager.execute_tool(
         agent,
         "CalculatorTool",
@@ -190,7 +190,7 @@ def demonstrate_agent_tools():
     
     # Get usage stats
     usage = agent_tool_manager.get_usage_stats(agent.id)
-    print(f"\n📈 Tool Usage: {usage}")
+    print(f"\n Tool Usage: {usage}")
 
 
 # =============================================================================
@@ -204,7 +204,7 @@ def demonstrate_executor():
     print("="*60)
     
     # Direct tool execution
-    print("\n⚡ Direct tool execution:")
+    print("\n Direct tool execution:")
     result = tool_executor.execute(
         "CalculatorTool",
         operation="add",
@@ -214,7 +214,7 @@ def demonstrate_executor():
     print(f"   10 + 20 = {result.data}")
     
     # Batch execution
-    print("\n📦 Batch execution (sequential):")
+    print("\n Batch execution (sequential):")
     plan = ExecutionPlan(
         tool_calls=[
             {'tool': 'CalculatorTool', 'params': {'operation': 'add', 'a': 5, 'b': 3}},
@@ -229,7 +229,7 @@ def demonstrate_executor():
         print(f"   Call {i+1}: {r.data}")
     
     # Parallel execution
-    print("\n🚀 Parallel execution:")
+    print("\n Parallel execution:")
     plan.parallel = True
     results = tool_executor.execute_batch(plan)
     for i, r in enumerate(results):
@@ -237,7 +237,7 @@ def demonstrate_executor():
     
     # Executor stats
     stats = tool_executor.get_stats()
-    print(f"\n📊 Executor Stats:")
+    print(f"\n Executor Stats:")
     print(f"   Total executions: {stats['total_executions']}")
     print(f"   Success rate: {stats['success_rate']:.1%}")
 
@@ -253,13 +253,13 @@ def demonstrate_mcp_compatibility():
     print("="*60)
     
     # Get MCP schemas for LLM function calling
-    print("\n📝 MCP Tool Schemas (for LLM):")
+    print("\n MCP Tool Schemas (for LLM):")
     schemas = mcp_bridge.get_mcp_schemas()[:3]
     for schema in schemas:
         print(f"   • {schema['name']}: {schema['description'][:50]}...")
     
     # Execute using MCP format
-    print("\n⚡ MCP-format execution:")
+    print("\n MCP-format execution:")
     response = mcp_bridge.execute_mcp_call(
         "CalculatorTool",
         {"operation": "subtract", "a": 100, "b": 42}
@@ -271,7 +271,7 @@ def demonstrate_mcp_compatibility():
     calc_tool = tool_registry.get_tool("CalculatorTool")
     if calc_tool:
         adapter = convert_to_mcp(calc_tool)
-        print(f"\n🔄 MCP Adapter created:")
+        print(f"\n MCP Adapter created:")
         print(f"   ID: {adapter.id}")
         print(f"   Name: {adapter.name}")
         print(f"   Schema: {adapter.to_mcp_schema()['name']}")
@@ -299,7 +299,7 @@ async def demonstrate_async_operations():
     agent_tool_manager.bind_tools(agent, ["CalculatorTool"])
     
     # Async execution through agent
-    print("\n⚡ Async tool execution:")
+    print("\n Async tool execution:")
     result = await agent_tool_manager.execute_tool_async(
         agent,
         "CalculatorTool",
@@ -310,7 +310,7 @@ async def demonstrate_async_operations():
     print(f"   100 / 4 = {result.data}")
     
     # Async batch execution
-    print("\n📦 Async batch execution:")
+    print("\n Async batch execution:")
     plan = ExecutionPlan(
         tool_calls=[
             {'tool': 'CalculatorTool', 'params': {'operation': 'add', 'a': 1, 'b': 1}},
@@ -344,7 +344,7 @@ def demonstrate_workflow():
     )
     
     # Bind all available tool categories
-    print("\n📦 Setting up research agent...")
+    print("\n Setting up research agent...")
     
     # Bind file tools
     agent_tool_manager.bind_tools(
@@ -362,7 +362,7 @@ def demonstrate_workflow():
         search_tool.add_document("Computer vision allows machines to interpret visual data.")
     
     # Workflow: Search -> Analyze -> Compute
-    print("\n🔄 Executing research workflow:")
+    print("\n Executing research workflow:")
     
     # Step 1: Search for relevant documents
     print("\n   Step 1: Semantic Search")
@@ -388,7 +388,7 @@ def demonstrate_workflow():
     print(f"   Relevance score: {compute_result.data}")
     
     # Get final stats
-    print("\n📊 Workflow Statistics:")
+    print("\n Workflow Statistics:")
     usage = agent_tool_manager.get_usage_stats(research_agent.id)
     print(f"   Tool usage: {usage}")
     
@@ -415,11 +415,11 @@ def main():
     demonstrate_workflow()
     
     # Run async demos
-    print("\n🔄 Running async demonstrations...")
+    print("\n Running async demonstrations...")
     asyncio.run(demonstrate_async_operations())
     
     print("\n" + "="*60)
-    print("✅ ALL DEMONSTRATIONS COMPLETED!")
+    print(" ALL DEMONSTRATIONS COMPLETED!")
     print("="*60)
 
 

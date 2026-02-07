@@ -8,7 +8,7 @@ tags:
   - advanced
 ---
 
-# 🔍 Research Agent Example
+# Research Agent Example
 
 This example demonstrates building an AI research agent that can investigate topics and provide cited summaries.
 

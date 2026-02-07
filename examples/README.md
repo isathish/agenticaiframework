@@ -4,22 +4,22 @@ Organized examples demonstrating the framework's capabilities.
 
 > **380+ Modules** | **237 Enterprise Features** | **35+ Built-in Tools** | **12-Tier Evaluation**
 
-## 📁 Directory Structure
+## Directory Structure
 
 ```
 examples/
-├── agents/          # Agent creation, lifecycle, and management
-├── core/            # Prompts, tasks, processes, configurations
-├── memory/          # Memory, knowledge, context engineering
-├── guardrails/      # Input/output validation and safety
-├── llm/             # LLM management, reliability, routing
-├── evaluation/      # Model and agent evaluation
-├── security/        # Security features, prompt injection protection
-├── tools/           # Tool integration, MCP compatibility
-└── integration/     # Enterprise features, monitoring, workflows
+├── agents/ # Agent creation, lifecycle, and management
+├── core/ # Prompts, tasks, processes, configurations
+├── memory/ # Memory, knowledge, context engineering
+├── guardrails/ # Input/output validation and safety
+├── llm/ # LLM management, reliability, routing
+├── evaluation/ # Model and agent evaluation
+├── security/ # Security features, prompt injection protection
+├── tools/ # Tool integration, MCP compatibility
+└── integration/ # Enterprise features, monitoring, workflows
 ```
 
-## 🚀 Running Examples
+## Running Examples
 
 Run any example from the project root:
 
@@ -31,7 +31,7 @@ source .venv/bin/activate
 python examples/<category>/<example>.py
 ```
 
-## 📚 Categories
+## Categories
 
 ### Agents (`agents/`)
 - `agents_example.py` - Basic agent creation and lifecycle
@@ -91,7 +91,7 @@ python examples/<category>/<example>.py
 - `enterprise_features_example.py` - Enterprise features
 - `comprehensive_integration_example.py` - Full integration demo
 
-## 💡 Recommended Starting Points
+## Recommended Starting Points
 
 1. **New to the framework?** Start with `agents/agents_example.py`
 2. **Want to use tools?** Check `tools/agent_tools_example.py`

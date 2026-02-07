@@ -9,7 +9,7 @@ tags:
   - spans
 ---
 
-# 📡 Distributed Tracing
+# Distributed Tracing
 
 <div class="annotate" markdown>
 
@@ -24,44 +24,44 @@ Track agent execution, measure performance, and debug complex workflows across *
 
 ---
 
-## 🎯 Quick Navigation
+## Quick Navigation
 
 <div class="grid cards" markdown>
 
--   :material-timeline:{ .lg } **Agent Step Tracing**
-    
+- :material-timeline:{ .lg } **Agent Step Tracing**
+
     Track execution flow with spans
-    
+
     [:octicons-arrow-right-24: Learn More](#agent-step-tracer)
 
--   :material-speedometer:{ .lg } **Latency Metrics**
-    
+- :material-speedometer:{ .lg } **Latency Metrics**
+
     Percentile-based performance tracking
-    
+
     [:octicons-arrow-right-24: Measure](#latency-metrics)
 
--   :material-share-variant:{ .lg } **Context Propagation**
-    
+- :material-share-variant:{ .lg } **Context Propagation**
+
     Trace across distributed systems
-    
+
     [:octicons-arrow-right-24: Propagate](#context-propagation)
 
--   :material-export:{ .lg } **Export & Integration**
-    
+- :material-export:{ .lg } **Export & Integration**
+
     OpenTelemetry compatible
-    
+
     [:octicons-arrow-right-24: Export](#export-traces)
 
 </div>
 
-## 📊 Overview
+## Overview
 
 !!! success "Enterprise Observability"
-    
+
     Part of **16 observability modules** including distributed tracing, metrics collection, log aggregation, alerting, and APM.
 
 !!! abstract "Tracing Architecture"
-    
+
     The Tracing module provides OpenTelemetry-compatible distributed tracing for AI agent applications. Track every step of agent execution with detailed spans, measure latency percentiles, and export traces to your observability platform.
 
 ### Architecture
@@ -74,40 +74,40 @@ graph TB
         A3[Tool Execution]
         A4[Memory Access]
     end
-    
+
     subgraph "Tracing Layer"
         TRACER[AgentStepTracer]
         SPANS[Span Hierarchy]
         CTX[SpanContext]
     end
-    
+
     subgraph "Metrics"
         LAT[LatencyMetrics]
         P50[P50]
         P95[P95]
         P99[P99]
     end
-    
+
     subgraph "Export"
         OTEL[OpenTelemetry]
         JAEGER[Jaeger]
         ZIPKIN[Zipkin]
     end
-    
+
     A1 & A2 & A3 & A4 --> TRACER
     TRACER --> SPANS
     SPANS --> CTX
     TRACER --> LAT
     LAT --> P50 & P95 & P99
     SPANS --> OTEL --> JAEGER & ZIPKIN
-    
+
     style TRACER fill:#e3f2fd,stroke:#1976d2
     style LAT fill:#f3e5f5,stroke:#7b1fa2
 ```
 
 ---
 
-## 🔍 Agent Step Tracer
+## Agent Step Tracer
 
 The `AgentStepTracer` provides step-by-step execution tracking with span hierarchy.
 
@@ -126,7 +126,7 @@ with tracer.start_trace("agent_task", agent_id="agent-001") as trace:
         response = llm.generate("What is AI?")
         span.set_attribute("model", "gpt-4")
         span.set_attribute("tokens", 150)
-    
+
     with tracer.start_span("tool_execution", trace_id=trace.trace_id) as span:
         result = tool.execute()
         span.set_attribute("tool_name", "web_search")
@@ -142,16 +142,16 @@ from agenticaiframework.tracing import tracer, Span
 
 # Root span
 with tracer.start_trace("workflow") as root:
-    
+
     # Child span 1
     with tracer.start_span("data_collection", parent=root) as collect:
         # Grandchild spans
         with tracer.start_span("fetch_api", parent=collect):
             api_data = fetch_from_api()
-        
+
         with tracer.start_span("query_database", parent=collect):
             db_data = query_database()
-    
+
     # Child span 2
     with tracer.start_span("data_processing", parent=root) as process:
         result = process_data(api_data, db_data)
@@ -170,11 +170,11 @@ with tracer.start_span("llm_inference") as span:
     span.set_attribute("input.tokens", 500)
     span.set_attribute("output.tokens", 150)
     span.set_attribute("temperature", 0.7)
-    
+
     # Custom attributes
     span.set_attribute("custom.request_id", "req-123")
     span.set_attribute("custom.user_id", "user-456")
-    
+
     # Set status
     try:
         result = llm.generate(prompt)
@@ -194,22 +194,22 @@ Record events within spans:
 with tracer.start_span("agent_decision") as span:
     # Add events
     span.add_event("thinking_started", {"context_size": 4096})
-    
+
     # Processing...
     decision = agent.think()
-    
+
     span.add_event("thinking_completed", {
         "decision": decision.type,
         "confidence": decision.confidence
     })
-    
+
     # Add annotations
     span.annotate("Decision based on 3 context items")
 ```
 
 ---
 
-## ⏱️ Latency Metrics
+## Latency Metrics
 
 Track and analyze operation latencies with percentile calculations.
 
@@ -222,7 +222,7 @@ from agenticaiframework.tracing import LatencyMetrics, latency_metrics
 metrics = LatencyMetrics()
 
 # Record individual latencies
-metrics.record("llm_inference", 1.23)  # seconds
+metrics.record("llm_inference", 1.23) # seconds
 metrics.record("llm_inference", 0.98)
 metrics.record("llm_inference", 1.45)
 
@@ -306,7 +306,7 @@ if violations:
 
 ---
 
-## 🔗 Context Propagation
+## Context Propagation
 
 Propagate trace context across service boundaries.
 
@@ -338,7 +338,7 @@ received_context = SpanContext.from_headers(headers)
 with tracer.start_trace("api_request") as trace:
     # Create context for downstream call
     context = trace.get_context()
-    
+
     # Make HTTP call with trace context
     response = httpx.post(
         "https://service-b/process",
@@ -350,11 +350,11 @@ with tracer.start_trace("api_request") as trace:
 def handle_request(request):
     # Extract context from headers
     context = SpanContext.from_headers(request.headers)
-    
+
     # Continue the trace
     with tracer.continue_trace(context, "process_data"):
         result = process(request.json)
-    
+
     return result
 ```
 
@@ -367,8 +367,7 @@ from agenticaiframework.tracing import tracer
 async def async_workflow():
     with tracer.start_trace("async_workflow") as trace:
         # Context automatically propagates to async tasks
-        tasks = [
-            async_step_1(trace.context),
+        tasks = [async_step_1(trace.context),
             async_step_2(trace.context),
             async_step_3(trace.context)
         ]
@@ -383,7 +382,7 @@ async def async_step_1(parent_context):
 
 ---
 
-## 📤 Export Traces
+## Export Traces
 
 Export traces to external observability platforms.
 
@@ -450,7 +449,7 @@ tracer.configure_export(
 
 ---
 
-## 🎯 Complete Example
+## Complete Example
 
 ```python
 import logging
@@ -473,14 +472,14 @@ analyst = Agent(
 def analyze_data_workflow(data):
     with tracer.start_trace("data_analysis_workflow") as trace:
         trace.set_attribute("data.size", len(data))
-        
+
         # Step 1: Data validation
         start = time.time()
         with tracer.start_span("validate_data", parent=trace) as span:
             validated = validate(data)
             span.set_attribute("valid_records", len(validated))
         latency_metrics.record("validation", time.time() - start)
-        
+
         # Step 2: LLM analysis
         start = time.time()
         with tracer.start_span("llm_analysis", parent=trace) as span:
@@ -488,14 +487,14 @@ def analyze_data_workflow(data):
             span.set_attribute("insights_count", len(analysis.insights))
             span.add_event("analysis_complete")
         latency_metrics.record("llm_analysis", time.time() - start)
-        
+
         # Step 3: Generate report
         start = time.time()
         with tracer.start_span("generate_report", parent=trace) as span:
             report = generate_report(analysis)
             span.set_attribute("report.pages", report.page_count)
         latency_metrics.record("report_generation", time.time() - start)
-        
+
         return report
 
 # Execute and check metrics
@@ -509,7 +508,7 @@ for operation in ["validation", "llm_analysis", "report_generation"]:
 
 ---
 
-## 📊 Metrics Summary
+## Metrics Summary
 
 | Metric | Description | Type |
 |--------|-------------|------|
@@ -522,10 +521,10 @@ for operation in ["validation", "llm_analysis", "report_generation"]:
 
 ---
 
-## 🎯 Best Practices
+## Best Practices
 
 !!! tip "Tracing Guidelines"
-    
+
     1. **Trace significant operations** - Don't trace every function call
     2. **Use meaningful span names** - `llm_inference` not `step1`
     3. **Add relevant attributes** - Include context for debugging
@@ -533,7 +532,7 @@ for operation in ["validation", "llm_analysis", "report_generation"]:
     5. **Propagate context** - Maintain trace continuity across services
 
 !!! warning "Performance Considerations"
-    
+
     - Tracing adds overhead - use sampling in production
     - Large attribute values impact memory
     - Batch exports to reduce network calls
@@ -541,7 +540,7 @@ for operation in ["validation", "llm_analysis", "report_generation"]:
 
 ---
 
-## 📚 Related Documentation
+## Related Documentation
 
 - [Monitoring](monitoring.md) - System monitoring and alerts
 - [Evaluation](evaluation.md) - Performance evaluation

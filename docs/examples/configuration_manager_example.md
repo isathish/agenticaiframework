@@ -7,7 +7,7 @@ tags:
   - settings
 ---
 
-# ⚙️ Configuration Manager Example
+# Configuration Manager Example
 
 !!! tip "Enterprise Configuration"
     Part of **400+ modules** supporting multi-environment configs, feature flags, and secrets management. See [Configuration Reference](../configuration-reference.md).

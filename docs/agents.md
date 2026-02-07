@@ -3,21 +3,21 @@ title: Agents
 description: Create intelligent AI agents with customizable roles, goals, tools, and behaviors
 ---
 
-# 🤖 Agents
+# Agents
 
 Agents are the core building blocks of AgenticAI Framework. They are autonomous AI entities that can reason, plan, use tools, and execute complex tasks.
 
 !!! success "Enterprise-Ready"
-    
+
     Part of a **400+ module framework** with 237 enterprise modules, 7 memory managers, 7 state managers, and 35+ built-in tools.
 
 ---
 
-## 🎯 Quick Navigation
+## Quick Navigation
 
 <div class="grid cards" markdown>
 
--   :rocket:{ .lg } **Getting Started**
+- :rocket:{ .lg } **Getting Started**
 
     ---
 
@@ -25,7 +25,7 @@ Agents are the core building blocks of AgenticAI Framework. They are autonomous 
 
     [:octicons-arrow-right-24: Quick Start](#creating-agents)
 
--   :gear:{ .lg } **Configuration**
+- :gear:{ .lg } **Configuration**
 
     ---
 
@@ -33,7 +33,7 @@ Agents are the core building blocks of AgenticAI Framework. They are autonomous 
 
     [:octicons-arrow-right-24: Learn Config](#agent-configuration)
 
--   :hammer_and_wrench:{ .lg } **Tools**
+- :hammer_and_wrench:{ .lg } **Tools**
 
     ---
 
@@ -41,7 +41,7 @@ Agents are the core building blocks of AgenticAI Framework. They are autonomous 
 
     [:octicons-arrow-right-24: Add Tools](#agent-tools)
 
--   :brain:{ .lg } **Behaviors**
+- :brain:{ .lg } **Behaviors**
 
     ---
 
@@ -53,28 +53,28 @@ Agents are the core building blocks of AgenticAI Framework. They are autonomous 
 
 ---
 
-## 🏗️ Agent Architecture
+## Agent Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                          Agent                               │
+│ Agent │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐   │
-│  │   Config     │    │    Memory    │    │    State     │   │
-│  │  (Role/Goal) │    │  (Context)   │    │  (Lifecycle) │   │
-│  └──────────────┘    └──────────────┘    └──────────────┘   │
-│                                                              │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐   │
-│  │    Tools     │    │     LLM      │    │  Guardrails  │   │
-│  │  (Actions)   │    │  (Reasoning) │    │ (Validation) │   │
-│  └──────────────┘    └──────────────┘    └──────────────┘   │
-│                                                              │
-│  ┌─────────────────────────────────────────────────────────┐│
-│  │                    Execution Loop                        ││
-│  │  Observe → Think → Plan → Act → Reflect → Repeat        ││
-│  └─────────────────────────────────────────────────────────┘│
-│                                                              │
+│ │
+│ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ │
+│ │ Config │ │ Memory │ │ State │ │
+│ │ (Role/Goal) │ │ (Context) │ │ (Lifecycle) │ │
+│ └──────────────┘ └──────────────┘ └──────────────┘ │
+│ │
+│ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ │
+│ │ Tools │ │ LLM │ │ Guardrails │ │
+│ │ (Actions) │ │ (Reasoning) │ │ (Validation) │ │
+│ └──────────────┘ └──────────────┘ └──────────────┘ │
+│ │
+│ ┌─────────────────────────────────────────────────────────┐│
+│ │ Execution Loop ││
+│ │ Observe → Think → Plan → Act → Reflect → Repeat ││
+│ └─────────────────────────────────────────────────────────┘│
+│ │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -170,28 +170,28 @@ config = AgentConfig(
     role="Senior Research Analyst",
     goal="Conduct thorough research and provide accurate insights",
     backstory="An expert analyst with 10 years of experience in data research",
-    
+
     # LLM Settings
     model="gpt-4o",
     temperature=0.7,
     max_tokens=4096,
-    
+
     # Execution Settings
     max_iterations=10,
-    max_execution_time=300,  # seconds
-    
+    max_execution_time=300, # seconds
+
     # Tools
     tools=["search", "calculator", "python_repl"],
-    
+
     # Behavior
     verbose=True,
     allow_delegation=True,
     cache_responses=True,
-    
+
     # Memory
     memory_enabled=True,
-    memory_limit=100,  # entries
-    
+    memory_limit=100, # entries
+
     # Guardrails
     validate_inputs=True,
     sanitize_outputs=True
@@ -216,8 +216,7 @@ config = AgentConfig(
     name="code_reviewer",
     role="Senior Software Engineer specializing in Python code review",
     goal="Review code for bugs, security issues, and best practices",
-    constraints=[
-        "Focus on actionable feedback",
+    constraints=["Focus on actionable feedback",
         "Prioritize security issues",
         "Include code examples in suggestions"
     ],
@@ -288,8 +287,7 @@ agent = Agent(
     config=AgentConfig(
         name="versatile_assistant",
         role="Multi-skilled Assistant",
-        tools=[
-            SearchTool(),
+        tools=[SearchTool(),
             WikipediaTool(),
             CalculatorTool(),
             PythonREPLTool(),
@@ -309,10 +307,10 @@ from agenticaiframework.tools import Tool, tool
 @tool
 def get_weather(location: str) -> str:
     """Get current weather for a location.
-    
+
     Args:
         location: City name or coordinates
-        
+
     Returns:
         Current weather conditions
     """
@@ -323,11 +321,11 @@ def get_weather(location: str) -> str:
 class StockPriceTool(Tool):
     name = "stock_price"
     description = "Get current stock price for a ticker symbol"
-    
+
     def _run(self, ticker: str) -> dict:
         # Implementation
         return {"ticker": ticker, "price": 150.25}
-    
+
     async def _arun(self, ticker: str) -> dict:
         # Async implementation
         return await self._fetch_price(ticker)
@@ -400,8 +398,7 @@ logger = logging.getLogger(__name__)
 === "Batch"
     ```python
     # Process multiple tasks
-    tasks = [
-        "Analyze sales data",
+    tasks = ["Analyze sales data",
         "Generate report",
         "Send summary email"
     ]
@@ -451,8 +448,7 @@ config = AgentConfig(
     name="self_correcting_agent",
     enable_self_correction=True,
     max_self_correction_attempts=3,
-    self_correction_triggers=[
-        "error",
+    self_correction_triggers=["error",
         "inconsistency",
         "low_confidence"
     ]
@@ -482,15 +478,15 @@ from agenticaiframework import Agent, AgentState
 agent = Agent(config=config)
 
 # Check agent state
-logger.info(agent.state)  # AgentState.IDLE
+logger.info(agent.state) # AgentState.IDLE
 
 # State transitions happen automatically
-result = agent.execute("Task")  # State: RUNNING → IDLE
+result = agent.execute("Task") # State: RUNNING → IDLE
 
 # Manual state control
-agent.pause()   # AgentState.PAUSED
-agent.resume()  # AgentState.RUNNING
-agent.stop()    # AgentState.TERMINATED
+agent.pause() # AgentState.PAUSED
+agent.resume() # AgentState.RUNNING
+agent.stop() # AgentState.TERMINATED
 ```
 
 ### Lifecycle Hooks
@@ -507,21 +503,21 @@ class CustomAgent(Agent):
         """Called when agent starts executing."""
         logger.info("Agent starting...")
         self.start_time = time.time()
-    
+
     def on_complete(self, result):
         """Called when task completes."""
         duration = time.time() - self.start_time
         logger.info(f"Completed in {duration:.2f}s")
-    
+
     def on_error(self, error):
         """Called when an error occurs."""
         logger.info(f"Error: {error}")
         self.log_error(error)
-    
+
     def on_tool_use(self, tool_name, input_data):
         """Called before tool execution."""
         logger.info(f"Using tool: {tool_name}")
-    
+
     def on_tool_result(self, tool_name, result):
         """Called after tool execution."""
         logger.info(f"Tool result: {result}")
@@ -608,8 +604,7 @@ config = AgentConfig(
         max_retries=3,
         retry_delay=1.0,
         retry_backoff=2.0,
-        retry_on_exceptions=[
-            "RateLimitError",
+        retry_on_exceptions=["RateLimitError",
             "TimeoutError",
             "ConnectionError"
         ]
@@ -627,13 +622,13 @@ config = AgentConfig(
     fallback=FallbackConfig(
         # Fallback model if primary fails
         fallback_model="gpt-3.5-turbo",
-        
+
         # Fallback tools if primary tool fails
         tool_fallbacks={
             "web_search": "cached_search",
             "api_call": "mock_api"
         },
-        
+
         # Default response on complete failure
         default_response="I'm unable to complete this task at the moment."
     )
@@ -728,14 +723,14 @@ agent = Agent(config=config)
 ### 1. Clear Role Definition
 
 ```python
-# ✓ Good: Specific and focused
+# Good: Specific and focused
 config = AgentConfig(
     name="python_expert",
     role="Python Developer specializing in data processing",
     goal="Write efficient, clean Python code for data pipelines"
 )
 
-# ✗ Avoid: Vague and broad
+# Avoid: Vague and broad
 config = AgentConfig(
     name="helper",
     role="Assistant",
@@ -749,7 +744,7 @@ config = AgentConfig(
 # Only include tools the agent needs
 config = AgentConfig(
     name="researcher",
-    tools=[SearchTool(), WikipediaTool()]  # Research-focused tools
+    tools=[SearchTool(), WikipediaTool()] # Research-focused tools
 )
 
 # Don't overload with unnecessary tools
@@ -760,10 +755,10 @@ config = AgentConfig(
 ```python
 config = AgentConfig(
     name="bounded_agent",
-    max_iterations=10,           # Prevent infinite loops
-    max_execution_time=300,      # 5 minute timeout
-    max_tokens=4096,             # Token limit
-    memory_limit=100             # Memory entries limit
+    max_iterations=10, # Prevent infinite loops
+    max_execution_time=300, # 5 minute timeout
+    max_tokens=4096, # Token limit
+    memory_limit=100 # Memory entries limit
 )
 ```
 
@@ -781,7 +776,7 @@ config = AgentConfig(
 
 ---
 
-## 📚 API Reference
+## API Reference
 
 For complete API documentation, see:
 

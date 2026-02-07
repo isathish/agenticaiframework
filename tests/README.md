@@ -2,18 +2,18 @@
 
 Comprehensive test suite organized by type.
 
-## 📁 Directory Structure
+## Directory Structure
 
 ```
 tests/
-├── unit/            # Unit tests for individual components
-├── integration/     # Integration tests for component interaction
-├── coverage/        # Coverage analysis tests
-├── test_import.py   # Package import validation
-└── test_tools_import.py  # Tools framework import validation
+├── unit/ # Unit tests for individual components
+├── integration/ # Integration tests for component interaction
+├── coverage/ # Coverage analysis tests
+├── test_import.py # Package import validation
+└── test_tools_import.py # Tools framework import validation
 ```
 
-## 🧪 Running Tests
+## Running Tests
 
 ### Run All Tests
 ```bash
@@ -42,7 +42,7 @@ python -m pytest tests/unit/test_tools.py -v
 python -m pytest tests/ --cov=agenticaiframework --cov-report=html -v
 ```
 
-## 📚 Test Categories
+## Test Categories
 
 ### Unit Tests (`unit/`)
 - `test_agents.py` - Agent creation, lifecycle, hooks
@@ -66,25 +66,25 @@ python -m pytest tests/ --cov=agenticaiframework --cov-report=html -v
 ### Coverage Tests (`coverage/`)
 - Tests for ensuring high code coverage across modules
 
-## ✅ Test Summary
+## Test Summary
 
 | Category | Files | Tests | Status |
 |----------|-------|-------|--------|
-| Unit | 7 | ~200 | ✅ |
-| Integration | 3 | ~50 | ✅ |
-| Coverage | 7 | ~200 | ✅ |
-| Import | 2 | ~25 | ✅ |
-| **Total** | **19** | **~475** | **✅** |
+| Unit | 7 | ~200 | |
+| Integration | 3 | ~50 | |
+| Coverage | 7 | ~200 | |
+| Import | 2 | ~25 | |
+| **Total** | **19** | **~475** | **** |
 
-## 🔧 Test Markers
+## Test Markers
 
 ```bash
 # Run tests by marker
-python -m pytest -m "slow" tests/  # Long-running tests
-python -m pytest -m "not slow" tests/  # Quick tests
+python -m pytest -m "slow" tests/ # Long-running tests
+python -m pytest -m "not slow" tests/ # Quick tests
 ```
 
-## 💡 Writing New Tests
+## Writing New Tests
 
 1. Place unit tests in `tests/unit/`
 2. Place integration tests in `tests/integration/`
@@ -96,7 +96,7 @@ Example:
 ```python
 class TestMyFeature:
     """Tests for MyFeature class."""
-    
+
     def test_basic_functionality(self):
         """Test that basic functionality works."""
         feature = MyFeature()

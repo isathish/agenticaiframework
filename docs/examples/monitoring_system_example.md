@@ -7,7 +7,7 @@ tags:
   - metrics
 ---
 
-# 📊 Monitoring System Example
+# Monitoring System Example
 
 !!! info "16 Observability Modules"
     Part of **237 enterprise modules** with distributed tracing, APM integration, and real-time dashboards. See [Monitoring Documentation](../monitoring.md).

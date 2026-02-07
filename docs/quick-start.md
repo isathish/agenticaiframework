@@ -198,7 +198,7 @@ proc = Process(name="multi_fetch", strategy="parallel", max_workers=4)
 for source in ["arxiv", "scholar", "semantic"]:
     proc.add_task(fetch_papers, source)
 
-results = proc.execute()  # All sources fetched concurrently
+results = proc.execute() # All sources fetched concurrently
 ```
 
 ---
@@ -310,7 +310,7 @@ tool = MCPTool(
 
 manager = MCPToolManager()
 manager.register_tool(tool)
-result = manager.execute_tool("calculator", a=5, b=3)  # 8
+result = manager.execute_tool("calculator", a=5, b=3) # 8
 ```
 
 ---
@@ -336,16 +336,16 @@ Recommended project structure:
 ```
 my_agent_project/
 \u251c\u2500\u2500 agents/
-\u2502   \u251c\u2500\u2500 __init__.py
-\u2502   \u251c\u2500\u2500 researcher.py
-\u2502   \u2514\u2500\u2500 writer.py
+\u2502 \u251c\u2500\u2500 __init__.py
+\u2502 \u251c\u2500\u2500 researcher.py
+\u2502 \u2514\u2500\u2500 writer.py
 \u251c\u2500\u2500 tools/
-\u2502   \u251c\u2500\u2500 __init__.py
-\u2502   \u2514\u2500\u2500 custom_tools.py
+\u2502 \u251c\u2500\u2500 __init__.py
+\u2502 \u2514\u2500\u2500 custom_tools.py
 \u251c\u2500\u2500 config/
-\u2502   \u2514\u2500\u2500 agents.yaml
+\u2502 \u2514\u2500\u2500 agents.yaml
 \u251c\u2500\u2500 tests/
-\u2502   \u2514\u2500\u2500 test_agents.py
+\u2502 \u2514\u2500\u2500 test_agents.py
 \u251c\u2500\u2500 main.py
 \u251c\u2500\u2500 requirements.txt
 \u2514\u2500\u2500 .env
@@ -357,7 +357,7 @@ my_agent_project/
 
 <div class="grid cards" markdown>
 
--   :robot:{ .lg } **Deep Dive into Agents**
+- :robot:{ .lg } **Deep Dive into Agents**
 
     ---
 
@@ -365,7 +365,7 @@ my_agent_project/
 
     [:octicons-arrow-right-24: Agents Guide](agents.md)
 
--   :brain:{ .lg } **Memory Management**
+- :brain:{ .lg } **Memory Management**
 
     ---
 
@@ -373,7 +373,7 @@ my_agent_project/
 
     [:octicons-arrow-right-24: Memory Guide](memory.md)
 
--   :arrows_counterclockwise:{ .lg } **Orchestration**
+- :arrows_counterclockwise:{ .lg } **Orchestration**
 
     ---
 
@@ -381,7 +381,7 @@ my_agent_project/
 
     [:octicons-arrow-right-24: Orchestration Guide](orchestration.md)
 
--   :hammer_and_wrench:{ .lg } **Tools**
+- :hammer_and_wrench:{ .lg } **Tools**
 
     ---
 

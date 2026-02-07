@@ -3,21 +3,21 @@ title: Tools
 description: 35+ built-in tools for search, code execution, file operations, and more
 ---
 
-# 🛠️ Tools
+# Tools
 
 AgenticAI Framework includes **35+ production-ready tools** that extend agent capabilities. From web search to code execution, database operations to AI services.
 
 !!! success "Enterprise Integrations"
-    
+
     The framework also includes **18 enterprise integration connectors** for ServiceNow, GitHub, Slack, Salesforce, AWS, Azure, GCP, and more.
 
 ---
 
-## 🎯 Tool Categories
+## Tool Categories
 
 <div class="grid cards" markdown>
 
--   :mag:{ .lg } **Search & Information**
+- :mag:{ .lg } **Search & Information**
 
     ---
 
@@ -25,7 +25,7 @@ AgenticAI Framework includes **35+ production-ready tools** that extend agent ca
 
     [:octicons-arrow-right-24: Browse](#search--information)
 
--   :computer:{ .lg } **Code & Development**
+- :computer:{ .lg } **Code & Development**
 
     ---
 
@@ -33,7 +33,7 @@ AgenticAI Framework includes **35+ production-ready tools** that extend agent ca
 
     [:octicons-arrow-right-24: Browse](#code--development)
 
--   :file_folder:{ .lg } **File & Data**
+- :file_folder:{ .lg } **File & Data**
 
     ---
 
@@ -41,7 +41,7 @@ AgenticAI Framework includes **35+ production-ready tools** that extend agent ca
 
     [:octicons-arrow-right-24: Browse](#file--data)
 
--   :floppy_disk:{ .lg } **Database & Storage**
+- :floppy_disk:{ .lg } **Database & Storage**
 
     ---
 
@@ -49,7 +49,7 @@ AgenticAI Framework includes **35+ production-ready tools** that extend agent ca
 
     [:octicons-arrow-right-24: Browse](#database--storage)
 
--   :brain:{ .lg } **AI & ML**
+- :brain:{ .lg } **AI & ML**
 
     ---
 
@@ -57,7 +57,7 @@ AgenticAI Framework includes **35+ production-ready tools** that extend agent ca
 
     [:octicons-arrow-right-24: Browse](#ai--ml)
 
--   :wrench:{ .lg } **Utilities**
+- :wrench:{ .lg } **Utilities**
 
     ---
 
@@ -69,7 +69,7 @@ AgenticAI Framework includes **35+ production-ready tools** that extend agent ca
 
 ---
 
-## 📊 Tool Overview
+## Tool Overview
 
 | Category | Tools | Description |
 |----------|-------|-------------|
@@ -101,7 +101,7 @@ results = search.run("latest AI news")
 
 # With configuration
 search = SearchTool(
-    engine="google",  # google, bing, duckduckgo, serper
+    engine="google", # google, bing, duckduckgo, serper
     max_results=10,
     include_snippets=True,
     safe_search=True
@@ -243,7 +243,7 @@ translated = translator.run(
     source_lang="en",
     target_lang="es"
 )
-logger.info(translated)  # "Hola, ¿cómo estás?"
+logger.info(translated) # "Hola, ¿cómo estás?"
 ```
 
 ### ArxivTool
@@ -341,7 +341,7 @@ analyzer = CodeAnalysisTool(
 analysis = analyzer.run(code_content, language="python")
 logger.info(f"Issues found: {len(analysis['issues'])}")
 for issue in analysis['issues']:
-    logger.info(f"  Line {issue['line']}: {issue['message']}")
+    logger.info(f" Line {issue['line']}: {issue['message']}")
 ```
 
 ### TestRunnerTool
@@ -424,7 +424,7 @@ from agenticaiframework.tools import FileReadTool
 
 reader = FileReadTool(
     allowed_extensions=[".txt", ".py", ".json", ".md", ".csv"],
-    max_file_size=10_000_000  # 10MB
+    max_file_size=10_000_000 # 10MB
 )
 
 content = reader.run("/path/to/file.txt")
@@ -449,7 +449,7 @@ writer = FileWriteTool(
 writer.run(
     path="/tmp/output.txt",
     content="Hello, World!",
-    mode="write"  # or "append"
+    mode="write" # or "append"
 )
 ```
 
@@ -615,8 +615,7 @@ docs = mongo.run(
 )
 
 # Aggregate
-pipeline = [
-    {"$match": {"status": "active"}},
+pipeline = [{"$match": {"status": "active"}},
     {"$group": {"_id": "$region", "count": {"$sum": 1}}}
 ]
 results = mongo.run("aggregate", collection="users", pipeline=pipeline)
@@ -748,8 +747,7 @@ vector = embeddings.run("Hello, world!")
 logger.info(f"Dimensions: {len(vector)}")
 
 # Batch embeddings
-vectors = embeddings.run([
-    "First document",
+vectors = embeddings.run(["First document",
     "Second document",
     "Third document"
 ])
@@ -898,15 +896,15 @@ calc = CalculatorTool()
 
 # Basic math
 result = calc.run("2 + 2 * 3")
-logger.info(result)  # 8
+logger.info(result) # 8
 
 # Advanced math
 result = calc.run("sqrt(16) + sin(pi/2)")
-logger.info(result)  # 5.0
+logger.info(result) # 5.0
 
 # Statistics
 result = calc.run("mean([1, 2, 3, 4, 5])")
-logger.info(result)  # 3.0
+logger.info(result) # 3.0
 ```
 
 ### EncryptionTool
@@ -1005,10 +1003,10 @@ from agenticaiframework.tools import tool
 @tool
 def get_stock_price(ticker: str) -> dict:
     """Get current stock price for a ticker symbol.
-    
+
     Args:
         ticker: Stock ticker symbol (e.g., AAPL, GOOGL)
-        
+
     Returns:
         Dictionary with price information
     """
@@ -1029,10 +1027,10 @@ from agenticaiframework.tools import Tool
 class WeatherTool(Tool):
     name = "weather"
     description = "Get current weather for a location"
-    
+
     def __init__(self, api_key: str):
         self.api_key = api_key
-    
+
     def _run(self, location: str, units: str = "celsius") -> dict:
         """
         Args:
@@ -1046,7 +1044,7 @@ class WeatherTool(Tool):
             headers={"Authorization": f"Bearer {self.api_key}"}
         )
         return response.json()
-    
+
     async def _arun(self, location: str, units: str = "celsius") -> dict:
         """Async implementation."""
         async with aiohttp.ClientSession() as session:
@@ -1073,7 +1071,7 @@ class StockTool(Tool):
     name = "stock_price"
     description = "Get stock price and optional history"
     args_schema = StockInput
-    
+
     def _run(self, ticker: str, include_history: bool = False, days: int = 7):
         # Implementation
         pass
@@ -1124,7 +1122,7 @@ agent = Agent(
 
 ---
 
-## 📚 API Reference
+## API Reference
 
 For complete API documentation, see:
 

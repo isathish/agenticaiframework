@@ -9,7 +9,7 @@ tags:
   - prompt-library
 ---
 
-# 📝 Prompts
+# Prompts
 
 <div class="annotate" markdown>
 
@@ -24,59 +24,59 @@ Create, manage, and render safe prompts for LLMs across **400+ modules**
 
 ---
 
-## 🎯 Quick Navigation
+## Quick Navigation
 
 <div class="grid cards" markdown>
 
--   :material-file-document-edit:{ .lg } **Templates**
-    
+- :material-file-document-edit:{ .lg } **Templates**
+
     Create reusable prompt templates
-    
+
     [:octicons-arrow-right-24: Create](#core-components)
 
--   :material-shield-lock:{ .lg } **Security**
-    
+- :material-shield-lock:{ .lg } **Security**
+
     Injection detection and sanitization
-    
+
     [:octicons-arrow-right-24: Secure](#best-practices)
 
--   :material-source-branch:{ .lg } **Versioning**
-    
+- :material-source-branch:{ .lg } **Versioning**
+
     Full lifecycle version control
-    
+
     [:octicons-arrow-right-24: Manage](#prompt-versioning)
 
--   :material-library:{ .lg } **Library**
-    
+- :material-library:{ .lg } **Library**
+
     Reusable prompt components
-    
+
     [:octicons-arrow-right-24: Browse](#promptlibrary)
 
 </div>
 
-## 📖 Overview
+## Overview
 
 !!! tip "Enterprise ML/AI"
-    
+
     Prompt management is part of **14 ML/AI infrastructure modules** including LLM gateway, model versioning, and A/B testing.
 
 !!! abstract "What is the Prompts Module?"
-    
+
     The Prompts module provides comprehensive prompt management with security features, version control, and safe rendering for Large Language Models (LLMs).
 
 <div class="grid" markdown>
 
 :material-code-braces:{ .lg } **Template Variables**
-:   Dynamic placeholder substitution
+: Dynamic placeholder substitution
 
 :material-shield-alert:{ .lg } **Injection Prevention**
-:   Detect and block prompt injections
+: Detect and block prompt injections
 
 :material-tag-multiple:{ .lg } **Metadata Support**
-:   Tags, descriptions, and versioning
+: Tags, descriptions, and versioning
 
 :material-history:{ .lg } **Version History**
-:   Track prompt changes over time
+: Track prompt changes over time
 
 </div>
 
@@ -135,7 +135,7 @@ safe_result = prompt.render_safe(
     name="Bob",
     task="<script>alert('xss')</script>"
 )
-logger.info(safe_result)  # Script tags removed
+logger.info(safe_result) # Script tags removed
 ```
 
 ### PromptManager Class
@@ -197,7 +197,7 @@ logger.info(f"Registered prompts: {len(prompts)}")
 
 ---
 
-## 🔄 Prompt Versioning
+## Prompt Versioning
 
 The Prompt Versioning module provides enterprise-grade version control for prompts with semantic versioning, lifecycle management, and full audit trails.
 
@@ -228,7 +228,7 @@ prompt = manager.create_prompt(
     tags=["support", "customer-facing"]
 )
 
-logger.info(f"Created: {prompt.name} v{prompt.version}")  # v1.0.0
+logger.info(f"Created: {prompt.name} v{prompt.version}") # v1.0.0
 ```
 
 #### Version Lifecycle
@@ -252,12 +252,12 @@ logger = logging.getLogger(__name__)
 new_version = manager.create_version(
     prompt_id=prompt.prompt_id,
     template="Hi {customer_name}! I'll assist you with {issue}. {instructions}",
-    version_bump="minor",  # major, minor, or patch
+    version_bump="minor", # major, minor, or patch
     created_by="developer",
     changelog="Improved greeting tone"
 )
 
-logger.info(f"New version: v{new_version.version}")  # v1.1.0
+logger.info(f"New version: v{new_version.version}") # v1.1.0
 ```
 
 #### Activation and Rollback
@@ -280,7 +280,7 @@ rolled_back = manager.rollback(
     target_version="1.0.0",
     rolled_back_by="admin"
 )
-logger.info(f"Rolled back, new version: v{rolled_back.version}")  # v1.1.1
+logger.info(f"Rolled back, new version: v{rolled_back.version}") # v1.1.1
 ```
 
 #### Rendering Prompts

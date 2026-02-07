@@ -8,7 +8,7 @@ tags:
   - guide
 ---
 
-# 🤝 Contributing
+# Contributing
 
 <div class="annotate" markdown>
 
@@ -26,32 +26,32 @@ Help us build the most comprehensive AI agent framework with **400+ modules**
 
 ---
 
-## 🎯 Quick Navigation
+## Quick Navigation
 
 <div class="grid cards" markdown>
 
--   :material-bug:{ .lg } **Report Bugs**
-    
+- :material-bug:{ .lg } **Report Bugs**
+
     Found an issue? Let us know
-    
+
     [:octicons-arrow-right-24: Report](#report-bugs)
 
--   :material-lightbulb:{ .lg } **Suggest Features**
-    
+- :material-lightbulb:{ .lg } **Suggest Features**
+
     Have an idea? Share it
-    
+
     [:octicons-arrow-right-24: Suggest](#suggest-features)
 
--   :material-code-braces:{ .lg } **Submit Code**
-    
+- :material-code-braces:{ .lg } **Submit Code**
+
     Contribute code changes
-    
+
     [:octicons-arrow-right-24: Contribute](#pull-request-process)
 
--   :material-book-edit:{ .lg } **Improve Docs**
-    
+- :material-book-edit:{ .lg } **Improve Docs**
+
     Enhance documentation
-    
+
     [:octicons-arrow-right-24: Write](#improve-documentation)
 
 </div>
@@ -64,13 +64,11 @@ Help us build the most comprehensive AI agent framework with **400+ modules**
 
 </div>
 
-
-## 👋 Welcome Contributors!
+## Welcome Contributors!
 
 Thank you for your interest in contributing to AgenticAI Framework! This document provides guidelines and instructions for contributing to the project.
 
-
-## 📋 Table of Contents
+## Table of Contents
 
 - [Community Guidelines](#community-guidelines)
 - [Ways to Contribute](#ways-to-contribute)
@@ -83,8 +81,7 @@ Thank you for your interest in contributing to AgenticAI Framework! This documen
 - [Documentation](#documentation)
 - [Community](#community)
 
-
-## 📜 Community Guidelines
+## Community Guidelines
 
 We are committed to providing a welcoming and inclusive environment for all contributors. By participating in this project, you agree to:
 
@@ -96,10 +93,9 @@ We are committed to providing a welcoming and inclusive environment for all cont
 
 Please report any unacceptable behavior to the maintainers.
 
+## Ways to Contribute
 
-## 🎯 Ways to Contribute
-
-### 🐛 Report Bugs
+### Report Bugs
 
 Found a bug? Help us fix it:
 
@@ -114,7 +110,7 @@ Found a bug? Help us fix it:
 
 [Report a Bug →](https://github.com/isathish/agenticaiframework/issues/new?template=bug_report.md)
 
-### ✨ Suggest Features
+### Suggest Features
 
 Have an idea? Share it:
 
@@ -125,7 +121,7 @@ Have an idea? Share it:
 
 [Request a Feature →](https://github.com/isathish/agenticaiframework/issues/new?template=feature_request.md)
 
-### 📖 Improve Documentation
+### Improve Documentation
 
 Documentation is always welcome:
 
@@ -134,7 +130,7 @@ Documentation is always welcome:
 - Improve API documentation
 - Translate documentation
 
-### 💻 Submit Code
+### Submit Code
 
 Contribute code improvements:
 
@@ -143,7 +139,7 @@ Contribute code improvements:
 - Optimize performance
 - Add tests
 
-### 🧪 Write Tests
+### Write Tests
 
 Help improve test coverage:
 
@@ -152,8 +148,7 @@ Help improve test coverage:
 - End-to-end tests
 - Performance tests
 
-
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -178,15 +173,14 @@ cd agenticaiframework
 git remote add upstream https://github.com/isathish/agenticaiframework.git
 ```
 
-
-## 🛠 Development Setup
+## Development Setup
 
 ### 1. Create Virtual Environment
 
 ```bash
 # Using venv
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate # On Windows: venv\Scripts\activate
 
 # Using conda
 conda create -n agenticai python=3.11
@@ -229,8 +223,7 @@ ruff check .
 mypy agenticaiframework
 ```
 
-
-## ✏️ Making Changes
+## Making Changes
 
 ### 1. Create a Branch
 
@@ -286,8 +279,7 @@ git commit -m "test(agents): add agent lifecycle tests"
 - `perf`: Performance improvement
 - `chore`: Maintenance
 
-
-## 🔄 Pull Request Process
+## Pull Request Process
 
 ### 1. Push Your Changes
 
@@ -332,8 +324,7 @@ git pull upstream main
 git push origin main
 ```
 
-
-## 📝 Coding Standards
+## Coding Standards
 
 ### Python Style Guide
 
@@ -348,18 +339,18 @@ Follow [PEP 8](https://pep8.org/) with these specifics:
 # Good
 def calculate_score(data: dict) -> float:
     """Calculate score from data.
-    
+
     Args:
         data: Input data dictionary
-        
+
     Returns:
         Calculated score
     """
     return sum(data.values()) / len(data)
 
 # Bad
-def calc(d):  # No type hints, no docstring
-    return sum(d.values())/len(d)  # No spaces
+def calc(d): # No type hints, no docstring
+    return sum(d.values())/len(d) # No spaces
 ```
 
 ### Code Formatting
@@ -400,18 +391,18 @@ Use Google-style docstrings:
 ```python
 def execute_task(self, task: Task, agent_id: str) -> TaskResult:
     """Execute a task using specified agent.
-    
+
     Args:
         task: The task to execute
         agent_id: ID of the agent to use
-        
+
     Returns:
         Result of task execution
-        
+
     Raises:
         AgentNotFoundError: If agent_id doesn't exist
         TaskExecutionError: If task execution fails
-        
+
     Example:
         ```python
         result = manager.execute_task(task, "agent_001")
@@ -421,8 +412,7 @@ def execute_task(self, task: Task, agent_id: str) -> TaskResult:
     ...
 ```
 
-
-## 🧪 Testing Guidelines
+## Testing Guidelines
 
 ### Writing Tests
 
@@ -432,28 +422,28 @@ from agenticaiframework.agents import Agent
 
 class TestAgent:
     """Test agent functionality."""
-    
+
     def test_agent_creation(self):
         """Test agent can be created successfully."""
         agent = Agent(name="test_agent", role="tester")
-        
+
         assert agent.name == "test_agent"
         assert agent.role == "tester"
         assert agent.status == "initialized"
-    
+
     def test_agent_execution(self):
         """Test agent can execute tasks."""
         agent = Agent(name="test_agent", role="tester")
         result = agent.execute_task(lambda: "success")
-        
+
         assert result == "success"
-    
+
     @pytest.mark.asyncio
     async def test_async_execution(self):
         """Test async task execution."""
         agent = Agent(name="test_agent", role="tester")
         result = await agent.execute_task_async(async_function)
-        
+
         assert result is not None
 ```
 
@@ -461,16 +451,16 @@ class TestAgent:
 
 ```
 tests/
-├── unit/               # Unit tests
-│   ├── test_agents.py
-│   ├── test_tasks.py
-│   └── test_memory.py
-├── integration/        # Integration tests
-│   ├── test_workflows.py
-│   └── test_pipelines.py
-├── e2e/               # End-to-end tests
-│   └── test_scenarios.py
-├── conftest.py        # Pytest fixtures
+├── unit/ # Unit tests
+│ ├── test_agents.py
+│ ├── test_tasks.py
+│ └── test_memory.py
+├── integration/ # Integration tests
+│ ├── test_workflows.py
+│ └── test_pipelines.py
+├── e2e/ # End-to-end tests
+│ └── test_scenarios.py
+├── conftest.py # Pytest fixtures
 └── __init__.py
 ```
 
@@ -512,8 +502,7 @@ pytest --cov=agenticaiframework --cov-report=html
 open htmlcov/index.html
 ```
 
-
-## 📚 Documentation
+## Documentation
 
 ### Code Documentation
 
@@ -528,12 +517,12 @@ Located in `docs/`:
 
 ```
 docs/
-├── index.md              # Home page
-├── quick-start.md        # Getting started
-├── agents.md             # Agent guide
-├── tasks.md              # Task guide
-├── API_REFERENCE.md      # API docs
-└── examples/             # Examples
+├── index.md # Home page
+├── quick-start.md # Getting started
+├── agents.md # Agent guide
+├── tasks.md # Task guide
+├── API_REFERENCE.md # API docs
+└── examples/ # Examples
 ```
 
 ### Building Documentation
@@ -559,8 +548,7 @@ mkdocs serve
 - Links to related content
 - Beginner-friendly
 
-
-## 🌟 Community
+## Community
 
 ### Communication Channels
 
@@ -585,8 +573,7 @@ Contributors are recognized:
 - Featured in documentation
 - Hall of Fame for top contributors
 
-
-## 🎉 Your First Contribution
+## Your First Contribution
 
 New to open source? Here's how to start:
 
@@ -598,8 +585,7 @@ New to open source? Here's how to start:
 
 [View Good First Issues →](https://github.com/isathish/agenticaiframework/labels/good-first-issue)
 
-
-## 📋 Checklist
+## Checklist
 
 Before submitting your PR:
 
@@ -613,23 +599,20 @@ Before submitting your PR:
 - [ ] Commit messages follow convention
 - [ ] Branch up to date with main
 
-
-## 🙏 Thank You!
+## Thank You!
 
 Every contribution, no matter how small, makes AgenticAI Framework better. Thank you for being part of our community!
 
-
-## 📞 Questions?
+## Questions?
 
 - **Documentation**: [https://isathish.github.io/agenticaiframework/](https://isathish.github.io/agenticaiframework/)
 - **Discussions**: [GitHub Discussions](https://github.com/isathish/agenticaiframework/discussions)
 - **Email**: [contributors@agenticai.dev](mailto:contributors@agenticai.dev)
 
-
 <div align="center">
 
-**Happy Contributing! 🚀**
+**Happy Contributing! **
 
-**[⬆ Back to Top](#-contributing-to-agenticai-framework)**
+**[Back to Top](#contributing-to-agenticai-framework)**
 
 </div>

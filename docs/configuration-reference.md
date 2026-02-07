@@ -8,7 +8,7 @@ tags:
   - setup
 ---
 
-# ⚙️ Configuration Reference
+# Configuration Reference
 
 <div align="center">
 
@@ -23,12 +23,11 @@ tags:
 
 ---
 
-## 📊 Overview
+## Overview
 
 Complete reference for all configuration options in AgenticAI Framework. This guide covers environment variables, configuration files, runtime settings, and best practices.
 
-
-## 🎯 Configuration Hierarchy
+## Configuration Hierarchy
 
 ```mermaid
 graph TB
@@ -38,36 +37,35 @@ graph TB
         FILE[Configuration<br/>Files<br/>Priority: 3]
         DEFAULT[Default<br/>Values<br/>Priority: 4]
     end
-    
+
     subgraph "Configuration Manager"
         MANAGER[Configuration Manager]
         VALIDATOR[Config Validator]
         MERGER[Config Merger]
     end
-    
+
     subgraph "Application"
         AGENTS[Agents]
         TASKS[Tasks]
         LLMS[LLMs]
         MEMORY[Memory]
     end
-    
+
     CLI --> MANAGER
     ENV --> MANAGER
     FILE --> MANAGER
     DEFAULT --> MANAGER
-    
+
     MANAGER --> VALIDATOR
     VALIDATOR --> MERGER
     MERGER --> AGENTS & TASKS & LLMS & MEMORY
-    
+
     style CLI fill:#4caf50
     style MANAGER fill:#2196f3
     style AGENTS fill:#ff9800
 ```
 
-
-## 📁 Configuration Files
+## Configuration Files
 
 ### 1. Main Configuration File
 
@@ -80,25 +78,25 @@ version: "2.0.0"
 # Application Settings
 app:
   name: "AgenticAI Application"
-  environment: "production"  # development, staging, production
+  environment: "production" # development, staging, production
   debug: false
-  log_level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  log_level: "INFO" # DEBUG, INFO, WARNING, ERROR, CRITICAL
 
 # Agent Configuration
 agents:
   max_agents: 50
-  default_timeout: 30  # seconds
+  default_timeout: 30 # seconds
   enable_monitoring: true
   pool_size: 10
   warmup_agents: 5
-  
+
 # Task Configuration
 tasks:
   max_queue_size: 1000
-  default_priority: 5  # 1-10 scale
+  default_priority: 5 # 1-10 scale
   retry_attempts: 3
-  retry_delay: 5  # seconds
-  timeout: 60  # seconds
+  retry_delay: 5 # seconds
+  timeout: 60 # seconds
 
 # LLM Configuration
 llm:
@@ -108,7 +106,7 @@ llm:
   temperature: 0.7
   timeout: 30
   retry_attempts: 3
-  
+
   # Provider-specific settings
   providers:
     openai:
@@ -118,13 +116,13 @@ llm:
         - gpt-4
         - gpt-4-turbo
         - gpt-3.5-turbo
-    
+
     anthropic:
       api_key: "${ANTHROPIC_API_KEY}"
       models:
         - claude-3-opus
         - claude-3-sonnet
-    
+
     azure:
       api_key: "${AZURE_OPENAI_KEY}"
       endpoint: "${AZURE_OPENAI_ENDPOINT}"
@@ -132,16 +130,16 @@ llm:
 
 # Memory Configuration
 memory:
-  backend: "redis"  # redis, sqlite, memory, postgres
-  ttl: 3600  # seconds
-  max_size: 1000  # items
-  
+  backend: "redis" # redis, sqlite, memory, postgres
+  ttl: 3600 # seconds
+  max_size: 1000 # items
+
   # Redis settings
   redis:
     url: "${REDIS_URL}"
     db: 0
     pool_size: 10
-  
+
   # PostgreSQL settings
   postgres:
     url: "${POSTGRES_URL}"
@@ -150,15 +148,15 @@ memory:
 
 # Knowledge Base Configuration
 knowledge:
-  backend: "faiss"  # faiss, pinecone, weaviate
+  backend: "faiss" # faiss, pinecone, weaviate
   vector_dimension: 384
   index_type: "hnsw"
-  
+
   # FAISS settings
   faiss:
     index_path: "data/knowledge/index.faiss"
     metric: "cosine"
-  
+
   # Pinecone settings
   pinecone:
     api_key: "${PINECONE_API_KEY}"
@@ -169,13 +167,13 @@ knowledge:
 monitoring:
   enabled: true
   metrics_port: 9090
-  health_check_interval: 30  # seconds
-  
+  health_check_interval: 30 # seconds
+
   # Prometheus settings
   prometheus:
     enabled: true
     port: 9090
-  
+
   # Grafana settings
   grafana:
     enabled: false
@@ -186,8 +184,8 @@ security:
   enable_authentication: true
   enable_authorization: true
   jwt_secret: "${JWT_SECRET}"
-  jwt_expiry: 3600  # seconds
-  
+  jwt_expiry: 3600 # seconds
+
   # Rate limiting
   rate_limit:
     enabled: true
@@ -199,7 +197,7 @@ guardrails:
   enabled: true
   moderation_api: "openai"
   max_retries: 3
-  
+
   # Content filters
   filters:
     - type: "toxicity"
@@ -230,7 +228,7 @@ app:
   log_level: "DEBUG"
 
 llm:
-  default_model: "gpt-3.5-turbo"  # Cheaper for dev
+  default_model: "gpt-3.5-turbo" # Cheaper for dev
   max_tokens: 2000
 
 monitoring:
@@ -248,14 +246,13 @@ llm:
 
 monitoring:
   enabled: true
-  
+
 security:
   enable_authentication: true
   enable_authorization: true
 ```
 
-
-## 🌍 Environment Variables
+## Environment Variables
 
 ### Core Settings
 
@@ -318,8 +315,7 @@ config = {
 }
 ```
 
-
-## 🔧 Configuration Manager API
+## Configuration Manager API
 
 ### ConfigurationManager Class
 
@@ -363,8 +359,7 @@ exists = config_manager.has_config("AppSettings")
 value = config_manager.get_config("Missing", default={"key": "value"})
 ```
 
-
-## 📋 Configuration Options Reference
+## Configuration Options Reference
 
 ### Agent Configuration
 
@@ -466,7 +461,7 @@ value = config_manager.get_config("Missing", default={"key": "value"})
 | `bias_threshold` | float | 0.8 | Bias detection threshold |
 | `custom_rules` | list | [] | Custom validation rules |
 
-## 🎨 Configuration Examples
+## Configuration Examples
 
 ### Development Configuration
 
@@ -483,9 +478,9 @@ config.set_config("development", {
         "hot_reload": True
     },
     "llm": {
-        "default_model": "gpt-3.5-turbo",  # Cheaper
+        "default_model": "gpt-3.5-turbo", # Cheaper
         "cache_enabled": True,
-        "mock_responses": True  # For testing
+        "mock_responses": True # For testing
     },
     "monitoring": {
         "enabled": False
@@ -545,7 +540,6 @@ config.set_config("high_performance", {
 })
 ```
 
-
 ### Using Environment Variables
 
 ```bash
@@ -587,7 +581,6 @@ def get_gcp_secret(project_id, secret_id):
     return response.payload.data.decode('UTF-8')
 ```
 
-
 ```python
 import logging
 
@@ -600,7 +593,7 @@ class AgentConfig(BaseModel):
     max_agents: int = Field(gt=0, le=1000, default=50)
     timeout: int = Field(gt=0, le=300, default=30)
     pool_size: int = Field(gt=0, le=100, default=10)
-    
+
     @validator('pool_size')
     def pool_size_check(cls, v, values):
         if 'max_agents' in values and v > values['max_agents']:
@@ -614,7 +607,7 @@ except ValidationError as e:
     logger.info(f"Configuration error: {e}")
 ```
 
-## 📚 Related Documentation
+## Related Documentation
 - [Deployment](deployment.md) - Production deployment
 - [Security](security.md) - Security best practices
 - [Best Practices](best-practices.md) - Development guidelines

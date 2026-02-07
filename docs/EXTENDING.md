@@ -8,7 +8,7 @@ tags:
   - plugins
 ---
 
-# 🔧 Extending AgenticAI
+# Extending AgenticAI
 
 <div class="annotate" markdown>
 
@@ -23,7 +23,7 @@ Add new capabilities, integrate external systems across **400+ modules**
 
 ---
 
-## 🏗️ Understanding the Architecture
+## Understanding the Architecture
 
 AgenticAI is organized into modular components:
 
@@ -41,7 +41,7 @@ AgenticAI is organized into modular components:
 
 ---
 
-## 🤖 Adding a New Agent
+## Adding a New Agent
 
 1. Create a new class inheriting from `Agent`
 2. Implement required methods
@@ -52,10 +52,10 @@ from agenticaiframework import Agent, AgentManager
 
 class CustomAgent(Agent):
     """Custom agent with specialized behavior."""
-    
+
     def __init__(self, name: str, **kwargs):
         super().__init__(name=name, role="custom", capabilities=["text"])
-    
+
     def act(self, input_data: str) -> str:
         return f"Processed: {input_data}"
 
@@ -67,7 +67,7 @@ manager.register_agent(agent)
 
 ---
 
-## 🔧 Adding a New Tool
+## Adding a New Tool
 
 1. Create a class inheriting from `BaseTool`
 2. Implement the `_run` method
@@ -79,10 +79,10 @@ from agenticaiframework.tools import BaseTool, register_tool
 @register_tool()
 class SentimentTool(BaseTool):
     """Analyze sentiment of text."""
-    
+
     name = "sentiment_analysis"
     description = "Analyzes the sentiment of input text"
-    
+
     def _run(self, input_data: dict) -> dict:
         text = input_data.get("text", "")
         # Your sentiment analysis logic here
@@ -91,7 +91,7 @@ class SentimentTool(BaseTool):
 
 ---
 
-## 🧠 Extending Memory
+## Extending Memory
 
 Add a custom memory backend:
 
@@ -100,23 +100,23 @@ from agenticaiframework.memory import MemoryManager
 
 class RedisMemoryBackend:
     """Redis-based memory backend."""
-    
+
     def __init__(self, redis_client):
         self.client = redis_client
-    
+
     def store(self, key: str, value: any) -> None:
         self.client.set(key, value)
-    
+
     def retrieve(self, key: str) -> any:
         return self.client.get(key)
-    
+
     def clear(self, key: str) -> None:
         self.client.delete(key)
 ```
 
 ---
 
-## 🤖 Extending LLM Integrations
+## Extending LLM Integrations
 
 Add a new LLM provider:
 
@@ -136,7 +136,7 @@ llm.set_active_model("custom-llm")
 
 ---
 
-## 🛡️ Adding Guardrails
+## Adding Guardrails
 
 Implement custom safety checks:
 
@@ -158,32 +158,32 @@ guardrails.add_guardrail("content_filter", content_filter)
 
 ---
 
-## 📡 Custom Communication Protocols
+## Custom Communication Protocols
 
 Extend communication capabilities:
 
 ```python
 class WebSocketCommunication:
     """WebSocket-based communication."""
-    
+
     def __init__(self, url: str):
         self.url = url
         self.connection = None
-    
+
     async def connect(self):
         import websockets
         self.connection = await websockets.connect(self.url)
-    
+
     async def send(self, message: str):
         await self.connection.send(message)
-    
+
     async def receive(self) -> str:
         return await self.connection.recv()
 ```
 
 ---
 
-## 🧪 Testing Extensions
+## Testing Extensions
 
 Write comprehensive tests for new features:
 
@@ -195,7 +195,7 @@ class TestCustomAgent:
     def test_agent_creation(self):
         agent = CustomAgent(name="TestAgent")
         assert agent.name == "TestAgent"
-    
+
     def test_agent_act(self):
         agent = CustomAgent(name="TestAgent")
         result = agent.act("Hello")
@@ -207,7 +207,7 @@ class TestCustomAgent:
 
 ---
 
-## 📦 Packaging Extensions
+## Packaging Extensions
 
 Structure your extension as a package:
 
@@ -215,16 +215,16 @@ Structure your extension as a package:
 my_extension/
 ├── __init__.py
 ├── agents/
-│   └── custom_agent.py
+│ └── custom_agent.py
 ├── tools/
-│   └── custom_tool.py
+│ └── custom_tool.py
 └── tests/
     └── test_extension.py
 ```
 
 ---
 
-## ✅ Best Practices
+## Best Practices
 
 !!! tip "Extension Best Practices"
     - Keep extensions modular and focused
@@ -236,7 +236,7 @@ my_extension/
 
 ---
 
-## 📚 Related Documentation
+## Related Documentation
 
 - [API Reference](API_REFERENCE.md)
 - [Usage Guide](USAGE.md)

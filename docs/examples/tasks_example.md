@@ -8,21 +8,19 @@ tags:
   - tutorial
 ---
 
-# ✅ Task Management Example
+# Task Management Example
 
-This guide provides a **professional, step-by-step walkthrough** for creating, registering, and executing a custom task using the `TaskManager` and `Task` classes from the `agenticaiframework` package.  
+This guide provides a **professional, step-by-step walkthrough** for creating, registering, and executing a custom task using the `TaskManager` and `Task` classes from the `agenticaiframework` package. 
 It is intended for developers who want to define reusable, modular units of work for their agents.
 
 !!! success "Enterprise Workflow Support"
     Part of **400+ modules** with 12 workflow types including DAG orchestration and parallel execution. See [Tasks Documentation](../tasks.md).
-
 
 ## Prerequisites & Configuration
 
 - **Installation**: Ensure `agenticaiframework` is installed and accessible in your Python environment.
 - **No additional configuration** is required for this example.
 - **Python Version**: Compatible with Python 3.10+.
-
 
 ## Code
 
@@ -58,40 +56,37 @@ if __name__ == "__main__":
     logger.info("Retrieved Task:", retrieved_task.name)
 ```
 
-
 ## Step-by-Step Execution
 
-1. **Import Required Classes**  
+1. **Import Required Classes** 
    Import `TaskManager` and `Task` from `agenticaiframework.tasks`.
 
-2. **Instantiate the Task Manager**  
+2. **Instantiate the Task Manager** 
    Create an instance of `TaskManager` to handle task registration and execution.
 
-3. **Define a Custom Task**  
+3. **Define a Custom Task** 
    Create a class inheriting from `Task` and implement the `run` method with the desired logic.
 
-4. **Create the Task Instance**  
+4. **Create the Task Instance** 
    Instantiate your custom task with a unique name.
 
-5. **Register the Task**  
+5. **Register the Task** 
    Use `register_task` to add the task to the manager's registry.
 
-6. **Execute the Task**  
+6. **Execute the Task** 
    Call the `run` method with the required arguments.
 
-7. **List Registered Tasks**  
+7. **List Registered Tasks** 
    Access the `tasks` list to see all registered tasks.
 
-8. **Retrieve a Specific Task**  
+8. **Retrieve a Specific Task** 
    Use `get_task` to fetch a task by name.
 
 > **Best Practice:** Keep tasks focused on a single responsibility to make them easier to test and reuse.
 
-
 ## Expected Input
 
 No user input is required; the script uses hardcoded values for demonstration purposes. In production, task parameters could be dynamically generated from user input, workflows, or other runtime data.
-
 
 ## Expected Output
 
@@ -103,7 +98,6 @@ Task Result: 12
 Registered Tasks: ['AdditionTask']
 Retrieved Task: AdditionTask
 ```
-
 
 ## How to Run
 

@@ -8,7 +8,7 @@ tags:
   - AI
 ---
 
-# 🧠 LLM Integration
+# LLM Integration
 
 <div class="annotate" markdown>
 
@@ -23,44 +23,43 @@ Connect to **18+ LLM providers** with intelligent fallbacks and monitoring acros
 
 ---
 
-## 🎯 Quick Navigation
+## Quick Navigation
 
 <div class="grid cards" markdown>
 
--   :material-robot:{ .lg } **Supported Models**
-    
+- :material-robot:{ .lg } **Supported Models**
+
     OpenAI, Anthropic, Azure, and more
-    
+
     [:octicons-arrow-right-24: View Models](#key-classes)
 
--   :material-shield-check:{ .lg } **Reliability**
-    
+- :material-shield-check:{ .lg } **Reliability**
+
     Circuit breakers and retry logic
-    
+
     [:octicons-arrow-right-24: Learn More](#low-level-design-lld)
 
--   :material-cached:{ .lg } **Caching**
-    
+- :material-cached:{ .lg } **Caching**
+
     Response caching for performance
-    
+
     [:octicons-arrow-right-24: Configure](#advanced-features)
 
--   :material-book-open:{ .lg } **Examples**
-    
+- :material-book-open:{ .lg } **Examples**
+
     Integration patterns
-    
+
     [:octicons-arrow-right-24: View Examples](#real-world-example)
 
 </div>
 
-## 📖 Overview
+## Overview
 
 The `llms` module provides enterprise-grade integration with Large Language Models (LLMs) featuring reliability patterns, monitoring, and intelligent fallback mechanisms. It abstracts away the complexity of model management while providing advanced features like circuit breakers, retry logic, response caching, and performance tracking.
 
 !!! tip "Enterprise ML/AI"
-    
-    The framework includes **14 ML/AI infrastructure modules** with LLM gateway, prompt management, model versioning, and A/B testing.
 
+    The framework includes **14 ML/AI infrastructure modules** with LLM gateway, prompt management, model versioning, and A/B testing.
 
 ## :art: High-Level Design (HLD)
 
@@ -72,60 +71,59 @@ graph TB
         APP[Agent Application]
         API[LLM Manager API]
     end
-    
+
     subgraph "LLM Manager Core"
         MGR[LLM Manager]
         CACHE[Response Cache]
         FALLBACK[Fallback Controller]
         METRICS[Metrics Collector]
     end
-    
+
     subgraph "Reliability Layer"
         CB1[Circuit Breaker 1]
         CB2[Circuit Breaker 2]
         CB3[Circuit Breaker N]
         RETRY[Retry Logic]
     end
-    
+
     subgraph "Model Registry"
         M1["GPT-4<br/>Primary"]
         M2["Claude<br/>Fallback 1"]
         M3["GPT-3.5<br/>Fallback 2"]
     end
-    
+
     subgraph "External LLM Providers"
         OPENAI[OpenAI API]
         ANTHROPIC[Anthropic API]
         AZURE[Azure OpenAI]
         CUSTOM[Custom Models]
     end
-    
+
     APP --> API
     API --> MGR
     MGR --> CACHE
     CACHE -."miss".-> FALLBACK
-    
+
     FALLBACK --> CB1 & CB2 & CB3
     CB1 --> RETRY
     CB2 --> RETRY
     CB3 --> RETRY
-    
+
     RETRY --> M1 & M2 & M3
-    
+
     M1 --> OPENAI
     M2 --> ANTHROPIC
     M3 --> AZURE
-    
+
     MGR --> METRICS
     CB1 & CB2 & CB3 -."status".-> METRICS
-    
+
     style CACHE fill:#4caf50
     style CB1 fill:#ff9800
     style CB2 fill:#ff9800
     style CB3 fill:#ff9800
     style M1 fill:#2196f3
 ```
-
 
 ## :gear: Key Classes
 
@@ -136,8 +134,8 @@ Enhanced LLM Manager with reliability and monitoring features.
 **Constructor:**
 ```python
 LLMManager(
-    max_retries: int = 3,          # Maximum retry attempts
-    enable_caching: bool = True     # Enable response caching
+    max_retries: int = 3, # Maximum retry attempts
+    enable_caching: bool = True # Enable response caching
 )
 ```
 
@@ -160,8 +158,8 @@ Circuit breaker pattern to prevent cascading failures.
 **Constructor:**
 ```python
 CircuitBreaker(
-    failure_threshold: int = 5,      # Failures before opening circuit
-    recovery_timeout: int = 60        # Seconds before attempting recovery
+    failure_threshold: int = 5, # Failures before opening circuit
+    recovery_timeout: int = 60 # Seconds before attempting recovery
 )
 ```
 
@@ -178,37 +176,36 @@ CircuitBreaker(
 ```mermaid
 stateDiagram-v2
     [*] --> Closed: Initialize
-    
+
     Closed --> Open: Failure Threshold Reached<br/>(5 consecutive failures)
     Closed --> Closed: Success (Reset failure count)
     Closed --> Closed: Failure (Increment count)
-    
+
     Open --> HalfOpen: Recovery Timeout Expired<br/>(60 seconds)
     Open --> Open: Request Blocked<br/>(Fail Fast)
-    
+
     HalfOpen --> Closed: Success<br/>(Service Recovered)
     HalfOpen --> Open: Failure<br/>(Still Broken)
     HalfOpen --> HalfOpen: Testing...
-    
+
     note right of Closed
         Normal operation
         All requests pass through
         Failure count tracked
     end note
-    
+
     note right of Open
         Circuit tripped
         Requests fail immediately
         Prevents cascading failures
     end note
-    
+
     note right of HalfOpen
         Testing recovery
         Limited requests allowed
         Determines if service is healthy
     end note
 ```
-
 
 ## :wrench: Low-Level Design (LLD)
 
@@ -224,7 +221,7 @@ classDiagram
         -bool enable_caching
         -ResponseCache cache
         -MetricsCollector metrics
-        
+
         +__init__(max_retries, enable_caching)
         +register_model(name, inference_fn, metadata) void
         +set_active_model(name) void
@@ -238,7 +235,7 @@ classDiagram
         -_generate_with_fallback(prompt, kwargs) str
         -_generate_with_retry(model, prompt, kwargs) str
     }
-    
+
     class ModelInfo {
         +str name
         +Callable inference_fn
@@ -249,14 +246,14 @@ classDiagram
         +float avg_latency
         +datetime last_used
     }
-    
+
     class CircuitBreaker {
         -int failure_threshold
         -int recovery_timeout
         -str state
         -int failure_count
         -datetime last_failure_time
-        
+
         +call(func, args, kwargs) Any
         +reset() void
         +get_state() str
@@ -265,12 +262,12 @@ classDiagram
         -_record_failure() void
         -_transition_state(new_state) void
     }
-    
+
     class ResponseCache {
         -Dict~str,CacheEntry~ cache
         -int max_size
         -str eviction_policy
-        
+
         +get(key) Any
         +set(key, value, ttl) void
         +clear() void
@@ -278,18 +275,18 @@ classDiagram
         -_generate_cache_key(prompt, kwargs) str
         -_evict_if_needed() void
     }
-    
+
     class MetricsCollector {
         -Dict metrics
         -List~Event~ events
-        
+
         +record_request(model, latency) void
         +record_cache_hit() void
         +record_cache_miss() void
         +record_fallback(from_model, to_model) void
         +get_metrics() Dict
     }
-    
+
     LLMManager "1" *-- "*" ModelInfo: manages
     ModelInfo "1" *-- "1" CircuitBreaker: has
     LLMManager "1" *-- "1" ResponseCache: uses
@@ -308,10 +305,10 @@ sequenceDiagram
     participant CB2 as Circuit Breaker<br/>(Claude)
     participant Claude as Claude API
     participant Metrics
-    
+
     App->>LLMMgr: generate(prompt)
     activate LLMMgr
-    
+
     LLMMgr->>Cache: check(prompt)
     alt Cache Hit
         Cache-->>LLMMgr: cached_response
@@ -320,10 +317,10 @@ sequenceDiagram
     else Cache Miss
         Cache-->>LLMMgr: None
         LLMMgr->>Metrics: record_cache_miss()
-        
+
         LLMMgr->>CB1: call(gpt4_fn, prompt)
         activate CB1
-        
+
         alt Circuit Closed
             CB1->>GPT4: generate(prompt)
             alt Success
@@ -338,10 +335,10 @@ sequenceDiagram
                 CB1->>CB1: record_failure()
                 CB1-->>LLMMgr: CircuitBreakerError
                 deactivate CB1
-                
+
                 Note over LLMMgr: Fallback to Claude
                 LLMMgr->>Metrics: record_fallback("gpt-4", "claude")
-                
+
                 LLMMgr->>CB2: call(claude_fn, prompt)
                 activate CB2
                 CB2->>Claude: generate(prompt)
@@ -349,7 +346,7 @@ sequenceDiagram
                 CB2->>CB2: record_success()
                 CB2-->>LLMMgr: response
                 deactivate CB2
-                
+
                 LLMMgr->>Cache: store(prompt, response)
                 LLMMgr->>Metrics: record_success("claude")
                 LLMMgr-->>App: return response
@@ -365,7 +362,7 @@ sequenceDiagram
             LLMMgr-->>App: return response
         end
     end
-    
+
     deactivate LLMMgr
 ```
 
@@ -432,10 +429,9 @@ logger.info(response)
 
 ```python
 # Set fallback chain for reliability
-llm_manager.set_fallback_chain([
-    "gpt-4",        # Primary
-    "claude-opus",  # Fallback 1
-    "gpt-3.5"       # Fallback 2
+llm_manager.set_fallback_chain(["gpt-4", # Primary
+    "claude-opus", # Fallback 1
+    "gpt-3.5" # Fallback 2
 ])
 
 # If gpt-4 fails, automatically tries claude-opus, then gpt-3.5
@@ -463,31 +459,31 @@ llm_manager.clear_cache()
 ```mermaid
 flowchart TD
     START([Request]) --> ATTEMPT[Attempt = 0]
-    
+
     ATTEMPT --> CALL[Call LLM API]
     CALL --> SUCCESS{Success?}
-    
+
     SUCCESS -->|Yes| RETURN[Return Response]
     SUCCESS -->|No| CHECK{Attempt <<br/>Max Retries?}
-    
+
     CHECK -->|No| INC[Attempt++]
     INC --> BACKOFF[Calculate Backoff<br/>2^attempt * 1000ms]
     BACKOFF --> WAIT[Wait]
     WAIT --> TRANSIENT{Transient<br/>Error?}
-    
+
     TRANSIENT -->|Yes| CALL
     TRANSIENT -->|No| FAIL
-    
+
     CHECK -->|Yes| FALLBACK{Fallback<br/>Available?}
-    
+
     FALLBACK -->|Yes| NEXT[Try Next Model]
     FALLBACK -->|No| FAIL[Raise Error]
-    
+
     NEXT --> ATTEMPT
-    
+
     RETURN --> END([Complete])
     FAIL --> END
-    
+
     style START fill:#4caf50
     style RETURN fill:#4caf50
     style FAIL fill:#f44336
@@ -671,8 +667,7 @@ logger.info(f"Cache hit rate: {metrics['cache_hit_rate']:.2%}")
 Always configure fallback models for production systems:
 
 ```python
-llm.set_fallback_chain([
-    "primary-model",
+llm.set_fallback_chain(["primary-model",
     "backup-model-1",
     "backup-model-2"
 ])

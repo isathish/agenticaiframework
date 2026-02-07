@@ -8,7 +8,7 @@ tags:
   - learning
 ---
 
-# 📚 Code Examples
+# Code Examples
 
 <div class="annotate" markdown>
 
@@ -24,32 +24,31 @@ Copy, paste, and run with **400+ modules** and **237 enterprise features**
 !!! tip "Quick Start"
     All examples use the `agenticaiframework` namespace and are production-ready. Each example is self-contained and can be run independently.
 
-## 🎯 Example Categories
+## Example Categories
 
 <div class="grid cards" markdown>
 
--   :material-robot:{ .lg } **Basic Examples**
-    
+- :material-robot:{ .lg } **Basic Examples**
+
     Core functionality
-    
+
     [:octicons-arrow-right-24: View](#1-agents-example)
 
--   :material-cog-multiple:{ .lg } **Advanced Patterns**
-    
+- :material-cog-multiple:{ .lg } **Advanced Patterns**
+
     Production use cases
-    
+
     [:octicons-arrow-right-24: View](#8-prompts-example)
 
--   :material-application:{ .lg } **Complete Apps**
-    
+- :material-application:{ .lg } **Complete Apps**
+
     Full applications
-    
+
     [:octicons-arrow-right-24: View](examples/full_examples_index.md)
 
 </div>
 
 ## Basic Examples
-
 
 ## 1. Agents Example
 
@@ -75,7 +74,6 @@ if __name__ == "__main__":
     retrieved_agent = agent_manager.get_agent("ExampleAgent")
     logger.info("Retrieved Agent:", retrieved_agent.name)
 ```
-
 
 ## 2. Tasks Example
 
@@ -104,7 +102,6 @@ if __name__ == "__main__":
     logger.info("Retrieved Task:", retrieved_task.name)
 ```
 
-
 ## 3. LLMs Example
 
 ```python
@@ -124,7 +121,6 @@ if __name__ == "__main__":
     logger.info("Available Models:", list(llm_manager.models.keys()))
 ```
 
-
 ## 4. Guardrails Example
 
 ```python
@@ -141,7 +137,6 @@ if __name__ == "__main__":
     logger.info("Compliant Output Valid:", guardrail_manager.validate("This is clean text."))
     logger.info("Non-Compliant Output Valid:", guardrail_manager.validate("This contains badword."))
 ```
-
 
 ## 5. Memory Example
 
@@ -170,7 +165,6 @@ if __name__ == "__main__":
     logger.info("Memory cleared. Keys now:", list(memory.short_term.keys()) + list(memory.long_term.keys()) + list(memory.external.keys()))
 ```
 
-
 ## 6. MCP Tools Example
 
 ```python
@@ -194,7 +188,6 @@ if __name__ == "__main__":
     logger.info("Tool Execution Result:", result)
 ```
 
-
 ## 7. Monitoring Example
 
 ```python
@@ -217,7 +210,6 @@ if __name__ == "__main__":
     logger.info("Logged Metrics:", monitor.metrics)
 ```
 
-
 ## 8. Prompts Example
 
 ```python
@@ -236,7 +228,6 @@ if __name__ == "__main__":
     logger.info("Rendered Prompt:", rendered_prompt)
 ```
 
-
 ## 9. Configurations Example
 
 ```python
@@ -252,8 +243,7 @@ if __name__ == "__main__":
     logger.info("API Key:", config.get("api_key"))
 ```
 
-
-**Usage:**  
+**Usage:** 
 Run any example with:
 ```bash
 python examples/<example_name>.py

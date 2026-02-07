@@ -8,21 +8,19 @@ tags:
   - tutorial
 ---
 
-# 🤖 Agent Management Example
+# Agent Management Example
 
-This guide provides a **professional, step-by-step walkthrough** for creating, registering, and controlling an agent using the `AgentManager` and `Agent` classes from the `agenticaiframework` package.  
+This guide provides a **professional, step-by-step walkthrough** for creating, registering, and controlling an agent using the `AgentManager` and `Agent` classes from the `agenticaiframework` package. 
 It is intended for developers building intelligent systems that require autonomous or semi-autonomous agents.
 
 !!! info "Part of 400+ Module Framework"
     This example uses core agent modules. For enterprise agent patterns including multi-tenant agents and advanced orchestration, see [Enterprise Documentation](../enterprise.md).
-
 
 ## Prerequisites & Configuration
 
 - **Installation**: Ensure `agenticaiframework` is installed and accessible in your Python environment.
 - **No additional configuration** is required for this example.
 - **Python Version**: Compatible with Python 3.10+.
-
 
 ## Code
 
@@ -54,37 +52,34 @@ if __name__ == "__main__":
     logger.info("Retrieved Agent:", retrieved_agent.name)
 ```
 
-
 ## Step-by-Step Execution
 
-1. **Import Required Classes**  
+1. **Import Required Classes** 
    Import `AgentManager` and `Agent` from `agenticaiframework.agents`.
 
-2. **Instantiate the Agent Manager**  
+2. **Instantiate the Agent Manager** 
    Create an instance of `AgentManager` to handle agent registration and lifecycle management.
 
-3. **Create an Agent**  
+3. **Create an Agent** 
    Instantiate an `Agent` with a unique name.
 
-4. **Register the Agent**  
+4. **Register the Agent** 
    Use `register_agent` to add the agent to the manager's registry.
 
-5. **Control the Agent**  
+5. **Control the Agent** 
    Use `start`, `pause`, `resume`, and `stop` to manage the agent's lifecycle.
 
-6. **List Registered Agents**  
+6. **List Registered Agents** 
    Access the `agents` list to see all registered agents.
 
-7. **Retrieve a Specific Agent**  
+7. **Retrieve a Specific Agent** 
    Use `get_agent` to fetch an agent by name.
 
 > **Best Practice:** Assign meaningful names to agents to make debugging and monitoring easier.
 
-
 ## Expected Input
 
 No user input is required; the script uses hardcoded values for demonstration purposes. In production, agent names and behaviors could be dynamically configured based on application needs.
-
 
 ## Expected Output
 
@@ -96,7 +91,6 @@ No user input is required; the script uses hardcoded values for demonstration pu
 Registered Agents: ['ExampleAgent']
 Retrieved Agent: ExampleAgent
 ```
-
 
 ## How to Run
 

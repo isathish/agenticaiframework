@@ -7,37 +7,37 @@ tags:
   - overview
 ---
 
-# 📚 Examples Index
+# Examples Index
 
 This document lists **all available examples** in the `examples/` directory, covering every major module and feature of the framework.
 
 !!! success "Framework Overview"
-    
+
     **400+ modules** | **237 enterprise features** | **35+ tools** | **12-tier evaluation**
 
 !!! tip "Quick Navigation"
     Use this index to quickly find examples for specific framework components. Each example is self-contained and includes detailed explanations.
 
-## 📚 Example Categories
+## Example Categories
 
 <div class="grid cards" markdown>
 
--   :material-robot:{ .lg } **Basic Examples**
-    
+- :material-robot:{ .lg } **Basic Examples**
+
     Fundamental usage patterns for core modules
-    
+
     Simple examples to get started quickly
 
--   :material-cog:{ .lg } **Manager Classes**
-    
+- :material-cog:{ .lg } **Manager Classes**
+
     Advanced management and orchestration
-    
+
     Enterprise-grade component managers
 
--   :material-rocket:{ .lg } **Use Cases**
-    
+- :material-rocket:{ .lg } **Use Cases**
+
     Complete real-world applications
-    
+
     Production-ready implementations
 
 </div>

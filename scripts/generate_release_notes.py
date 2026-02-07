@@ -141,7 +141,7 @@ class ReleaseNotesGenerator:
         notes += "---\n\n"
         
         # Summary
-        notes += "## 📊 Release Summary\n\n"
+        notes += "##  Release Summary\n\n"
         notes += f"This release includes:\n"
         notes += f"- **{len(commits)}** commits\n"
         notes += f"- **{stats['files_changed']}** files changed\n"
@@ -154,63 +154,63 @@ class ReleaseNotesGenerator:
         
         # Breaking changes
         if categories['breaking']:
-            notes += "## ⚠️ Breaking Changes\n\n"
+            notes += "##  Breaking Changes\n\n"
             for commit in categories['breaking']:
                 notes += f"- {commit['subject']} ({commit['hash']})\n"
             notes += "\n"
         
         # Security
         if categories['security']:
-            notes += "## 🔒 Security\n\n"
+            notes += "##  Security\n\n"
             for commit in categories['security']:
                 notes += f"- {commit['subject']} ({commit['hash']})\n"
             notes += "\n"
         
         # Features
         if categories['features']:
-            notes += "## ✨ New Features\n\n"
+            notes += "##  New Features\n\n"
             for commit in categories['features']:
                 notes += f"- {commit['subject']} ({commit['hash']})\n"
             notes += "\n"
         
         # Fixes
         if categories['fixes']:
-            notes += "## 🐛 Bug Fixes\n\n"
+            notes += "##  Bug Fixes\n\n"
             for commit in categories['fixes']:
                 notes += f"- {commit['subject']} ({commit['hash']})\n"
             notes += "\n"
         
         # Performance
         if categories['performance']:
-            notes += "## ⚡ Performance Improvements\n\n"
+            notes += "##  Performance Improvements\n\n"
             for commit in categories['performance']:
                 notes += f"- {commit['subject']} ({commit['hash']})\n"
             notes += "\n"
         
         # Documentation
         if categories['docs']:
-            notes += "## 📚 Documentation\n\n"
+            notes += "##  Documentation\n\n"
             for commit in categories['docs']:
                 notes += f"- {commit['subject']} ({commit['hash']})\n"
             notes += "\n"
         
         # Tests
         if categories['tests']:
-            notes += "## 🧪 Testing\n\n"
+            notes += "##  Testing\n\n"
             for commit in categories['tests']:
                 notes += f"- {commit['subject']} ({commit['hash']})\n"
             notes += "\n"
         
         # Refactoring
         if categories['refactor']:
-            notes += "## ♻️ Code Refactoring\n\n"
+            notes += "##  Code Refactoring\n\n"
             for commit in categories['refactor']:
                 notes += f"- {commit['subject']} ({commit['hash']})\n"
             notes += "\n"
         
         # Maintenance
         if categories['chore']:
-            notes += "## 🔧 Maintenance\n\n"
+            notes += "##  Maintenance\n\n"
             for commit in categories['chore'][:10]:
                 notes += f"- {commit['subject']} ({commit['hash']})\n"
             if len(categories['chore']) > 10:
@@ -220,7 +220,7 @@ class ReleaseNotesGenerator:
         # Contributors
         authors = set(commit['author'] for commit in commits if commit.get('author'))
         if authors:
-            notes += "## 👥 Contributors\n\n"
+            notes += "##  Contributors\n\n"
             notes += f"Thank you to all {len(authors)} contributors:\n\n"
             for author in sorted(authors):
                 notes += f"- @{author.replace(' ', '')}\n"
@@ -228,7 +228,7 @@ class ReleaseNotesGenerator:
         
         # Installation
         version = new_tag.lstrip('v')
-        notes += "## 📦 Installation\n\n"
+        notes += "##  Installation\n\n"
         notes += "```bash\n"
         notes += f"pip install agenticaiframework=={version}\n"
         notes += "```\n\n"
@@ -292,27 +292,27 @@ Return only the enhanced markdown release notes."""
             return response.choices[0].message.content
             
         except Exception as e:
-            print(f"⚠️ OpenAI enhancement failed: {e}", file=sys.stderr)
+            print(f" OpenAI enhancement failed: {e}", file=sys.stderr)
             return None
     
     def generate(self, previous_tag: str, new_tag: str, 
                 output_file: str = "RELEASE_NOTES.md",
                 use_ai: bool = True) -> str:
         """Generate complete release notes"""
-        print(f"🚀 Generating release notes: {previous_tag} → {new_tag}")
+        print(f" Generating release notes: {previous_tag} → {new_tag}")
         
         # Collect data
-        print("📊 Analyzing commits...")
+        print(" Analyzing commits...")
         commits = self.get_commits_between_tags(previous_tag, new_tag)
         
-        print("📁 Analyzing file changes...")
+        print(" Analyzing file changes...")
         stats = self.get_file_statistics(previous_tag, new_tag)
         
-        print("🏷️ Categorizing commits...")
+        print(" Categorizing commits...")
         categories = self.categorize_commits(commits)
         
         # Generate basic notes
-        print("📝 Generating base release notes...")
+        print(" Generating base release notes...")
         basic_notes = self.generate_basic_notes(
             commits, stats, categories, previous_tag, new_tag
         )
@@ -320,21 +320,21 @@ Return only the enhanced markdown release notes."""
         # Try AI enhancement
         final_notes = basic_notes
         if use_ai and self.openai_api_key:
-            print("✨ Enhancing with AI (OpenAI GPT)...")
+            print(" Enhancing with AI (OpenAI GPT)...")
             enhanced = self.enhance_with_openai(basic_notes, commits)
             if enhanced:
                 final_notes = enhanced
-                print("✅ AI enhancement successful!")
+                print(" AI enhancement successful!")
             else:
-                print("⚠️ Using basic notes (AI enhancement unavailable)")
+                print(" Using basic notes (AI enhancement unavailable)")
         else:
-            print("📝 Using basic notes (AI disabled or no API key)")
+            print(" Using basic notes (AI disabled or no API key)")
         
         # Save to file
         with open(output_file, 'w') as f:
             f.write(final_notes)
         
-        print(f"\n✅ Release notes saved to: {output_file}")
+        print(f"\n Release notes saved to: {output_file}")
         print("\nPreview:")
         print("=" * 60)
         print(final_notes[:1000] + "..." if len(final_notes) > 1000 else final_notes)

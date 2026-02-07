@@ -3,21 +3,21 @@ title: Memory Management
 description: Comprehensive guide to AgenticAI Framework's 7 specialized memory managers
 ---
 
-# 💾 Memory Management
+# Memory Management
 
 AgenticAI Framework provides **7 specialized memory managers** designed for different use cases, from general-purpose storage to specialized domain-specific memory systems.
 
 !!! tip "Enterprise Storage"
-    
+
     The framework also includes **14 enterprise storage & caching modules** for production deployments including Redis, distributed cache, and multi-tier caching.
 
 ---
 
-## 🎯 Quick Navigation
+## Quick Navigation
 
 <div class="grid cards" markdown>
 
--   :floppy_disk:{ .lg } **MemoryManager**
+- :floppy_disk:{ .lg } **MemoryManager**
 
     ---
 
@@ -25,7 +25,7 @@ AgenticAI Framework provides **7 specialized memory managers** designed for diff
 
     [:octicons-arrow-right-24: Jump to section](#memorymanager)
 
--   :robot:{ .lg } **AgentMemoryManager**
+- :robot:{ .lg } **AgentMemoryManager**
 
     ---
 
@@ -33,7 +33,7 @@ AgenticAI Framework provides **7 specialized memory managers** designed for diff
 
     [:octicons-arrow-right-24: Jump to section](#agentmemorymanager)
 
--   :arrows_counterclockwise:{ .lg } **WorkflowMemoryManager**
+- :arrows_counterclockwise:{ .lg } **WorkflowMemoryManager**
 
     ---
 
@@ -41,7 +41,7 @@ AgenticAI Framework provides **7 specialized memory managers** designed for diff
 
     [:octicons-arrow-right-24: Jump to section](#workflowmemorymanager)
 
--   :busts_in_silhouette:{ .lg } **OrchestrationMemoryManager**
+- :busts_in_silhouette:{ .lg } **OrchestrationMemoryManager**
 
     ---
 
@@ -49,7 +49,7 @@ AgenticAI Framework provides **7 specialized memory managers** designed for diff
 
     [:octicons-arrow-right-24: Jump to section](#orchestrationmemorymanager)
 
--   :books:{ .lg } **KnowledgeMemoryManager**
+- :books:{ .lg } **KnowledgeMemoryManager**
 
     ---
 
@@ -57,7 +57,7 @@ AgenticAI Framework provides **7 specialized memory managers** designed for diff
 
     [:octicons-arrow-right-24: Jump to section](#knowledgememorymanager)
 
--   :hammer_and_wrench:{ .lg } **ToolMemoryManager**
+- :hammer_and_wrench:{ .lg } **ToolMemoryManager**
 
     ---
 
@@ -65,7 +65,7 @@ AgenticAI Framework provides **7 specialized memory managers** designed for diff
 
     [:octicons-arrow-right-24: Jump to section](#toolmemorymanager)
 
--   :microphone:{ .lg } **SpeechMemoryManager**
+- :microphone:{ .lg } **SpeechMemoryManager**
 
     ---
 
@@ -77,7 +77,7 @@ AgenticAI Framework provides **7 specialized memory managers** designed for diff
 
 ---
 
-## 📊 Memory Manager Comparison
+## Memory Manager Comparison
 
 | Manager | Purpose | Key Features | Best For |
 |---------|---------|--------------|----------|
@@ -129,24 +129,24 @@ for result in results:
 ```python
 memory = MemoryManager(
     # Storage backend
-    backend="in-memory",  # Options: in-memory, redis, postgres, chromadb
-    
+    backend="in-memory", # Options: in-memory, redis, postgres, chromadb
+
     # Capacity settings
     max_entries=10000,
     max_tokens_per_entry=2048,
-    
+
     # Compression settings
     enable_compression=True,
-    compression_threshold=1000,  # Compress when > 1000 tokens
-    
+    compression_threshold=1000, # Compress when > 1000 tokens
+
     # Semantic search settings
     embedding_model="text-embedding-3-small",
     similarity_threshold=0.7,
-    
+
     # Persistence
     persist_path="./memory_data",
     auto_save=True,
-    save_interval=300  # Save every 5 minutes
+    save_interval=300 # Save every 5 minutes
 )
 ```
 
@@ -167,11 +167,11 @@ memory = MemoryManager(
     ```python
     # Enable automatic compression
     memory = MemoryManager(enable_compression=True)
-    
+
     # Manual compression
     compressed = memory.compress(
         entries=old_memories,
-        strategy="summarize"  # Options: summarize, extract_key_points, merge
+        strategy="summarize" # Options: summarize, extract_key_points, merge
     )
     ```
 
@@ -179,10 +179,10 @@ memory = MemoryManager(
     ```python
     # Save to disk
     memory.save("./checkpoints/memory_backup.pkl")
-    
+
     # Load from disk
     memory = MemoryManager.load("./checkpoints/memory_backup.pkl")
-    
+
     # Export to JSON
     memory.export_json("./exports/memory.json")
     ```
@@ -190,13 +190,12 @@ memory = MemoryManager(
 === "Batch Operations"
     ```python
     # Batch store
-    entries = [
-        {"content": "Memory 1", "metadata": {"tag": "a"}},
+    entries = [{"content": "Memory 1", "metadata": {"tag": "a"}},
         {"content": "Memory 2", "metadata": {"tag": "b"}},
         {"content": "Memory 3", "metadata": {"tag": "c"}},
     ]
     memory.store_batch(entries)
-    
+
     # Batch delete
     memory.delete_batch(filters={"tag": "old"})
     ```
@@ -504,8 +503,7 @@ for result in results:
 
 ```python
 # Add multiple documents
-knowledge.add_documents([
-    {"content": doc1, "source": "file1.pdf"},
+knowledge.add_documents([{"content": doc1, "source": "file1.pdf"},
     {"content": doc2, "source": "file2.pdf"},
     {"content": doc3, "source": "file3.pdf"},
 ])
@@ -514,7 +512,7 @@ knowledge.add_documents([
 knowledge = KnowledgeMemoryManager(
     chunk_size=500,
     chunk_overlap=50,
-    chunking_strategy="semantic"  # Options: fixed, semantic, sentence
+    chunking_strategy="semantic" # Options: fixed, semantic, sentence
 )
 
 # Add from file
@@ -530,7 +528,7 @@ knowledge.add_from_url("https://docs.example.com/api")
 # Configure RAG settings
 knowledge = KnowledgeMemoryManager(
     embedding_model="text-embedding-3-large",
-    retrieval_strategy="hybrid",  # Options: vector, keyword, hybrid
+    retrieval_strategy="hybrid", # Options: vector, keyword, hybrid
     rerank_model="cross-encoder"
 )
 
@@ -600,7 +598,7 @@ history = tool_memory.get_history(tool_name="web_search", last_n=10)
 # Configure caching
 tool_memory = ToolMemoryManager(
     enable_caching=True,
-    cache_ttl=3600,  # 1 hour
+    cache_ttl=3600, # 1 hour
     max_cache_size=1000
 )
 
@@ -646,7 +644,7 @@ for tool, stats in all_stats.items():
 # Get tool recommendations
 recommendations = tool_memory.get_recommendations(
     task_type="information_retrieval",
-    based_on="success_rate"  # Options: success_rate, latency, cost
+    based_on="success_rate" # Options: success_rate, latency, cost
 )
 
 # Record tool failures for learning
@@ -757,7 +755,7 @@ transcript = speech_memory.get_conversation(
 
 ---
 
-## 🔧 Backend Configuration
+## Backend Configuration
 
 ### In-Memory (Default)
 
@@ -808,7 +806,7 @@ memory = MemoryManager(
 
 ---
 
-## 🏗️ Best Practices
+## Best Practices
 
 ### Memory Hygiene
 
@@ -836,7 +834,7 @@ memory.create_index("category")
 # Query with index
 results = memory.search(
     query="user preferences",
-    filters={"user_id": "user_123"},  # Uses index
+    filters={"user_id": "user_123"}, # Uses index
     top_k=10
 )
 ```
@@ -862,7 +860,7 @@ if not health.is_healthy:
 
 ---
 
-## 📚 API Reference
+## API Reference
 
 For complete API documentation, see:
 

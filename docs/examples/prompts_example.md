@@ -8,21 +8,19 @@ tags:
   - basic
 ---
 
-# 📝 Prompt Rendering Example
+# Prompt Rendering Example
 
-This guide provides a **professional, step-by-step walkthrough** for using the `Prompt` class in the `agenticaiframework` package to create and render dynamic text templates.  
+This guide provides a **professional, step-by-step walkthrough** for using the `Prompt` class in the `agenticaiframework` package to create and render dynamic text templates. 
 It is intended for developers building AI-driven applications that require flexible, parameterized prompt generation.
 
 !!! info "Enterprise ML/AI Features"
     Part of **400+ modules** with 14 ML/AI modules including prompt versioning and A/B testing. See [Prompts Documentation](../prompts.md).
-
 
 ## Prerequisites & Configuration
 
 - **Installation**: Ensure `agenticaiframework` is installed and accessible in your Python environment.
 - **No additional configuration** is required for this example.
 - **Python Version**: Compatible with Python 3.10+.
-
 
 ## Code
 
@@ -44,35 +42,31 @@ if __name__ == "__main__":
     logger.info("Rendered Prompt:", rendered_prompt)
 ```
 
-
 ## Step-by-Step Execution
 
-1. **Import the Class**  
+1. **Import the Class** 
    Import `Prompt` from `agenticaiframework.prompts`.
 
-2. **Create a Prompt Template**  
+2. **Create a Prompt Template** 
    Instantiate the `Prompt` class with a template string containing placeholders in `{}` format.
 
-3. **Render the Prompt**  
+3. **Render the Prompt** 
    Call `render` with keyword arguments matching the placeholders in the template.
 
-4. **Output the Result**  
+4. **Output the Result** 
    Print or log the rendered prompt for use in downstream AI model calls.
 
 > **Best Practice:** Keep prompt templates clear and concise, and use descriptive placeholder names to improve maintainability.
 
-
 ## Expected Input
 
 No user input is required; the script uses hardcoded values for demonstration purposes. In production, placeholder values could be dynamically generated from user input, database queries, or API responses.
-
 
 ## Expected Output
 
 ```
 Rendered Prompt: Write a short paragraph summary about artificial intelligence.
 ```
-
 
 ## How to Run
 

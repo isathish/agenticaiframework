@@ -162,23 +162,23 @@ class Output:
     
     def info(self, message: str) -> None:
         """Print info message."""
-        self.echo(self._colorize(f"ℹ {message}", Color.BLUE))
+        self.echo(self._colorize(f"[INFO] {message}", Color.BLUE))
     
     def success(self, message: str) -> None:
         """Print success message."""
-        self.echo(self._colorize(f"✓ {message}", Color.GREEN))
+        self.echo(self._colorize(f"[OK] {message}", Color.GREEN))
     
     def warning(self, message: str) -> None:
         """Print warning message."""
-        self.echo(self._colorize(f"⚠ {message}", Color.YELLOW))
+        self.echo(self._colorize(f"[WARN] {message}", Color.YELLOW))
     
     def error(self, message: str) -> None:
         """Print error message."""
-        self.echo(self._colorize(f"✗ {message}", Color.RED))
+        self.echo(self._colorize(f"[ERROR] {message}", Color.RED))
     
     def debug(self, message: str) -> None:
         """Print debug message."""
-        self.echo(self._colorize(f"⚙ {message}", Color.DIM))
+        self.echo(self._colorize(f"[DEBUG] {message}", Color.DIM))
     
     def bold(self, text: str) -> str:
         """Make text bold."""

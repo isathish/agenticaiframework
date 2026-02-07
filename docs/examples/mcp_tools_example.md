@@ -8,21 +8,19 @@ tags:
   - tutorial
 ---
 
-# 🔧 MCP Tools Integration Example
+# MCP Tools Integration Example
 
-This guide provides a **professional, step-by-step walkthrough** for creating, registering, and executing a custom MCP (Model Context Protocol) tool using the `MCPToolManager` and `MCPTool` classes from the `agenticaiframework` package.  
+This guide provides a **professional, step-by-step walkthrough** for creating, registering, and executing a custom MCP (Model Context Protocol) tool using the `MCPToolManager` and `MCPTool` classes from the `agenticaiframework` package. 
 It is intended for developers who want to extend their agent's capabilities with modular, reusable tools.
 
 !!! tip "35+ Built-in Tools"
     Part of **400+ modules** with 35+ built-in tools and 18 external connectors. See [MCP Tools Documentation](../mcp_tools.md).
-
 
 ## Prerequisites & Configuration
 
 - **Installation**: Ensure `agenticaiframework` is installed and accessible in your Python environment.
 - **No additional configuration** is required for this example.
 - **Python Version**: Compatible with Python 3.10+.
-
 
 ## Code
 
@@ -51,40 +49,37 @@ if __name__ == "__main__":
     logger.info("Tool Execution Result:", result)
 ```
 
-
 ## Step-by-Step Execution
 
-1. **Import Required Classes**  
+1. **Import Required Classes** 
    Import `MCPToolManager` and `MCPTool` from `agenticaiframework.mcp_tools`.
 
-2. **Define the Tool Function**  
+2. **Define the Tool Function** 
    Create a Python function (e.g., `greet_tool`) that implements the tool's logic.
 
-3. **Instantiate the Tool Manager**  
+3. **Instantiate the Tool Manager** 
    Create an instance of `MCPToolManager` to manage tool registration and execution.
 
-4. **Create the MCP Tool Object**  
+4. **Create the MCP Tool Object** 
    Instantiate `MCPTool` with:
    - `name`: Unique identifier for the tool.
    - `capability`: A short description of what the tool does.
    - `execute_fn`: The function to execute when the tool is called.
 
-5. **Register the Tool**  
+5. **Register the Tool** 
    Use `register_tool` to make the tool available for execution.
 
-6. **List Available Tools**  
+6. **List Available Tools** 
    Access the `tools` list to verify registration.
 
-7. **Execute the Tool**  
+7. **Execute the Tool** 
    Call `execute_tool` with the tool name and required arguments.
 
 > **Best Practice:** Keep tool functions small and focused on a single responsibility for better maintainability.
 
-
 ## Expected Input
 
 No user input is required; the script uses hardcoded values for demonstration purposes. In production, arguments could be dynamically generated from user input, API responses, or other runtime data.
-
 
 ## Expected Output
 
@@ -94,7 +89,6 @@ Available Tools: ['greet']
 [YYYY-MM-DD HH:MM:SS] [MCPToolManager] Executing MCP tool 'greet'
 Tool Execution Result: Hello, Alice! Welcome to MCP Tools.
 ```
-
 
 ## How to Run
 

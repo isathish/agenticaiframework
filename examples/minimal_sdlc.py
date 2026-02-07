@@ -31,7 +31,7 @@ async def main():
     
     # Access individual artifacts
     if result.success:
-        print("\n📦 Generated Artifacts:")
+        print("\n Generated Artifacts:")
         for phase, content in result.artifacts.items():
             print(f"  • {phase}: {len(content)} characters")
 

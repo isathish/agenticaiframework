@@ -8,7 +8,7 @@ tags:
   - updates
 ---
 
-# 📝 Changelog
+# Changelog
 
 <div class="annotate" markdown>
 
@@ -407,4 +407,3 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Add Python package CI/CD workflow with tests and versioning ([6711b29](https://github.com/isathish/agenticaiframework/commit/6711b2956af70b7c7e813d1f033a744b70f5732b) by isathish).
-

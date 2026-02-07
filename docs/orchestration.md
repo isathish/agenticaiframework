@@ -3,21 +3,21 @@ title: Multi-Agent Orchestration
 description: Build complex AI teams with hierarchical workflows, parallel execution, and intelligent routing
 ---
 
-# 🔄 Multi-Agent Orchestration
+# Multi-Agent Orchestration
 
 AgenticAI Framework provides powerful orchestration capabilities for building sophisticated multi-agent systems. Create teams, define workflows, and coordinate agents seamlessly.
 
 !!! success "Enterprise Orchestration"
-    
+
     The framework includes **12 workflow & orchestration modules** for enterprise deployments including workflow engine, state machine, saga patterns, and job queue management.
 
 ---
 
-## 🎯 Orchestration Overview
+## Orchestration Overview
 
 <div class="grid cards" markdown>
 
--   :busts_in_silhouette:{ .lg } **Teams**
+- :busts_in_silhouette:{ .lg } **Teams**
 
     ---
 
@@ -25,7 +25,7 @@ AgenticAI Framework provides powerful orchestration capabilities for building so
 
     [:octicons-arrow-right-24: Learn Teams](#agent-teams)
 
--   :arrows_counterclockwise:{ .lg } **Workflows**
+- :arrows_counterclockwise:{ .lg } **Workflows**
 
     ---
 
@@ -33,7 +33,7 @@ AgenticAI Framework provides powerful orchestration capabilities for building so
 
     [:octicons-arrow-right-24: Learn Workflows](#workflow-patterns)
 
--   :compass:{ .lg } **Routing**
+- :compass:{ .lg } **Routing**
 
     ---
 
@@ -41,7 +41,7 @@ AgenticAI Framework provides powerful orchestration capabilities for building so
 
     [:octicons-arrow-right-24: Learn Routing](#intelligent-routing)
 
--   :crown:{ .lg } **Hierarchies**
+- :crown:{ .lg } **Hierarchies**
 
     ---
 
@@ -53,28 +53,28 @@ AgenticAI Framework provides powerful orchestration capabilities for building so
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Orchestration Layer                           │
+│ Orchestration Layer │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐       │
-│  │    Team      │    │   Workflow   │    │   Router     │       │
-│  │   Manager    │◄──►│   Manager    │◄──►│   Engine     │       │
-│  └──────────────┘    └──────────────┘    └──────────────┘       │
-│         │                   │                   │                │
-│         ▼                   ▼                   ▼                │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐       │
-│  │    Agent     │    │    State     │    │   Message    │       │
-│  │   Registry   │    │   Manager    │    │    Queue     │       │
-│  └──────────────┘    └──────────────┘    └──────────────┘       │
-│                                                                  │
+│ │
+│ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ │
+│ │ Team │ │ Workflow │ │ Router │ │
+│ │ Manager │◄──►│ Manager │◄──►│ Engine │ │
+│ └──────────────┘ └──────────────┘ └──────────────┘ │
+│ │ │ │ │
+│ ▼ ▼ ▼ │
+│ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ │
+│ │ Agent │ │ State │ │ Message │ │
+│ │ Registry │ │ Manager │ │ Queue │ │
+│ └──────────────┘ └──────────────┘ └──────────────┘ │
+│ │
 ├─────────────────────────────────────────────────────────────────┤
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐            │
-│  │ Agent 1 │  │ Agent 2 │  │ Agent 3 │  │ Agent N │            │
-│  └─────────┘  └─────────┘  └─────────┘  └─────────┘            │
+│ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ │
+│ │ Agent 1 │ │ Agent 2 │ │ Agent 3 │ │ Agent N │ │
+│ └─────────┘ └─────────┘ └─────────┘ └─────────┘ │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -142,16 +142,16 @@ team = Team(
         # Execution settings
         max_iterations=10,
         timeout_seconds=300,
-        
+
         # Communication
         allow_agent_communication=True,
         shared_memory=True,
-        
+
         # Error handling
-        fail_fast=False,  # Continue if one agent fails
+        fail_fast=False, # Continue if one agent fails
         retry_failed_agents=True,
         max_retries=3,
-        
+
         # Logging
         verbose=True,
         log_agent_thoughts=True
@@ -210,8 +210,7 @@ Combine sequential and parallel patterns.
 ```python
 from agenticaiframework import WorkflowManager, WorkflowStep
 
-workflow = WorkflowManager.custom([
-    # Step 1: Research in parallel
+workflow = WorkflowManager.custom([# Step 1: Research in parallel
     WorkflowStep(
         name="research",
         agents=["researcher_1", "researcher_2"],
@@ -254,8 +253,7 @@ Execute different paths based on conditions.
 ```python
 from agenticaiframework import WorkflowManager, ConditionalStep
 
-workflow = WorkflowManager.custom([
-    WorkflowStep(name="analyze", agents=["analyzer"]),
+workflow = WorkflowManager.custom([WorkflowStep(name="analyze", agents=["analyzer"]),
     ConditionalStep(
         name="route",
         condition=lambda result: result.complexity > 0.8,
@@ -286,8 +284,7 @@ leader = Agent(
 )
 
 # Create team members
-developers = [
-    Agent(config=AgentConfig(name=f"dev_{i}", role="Developer"))
+developers = [Agent(config=AgentConfig(name=f"dev_{i}", role="Developer"))
     for i in range(3)
 ]
 
@@ -389,7 +386,7 @@ agent = router.route(task)
 router = Router(
     strategy=RoutingStrategy.QUALITY_BASED,
     agents=agents,
-    performance_history=True  # Uses historical performance data
+    performance_history=True # Uses historical performance data
 )
 
 # Routes to agent with best track record for similar tasks
@@ -601,7 +598,7 @@ class CustomAggregator(ResultAggregator):
         for result in results:
             weight = self.get_agent_weight(result.agent)
             weighted_results.append((result, weight))
-        
+
         return self.weighted_merge(weighted_results)
 ```
 
@@ -615,7 +612,7 @@ class CustomAggregator(ResultAggregator):
 from agenticaiframework import Team, TeamErrorHandler
 
 handler = TeamErrorHandler(
-    on_agent_failure="retry",  # Options: retry, skip, fail, delegate
+    on_agent_failure="retry", # Options: retry, skip, fail, delegate
     max_retries=3,
     fallback_agent="backup_agent"
 )
@@ -635,8 +632,7 @@ from agenticaiframework import RecoveryStrategy
 team = Team(
     name="resilient_team",
     agents=agents,
-    recovery_strategies=[
-        RecoveryStrategy.RETRY_WITH_BACKOFF,
+    recovery_strategies=[RecoveryStrategy.RETRY_WITH_BACKOFF,
         RecoveryStrategy.DELEGATE_TO_BACKUP,
         RecoveryStrategy.ROLLBACK_TO_CHECKPOINT,
         RecoveryStrategy.GRACEFUL_DEGRADATION
@@ -734,13 +730,13 @@ team = Team(
 
 ```python
 # Sequential for dependent tasks
-workflow = WorkflowManager.sequential()  # research → write → edit
+workflow = WorkflowManager.sequential() # research → write → edit
 
 # Parallel for independent tasks
-workflow = WorkflowManager.parallel()  # analyze_a | analyze_b | analyze_c
+workflow = WorkflowManager.parallel() # analyze_a | analyze_b | analyze_c
 
 # Hierarchical for complex coordination
-workflow = WorkflowManager.hierarchical()  # leader delegates to workers
+workflow = WorkflowManager.hierarchical() # leader delegates to workers
 ```
 
 ### 3. Enable Shared Memory for Collaboration
@@ -763,15 +759,15 @@ team = Team(
     name="time_bounded",
     agents=agents,
     config=TeamConfig(
-        timeout_seconds=300,  # 5 minute overall timeout
-        per_agent_timeout=60  # 1 minute per agent
+        timeout_seconds=300, # 5 minute overall timeout
+        per_agent_timeout=60 # 1 minute per agent
     )
 )
 ```
 
 ---
 
-## 📚 API Reference
+## API Reference
 
 For complete API documentation, see:
 

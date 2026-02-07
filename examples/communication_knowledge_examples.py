@@ -282,19 +282,19 @@ def example_knowledge_builder():
     print("\nSupported sources:")
     
     # Document sources
-    print("\n📄 Documents:")
+    print("\n Documents:")
     print("  builder.add_from_file('docs/manual.pdf')")
     print("  builder.add_from_file('data/report.docx')")
     print("  builder.add_from_file('notes.md')")
     print("  builder.add_from_directory('docs/', extensions=['.pdf', '.md'])")
     
     # Web sources
-    print("\n🌐 Web:")
+    print("\n Web:")
     print("  builder.add_from_url('https://example.com/article')")
     print("  builder.add_from_web_search('machine learning best practices')")
     
     # API sources
-    print("\n🔌 APIs:")
+    print("\n APIs:")
     print("  builder.add_from_api('https://api.example.com/data')")
     print("  builder.add_from_api(")
     print("      'https://api.example.com/items',")
@@ -303,14 +303,14 @@ def example_knowledge_builder():
     print("  )")
     
     # Image sources
-    print("\n🖼️ Images (OCR/Vision):")
+    print("\n Images (OCR/Vision):")
     print("  # Using Tesseract OCR")
     print("  builder.add_from_image('diagram.png', ocr_provider='pytesseract')")
     print("  # Using GPT-4 Vision")
     print("  builder.add_from_image('chart.png', ocr_provider='openai_vision')")
     
     # Data files
-    print("\n📊 Data Files:")
+    print("\n Data Files:")
     print("  builder.add('data.json')")
     print("  builder.add('spreadsheet.csv')")
 
@@ -337,35 +337,35 @@ def example_embedding_output():
     
     print("EmbeddingOutput provides converters for all major vector DBs:\n")
     
-    print("🔷 Qdrant:")
+    print(" Qdrant:")
     print("  point = embedding.to_qdrant_point()")
     print("  qdrant_client.upsert(collection='docs', points=[point])")
     
-    print("\n🌲 Pinecone:")
+    print("\n Pinecone:")
     print("  vector = embedding.to_pinecone_vector()")
     print("  index.upsert(vectors=[vector])")
     
-    print("\n🌐 Weaviate:")
+    print("\n Weaviate:")
     print("  obj = embedding.to_weaviate_object(class_name='Document')")
     print("  client.data_object.create(obj)")
     
-    print("\n🎨 ChromaDB:")
+    print("\n ChromaDB:")
     print("  doc = embedding.to_chroma_document()")
     print("  collection.add(**doc)")
     
-    print("\n🦅 Milvus:")
+    print("\n Milvus:")
     print("  entity = embedding.to_milvus_entity()")
     print("  collection.insert([entity])")
     
-    print("\n🍃 MongoDB Atlas:")
+    print("\n MongoDB Atlas:")
     print("  doc = embedding.to_mongodb_document()")
     print("  collection.insert_one(doc)")
     
-    print("\n🐘 PostgreSQL (pgvector):")
+    print("\n PostgreSQL (pgvector):")
     print("  row = embedding.to_pgvector_row()")
     print("  cursor.execute('INSERT INTO docs ...', row)")
     
-    print("\n🔍 OpenSearch:")
+    print("\n OpenSearch:")
     print("  doc = embedding.to_opensearch_document()")
     print("  client.index(body=doc['_source'], id=doc['_id'])")
 
@@ -410,13 +410,13 @@ def example_vector_db_tool():
     print(")")
     
     # Demo operations
-    print("\n📥 Insert:")
+    print("\n Insert:")
     print("db.insert(vectors=[[0.1, 0.2, ...]], payloads=[{'text': 'doc'}])")
     
-    print("\n🔍 Search:")
+    print("\n Search:")
     print("results = db.search(query_vector=[0.1, 0.2, ...], limit=10)")
     
-    print("\n🗑️ Delete:")
+    print("\n Delete:")
     print("db.delete(ids=['doc-001', 'doc-002'])")
 
 

@@ -1,8 +1,8 @@
-# 🚀 Quick Start Guide
+# Quick Start Guide
 
 **Get started with AgenticAI Framework in minutes!**
 
-🎯 **380+ Modules** | 🏢 **237 Enterprise Features** | 🔧 **35+ Built-in Tools** | 📊 **12-Tier Evaluation**
+ **380+ Modules** | **237 Enterprise Features** | **35+ Built-in Tools** | **12-Tier Evaluation**
 
 For the complete quick start guide, please see our [full documentation](https://isathish.github.io/agenticaiframework/quick-start/).
 
@@ -36,22 +36,22 @@ print(f"Agent {agent.name} is {agent.status}")
 
 ## Next Steps
 
-- 📚 [Full Documentation](https://isathish.github.io/agenticaiframework/)
-- 🚀 [Quick Start Guide](https://isathish.github.io/agenticaiframework/quick-start/)
-- 💡 [Examples](https://isathish.github.io/agenticaiframework/EXAMPLES/)
-- 📖 [API Reference](https://isathish.github.io/agenticaiframework/API_REFERENCE/)
+- [Full Documentation](https://isathish.github.io/agenticaiframework/)
+- [Quick Start Guide](https://isathish.github.io/agenticaiframework/quick-start/)
+- [Examples](https://isathish.github.io/agenticaiframework/EXAMPLES/)
+- [API Reference](https://isathish.github.io/agenticaiframework/API_REFERENCE/)
 
 ## Features
 
-- ✅ **380+ Total Modules** - Comprehensive framework coverage
-- ✅ **237 Enterprise Modules** - Production-ready enterprise capabilities
-- ✅ **35+ Built-in Tools** - File, web, database, AI/ML tools
-- ✅ **12-Tier Evaluation** - Comprehensive quality assessment
-- ✅ **14 Enterprise Categories** - API, Security, ML/AI, DDD, and more
-- ✅ **Enterprise Security** - Guardrails, PII protection, audit logging
-- ✅ **Multi-Agent Orchestration** - Coordinate agent teams
-- ✅ **Memory Management** - Short-term, long-term, and external storage
-- ✅ **Full Observability** - Metrics, tracing, monitoring
+- **380+ Total Modules** - Comprehensive framework coverage
+- **237 Enterprise Modules** - Production-ready enterprise capabilities
+- **35+ Built-in Tools** - File, web, database, AI/ML tools
+- **12-Tier Evaluation** - Comprehensive quality assessment
+- **14 Enterprise Categories** - API, Security, ML/AI, DDD, and more
+- **Enterprise Security** - Guardrails, PII protection, audit logging
+- **Multi-Agent Orchestration** - Coordinate agent teams
+- **Memory Management** - Short-term, long-term, and external storage
+- **Full Observability** - Metrics, tracing, monitoring
 
 ---
 
@@ -59,16 +59,16 @@ print(f"Agent {agent.name} is {agent.status}")
 - **Features**: 25+
 
 ### Quality Metrics
-- ✅ Zero errors
-- ✅ All files render
-- ✅ Mobile responsive  
-- ✅ SEO optimized
-- ✅ Accessibility compliant
-- ✅ Performance optimized
+- Zero errors
+- All files render
+- Mobile responsive 
+- SEO optimized
+- Accessibility compliant
+- Performance optimized
 
 ---
 
-## 🚀 Next Steps
+## Next Steps
 
 ### Deploy Options
 
@@ -88,7 +88,7 @@ The docs can auto-deploy on git push with GitHub Actions.
 
 ---
 
-## 💡 Pro Tips
+## Pro Tips
 
 ### Content Creation
 1. Use card layouts for feature showcases
@@ -103,7 +103,7 @@ The docs can auto-deploy on git push with GitHub Actions.
 **Card Layout**:
 ```markdown
 <div class="grid cards" markdown>
--   :material-icon:{ .lg } __Title__
+- :material-icon:{ .lg } __Title__
     Description text
 </div>
 ```
@@ -124,7 +124,7 @@ The docs can auto-deploy on git push with GitHub Actions.
 
 ---
 
-## 📞 Support
+## Support
 
 ### Documentation Issues
 - Check TROUBLESHOOTING.md
@@ -137,39 +137,39 @@ The docs can auto-deploy on git push with GitHub Actions.
 
 ---
 
-## 🎉 Success Metrics
+## Success Metrics
 
 ### Achieved
-- ✅ All MD files rendering
-- ✅ Modern, rich design
-- ✅ 20+ new features
-- ✅ Perfect organization
-- ✅ Fast performance
-- ✅ Mobile friendly
-- ✅ Production ready
+- All MD files rendering
+- Modern, rich design
+- 20+ new features
+- Perfect organization
+- Fast performance
+- Mobile friendly
+- Production ready
 
 ### Status
-- **Design**: ⭐⭐⭐⭐⭐ Modern & Beautiful
-- **Features**: ⭐⭐⭐⭐⭐ Rich & Complete
-- **Structure**: ⭐⭐⭐⭐⭐ Well Organized
-- **Performance**: ⭐⭐⭐⭐⭐ Fast & Optimized
-- **UX**: ⭐⭐⭐⭐⭐ Excellent Experience
+- **Design**: Modern & Beautiful
+- **Features**: Rich & Complete
+- **Structure**: Well Organized
+- **Performance**: Fast & Optimized
+- **UX**: Excellent Experience
 
 ---
 
-## 🎊 You're All Set!
+## You're All Set!
 
 Your documentation is now:
-1. ✅ Fully functional with all files rendering
-2. ✅ Modern with Material theme & rich features
-3. ✅ Well organized with clear structure
-4. ✅ Fast with instant navigation & prefetch
-5. ✅ User-friendly with search, breadcrumbs, mobile support
+1. Fully functional with all files rendering
+2. Modern with Material theme & rich features
+3. Well organized with clear structure
+4. Fast with instant navigation & prefetch
+5. User-friendly with search, breadcrumbs, mobile support
 
 **Visit**: http://127.0.0.1:8000
 
-Enjoy your beautiful, modern documentation! 🚀
+Enjoy your beautiful, modern documentation! 
 
 ---
 
-*Built with ❤️ using Material for MkDocs*
+*Built with using Material for MkDocs*

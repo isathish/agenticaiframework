@@ -7,7 +7,7 @@ tags:
   - assessment
 ---
 
-# 📊 Evaluation System Example
+# Evaluation System Example
 
 !!! tip "12-Tier Evaluation System"
     Part of **400+ modules** with a comprehensive **12-tier evaluation system** and 100+ metrics. See [Evaluation Documentation](../evaluation.md).

@@ -56,10 +56,10 @@ monitor.log_event("task_completed", {"task": "summarise", "duration": 1.2})
 monitor.log_message("Pipeline initialised successfully")
 
 # Retrieve data
-all_metrics = monitor.get_metrics()       # dict of all metrics
-latency = monitor.get_metric("latency_ms")  # list of latency values
-events = monitor.get_events()              # list of all events
-logs = monitor.get_logs()                  # list of all messages
+all_metrics = monitor.get_metrics() # dict of all metrics
+latency = monitor.get_metric("latency_ms") # list of latency values
+events = monitor.get_events() # list of all events
+logs = monitor.get_logs() # list of all messages
 ```
 
 ---
@@ -73,7 +73,7 @@ constant regardless of how long the system runs.
 monitor.record_metric("request_count", 1)
 monitor.record_metric("request_count", 2)
 
-values = monitor.get_metric("request_count")  # [1, 2]
+values = monitor.get_metric("request_count") # [1, 2]
 ```
 
 ---
@@ -162,7 +162,7 @@ monitor.record_metric("requests_total", 1)
 
 # Trace individual request flow
 with tracer.span("handle_request"):
-    pass  # your logic here
+    pass # your logic here
 ```
 
 ---

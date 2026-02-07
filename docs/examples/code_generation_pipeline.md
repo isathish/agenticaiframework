@@ -8,7 +8,7 @@ tags:
   - workflow
 ---
 
-# 💻 Code Generation Pipeline Example
+# Code Generation Pipeline Example
 
 This example demonstrates a complete code generation and evaluation pipeline using multiple framework components.
 
@@ -61,7 +61,7 @@ if __name__ == "__main__":
     # Execute and evaluate
     result = code_agent.execute_task(code_task)
     evaluation = evaluator.evaluate(result)
-    
+
     logger.info(f"Generated Code: {result}")
     logger.info(f"Evaluation: {evaluation}")
 ```

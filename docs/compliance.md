@@ -9,7 +9,7 @@ tags:
   - data-masking
 ---
 
-# 🏛️ Compliance & Governance
+# Compliance & Governance
 
 <div class="annotate" markdown>
 
@@ -24,40 +24,40 @@ Ensure regulatory compliance with comprehensive audit logging, policy enforcemen
 
 ---
 
-## 🎯 Quick Navigation
+## Quick Navigation
 
 <div class="grid cards" markdown>
 
--   :material-clipboard-check:{ .lg } **Audit Trails**
-    
+- :material-clipboard-check:{ .lg } **Audit Trails**
+
     Tamper-evident logging
-    
+
     [:octicons-arrow-right-24: Learn More](#audit-trail-manager)
 
--   :material-shield-lock:{ .lg } **Policy Enforcement**
-    
+- :material-shield-lock:{ .lg } **Policy Enforcement**
+
     Rule-based access control
-    
+
     [:octicons-arrow-right-24: Configure](#policy-engine)
 
--   :material-eye-off:{ .lg } **Data Masking**
-    
+- :material-eye-off:{ .lg } **Data Masking**
+
     PII detection and masking
-    
+
     [:octicons-arrow-right-24: Protect](#data-masking-engine)
 
--   :material-file-certificate:{ .lg } **Compliance Reports**
-    
+- :material-file-certificate:{ .lg } **Compliance Reports**
+
     Regulatory reporting
-    
+
     [:octicons-arrow-right-24: Generate](#compliance-reporting)
 
 </div>
 
-## 📊 Overview
+## Overview
 
 !!! abstract "Compliance Framework"
-    
+
     The Compliance module provides **10 enterprise governance modules** including tamper-evident audit trails, configurable policy enforcement, and intelligent data masking for PII protection.
 
 ### Architecture
@@ -69,30 +69,30 @@ graph TB
         API[API Requests]
         DATA[Data Access]
     end
-    
+
     subgraph "Compliance Layer"
-        AUDIT[AuditTrailManager<br/>📋 Audit]
-        POLICY[PolicyEngine<br/>🛡️ Policy]
-        MASK[DataMaskingEngine<br/>🔒 Masking]
+        AUDIT[AuditTrailManager<br/> Audit]
+        POLICY[PolicyEngine<br/> Policy]
+        MASK[DataMaskingEngine<br/> Masking]
     end
-    
+
     subgraph "Storage"
         LOG[Audit Logs]
         RULES[Policy Rules]
         CONFIG[Masking Config]
     end
-    
+
     subgraph "Decorators"
         D1[@audit_action]
         D2[@enforce_policy]
         D3[@mask_output]
     end
-    
+
     AGENT & API & DATA --> D1 & D2 & D3
     D1 --> AUDIT --> LOG
     D2 --> POLICY --> RULES
     D3 --> MASK --> CONFIG
-    
+
     style AUDIT fill:#e3f2fd,stroke:#1976d2
     style POLICY fill:#fff3e0,stroke:#f57c00
     style MASK fill:#fce4ec,stroke:#c2185b
@@ -100,7 +100,7 @@ graph TB
 
 ---
 
-## 📋 Audit Trail Manager
+## Audit Trail Manager
 
 The `AuditTrailManager` provides tamper-evident logging with hash chain integrity.
 
@@ -135,16 +135,16 @@ audit.log_event(
 from agenticaiframework.compliance import AuditEventType
 
 # Available event types
-AuditEventType.AUTHENTICATION    # Login/logout events
-AuditEventType.AUTHORIZATION     # Access control decisions
-AuditEventType.DATA_ACCESS       # Data read operations
+AuditEventType.AUTHENTICATION # Login/logout events
+AuditEventType.AUTHORIZATION # Access control decisions
+AuditEventType.DATA_ACCESS # Data read operations
 AuditEventType.DATA_MODIFICATION # Data write operations
-AuditEventType.DATA_DELETION     # Data removal
-AuditEventType.CONFIGURATION     # Config changes
-AuditEventType.SYSTEM            # System events
-AuditEventType.SECURITY          # Security events
-AuditEventType.COMPLIANCE        # Compliance checks
-AuditEventType.AGENT_ACTION      # Agent operations
+AuditEventType.DATA_DELETION # Data removal
+AuditEventType.CONFIGURATION # Config changes
+AuditEventType.SYSTEM # System events
+AuditEventType.SECURITY # Security events
+AuditEventType.COMPLIANCE # Compliance checks
+AuditEventType.AGENT_ACTION # Agent operations
 ```
 
 ### Severity Levels
@@ -152,11 +152,11 @@ AuditEventType.AGENT_ACTION      # Agent operations
 ```python
 from agenticaiframework.compliance import AuditSeverity
 
-AuditSeverity.DEBUG      # Detailed debugging
-AuditSeverity.INFO       # Normal operations
-AuditSeverity.WARNING    # Potential issues
-AuditSeverity.ERROR      # Errors
-AuditSeverity.CRITICAL   # Critical events
+AuditSeverity.DEBUG # Detailed debugging
+AuditSeverity.INFO # Normal operations
+AuditSeverity.WARNING # Potential issues
+AuditSeverity.ERROR # Errors
+AuditSeverity.CRITICAL # Critical events
 ```
 
 ### Using the Decorator
@@ -209,9 +209,9 @@ logger = logging.getLogger(__name__)
 # The audit trail uses hash chaining
 # Each event includes hash of previous event
 
-event1 = audit.log_event(...)  # hash: abc123
-event2 = audit.log_event(...)  # prev_hash: abc123, hash: def456
-event3 = audit.log_event(...)  # prev_hash: def456, hash: ghi789
+event1 = audit.log_event(...) # hash: abc123
+event2 = audit.log_event(...) # prev_hash: abc123, hash: def456
+event3 = audit.log_event(...) # prev_hash: def456, hash: ghi789
 
 # Verify chain integrity
 result = audit.verify_chain()
@@ -221,7 +221,7 @@ logger.info(f"Events verified: {result.event_count}")
 
 ---
 
-## 🛡️ Policy Engine
+## Policy Engine
 
 The `PolicyEngine` enforces configurable access control and operation policies.
 
@@ -243,8 +243,7 @@ data_access_policy = Policy(
     name="customer_data_access",
     type=PolicyType.ACCESS_CONTROL,
     description="Controls access to customer data",
-    rules=[
-        {
+    rules=[{
             "condition": "role in ['admin', 'support']",
             "action": "allow",
             "resource_pattern": "customers/*"
@@ -270,12 +269,12 @@ engine.register_policy(data_access_policy)
 ```python
 from agenticaiframework.compliance import PolicyType
 
-PolicyType.ACCESS_CONTROL    # Resource access
-PolicyType.RATE_LIMIT       # Request rate limits
-PolicyType.DATA_HANDLING    # Data processing rules
-PolicyType.CONTENT          # Content restrictions
-PolicyType.OPERATION        # Allowed operations
-PolicyType.COMPLIANCE       # Regulatory compliance
+PolicyType.ACCESS_CONTROL # Resource access
+PolicyType.RATE_LIMIT # Request rate limits
+PolicyType.DATA_HANDLING # Data processing rules
+PolicyType.CONTENT # Content restrictions
+PolicyType.OPERATION # Allowed operations
+PolicyType.COMPLIANCE # Regulatory compliance
 ```
 
 ### Using the Decorator
@@ -335,8 +334,7 @@ else:
 policy = Policy(
     name="sensitive_operations",
     type=PolicyType.OPERATION,
-    rules=[
-        {
+    rules=[{
             # Time-based restrictions
             "condition": "hour >= 9 and hour <= 17",
             "action": "allow",
@@ -360,7 +358,7 @@ policy = Policy(
 
 ---
 
-## 🔒 Data Masking Engine
+## Data Masking Engine
 
 The `DataMaskingEngine` detects and masks sensitive data including PII.
 
@@ -389,12 +387,12 @@ masked = masker.mask_text(
 ```python
 from agenticaiframework.compliance import MaskingType
 
-MaskingType.REDACT         # Replace with [TYPE]
-MaskingType.PARTIAL        # Show partial (e.g., j***@e***.com)
-MaskingType.HASH           # Replace with hash
-MaskingType.TOKENIZE       # Replace with token
-MaskingType.ENCRYPT        # Encrypt value
-MaskingType.GENERALIZE     # Generalize (e.g., 25 → 20-30)
+MaskingType.REDACT # Replace with [TYPE]
+MaskingType.PARTIAL # Show partial (e.g., j***@e***.com)
+MaskingType.HASH # Replace with hash
+MaskingType.TOKENIZE # Replace with token
+MaskingType.ENCRYPT # Encrypt value
+MaskingType.GENERALIZE # Generalize (e.g., 25 → 20-30)
 ```
 
 ### Custom Masking Rules
@@ -405,7 +403,7 @@ email_rule = MaskingRule(
     name="email",
     pattern=r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}',
     masking_type=MaskingType.PARTIAL,
-    partial_show=2  # Show first 2 chars
+    partial_show=2 # Show first 2 chars
 )
 
 phone_rule = MaskingRule(
@@ -483,7 +481,7 @@ for pii in pii_found:
 
 ---
 
-## 📊 Compliance Reporting
+## Compliance Reporting
 
 Generate compliance reports for regulatory requirements.
 
@@ -508,12 +506,11 @@ report.save("/reports/january_2024_access.pdf")
 
 ```python
 # Available report types
-report_types = [
-    "data_access",      # Data access summary
+report_types = ["data_access", # Data access summary
     "policy_violations", # Policy violation report
-    "user_activity",    # User activity report
-    "security_events",  # Security event summary
-    "pii_exposure",     # PII handling report
+    "user_activity", # User activity report
+    "security_events", # Security event summary
+    "pii_exposure", # PII handling report
     "compliance_summary" # Overall compliance status
 ]
 ```
@@ -532,7 +529,7 @@ audit_trail.schedule_report(
 
 ---
 
-## 🎯 Complete Example
+## Complete Example
 
 ```python
 from agenticaiframework import Agent
@@ -562,8 +559,7 @@ audit_trail.configure(
 customer_policy = Policy(
     name="customer_data_access",
     type=PolicyType.ACCESS_CONTROL,
-    rules=[
-        {"condition": "role == 'admin'", "action": "allow"},
+    rules=[{"condition": "role == 'admin'", "action": "allow"},
         {"condition": "role == 'support'", "action": "allow", "fields": ["name", "email"]},
         {"condition": "default", "action": "deny"}
     ]
@@ -580,7 +576,7 @@ data_masking.configure_pii_detection(
 
 # Compliant service implementation
 class CustomerService:
-    
+
     @audit_action(
         event_type=AuditEventType.DATA_ACCESS,
         severity=AuditSeverity.INFO
@@ -590,7 +586,7 @@ class CustomerService:
     def get_customer(self, customer_id: str, context: dict) -> dict:
         """Get customer data with full compliance."""
         return self.database.get_customer(customer_id)
-    
+
     @audit_action(
         event_type=AuditEventType.DATA_MODIFICATION,
         severity=AuditSeverity.WARNING
@@ -621,7 +617,7 @@ customer = service.get_customer(
 
 ---
 
-## 📋 Compliance Standards Support
+## Compliance Standards Support
 
 | Standard | Features |
 |----------|----------|
@@ -633,10 +629,10 @@ customer = service.get_customer(
 
 ---
 
-## 🎯 Best Practices
+## Best Practices
 
 !!! tip "Compliance Guidelines"
-    
+
     1. **Log everything** - Comprehensive audit trails are essential
     2. **Mask by default** - Apply PII masking to all outputs
     3. **Enforce policies** - Use decorators for consistent enforcement
@@ -644,7 +640,7 @@ customer = service.get_customer(
     5. **Retain appropriately** - Follow retention policies for your industry
 
 !!! warning "Security Considerations"
-    
+
     - Store audit logs in tamper-evident storage
     - Encrypt sensitive audit data
     - Implement proper access controls for audit logs
@@ -653,7 +649,7 @@ customer = service.get_customer(
 
 ---
 
-## 📚 Related Documentation
+## Related Documentation
 
 - [Security](security.md) - Security module
 - [Monitoring](monitoring.md) - System monitoring

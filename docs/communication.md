@@ -3,21 +3,21 @@ title: Communication Protocols
 description: 6 communication protocols for connecting agents - HTTP, WebSocket, SSE, MQTT, gRPC, STDIO
 ---
 
-# 📡 Communication Protocols
+# Communication Protocols
 
 AgenticAI Framework supports **6 communication protocols** for connecting agents to external services, each other, and client applications.
 
 !!! tip "Enterprise Messaging"
-    
+
     The framework also includes **12 enterprise messaging & events modules** for Pub/Sub, Event Sourcing, CQRS, and Kafka integration.
 
 ---
 
-## 🎯 Protocol Overview
+## Protocol Overview
 
 <div class="grid cards" markdown>
 
--   :globe_with_meridians:{ .lg } **HTTP**
+- :globe_with_meridians:{ .lg } **HTTP**
 
     ---
 
@@ -25,7 +25,7 @@ AgenticAI Framework supports **6 communication protocols** for connecting agents
 
     [:octicons-arrow-right-24: Learn HTTP](#http-protocol)
 
--   :zap:{ .lg } **WebSocket**
+- :zap:{ .lg } **WebSocket**
 
     ---
 
@@ -33,7 +33,7 @@ AgenticAI Framework supports **6 communication protocols** for connecting agents
 
     [:octicons-arrow-right-24: Learn WebSocket](#websocket-protocol)
 
--   :satellite:{ .lg } **SSE**
+- :satellite:{ .lg } **SSE**
 
     ---
 
@@ -41,7 +41,7 @@ AgenticAI Framework supports **6 communication protocols** for connecting agents
 
     [:octicons-arrow-right-24: Learn SSE](#sse-protocol)
 
--   :envelope:{ .lg } **MQTT**
+- :envelope:{ .lg } **MQTT**
 
     ---
 
@@ -49,7 +49,7 @@ AgenticAI Framework supports **6 communication protocols** for connecting agents
 
     [:octicons-arrow-right-24: Learn MQTT](#mqtt-protocol)
 
--   :rocket:{ .lg } **gRPC**
+- :rocket:{ .lg } **gRPC**
 
     ---
 
@@ -57,7 +57,7 @@ AgenticAI Framework supports **6 communication protocols** for connecting agents
 
     [:octicons-arrow-right-24: Learn gRPC](#grpc-protocol)
 
--   :computer:{ .lg } **STDIO**
+- :computer:{ .lg } **STDIO**
 
     ---
 
@@ -69,7 +69,7 @@ AgenticAI Framework supports **6 communication protocols** for connecting agents
 
 ---
 
-## 📊 Protocol Comparison
+## Protocol Comparison
 
 | Protocol | Pattern | Best For | Latency | Streaming |
 |----------|---------|----------|---------|-----------|
@@ -111,22 +111,22 @@ async with HTTPClient() as client:
         "https://api.example.com/users",
         params={"limit": 10, "offset": 0}
     )
-    
+
     # POST request with JSON body
     response = await client.post(
         "https://api.example.com/users",
         json={"name": "Alice", "email": "alice@example.com"}
     )
-    
+
     # PUT request
     response = await client.put(
         "https://api.example.com/users/123",
         json={"name": "Alice Updated"}
     )
-    
+
     # DELETE request
     response = await client.delete("https://api.example.com/users/123")
-    
+
     # PATCH request
     response = await client.patch(
         "https://api.example.com/users/123",
@@ -143,17 +143,17 @@ config = HTTPConfig(
     # Timeouts
     timeout_seconds=30,
     connect_timeout=10,
-    
+
     # Retry settings
     max_retries=3,
     retry_delay=1.0,
     retry_backoff=2.0,
     retry_on_status=[429, 500, 502, 503, 504],
-    
+
     # Connection pooling
     pool_connections=10,
     pool_maxsize=100,
-    
+
     # SSL/TLS
     verify_ssl=True,
     cert_path="/path/to/cert.pem"
@@ -188,13 +188,13 @@ client = HTTPClient(config=config)
 === "OAuth2"
     ```python
     from agenticaiframework.communication import OAuth2Auth
-    
+
     auth = OAuth2Auth(
         client_id="your-client-id",
         client_secret="your-secret",
         token_url="https://auth.example.com/token"
     )
-    
+
     client = HTTPClient(auth=auth)
     ```
 
@@ -207,7 +207,7 @@ logger = logging.getLogger(__name__)
 
 async with HTTPClient() as client:
     response = await client.get("https://api.example.com/data")
-    
+
     # Check status
     if response.is_success:
         data = response.json()
@@ -215,10 +215,10 @@ async with HTTPClient() as client:
         logger.info("Resource not found")
     else:
         logger.info(f"Error: {response.status_code}")
-    
+
     # Access headers
     content_type = response.headers.get("content-type")
-    
+
     # Get raw content
     text = response.text
     binary = response.content
@@ -242,11 +242,11 @@ from agenticaiframework.communication import WebSocketClient
 async with WebSocketClient("wss://api.example.com/ws") as ws:
     # Send message
     await ws.send({"type": "subscribe", "channel": "updates"})
-    
+
     # Receive messages
     async for message in ws:
         logger.info(f"Received: {message}")
-        
+
         if message.get("type") == "done":
             break
 ```
@@ -261,14 +261,14 @@ config = WebSocketConfig(
     ping_interval=30,
     ping_timeout=10,
     close_timeout=5,
-    
+
     # Reconnection
     auto_reconnect=True,
     reconnect_delay=1.0,
     max_reconnect_attempts=5,
-    
+
     # Message handling
-    max_message_size=1024 * 1024,  # 1MB
+    max_message_size=1024 * 1024, # 1MB
     compression=True
 )
 
@@ -321,7 +321,7 @@ async with WebSocketClient("wss://chat.example.com/ws") as ws:
         "message": "Hello, how can you help me?",
         "user_id": "user_123"
     })
-    
+
     # Receive streaming response
     response_text = ""
     async for message in ws:
@@ -330,7 +330,7 @@ async with WebSocketClient("wss://chat.example.com/ws") as ws:
             print(message["content"], end="", flush=True)
         elif message["type"] == "done":
             break
-    
+
     logger.info(f"\nFull response: {response_text}")
 ```
 
@@ -363,12 +363,12 @@ from agenticaiframework.communication import SSEClient, SSEConfig
 
 config = SSEConfig(
     # Connection settings
-    timeout_seconds=0,  # No timeout (long-lived)
-    
+    timeout_seconds=0, # No timeout (long-lived)
+
     # Reconnection
     auto_reconnect=True,
     reconnect_delay=3.0,
-    
+
     # Headers
     headers={"Authorization": "Bearer token"}
 )
@@ -420,7 +420,7 @@ async def stream_completion(prompt: str):
                 yield token
             elif event.event == "done":
                 break
-        
+
         return full_response
 
 # Usage
@@ -446,13 +446,13 @@ from agenticaiframework.communication import MQTTClient
 async with MQTTClient("mqtt://broker.example.com:1883") as mqtt:
     # Subscribe to topic
     await mqtt.subscribe("agents/+/status")
-    
+
     # Publish message
     await mqtt.publish(
         topic="agents/agent_01/status",
         payload={"status": "online", "timestamp": "2024-01-15T10:30:00Z"}
     )
-    
+
     # Receive messages
     async for message in mqtt:
         logger.info(f"Topic: {message.topic}")
@@ -469,21 +469,21 @@ config = MQTTConfig(
     host="broker.example.com",
     port=1883,
     client_id="agent_client_01",
-    
+
     # Authentication
     username="user",
     password="password",
-    
+
     # TLS/SSL
     use_tls=True,
     ca_certs="/path/to/ca.pem",
-    
+
     # Quality of Service
-    default_qos=1,  # 0: At most once, 1: At least once, 2: Exactly once
-    
+    default_qos=1, # 0: At most once, 1: At least once, 2: Exactly once
+
     # Keep alive
     keepalive=60,
-    
+
     # Clean session
     clean_session=True
 )
@@ -497,17 +497,16 @@ mqtt = MQTTClient(config=config)
 async with MQTTClient(broker_url) as mqtt:
     # Subscribe to single topic
     await mqtt.subscribe("agents/agent_01/status")
-    
+
     # Subscribe with single-level wildcard (+)
-    await mqtt.subscribe("agents/+/status")  # Any agent's status
-    
+    await mqtt.subscribe("agents/+/status") # Any agent's status
+
     # Subscribe with multi-level wildcard (#)
-    await mqtt.subscribe("agents/#")  # All agent messages
-    
+    await mqtt.subscribe("agents/#") # All agent messages
+
     # Multiple subscriptions
-    await mqtt.subscribe([
-        ("agents/+/status", 1),  # QoS 1
-        ("tasks/+/result", 2),   # QoS 2
+    await mqtt.subscribe([("agents/+/status", 1), # QoS 1
+        ("tasks/+/result", 2), # QoS 2
     ])
 ```
 
@@ -570,20 +569,20 @@ from agenticaiframework.communication import GRPCClient, GRPCConfig
 config = GRPCConfig(
     # Connection
     target="localhost:50051",
-    
+
     # TLS/SSL
     secure=True,
     root_certificates="/path/to/ca.pem",
     private_key="/path/to/key.pem",
     certificate_chain="/path/to/cert.pem",
-    
+
     # Options
-    max_message_length=4 * 1024 * 1024,  # 4MB
+    max_message_length=4 * 1024 * 1024, # 4MB
     compression="gzip",
-    
+
     # Timeouts
     timeout_seconds=30,
-    
+
     # Retry
     max_retries=3,
     retry_delay=1.0
@@ -613,7 +612,7 @@ client = GRPCClient(config=config)
         async def generate_chunks():
             for chunk in data_chunks:
                 yield {"chunk": chunk}
-        
+
         response = await client.stream_send(
             service="DataService",
             method="UploadData",
@@ -632,7 +631,7 @@ logger = logging.getLogger(__name__)
         async def chat_stream():
             yield {"message": "Hello"}
             yield {"message": "How are you?"}
-        
+
         async for response in client.bidirectional_stream(
             service="ChatService",
             method="Chat",
@@ -682,7 +681,7 @@ async with STDIOClient(
 ) as stdio:
     # Send input
     await stdio.send({"task": "process", "data": input_data})
-    
+
     # Receive output
     response = await stdio.receive()
     logger.info(response)
@@ -698,17 +697,17 @@ config = STDIOConfig(
     command=["node", "agent.js"],
     working_dir="./agents",
     env={"NODE_ENV": "production"},
-    
+
     # I/O settings
     encoding="utf-8",
     line_buffered=True,
-    
+
     # Timeouts
     startup_timeout=10,
     response_timeout=60,
-    
+
     # Message format
-    message_format="json",  # Options: json, line, raw
+    message_format="json", # Options: json, line, raw
     delimiter="\n"
 )
 
@@ -726,9 +725,9 @@ async with STDIOClient(command=["python", "-i"]) as stdio:
     # Interactive Python session
     await stdio.send("x = 42")
     await stdio.send("print(x * 2)")
-    
+
     response = await stdio.receive()
-    logger.info(response)  # "84"
+    logger.info(response) # "84"
 ```
 
 ### MCP Server Communication
@@ -752,24 +751,24 @@ async with STDIOClient(
         "params": {"capabilities": {}},
         "id": 1
     })
-    
+
     init_response = await mcp.receive()
     logger.info(f"MCP initialized: {init_response}")
-    
+
     # List tools
     await mcp.send({
         "jsonrpc": "2.0",
         "method": "tools/list",
         "id": 2
     })
-    
+
     tools = await mcp.receive()
     logger.info(f"Available tools: {tools}")
 ```
 
 ---
 
-## 🔧 Connection Management
+## Connection Management
 
 ### Connection Pooling
 
@@ -813,7 +812,7 @@ for name, status in health.items():
 
 ---
 
-## 📚 API Reference
+## API Reference
 
 For complete API documentation, see:
 

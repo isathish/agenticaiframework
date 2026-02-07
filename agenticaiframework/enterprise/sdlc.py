@@ -90,7 +90,7 @@ class SDLCResult:
     
     def summary(self) -> str:
         """Get execution summary."""
-        status = "✅ SUCCESS" if self.success else "❌ FAILED"
+        status = "SUCCESS" if self.success else "FAILED"
         lines = [
             f"\n{'='*60}",
             f"SDLC PIPELINE RESULT: {status}",
@@ -103,10 +103,10 @@ class SDLCResult:
         
         for phase in self.phases_completed:
             artifact_len = len(self.artifacts.get(phase, ""))
-            lines.append(f"  ✓ {phase}: {artifact_len} chars")
+            lines.append(f"  [OK] {phase}: {artifact_len} chars")
         
         for phase, error in self.errors.items():
-            lines.append(f"  ✗ {phase}: {error[:50]}...")
+            lines.append(f"  [FAIL] {phase}: {error[:50]}...")
         
         lines.append(f"{'='*60}\n")
         return "\n".join(lines)
@@ -401,17 +401,17 @@ class SDLCPipeline:
         previous_output = ""
         
         if verbose:
-            print(f"\n{'='*60}", flush=True)
-            print(f"🚀 STARTING SDLC PIPELINE: {self.config.project_name}", flush=True)
-            print(f"{'='*60}", flush=True)
-            print(f"Phases: {', '.join(self.config.phases)}", flush=True)
-            print(f"Model: {self.config.model}", flush=True)
-            print(f"{'='*60}\n", flush=True)
+            logger.info("="*60)
+            logger.info("STARTING SDLC PIPELINE: %s", self.config.project_name)
+            logger.info("="*60)
+            logger.info("Phases: %s", ", ".join(self.config.phases))
+            logger.info("Model: %s", self.config.model)
+            logger.info("="*60)
         
         for phase in self.config.phases:
             if verbose:
-                print(f"\n📋 Phase: {phase.upper()}", flush=True)
-                print(f"{'-'*40}", flush=True)
+                logger.info("Phase: %s", phase.upper())
+                logger.info("-"*40)
             
             try:
                 # Get phase prompt
@@ -428,7 +428,7 @@ class SDLCPipeline:
                 )
                 
                 if verbose:
-                    print(f"  Generating {phase} output...", flush=True)
+                    logger.info("  Generating %s output...", phase)
                 
                 # Call LLM
                 output = await self._call_llm(prompt)
@@ -446,7 +446,7 @@ class SDLCPipeline:
                 previous_output = output
                 
                 if verbose:
-                    print(f"  ✓ {phase} complete: {len(output)} chars", flush=True)
+                    logger.info("  %s complete: %d chars", phase, len(output))
                 
                 # Save to disk if enabled
                 if save_artifacts and self.config.enable_storage:
@@ -457,7 +457,7 @@ class SDLCPipeline:
                 errors[phase] = error_msg
                 
                 if verbose:
-                    print(f"  ✗ {phase} failed: {error_msg[:100]}", flush=True)
+                    logger.warning("  %s failed: %s", phase, error_msg[:100])
                 
                 logger.error(f"Phase {phase} failed: {e}")
         
@@ -473,7 +473,7 @@ class SDLCPipeline:
         )
         
         if verbose:
-            print(result.summary(), flush=True)
+            logger.info(result.summary())
         
         return result
     

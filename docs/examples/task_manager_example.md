@@ -7,7 +7,7 @@ tags:
   - execution
 ---
 
-# ✅ Task Manager Example
+# Task Manager Example
 
 !!! success "Enterprise Task Orchestration"
     Part of **400+ modules** with 12 workflow types and advanced scheduling. See [Tasks Documentation](../tasks.md).

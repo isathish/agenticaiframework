@@ -8,7 +8,7 @@ tags:
   - issues
 ---
 
-# 🔧 Troubleshooting
+# Troubleshooting
 
 <div class="annotate" markdown>
 
@@ -42,8 +42,8 @@ pip install -e .
     Always use a virtual environment:
     ```bash
     python -m venv .venv
-    source .venv/bin/activate  # macOS/Linux
-    .venv\Scripts\activate     # Windows
+    source .venv/bin/activate # macOS/Linux
+    .venv\Scripts\activate # Windows
     pip install agenticaiframework
     ```
 
@@ -106,7 +106,7 @@ from agenticaiframework.tools import register_tool, BaseTool
 class MyTool(BaseTool):
     name = "abc"
     description = "My custom tool"
-    
+
     def _run(self, input_data):
         return {"result": "success"}
 ```
@@ -190,8 +190,8 @@ from agenticaiframework.llms import LLMManager
 llm = LLMManager(enable_caching=True)
 
 # Cached responses are returned instantly
-response1 = llm.generate("What is AI?")  # First call - slower
-response2 = llm.generate("What is AI?")  # Cached - instant
+response1 = llm.generate("What is AI?") # First call - slower
+response2 = llm.generate("What is AI?") # Cached - instant
 ```
 
 ---
@@ -210,7 +210,7 @@ memory = MemoryManager()
 memory.clear_short_term()
 
 # Or set TTL when storing
-memory.store("temp_key", "value", ttl=3600)  # Expires in 1 hour
+memory.store("temp_key", "value", ttl=3600) # Expires in 1 hour
 ```
 
 ---

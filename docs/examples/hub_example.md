@@ -7,7 +7,7 @@ tags:
   - services
 ---
 
-# 🏛️ Hub Example
+# Hub Example
 
 !!! success "Central Service Registry"
     The Hub provides service discovery across **400+ modules** and **237 enterprise features**. See [Hub Documentation](../hub.md).

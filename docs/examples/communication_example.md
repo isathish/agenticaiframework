@@ -7,7 +7,7 @@ tags:
   - messaging
 ---
 
-# 📡 Communication Example
+# Communication Example
 
 !!! success "12 Communication Modules"
     Part of **400+ modules** with 12 enterprise messaging modules including Kafka, RabbitMQ, and Redis Pub/Sub. See [Communication Documentation](../communication.md).

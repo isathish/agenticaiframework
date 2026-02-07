@@ -7,7 +7,7 @@ tags:
   - retrieval
 ---
 
-# 📚 Knowledge Retriever Example
+# Knowledge Retriever Example
 
 !!! info "15 Knowledge Modules"
     Part of **400+ modules** with vector stores, semantic search, and RAG pipeline support. See [Knowledge Documentation](../knowledge.md).

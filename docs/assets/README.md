@@ -75,9 +75,9 @@ You can also use Material Design icons or emoji as the logo:
 ```yaml
 theme:
   icon:
-    logo: material/robot  # Material Design icon
+    logo: material/robot # Material Design icon
   # Or use emoji
-  # logo: 🤖
+  # logo: 
 ```
 
 ## Brand Colors
@@ -94,12 +94,12 @@ Recommended colors for AgenticAI Framework branding:
 
 ```
 docs/assets/
-├── README.md                  # This file
-├── agenticaiframework.png     # Main logo (128x128)
-├── favicon.png                # Favicon (32x32 or 64x64)
-├── agenticaiframework.svg     # Optional: Vector version
-├── banner.png                 # Optional: Social media banner
-└── screenshots/               # Optional: Screenshots folder
+├── README.md # This file
+├── agenticaiframework.png # Main logo (128x128)
+├── favicon.png # Favicon (32x32 or 64x64)
+├── agenticaiframework.svg # Optional: Vector version
+├── banner.png # Optional: Social media banner
+└── screenshots/ # Optional: Screenshots folder
 ```
 
 ## Social Media Assets (Optional)
@@ -122,7 +122,7 @@ After adding assets, test them:
    ```bash
    mkdocs serve
    ```
-   
+
 2. **Check**:
    - Logo appears in navigation bar
    - Favicon appears in browser tab
@@ -149,5 +149,5 @@ img_small.save('favicon.png')
 
 ---
 
-**Status**: 📁 Directory created, assets pending  
+**Status**: Directory created, assets pending 
 **Action Required**: Add agenticaiframework.png and favicon.png files or comment out logo/favicon in mkdocs.yml

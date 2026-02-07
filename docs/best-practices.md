@@ -8,7 +8,7 @@ tags:
   - guide
 ---
 
-# ⭐ Best Practices
+# Best Practices
 
 <div class="annotate" markdown>
 
@@ -21,32 +21,32 @@ Build scalable, reliable AI agent applications with **400+ modules** and **237 e
 !!! success "Enterprise Best Practices"
     For enterprise-specific patterns including multi-tenant architectures, compliance workflows, and high-availability deployments, see [Enterprise Documentation](enterprise.md).
 
-## 🎯 Quick Navigation
+## Quick Navigation
 
 <div class="grid cards" markdown>
 
--   :material-eye:{ .lg } **Observability**
-    
+- :material-eye:{ .lg } **Observability**
+
     Monitoring and logging patterns
-    
+
     [:octicons-arrow-right-24: Learn More](#general-principles)
 
--   :material-alert-circle:{ .lg } **Error Handling**
-    
+- :material-alert-circle:{ .lg } **Error Handling**
+
     Graceful failure management
-    
+
     [:octicons-arrow-right-24: View Patterns](#agent-development)
 
--   :material-speedometer:{ .lg } **Performance**
-    
+- :material-speedometer:{ .lg } **Performance**
+
     Optimization techniques
-    
+
     [:octicons-arrow-right-24: Optimize](#performance-optimization)
 
--   :material-shield-check:{ .lg } **Security**
-    
+- :material-shield-check:{ .lg } **Security**
+
     Safety and compliance
-    
+
     [:octicons-arrow-right-24: Secure](#security-best-practices)
 
 </div>
@@ -56,7 +56,7 @@ Build scalable, reliable AI agent applications with **400+ modules** and **237 e
 ### :material-eye: 1. Design for Observability
 
 !!! tip "Monitor Everything"
-    
+
     Always implement comprehensive monitoring and logging from day one.
 
 ```python
@@ -81,7 +81,7 @@ monitor.record_metric("startup_time", startup_duration)
 ### :material-alert-circle: 2. Implement Proper Error Handling
 
 !!! warning "Handle Failures Gracefully"
-    
+
     Always anticipate and handle errors with meaningful feedback and recovery strategies.
 
 === ":material-shield-check: Safe Execution"
@@ -106,7 +106,7 @@ monitor.record_metric("startup_time", startup_duration)
 
     ```python
     from tenacity import retry, stop_after_attempt, wait_exponential
-    
+
     @retry(
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=4, max=10)
@@ -166,7 +166,7 @@ class CustomerServiceAgents:
     @staticmethod
     def create_email_agent():
         return Agent(name="CustomerService.Email", ...)
-    
+
     @staticmethod
     def create_chat_agent():
         return Agent(name="CustomerService.Chat", ...)
@@ -179,20 +179,20 @@ class AgentLifecycleManager:
     def __init__(self):
         self.agent_manager = AgentManager()
         self.active_agents = {}
-    
+
     def create_agent(self, agent_config):
         agent = Agent(**agent_config)
         self.agent_manager.register_agent(agent)
         self.active_agents[agent.id] = agent
         return agent
-    
+
     def shutdown_agent(self, agent_id):
         if agent_id in self.active_agents:
             agent = self.active_agents[agent_id]
             agent.stop()
             self.agent_manager.remove_agent(agent_id)
             del self.active_agents[agent_id]
-    
+
     def health_check(self):
         for agent_id, agent in self.active_agents.items():
             if agent.status != "running":
@@ -203,15 +203,13 @@ class AgentLifecycleManager:
 
 ```python
 # Define clear capabilities
-TEXT_PROCESSING_CAPABILITIES = [
-    "text_analysis",
+TEXT_PROCESSING_CAPABILITIES = ["text_analysis",
     "sentiment_detection", 
     "entity_extraction",
     "language_detection"
 ]
 
-CONVERSATION_CAPABILITIES = [
-    "dialogue_management",
+CONVERSATION_CAPABILITIES = ["dialogue_management",
     "context_tracking",
     "response_generation"
 ]
@@ -247,7 +245,7 @@ class TaskBuilder:
             executor=lambda: analyze_data(data, analysis_type),
             inputs={"data": data, "type": analysis_type}
         )
-    
+
     @staticmethod
     def create_workflow_task(subtasks):
         return Task(
@@ -268,7 +266,7 @@ def create_dependent_tasks():
         objective="Collect raw data",
         executor=collect_data
     )
-    
+
     # Processing task (depends on collection)
     process_task = Task(
         name="DataProcessing",
@@ -276,7 +274,7 @@ def create_dependent_tasks():
         executor=lambda: process_data(collect_task.result),
         dependencies=[collect_task]
     )
-    
+
     # Analysis task (depends on processing)
     analyze_task = Task(
         name="DataAnalysis",
@@ -284,7 +282,7 @@ def create_dependent_tasks():
         executor=lambda: analyze_data(process_task.result),
         dependencies=[process_task]
     )
-    
+
     return [collect_task, process_task, analyze_task]
 ```
 
@@ -296,18 +294,18 @@ def create_dependent_tasks():
 class MemoryStrategy:
     def __init__(self):
         self.memory = MemoryManager()
-    
+
     def store_user_context(self, user_id, context, ttl=3600):
         """Store user context with expiration"""
         key = f"user_context:{user_id}"
         self.memory.store(key, context, memory_type="short_term")
         # Implement TTL logic for cleanup
-    
+
     def store_system_knowledge(self, knowledge_item):
         """Store long-term system knowledge"""
         key = f"knowledge:{knowledge_item['id']}"
         self.memory.store(key, knowledge_item, memory_type="long_term")
-    
+
     def cache_computation_result(self, computation_hash, result):
         """Cache expensive computation results"""
         key = f"cache:{computation_hash}"
@@ -319,7 +317,7 @@ class MemoryStrategy:
 ```python
 def optimize_memory_usage():
     memory = MemoryManager()
-    
+
     # Regular cleanup of expired data
     def cleanup_expired_data():
         current_time = time.time()
@@ -328,16 +326,16 @@ def optimize_memory_usage():
                 # Remove temporary data older than 1 hour
                 if current_time - memory.short_term[key].get("timestamp", 0) > 3600:
                     del memory.short_term[key]
-    
+
     # Memory usage monitoring
     def monitor_memory_usage():
         short_term_size = len(memory.short_term)
         long_term_size = len(memory.long_term)
-        
+
         monitor.record_metric("memory_short_term_size", short_term_size)
         monitor.record_metric("memory_long_term_size", long_term_size)
-        
-        if short_term_size > 10000:  # Threshold
+
+        if short_term_size > 10000: # Threshold
             monitor.log_event("MemoryThresholdExceeded", {
                 "type": "short_term",
                 "size": short_term_size
@@ -358,29 +356,29 @@ class SecurityGuardrails:
             # Check for malicious content
             if any(pattern in str(data).lower() for pattern in ["<script>", "javascript:", "eval("]):
                 return False
-            
+
             # Check data size limits
-            if len(str(data)) > 100000:  # 100KB limit
+            if len(str(data)) > 100000: # 100KB limit
                 return False
-            
+
             return True
-        
+
         return Guardrail("InputValidation", validate_input)
-    
+
     @staticmethod
     def create_output_filter():
         def filter_output(text):
             # Remove sensitive information patterns
             import re
-            
+
             # Remove potential credit card numbers
             text = re.sub(r'\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b', '[REDACTED]', text)
-            
+
             # Remove potential SSNs
             text = re.sub(r'\b\d{3}-\d{2}-\d{4}\b', '[REDACTED]', text)
-            
+
             return text
-        
+
         return Guardrail("OutputFilter", lambda x: filter_output(x) != "[BLOCKED]")
 ```
 
@@ -391,14 +389,14 @@ class AccessControlManager:
     def __init__(self):
         self.permissions = {}
         self.roles = {}
-    
+
     def define_role(self, role_name, permissions):
         self.roles[role_name] = permissions
-    
+
     def assign_role(self, agent_id, role_name):
         if role_name in self.roles:
             self.permissions[agent_id] = self.roles[role_name]
-    
+
     def check_permission(self, agent_id, action):
         agent_permissions = self.permissions.get(agent_id, [])
         return action in agent_permissions
@@ -423,23 +421,22 @@ from concurrent.futures import ThreadPoolExecutor
 class AsyncTaskManager:
     def __init__(self, max_workers=10):
         self.executor = ThreadPoolExecutor(max_workers=max_workers)
-    
+
     async def execute_tasks_async(self, tasks):
         loop = asyncio.get_event_loop()
-        
+
         # Execute tasks concurrently
-        futures = [
-            loop.run_in_executor(self.executor, task.run)
+        futures = [loop.run_in_executor(self.executor, task.run)
             for task in tasks
         ]
-        
+
         results = await asyncio.gather(*futures, return_exceptions=True)
         return results
-    
+
     def execute_cpu_intensive_task(self, task):
         """For CPU-intensive tasks, use process pool"""
         from concurrent.futures import ProcessPoolExecutor
-        
+
         with ProcessPoolExecutor() as executor:
             future = executor.submit(task.run)
             return future.result()
@@ -453,17 +450,17 @@ class CachingManager:
         self.cache = {}
         self.cache_hits = 0
         self.cache_misses = 0
-    
+
     def get_or_compute(self, key, compute_fn, ttl=3600):
         current_time = time.time()
-        
+
         # Check if cached and not expired
         if key in self.cache:
             cached_item = self.cache[key]
             if current_time - cached_item["timestamp"] < ttl:
                 self.cache_hits += 1
                 return cached_item["value"]
-        
+
         # Compute and cache
         self.cache_misses += 1
         result = compute_fn()
@@ -471,9 +468,9 @@ class CachingManager:
             "value": result,
             "timestamp": current_time
         }
-        
+
         return result
-    
+
     def get_cache_stats(self):
         total_requests = self.cache_hits + self.cache_misses
         hit_rate = self.cache_hits / total_requests if total_requests > 0 else 0
@@ -500,26 +497,26 @@ class TestAgentBehavior(unittest.TestCase):
             capabilities=["testing"],
             config={"test_mode": True}
         )
-    
+
     def test_agent_initialization(self):
         self.assertEqual(self.agent.name, "TestAgent")
         self.assertEqual(self.agent.status, "initialized")
-    
+
     def test_agent_start(self):
         self.agent.start()
         self.assertEqual(self.agent.status, "running")
-    
+
     @patch('agenticaiframework.llms.LLMManager')
     def test_task_execution(self, mock_llm):
         # Mock LLM response
         mock_llm.generate.return_value = "Test response"
-        
+
         task = Task(
             name="TestTask",
             objective="Test execution",
             executor=lambda: mock_llm.generate("test prompt")
         )
-        
+
         result = task.run()
         self.assertEqual(result, "Test response")
 ```
@@ -532,20 +529,20 @@ class TestAgentIntegration(unittest.TestCase):
         self.agent_manager = AgentManager()
         self.memory_manager = MemoryManager()
         self.monitor = MonitoringSystem()
-    
+
     def test_multi_agent_workflow(self):
         # Create agents
         agent1 = Agent("Agent1", "Role1", ["cap1"], {})
         agent2 = Agent("Agent2", "Role2", ["cap2"], {})
-        
+
         # Register agents
         self.agent_manager.register_agent(agent1)
         self.agent_manager.register_agent(agent2)
-        
+
         # Test workflow
         agent1.start()
         agent2.start()
-        
+
         self.assertEqual(len(self.agent_manager.list_agents()), 2)
 ```
 
@@ -557,21 +554,21 @@ class TestAgentIntegration(unittest.TestCase):
 class ApplicationMetrics:
     def __init__(self, monitor):
         self.monitor = monitor
-    
+
     def track_agent_performance(self, agent_id, task_duration, success):
         self.monitor.record_metric(f"agent_{agent_id}_task_duration", task_duration)
         self.monitor.record_metric(f"agent_{agent_id}_success_rate", 1 if success else 0)
-    
+
     def track_system_health(self):
         import psutil
-        
+
         # System metrics
         cpu_percent = psutil.cpu_percent()
         memory_percent = psutil.virtual_memory().percent
-        
+
         self.monitor.record_metric("system_cpu_percent", cpu_percent)
         self.monitor.record_metric("system_memory_percent", memory_percent)
-        
+
         # Application metrics
         active_agents = len(self.agent_manager.list_agents())
         self.monitor.record_metric("active_agents_count", active_agents)
@@ -587,24 +584,24 @@ class StructuredLogger:
     def __init__(self, name):
         self.logger = logging.getLogger(name)
         self.logger.setLevel(logging.INFO)
-        
+
         # Create structured formatter
         formatter = logging.Formatter(
             '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
         )
-        
+
         handler = logging.StreamHandler()
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
-    
+
     def log_structured(self, level, message, **kwargs):
         structured_data = {
             "message": message,
             "metadata": kwargs
         }
-        
+
         getattr(self.logger, level)(json.dumps(structured_data))
-    
+
     def log_agent_action(self, agent_id, action, **context):
         self.log_structured("info", "Agent action", 
                           agent_id=agent_id, 
@@ -629,7 +626,7 @@ class EnvironmentConfig:
     def __init__(self):
         self.env = Environment(os.getenv("AGENTICAI_ENV", "development"))
         self.config = self._load_config()
-    
+
     def _load_config(self):
         configs = {
             Environment.DEVELOPMENT: {
@@ -658,7 +655,7 @@ class HealthChecker:
     def __init__(self, agent_manager, memory_manager):
         self.agent_manager = agent_manager
         self.memory_manager = memory_manager
-    
+
     def check_system_health(self):
         health_status = {
             "status": "healthy",
@@ -668,30 +665,30 @@ class HealthChecker:
                 "database": self._check_database()
             }
         }
-        
+
         # Overall status
         if any(check["status"] != "healthy" for check in health_status["checks"].values()):
             health_status["status"] = "unhealthy"
-        
+
         return health_status
-    
+
     def _check_agents(self):
         agents = self.agent_manager.list_agents()
         healthy_agents = [a for a in agents if a.status == "running"]
-        
+
         return {
             "status": "healthy" if len(healthy_agents) > 0 else "unhealthy",
             "total_agents": len(agents),
             "healthy_agents": len(healthy_agents)
         }
-    
+
     def _check_memory(self):
         try:
             # Test memory operations
             test_key = "health_check_test"
             self.memory_manager.store(test_key, "test_value")
             retrieved = self.memory_manager.retrieve(test_key)
-            
+
             return {
                 "status": "healthy" if retrieved == "test_value" else "unhealthy",
                 "details": "Memory read/write operations successful"
@@ -732,12 +729,12 @@ def secure_agent_input(user_input: str, user_id: str) -> dict:
     rate_result = rate_limiter.check_rate_limit(user_id)
     if not rate_result['allowed']:
         return {"error": "Rate limit exceeded"}
-    
+
     # Layer 2: Input validation
     validation = input_validator.validate(user_input)
     if not validation['is_valid']:
         return {"error": "Invalid input", "details": validation['errors']}
-    
+
     # Layer 3: Injection detection
     injection = injection_detector.detect(user_input)
     if injection['is_injection']:
@@ -746,12 +743,12 @@ def secure_agent_input(user_input: str, user_id: str) -> dict:
             "confidence": injection['confidence']
         })
         return {"error": "Security violation detected"}
-    
+
     # Layer 4: Content filtering
     filter_result = content_filter.filter_text(user_input)
     if filter_result['blocked']:
         return {"error": "Content policy violation"}
-    
+
     return {"success": True, "sanitized_input": validation['sanitized']}
 ```
 
@@ -800,13 +797,13 @@ def process_user_input(raw_input: str) -> str:
     validation = validator.validate(raw_input)
     if not validation['is_valid']:
         raise ValueError(f"Invalid input: {validation['errors']}")
-    
+
     # Sanitize
     clean_input = validator.sanitize(raw_input)
-    
+
     # Additional domain-specific sanitization
     clean_input = remove_sensitive_patterns(clean_input)
-    
+
     return clean_input
 ```
 
@@ -825,7 +822,7 @@ expensive_limiter = RateLimiter(max_requests=10, window_seconds=60)
 def handle_query(user_id: str):
     if not api_limiter.check_rate_limit(user_id)['allowed']:
         return {"error": "Rate limit exceeded"}, 429
-    
+
     # Process request
     return process_query()
 
@@ -833,7 +830,7 @@ def handle_query(user_id: str):
 def handle_expensive(user_id: str):
     if not expensive_limiter.check_rate_limit(user_id)['allowed']:
         return {"error": "Rate limit exceeded"}, 429
-    
+
     # Process expensive request
     return process_expensive_operation()
 ```
@@ -879,12 +876,12 @@ monitor = MonitoringSystem()
 # Regular security checks
 def check_security_health():
     report = security.get_security_report()
-    
+
     # Track metrics
     monitor.track_metric("injection_attempts", report['injection_attempts'])
     monitor.track_metric("rate_limit_violations", report['rate_limit_violations'])
     monitor.track_metric("content_violations", report['content_violations'])
-    
+
     # Alert on anomalies
     if report['injection_attempts'] > threshold:
         monitor.create_alert(
