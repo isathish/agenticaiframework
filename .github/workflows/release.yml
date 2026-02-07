@@ -2,7 +2,8 @@ name: Release
 
 # Auto-releases on push to main (patch bump).
 # Manual workflow_dispatch allows choosing patch/minor/major.
-# The [skip ci] tag in the version-bump commit prevents infinite loops.
+# The version-bump commit pushed by the bot is excluded via paths-ignore
+# and an explicit commit-message guard to prevent infinite loops.
 
 on:
   push:
@@ -15,6 +16,10 @@ on:
       - ".github/workflows/static.yml"
       - ".github/workflows/ci.yml"
       - "LICENSE"
+      # Files changed by the version-bump commit — ignore to break the loop
+      - "pyproject.toml"
+      - "agenticaiframework/__init__.py"
+      - ".bumpversion.cfg"
 
   workflow_dispatch:
     inputs:
@@ -33,6 +38,10 @@ jobs:
   release:
     name: Build & Publish
     runs-on: ubuntu-latest
+    # Skip if the pusher is the bot OR if ALL changed files are in paths-ignore
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.actor != 'github-actions[bot]'
     environment: pypi
     permissions:
       id-token: write   # PyPI trusted publishing (OIDC)
@@ -44,14 +53,14 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUBPATTOKEN || secrets.GITHUB_TOKEN }}
 
-      # Guard against infinite loops: skip if the push was a bot version-bump
+      # Belt-and-suspenders: also check commit message for [skip ci]
       - name: Check for skip
         id: guard
         run: |
           MSG=$(git log -1 --pretty=%s)
-          if [[ "$MSG" == *"[skip ci]"* ]]; then
+          if [[ "$MSG" == *"[skip ci]"* ]] || [[ "$MSG" == *"chore: release"* ]]; then
             echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "⏭️  Skipping – commit is a release bot bump"
+            echo "Skipping - commit is a release bot bump"
           else
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
