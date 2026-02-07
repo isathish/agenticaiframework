@@ -391,7 +391,7 @@ class LLMManager:
 
     def _log(self, message: str):
         """Log a message."""
-        print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [LLMManager] {message}")
+        logger.info("[LLMManager] %s", message)
 
 
 __all__ = ['LLMManager']

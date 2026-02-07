@@ -19,14 +19,14 @@ hide:
   
   <div class="hero-badges">
     <a href="https://pypi.org/project/agenticaiframework/"><img src="https://img.shields.io/pypi/v/agenticaiframework.svg?style=for-the-badge&logo=python&logoColor=white&color=6366f1" alt="PyPI Version"></a>
-    <a href="https://github.com/sathishbabu89/agenticaiframework/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981.svg?style=for-the-badge" alt="License"></a>
-    <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.8+-06b6d4.svg?style=for-the-badge&logo=python&logoColor=white" alt="Python"></a>
-    <a href="https://github.com/sathishbabu89/agenticaiframework"><img src="https://img.shields.io/badge/Enterprise-Ready-f59e0b.svg?style=for-the-badge" alt="Enterprise Ready"></a>
+    <a href="https://github.com/isathish/agenticaiframework/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981.svg?style=for-the-badge" alt="License"></a>
+    <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.10+-06b6d4.svg?style=for-the-badge&logo=python&logoColor=white" alt="Python"></a>
+    <a href="https://github.com/isathish/agenticaiframework"><img src="https://img.shields.io/badge/Enterprise-Ready-f59e0b.svg?style=for-the-badge" alt="Enterprise Ready"></a>
   </div>
   
   <div style="position: relative; z-index: 1;">
     <a href="quick-start/" class="md-button md-button--primary">🚀 Get Started</a>
-    <a href="https://github.com/sathishbabu89/agenticaiframework" class="md-button" style="margin-left: 1rem;">⭐ Star on GitHub</a>
+    <a href="https://github.com/isathish/agenticaiframework" class="md-button" style="margin-left: 1rem;">⭐ Star on GitHub</a>
   </div>
 </div>
 
@@ -34,7 +34,7 @@ hide:
 
 <div class="stats-grid">
   <div class="stat-card">
-    <div class="stat-number">380+</div>
+    <div class="stat-number">400+</div>
     <div class="stat-label">Total Modules</div>
   </div>
   <div class="stat-card">
@@ -170,49 +170,52 @@ pip install agenticaiframework
 ### Create Your First Agent
 
 ```python
-from agenticaiframework import Agent, AgentConfig, MemoryManager
+from agenticaiframework import Agent, MemoryManager
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Initialize memory management
 memory = MemoryManager()
 
-# Configure your agent
-config = AgentConfig(
+# Create and run the agent
+agent = Agent(
     name="research_assistant",
     role="Research Analyst",
-    goal="Find and synthesize information accurately",
-    model="gpt-4o-mini"
+    capabilities=["research", "analysis"],
 )
-
-# Create and run the agent
-agent = Agent(config=config, memory=memory)
-result = agent.execute("Research the latest trends in AI agents")
-print(result.output)
+agent.start()
+result = agent.act("Research the latest trends in AI agents")
+logger.info("Result: %s", result)
 ```
 
 ### Build a Multi-Agent Team
 
 ```python
-from agenticaiframework import Agent, Team, WorkflowManager
+from agenticaiframework import Agent, AgentManager
 
 # Create specialized agents
 researcher = Agent(
-    config=AgentConfig(name="researcher", role="Research Expert")
+    name="researcher", role="Research Expert",
+    capabilities=["web", "text"],
 )
 writer = Agent(
-    config=AgentConfig(name="writer", role="Content Writer")
+    name="writer", role="Content Writer",
+    capabilities=["text"],
 )
 editor = Agent(
-    config=AgentConfig(name="editor", role="Quality Editor")
+    name="editor", role="Quality Editor",
+    capabilities=["text"],
 )
 
-# Build and run the team
-team = Team(
-    name="content_team",
-    agents=[researcher, writer, editor],
-    workflow=WorkflowManager.sequential()
-)
+# Register with manager
+manager = AgentManager()
+for a in (researcher, writer, editor):
+    manager.register_agent(a)
 
-result = team.execute("Create a comprehensive guide on AI safety")
+# Start agents
+for a in manager.list_agents():
+    a.start()
 ```
 
 [:octicons-arrow-right-24: See Full Quick Start Guide](quick-start.md)
@@ -235,7 +238,7 @@ result = team.execute("Create a comprehensive guide on AI safety")
     agent = Agent(config=AgentConfig(
         name="assistant",
         role="AI Assistant",
-        tools=["search", "calculator"]
+        capabilities=["search", "calculator"],
     ))
     ```
 
@@ -503,13 +506,13 @@ audio = agent.synthesize_speech(response.output)
 ## 🤝 Community & Support
 
 <div class="quick-links">
-  <a href="https://github.com/sathishbabu89/agenticaiframework">
+  <a href="https://github.com/isathish/agenticaiframework">
     :material-github: GitHub
   </a>
-  <a href="https://github.com/sathishbabu89/agenticaiframework/issues">
+  <a href="https://github.com/isathish/agenticaiframework/issues">
     :material-bug: Issues
   </a>
-  <a href="https://github.com/sathishbabu89/agenticaiframework/discussions">
+  <a href="https://github.com/isathish/agenticaiframework/discussions">
     :material-forum: Discussions
   </a>
   <a href="contributing.md">
@@ -535,7 +538,7 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software...
 ```
 
-[:octicons-arrow-right-24: Full License](https://github.com/sathishbabu89/agenticaiframework/blob/main/LICENSE)
+[:octicons-arrow-right-24: Full License](https://github.com/isathish/agenticaiframework/blob/main/LICENSE)
 
 ---
 

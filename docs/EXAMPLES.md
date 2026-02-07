@@ -14,7 +14,7 @@ tags:
 
 **Runnable examples for every feature**
 
-Copy, paste, and run with **380+ modules** and **237 enterprise features**
+Copy, paste, and run with **400+ modules** and **237 enterprise features**
 
 </div>
 
@@ -54,6 +54,10 @@ Copy, paste, and run with **380+ modules** and **237 enterprise features**
 ## 1. Agents Example
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.agents import AgentManager, Agent
 
 if __name__ == "__main__":
@@ -67,15 +71,19 @@ if __name__ == "__main__":
     example_agent.resume()
     example_agent.stop()
 
-    print("Registered Agents:", [agent.name for agent in agent_manager.agents])
+    logger.info("Registered Agents:", [agent.name for agent in agent_manager.agents])
     retrieved_agent = agent_manager.get_agent("ExampleAgent")
-    print("Retrieved Agent:", retrieved_agent.name)
+    logger.info("Retrieved Agent:", retrieved_agent.name)
 ```
 
 
 ## 2. Tasks Example
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tasks import TaskManager, Task
 
 if __name__ == "__main__":
@@ -84,22 +92,26 @@ if __name__ == "__main__":
     class AdditionTask(Task):
         def run(self, a, b):
             result = a + b
-            print(f"Task Result: {result}")
+            logger.info(f"Task Result: {result}")
             return result
 
     addition_task = AdditionTask(name="AdditionTask")
     task_manager.register_task(addition_task)
 
     addition_task.run(5, 7)
-    print("Registered Tasks:", [task.name for task in task_manager.tasks])
+    logger.info("Registered Tasks:", [task.name for task in task_manager.tasks])
     retrieved_task = task_manager.get_task("AdditionTask")
-    print("Retrieved Task:", retrieved_task.name)
+    logger.info("Retrieved Task:", retrieved_task.name)
 ```
 
 
 ## 3. LLMs Example
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.llms import LLMManager
 
 if __name__ == "__main__":
@@ -108,28 +120,36 @@ if __name__ == "__main__":
     llm_manager.register_model("demo-llm", lambda prompt: f"[Demo LLM Response to: {prompt}]")
     llm_manager.set_active_model("demo-llm")
 
-    print("Generated Text:", llm_manager.generate("Explain the concept of machine learning in simple terms."))
-    print("Available Models:", list(llm_manager.models.keys()))
+    logger.info("Generated Text:", llm_manager.generate("Explain the concept of machine learning in simple terms."))
+    logger.info("Available Models:", list(llm_manager.models.keys()))
 ```
 
 
 ## 4. Guardrails Example
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.guardrails import GuardrailManager
 
 if __name__ == "__main__":
     guardrail_manager = GuardrailManager()
 
     guardrail_manager.add_guardrail("No profanity", lambda text: "badword" not in text)
-    print("Compliant Output Valid:", guardrail_manager.validate("This is clean text."))
-    print("Non-Compliant Output Valid:", guardrail_manager.validate("This contains badword."))
+    logger.info("Compliant Output Valid:", guardrail_manager.validate("This is clean text."))
+    logger.info("Non-Compliant Output Valid:", guardrail_manager.validate("This contains badword."))
 ```
 
 
 ## 5. Memory Example
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.memory import MemoryManager
 
 if __name__ == "__main__":
@@ -138,22 +158,26 @@ if __name__ == "__main__":
     memory.store_short_term("user_name", "Alice")
     memory.store_short_term("last_query", "What is the capital of France?")
 
-    print("Retrieved User Name:", memory.retrieve("user_name"))
-    print("Retrieved Last Query:", memory.retrieve("last_query"))
+    logger.info("Retrieved User Name:", memory.retrieve("user_name"))
+    logger.info("Retrieved Last Query:", memory.retrieve("last_query"))
 
     keys = list(memory.short_term.keys()) + list(memory.long_term.keys()) + list(memory.external.keys())
-    print("Stored Keys:", keys)
+    logger.info("Stored Keys:", keys)
 
     memory.clear_short_term()
     memory.clear_long_term()
     memory.clear_external()
-    print("Memory cleared. Keys now:", list(memory.short_term.keys()) + list(memory.long_term.keys()) + list(memory.external.keys()))
+    logger.info("Memory cleared. Keys now:", list(memory.short_term.keys()) + list(memory.long_term.keys()) + list(memory.external.keys()))
 ```
 
 
 ## 6. MCP Tools Example
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.mcp_tools import MCPToolManager, MCPTool
 
 def greet_tool(name: str) -> str:
@@ -165,15 +189,19 @@ if __name__ == "__main__":
     greet_mcp_tool = MCPTool(name="greet", capability="greeting", execute_fn=greet_tool)
     mcp_manager.register_tool(greet_mcp_tool)
 
-    print("Available Tools:", [tool.name for tool in mcp_manager.tools])
+    logger.info("Available Tools:", [tool.name for tool in mcp_manager.tools])
     result = mcp_manager.execute_tool("greet", "Alice")
-    print("Tool Execution Result:", result)
+    logger.info("Tool Execution Result:", result)
 ```
 
 
 ## 7. Monitoring Example
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.monitoring import MonitoringSystem
 
 if __name__ == "__main__":
@@ -185,14 +213,18 @@ if __name__ == "__main__":
     monitor.record_metric("ResponseTime", 1.23)
     monitor.record_metric("Accuracy", 0.98)
 
-    print("Logged Events:", monitor.events)
-    print("Logged Metrics:", monitor.metrics)
+    logger.info("Logged Events:", monitor.events)
+    logger.info("Logged Metrics:", monitor.metrics)
 ```
 
 
 ## 8. Prompts Example
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.prompts import Prompt
 
 if __name__ == "__main__":
@@ -201,19 +233,23 @@ if __name__ == "__main__":
     )
 
     rendered_prompt = prompt_instance.render(length="short", topic="artificial intelligence")
-    print("Rendered Prompt:", rendered_prompt)
+    logger.info("Rendered Prompt:", rendered_prompt)
 ```
 
 
 ## 9. Configurations Example
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.configurations import ConfigManager
 
 if __name__ == "__main__":
     config = ConfigManager()
     config.set("api_key", "123456")
-    print("API Key:", config.get("api_key"))
+    logger.info("API Key:", config.get("api_key"))
 ```
 
 

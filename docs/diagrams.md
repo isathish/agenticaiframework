@@ -14,7 +14,7 @@ tags:
 
 **Comprehensive HLD and LLD diagrams**
 
-Visualize system design across **380+ modules** and **237 enterprise features**
+Visualize system design across **400+ modules** and **237 enterprise features**
 
 </div>
 

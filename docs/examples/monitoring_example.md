@@ -21,12 +21,16 @@ It is intended for developers who want to track agent activities, performance, a
 
 - **Installation**: Ensure `agenticaiframework` is installed and accessible in your Python environment.
 - **No additional configuration** is required for this example.
-- **Python Version**: Compatible with Python 3.8+.
+- **Python Version**: Compatible with Python 3.10+.
 
 
 ## Code
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.monitoring import MonitoringSystem
 
 if __name__ == "__main__":
@@ -41,8 +45,8 @@ if __name__ == "__main__":
     monitor.record_metric("Accuracy", 0.98)
 
     # Display logged data
-    print("Logged Events:", monitor.events)
-    print("Logged Metrics:", monitor.metrics)
+    logger.info("Logged Events:", monitor.events)
+    logger.info("Logged Metrics:", monitor.metrics)
 ```
 
 

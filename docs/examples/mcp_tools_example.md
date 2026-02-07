@@ -14,19 +14,23 @@ This guide provides a **professional, step-by-step walkthrough** for creating, r
 It is intended for developers who want to extend their agent's capabilities with modular, reusable tools.
 
 !!! tip "35+ Built-in Tools"
-    Part of **380+ modules** with 35+ built-in tools and 18 external connectors. See [MCP Tools Documentation](../mcp_tools.md).
+    Part of **400+ modules** with 35+ built-in tools and 18 external connectors. See [MCP Tools Documentation](../mcp_tools.md).
 
 
 ## Prerequisites & Configuration
 
 - **Installation**: Ensure `agenticaiframework` is installed and accessible in your Python environment.
 - **No additional configuration** is required for this example.
-- **Python Version**: Compatible with Python 3.8+.
+- **Python Version**: Compatible with Python 3.10+.
 
 
 ## Code
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.mcp_tools import MCPToolManager, MCPTool
 
 def greet_tool(name: str) -> str:
@@ -40,11 +44,11 @@ if __name__ == "__main__":
     mcp_manager.register_tool(greet_mcp_tool)
 
     # List available tools
-    print("Available Tools:", [tool.name for tool in mcp_manager.tools])
+    logger.info("Available Tools:", [tool.name for tool in mcp_manager.tools])
 
     # Execute the tool
     result = mcp_manager.execute_tool("greet", "Alice")
-    print("Tool Execution Result:", result)
+    logger.info("Tool Execution Result:", result)
 ```
 
 

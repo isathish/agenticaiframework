@@ -75,7 +75,7 @@ class KnowledgeRetriever:
         self._log("Knowledge cache cleared")
 
     def _log(self, message: str):
-        print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [KnowledgeRetriever] {message}")
+        logger.info("[KnowledgeRetriever] %s", message)
 
 
 __all__ = ["KnowledgeRetriever"]

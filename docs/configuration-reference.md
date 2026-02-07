@@ -13,7 +13,7 @@ tags:
 <div align="center">
 
 [![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/isathish/agenticaiframework)
-[![Modules](https://img.shields.io/badge/modules-380%2B-brightgreen.svg)](https://github.com/isathish/agenticaiframework)
+[![Modules](https://img.shields.io/badge/modules-400%2B-brightgreen.svg)](https://github.com/isathish/agenticaiframework)
 [![Enterprise](https://img.shields.io/badge/enterprise-237%20modules-gold.svg)](https://github.com/isathish/agenticaiframework)
 
 </div>
@@ -75,7 +75,7 @@ graph TB
 
 ```yaml
 # AgenticAI Framework Configuration
-version: "1.2.11"
+version: "2.0.0"
 
 # Application Settings
 app:
@@ -589,6 +589,10 @@ def get_gcp_secret(project_id, secret_id):
 
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from pydantic import BaseModel, Field, validator
 
 class AgentConfig(BaseModel):
@@ -607,7 +611,7 @@ class AgentConfig(BaseModel):
 try:
     agent_config = AgentConfig(**config.get_config("agents"))
 except ValidationError as e:
-    print(f"Configuration error: {e}")
+    logger.info(f"Configuration error: {e}")
 ```
 
 ## 📚 Related Documentation

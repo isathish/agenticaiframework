@@ -56,7 +56,7 @@ class EvaluationSystem:
 
     def _log(self, message: str):
         """Internal logging."""
-        print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [EvaluationSystem] {message}")
+        logger.info("[EvaluationSystem] %s", message)
 
 
 __all__ = ['EvaluationSystem']

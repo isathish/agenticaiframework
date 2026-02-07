@@ -89,13 +89,17 @@ The HTTP client provides robust REST API communication with connection pooling, 
 ### Basic Usage
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.communication import HTTPClient
 
 # Simple request
 async with HTTPClient() as client:
     response = await client.get("https://api.example.com/data")
     data = response.json()
-    print(data)
+    logger.info(data)
 ```
 
 ### Request Methods
@@ -197,6 +201,10 @@ client = HTTPClient(config=config)
 ### Response Handling
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 async with HTTPClient() as client:
     response = await client.get("https://api.example.com/data")
     
@@ -204,9 +212,9 @@ async with HTTPClient() as client:
     if response.is_success:
         data = response.json()
     elif response.status_code == 404:
-        print("Resource not found")
+        logger.info("Resource not found")
     else:
-        print(f"Error: {response.status_code}")
+        logger.info(f"Error: {response.status_code}")
     
     # Access headers
     content_type = response.headers.get("content-type")
@@ -225,6 +233,10 @@ WebSocket provides full-duplex, real-time communication for interactive applicat
 ### Basic Usage
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.communication import WebSocketClient
 
 async with WebSocketClient("wss://api.example.com/ws") as ws:
@@ -233,7 +245,7 @@ async with WebSocketClient("wss://api.example.com/ws") as ws:
     
     # Receive messages
     async for message in ws:
-        print(f"Received: {message}")
+        logger.info(f"Received: {message}")
         
         if message.get("type") == "done":
             break
@@ -266,26 +278,30 @@ ws = WebSocketClient("wss://api.example.com/ws", config=config)
 ### Event Handling
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.communication import WebSocketClient
 
 ws = WebSocketClient("wss://api.example.com/ws")
 
 @ws.on("open")
 async def on_open():
-    print("Connection opened")
+    logger.info("Connection opened")
     await ws.send({"type": "hello"})
 
 @ws.on("message")
 async def on_message(data):
-    print(f"Received: {data}")
+    logger.info(f"Received: {data}")
 
 @ws.on("close")
 async def on_close(code, reason):
-    print(f"Connection closed: {code} - {reason}")
+    logger.info(f"Connection closed: {code} - {reason}")
 
 @ws.on("error")
 async def on_error(error):
-    print(f"Error: {error}")
+    logger.info(f"Error: {error}")
 
 # Start connection
 await ws.connect()
@@ -294,6 +310,10 @@ await ws.connect()
 ### Chat-Style Communication
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 async with WebSocketClient("wss://chat.example.com/ws") as ws:
     # Send chat message
     await ws.send({
@@ -311,7 +331,7 @@ async with WebSocketClient("wss://chat.example.com/ws") as ws:
         elif message["type"] == "done":
             break
     
-    print(f"\nFull response: {response_text}")
+    logger.info(f"\nFull response: {response_text}")
 ```
 
 ---
@@ -323,13 +343,17 @@ Server-Sent Events (SSE) provides one-way streaming from server to client, perfe
 ### Basic Usage
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.communication import SSEClient
 
 async with SSEClient("https://api.example.com/events") as sse:
     async for event in sse:
-        print(f"Event: {event.event}")
-        print(f"Data: {event.data}")
-        print(f"ID: {event.id}")
+        logger.info(f"Event: {event.event}")
+        logger.info(f"Data: {event.data}")
+        logger.info(f"ID: {event.id}")
 ```
 
 ### Configuration
@@ -355,22 +379,30 @@ sse = SSEClient("https://api.example.com/events", config=config)
 ### Event Types
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 async with SSEClient("https://api.example.com/events") as sse:
     async for event in sse:
         if event.event == "message":
-            print(f"Message: {event.data}")
+            logger.info(f"Message: {event.data}")
         elif event.event == "token":
-            print(event.data, end="", flush=True)
+            logger.info(event.data, end="", flush=True)
         elif event.event == "error":
-            print(f"Error: {event.data}")
+            logger.info(f"Error: {event.data}")
         elif event.event == "done":
-            print("\nStream completed")
+            logger.info("\nStream completed")
             break
 ```
 
 ### Streaming AI Responses
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.communication import SSEClient
 
 async def stream_completion(prompt: str):
@@ -393,7 +425,7 @@ async def stream_completion(prompt: str):
 
 # Usage
 async for token in stream_completion("Tell me a story"):
-    print(token, end="", flush=True)
+    logger.info(token, end="", flush=True)
 ```
 
 ---
@@ -405,6 +437,10 @@ MQTT provides lightweight publish-subscribe messaging, ideal for IoT and event-d
 ### Basic Usage
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.communication import MQTTClient
 
 async with MQTTClient("mqtt://broker.example.com:1883") as mqtt:
@@ -419,8 +455,8 @@ async with MQTTClient("mqtt://broker.example.com:1883") as mqtt:
     
     # Receive messages
     async for message in mqtt:
-        print(f"Topic: {message.topic}")
-        print(f"Payload: {message.payload}")
+        logger.info(f"Topic: {message.topic}")
+        logger.info(f"Payload: {message.payload}")
 ```
 
 ### Configuration
@@ -478,6 +514,10 @@ async with MQTTClient(broker_url) as mqtt:
 ### Message Handling
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.communication import MQTTClient
 
 mqtt = MQTTClient(broker_url)
@@ -485,12 +525,12 @@ mqtt = MQTTClient(broker_url)
 @mqtt.on_message("agents/+/status")
 async def handle_agent_status(topic, payload):
     agent_id = topic.split("/")[1]
-    print(f"Agent {agent_id} status: {payload}")
+    logger.info(f"Agent {agent_id} status: {payload}")
 
 @mqtt.on_message("tasks/+/result")
 async def handle_task_result(topic, payload):
     task_id = topic.split("/")[1]
-    print(f"Task {task_id} result: {payload}")
+    logger.info(f"Task {task_id} result: {payload}")
 
 await mqtt.connect()
 await mqtt.start_listening()
@@ -505,6 +545,10 @@ gRPC provides high-performance RPC communication with Protocol Buffers, ideal fo
 ### Basic Usage
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.communication import GRPCClient
 
 # Connect to gRPC server
@@ -515,7 +559,7 @@ async with GRPCClient("localhost:50051") as client:
         method="ExecuteTask",
         request={"task_id": "123", "input": "Process this"}
     )
-    print(response)
+    logger.info(response)
 ```
 
 ### Configuration
@@ -579,6 +623,10 @@ client = GRPCClient(config=config)
 
 === "Bidirectional Streaming"
     ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
     async with GRPCClient(target) as client:
         # Both sides stream
         async def chat_stream():
@@ -590,7 +638,7 @@ client = GRPCClient(config=config)
             method="Chat",
             requests=chat_stream()
         ):
-            print(f"Response: {response['message']}")
+            logger.info(f"Response: {response['message']}")
     ```
 
 ### Service Definition
@@ -621,6 +669,10 @@ STDIO provides process-based communication through standard input/output, perfec
 ### Basic Usage
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.communication import STDIOClient
 
 # Communicate with subprocess
@@ -633,7 +685,7 @@ async with STDIOClient(
     
     # Receive output
     response = await stdio.receive()
-    print(response)
+    logger.info(response)
 ```
 
 ### Configuration
@@ -666,18 +718,26 @@ stdio = STDIOClient(config=config)
 ### Interactive Mode
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 async with STDIOClient(command=["python", "-i"]) as stdio:
     # Interactive Python session
     await stdio.send("x = 42")
     await stdio.send("print(x * 2)")
     
     response = await stdio.receive()
-    print(response)  # "84"
+    logger.info(response)  # "84"
 ```
 
 ### MCP Server Communication
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.communication import STDIOClient
 
 # Connect to MCP server
@@ -694,7 +754,7 @@ async with STDIOClient(
     })
     
     init_response = await mcp.receive()
-    print(f"MCP initialized: {init_response}")
+    logger.info(f"MCP initialized: {init_response}")
     
     # List tools
     await mcp.send({
@@ -704,7 +764,7 @@ async with STDIOClient(
     })
     
     tools = await mcp.receive()
-    print(f"Available tools: {tools}")
+    logger.info(f"Available tools: {tools}")
 ```
 
 ---
@@ -733,6 +793,10 @@ async with pool.get_connection("https://api.example.com") as conn:
 ### Health Checks
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.communication import ConnectionManager
 
 manager = ConnectionManager()
@@ -744,7 +808,7 @@ manager.register("broker", MQTTClient("mqtt://broker.example.com"))
 # Health check all connections
 health = await manager.health_check()
 for name, status in health.items():
-    print(f"{name}: {'healthy' if status.is_healthy else 'unhealthy'}")
+    logger.info(f"{name}: {'healthy' if status.is_healthy else 'unhealthy'}")
 ```
 
 ---

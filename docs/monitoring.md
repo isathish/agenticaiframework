@@ -1,169 +1,189 @@
 ---
 title: Monitoring
-description: Production-grade observability for AI agent systems with metrics, logging, and distributed tracing
+description: Real-time metrics, event logging, and garbage collection management for production workloads
 tags:
   - monitoring
-  - observability
   - metrics
   - logging
+  - observability
 ---
 
-# 📊 Monitoring
+# :material-chart-line: Monitoring
 
-<div class="annotate" markdown>
+**Real-time metrics collection, structured event logging, and garbage collection management.**
 
-**Production-grade observability for AI agent systems**
+Thread-safe monitoring with bounded collections, `__slots__`, and structured logging throughout.
 
-Track, log, and analyze performance with comprehensive monitoring across **380+ modules**
-
-</div>
-
-!!! success "Enterprise Observability"
-    Part of **237 enterprise modules** with **16 observability features** including APM, distributed tracing, and real-time dashboards. See [Enterprise Documentation](enterprise.md).
+!!! tip "v2.0 Improvements"
+    MonitoringSystem now uses `deque(maxlen)` for bounded metric storage,
+    `threading.Lock` for thread safety, `__slots__` for memory efficiency,
+    and built-in GC statistics / forced collection helpers.
 
 ---
 
-## 🎯 Quick Navigation
+## Overview
 
-<div class="grid cards" markdown>
+The `MonitoringSystem` class provides a centralised monitoring hub for your
+agents, processes, and workflows:
 
--   :material-chart-line:{ .lg } **Metrics**
-    
-    Performance and usage tracking
-    
-    [:octicons-arrow-right-24: View Metrics](#key-classes-and-functions)
+| Feature | Description |
+|---------|-------------|
+| **Metrics** | Record and retrieve named numeric metrics with bounded history |
+| **Events** | Log structured events with type classification |
+| **Messages** | Append free-form log messages |
+| **GC Management** | Inspect garbage collector stats and force collection |
+| **Thread Safety** | All public methods are protected by `threading.Lock` |
 
--   :material-text-box:{ .lg } **Logging**
-    
-    Structured event logging
-    
-    [:octicons-arrow-right-24: Configure](#example-usage)
+---
 
--   :material-bell-alert:{ .lg } **Alerts**
-    
-    Automated alerting system
-    
-    [:octicons-arrow-right-24: Setup](#best-practices)
+## Quick Start
 
--   :material-chart-timeline:{ .lg } **Tracing**
-    
-    Distributed tracing
-    
-    [:octicons-arrow-right-24: Learn More](#monitoring-architecture)
-
-</div>
-
-## 📖 Overview
-
-!!! abstract "What is the Monitoring Module?"
-    
-    The Monitoring module provides comprehensive tools for tracking, logging, and analyzing the performance and behavior of AI agents. With **16 observability modules**, it enables developers to observe system health, detect anomalies, and optimize workflows.
-
-<div class="grid" markdown>
-
-:material-speedometer:{ .lg } **Performance Metrics**
-:   Track latency, throughput, and resource usage
-
-:material-file-document:{ .lg } **Event Logging**
-:   Record agent decisions and actions
-
-:material-bell:{ .lg } **Alerting**
-:   Automated notifications for critical events
-
-:material-chart-box:{ .lg } **Analytics**
-:   Visualize trends and patterns
-
-</div>
-
-## 🏛️ Monitoring Architecture
-
-```mermaid
-graph TB
-    subgraph "Agent System"
-        A1[Agent 1]
-        A2[Agent 2]
-        AN[Agent N]
-        TASK[Task Manager]
-        LLM[LLM Manager]
-    end
-    
-    subgraph "Data Collection"
-        METRICS[Metrics Collector<br/>📊 Prometheus]
-        LOGS[Event Logger<br/>📋 ELK Stack]
-        TRACE[Distributed Tracer<br/>🔍 OpenTelemetry]
-    end
-    
-    subgraph "Processing"
-        AGG[Aggregation]
-        ANALYSIS[Analysis Engine]
-        ALERT[Alert Manager]
-    end
-    
-    subgraph "Visualization"
-        DASH[Dashboards<br/>📊 Grafana]
-        REPORT[Reports]
-        NOTIFY[Notifications<br/>📧 Email, Slack]
-    end
-    
-    A1 & A2 & AN & TASK & LLM --> METRICS
-    A1 & A2 & AN & TASK & LLM --> LOGS
-    A1 & A2 & AN & TASK & LLM --> TRACE
-    
-    METRICS --> AGG
-    LOGS --> AGG
-    TRACE --> AGG
-    
-    AGG --> ANALYSIS
-    ANALYSIS --> ALERT
-    ANALYSIS --> DASH
-    ANALYSIS --> REPORT
-    ALERT --> NOTIFY
-    
-    style METRICS fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
-    style LOGS fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-    style TRACE fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-    style DASH fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
-```
-
-## Key Classes and Functions
-- **Monitor** — Base class for implementing custom monitoring logic.
-- **MetricsCollector** — Collects and stores performance metrics.
-- **EventLogger** — Logs significant events and actions taken by agents.
-- **alert_on_condition(condition, message)** — Sends alerts when specific conditions are met.
-- **generate_report()** — Produces a summary report of monitored metrics.
-
-## Example Usage
 ```python
-from agenticaiframework.monitoring import MetricsCollector, EventLogger
+from agenticaiframework import MonitoringSystem
 
-# Initialize monitoring tools
-metrics = MetricsCollector()
-logger = EventLogger()
+monitor = MonitoringSystem()
 
 # Record metrics
-metrics.record("response_time", 120)  # in milliseconds
+monitor.record_metric("latency_ms", 42.5)
+monitor.record_metric("latency_ms", 38.1)
+monitor.record_metric("tokens_used", 1500)
 
 # Log events
-logger.log("Agent started processing request.")
+monitor.log_event("agent_started", {"agent": "researcher", "model": "gpt-4o"})
+monitor.log_event("task_completed", {"task": "summarise", "duration": 1.2})
 
-# Generate a report
-report = metrics.generate_report()
-print(report)
+# Log messages
+monitor.log_message("Pipeline initialised successfully")
+
+# Retrieve data
+all_metrics = monitor.get_metrics()       # dict of all metrics
+latency = monitor.get_metric("latency_ms")  # list of latency values
+events = monitor.get_events()              # list of all events
+logs = monitor.get_logs()                  # list of all messages
 ```
 
-## Use Cases
-- Tracking API response times and error rates.
-- Logging agent decisions for auditing.
-- Detecting performance degradation over time.
-- Sending alerts for critical system failures.
+---
+
+## Metrics
+
+Metrics are stored per-name in bounded `deque` collections so memory usage stays
+constant regardless of how long the system runs.
+
+```python
+monitor.record_metric("request_count", 1)
+monitor.record_metric("request_count", 2)
+
+values = monitor.get_metric("request_count")  # [1, 2]
+```
+
+---
+
+## Event Logging
+
+Events capture structured information with a type label and arbitrary details:
+
+```python
+monitor.log_event("error", {
+    "component": "llm_client",
+    "message": "Rate limit exceeded",
+    "retry_after": 30,
+})
+
+errors = [e for e in monitor.get_events() if e["type"] == "error"]
+```
+
+---
+
+## Garbage Collection Management
+
+The monitoring system exposes helpers for Python's garbage collector:
+
+```python
+# Get GC statistics (generation counts, thresholds)
+gc_stats = monitor.get_gc_stats()
+
+# Force a garbage collection cycle
+collected = monitor.force_gc()
+```
+
+!!! info "When to use `force_gc()`"
+    Use sparingly — only when you have evidence of memory pressure (e.g. after
+    disposing a large batch of agents). Python's automatic GC handles most cases.
+
+---
+
+## Clearing Data
+
+Reset all collected monitoring data:
+
+```python
+monitor.clear()
+```
+
+---
+
+## API Reference
+
+### `MonitoringSystem`
+
+Uses `__slots__` for memory efficiency. All methods are thread-safe.
+
+#### Methods
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `record_metric(name, value)` | `None` | Record a numeric metric value |
+| `get_metric(name)` | `list` | Retrieve all recorded values for a metric |
+| `get_metrics()` | `dict` | Retrieve all metrics as `{name: [values]}` |
+| `log_event(event_type, details)` | `None` | Log a structured event |
+| `get_events()` | `list[dict]` | Retrieve all logged events |
+| `log_message(message)` | `None` | Append a free-form log message |
+| `get_logs()` | `list[str]` | Retrieve all log messages |
+| `get_gc_stats()` | `dict` | Get garbage collector statistics |
+| `force_gc()` | `int` | Force GC and return number of collected objects |
+| `clear()` | `None` | Reset all metrics, events, and logs |
+
+---
+
+## Integration with Tracing
+
+MonitoringSystem works alongside the [Tracing](tracing.md) module. Use
+monitoring for **aggregate metrics** and tracing for **per-request spans**.
+
+```python
+from agenticaiframework import MonitoringSystem
+from agenticaiframework.tracing import TracingManager
+
+monitor = MonitoringSystem()
+tracer = TracingManager()
+
+# Record high-level metrics
+monitor.record_metric("requests_total", 1)
+
+# Trace individual request flow
+with tracer.span("handle_request"):
+    pass  # your logic here
+```
+
+---
 
 ## Best Practices
-- Use consistent metric names for easier aggregation.
-- Store logs securely and ensure they are tamper-proof.
-- Set up automated alerts for high-priority issues.
-- Regularly review monitoring data to identify optimization opportunities.
+
+!!! success "Do"
+    - Use `record_metric()` for numeric KPIs (latency, token count, error rate).
+    - Use `log_event()` for discrete occurrences with structured context.
+    - Review `get_gc_stats()` periodically in long-running services.
+    - Call `clear()` between test runs to avoid data bleed.
+
+!!! danger "Don't"
+    - Store unbounded data in metric names — the collection is bounded, but creating
+      millions of unique metric keys will still consume memory.
+    - Call `force_gc()` in hot paths — it pauses the interpreter.
+
+---
 
 ## Related Documentation
-- [Guardrails Module](guardrails.md)
-- [Processes Module](processes.md)
-- [Tasks Module](tasks.md)
+
+- [Tracing](tracing.md) — distributed tracing and spans
+- [Performance](performance.md) — tuning and benchmarking
+- [Infrastructure](infrastructure.md) — deployment and scaling

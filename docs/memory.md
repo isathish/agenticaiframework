@@ -98,6 +98,10 @@ The **MemoryManager** is the general-purpose memory solution for any agent. It p
 ### Basic Usage
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework import MemoryManager
 
 # Initialize memory manager
@@ -116,8 +120,8 @@ memory.store(
 # Search memories
 results = memory.search("user preferences", top_k=5)
 for result in results:
-    print(f"Content: {result.content}")
-    print(f"Similarity: {result.similarity:.2f}")
+    logger.info(f"Content: {result.content}")
+    logger.info(f"Similarity: {result.similarity:.2f}")
 ```
 
 ### Configuration Options
@@ -235,6 +239,10 @@ context = agent_memory.get_context(task_type="research")
 ### Agent State Tracking
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Track agent performance
 agent_memory.record_performance(
     task_id="task_001",
@@ -253,8 +261,8 @@ history = agent_memory.get_performance_history(
 
 # Get agent statistics
 stats = agent_memory.get_statistics()
-print(f"Total tasks: {stats.total_tasks}")
-print(f"Average accuracy: {stats.avg_accuracy}")
+logger.info(f"Total tasks: {stats.total_tasks}")
+logger.info(f"Average accuracy: {stats.avg_accuracy}")
 ```
 
 ### Skill Memory
@@ -283,6 +291,10 @@ The **WorkflowMemoryManager** tracks workflow execution state, step completions,
 ### Basic Usage
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework import WorkflowMemoryManager
 
 # Initialize for workflow
@@ -299,9 +311,9 @@ workflow_memory.record_step(
 
 # Get workflow status
 status = workflow_memory.get_status()
-print(f"Current step: {status.current_step}")
-print(f"Completed: {status.completed_steps}")
-print(f"Remaining: {status.remaining_steps}")
+logger.info(f"Current step: {status.current_step}")
+logger.info(f"Completed: {status.completed_steps}")
+logger.info(f"Remaining: {status.remaining_steps}")
 ```
 
 ### Checkpoint Management
@@ -428,6 +440,10 @@ messages = orch_memory.get_messages(agent_id="researcher")
 ### Consensus Building
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Record agent vote/opinion
 orch_memory.record_vote(
     topic="approach_selection",
@@ -439,8 +455,8 @@ orch_memory.record_vote(
 
 # Get consensus
 consensus = orch_memory.get_consensus("approach_selection")
-print(f"Selected: {consensus.selected_option}")
-print(f"Agreement: {consensus.agreement_level}")
+logger.info(f"Selected: {consensus.selected_option}")
+logger.info(f"Agreement: {consensus.agreement_level}")
 ```
 
 ---
@@ -452,6 +468,10 @@ The **KnowledgeMemoryManager** provides a powerful knowledge base with document 
 ### Basic Usage
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework import KnowledgeMemoryManager
 
 # Initialize knowledge base
@@ -475,9 +495,9 @@ results = knowledge.query(
 )
 
 for result in results:
-    print(f"Answer: {result.content}")
-    print(f"Source: {result.source}")
-    print(f"Confidence: {result.confidence:.2f}")
+    logger.info(f"Answer: {result.content}")
+    logger.info(f"Source: {result.source}")
+    logger.info(f"Confidence: {result.confidence:.2f}")
 ```
 
 ### Document Processing
@@ -604,16 +624,20 @@ else:
 ### Tool Analytics
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Get tool performance metrics
 metrics = tool_memory.get_tool_metrics("web_search")
-print(f"Success rate: {metrics.success_rate:.2%}")
-print(f"Avg latency: {metrics.avg_latency_ms}ms")
-print(f"Total calls: {metrics.total_calls}")
+logger.info(f"Success rate: {metrics.success_rate:.2%}")
+logger.info(f"Avg latency: {metrics.avg_latency_ms}ms")
+logger.info(f"Total calls: {metrics.total_calls}")
 
 # Get all tool statistics
 all_stats = tool_memory.get_all_statistics()
 for tool, stats in all_stats.items():
-    print(f"{tool}: {stats.success_rate:.2%} success, {stats.avg_latency_ms}ms avg")
+    logger.info(f"{tool}: {stats.success_rate:.2%} success, {stats.avg_latency_ms}ms avg")
 ```
 
 ### Tool Optimization
@@ -686,12 +710,16 @@ profile = speech_memory.get_voice_profile(user_id="user_123")
 ### Speech Analytics
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Get speech metrics
 metrics = speech_memory.get_session_metrics(session_id="voice_001")
-print(f"Total duration: {metrics.total_duration_ms}ms")
-print(f"User speaking time: {metrics.user_speaking_time_ms}ms")
-print(f"Agent speaking time: {metrics.agent_speaking_time_ms}ms")
-print(f"Turn count: {metrics.turn_count}")
+logger.info(f"Total duration: {metrics.total_duration_ms}ms")
+logger.info(f"User speaking time: {metrics.user_speaking_time_ms}ms")
+logger.info(f"Agent speaking time: {metrics.agent_speaking_time_ms}ms")
+logger.info(f"Turn count: {metrics.turn_count}")
 
 # Get transcription accuracy
 accuracy = speech_memory.get_transcription_accuracy(
@@ -816,16 +844,20 @@ results = memory.search(
 ### Memory Monitoring
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Get memory statistics
 stats = memory.get_statistics()
-print(f"Total entries: {stats.total_entries}")
-print(f"Storage size: {stats.storage_size_mb} MB")
-print(f"Average entry size: {stats.avg_entry_size_tokens} tokens")
+logger.info(f"Total entries: {stats.total_entries}")
+logger.info(f"Storage size: {stats.storage_size_mb} MB")
+logger.info(f"Average entry size: {stats.avg_entry_size_tokens} tokens")
 
 # Monitor memory health
 health = memory.health_check()
 if not health.is_healthy:
-    print(f"Issues: {health.issues}")
+    logger.info(f"Issues: {health.issues}")
 ```
 
 ---

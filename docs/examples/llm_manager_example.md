@@ -10,9 +10,13 @@ tags:
 # 🧠 LLM Manager Example
 
 !!! success "18+ LLM Providers"
-    Part of **380+ modules** supporting OpenAI, Anthropic, Gemini, Azure, AWS Bedrock, and more. See [LLM Documentation](../llms.md).
+    Part of **400+ modules** supporting OpenAI, Anthropic, Gemini, Azure, AWS Bedrock, and more. See [LLM Documentation](../llms.md).
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.llms import LLMManager
 
 # Example: Using the LLMManager
@@ -39,6 +43,6 @@ if __name__ == "__main__":
     # Generate text using the registered model
     prompt_text = "What is the capital of France?"
     response = llm_manager.generate("MockLLM", prompt_text)
-    print("LLM Response:", response)
+    logger.info("LLM Response:", response)
 
 ```

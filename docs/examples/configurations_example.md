@@ -14,19 +14,23 @@ This guide provides a **professional, step-by-step walkthrough** for using the `
 It is intended for developers who need a centralized way to handle application settings and environment-specific parameters.
 
 !!! tip "Enterprise Configuration"
-    Part of **380+ modules** supporting multi-tenant configurations, feature flags, and environment management. See [Configuration Reference](../configuration-reference.md).
+    Part of **400+ modules** supporting multi-tenant configurations, feature flags, and environment management. See [Configuration Reference](../configuration-reference.md).
 
 
 ## Prerequisites & Configuration
 
 - **Installation**: Ensure `agenticaiframework` is installed and accessible in your Python environment.
 - **No additional configuration** is required for this example.
-- **Python Version**: Compatible with Python 3.8+.
+- **Python Version**: Compatible with Python 3.10+.
 
 
 ## Code
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.configurations import ConfigManager
 
 if __name__ == "__main__":
@@ -36,7 +40,7 @@ if __name__ == "__main__":
     config.set("api_key", "123456")
 
     # Retrieve the configuration value
-    print("API Key:", config.get("api_key"))
+    logger.info("API Key:", config.get("api_key"))
 ```
 
 

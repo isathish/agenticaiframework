@@ -13,7 +13,7 @@ tags:
 <div align="center">
 
 [![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/isathish/agenticaiframework)
-[![Modules](https://img.shields.io/badge/Modules-380%2B-purple.svg)](https://github.com/isathish/agenticaiframework)
+[![Modules](https://img.shields.io/badge/Modules-400%2B-purple.svg)](https://github.com/isathish/agenticaiframework)
 [![Enterprise](https://img.shields.io/badge/Enterprise-237%20Modules-green.svg)](https://github.com/isathish/agenticaiframework)
 [![Docker](https://img.shields.io/badge/Docker-Supported-2496ED?logo=docker&logoColor=white)](https://hub.docker.com)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-Ready-326CE5?logo=kubernetes&logoColor=white)](https://kubernetes.io)
@@ -736,7 +736,7 @@ def log_structured(level: str, message: str, **kwargs):
         "message": message,
         **kwargs
     }
-    print(json.dumps(log_entry))
+    logger.info(json.dumps(log_entry))
 
 log_structured("INFO", "Agent started", agent_id="agent_001", task="analysis")
 ```

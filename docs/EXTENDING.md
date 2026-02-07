@@ -14,7 +14,7 @@ tags:
 
 **Extend and customize the framework**
 
-Add new capabilities, integrate external systems across **380+ modules**
+Add new capabilities, integrate external systems across **400+ modules**
 
 </div>
 

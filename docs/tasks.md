@@ -14,7 +14,7 @@ tags:
 
 **Comprehensive task orchestration and workflow management**
 
-Define, schedule, and execute work units with precision across **380+ modules**
+Define, schedule, and execute work units with precision across **400+ modules**
 
 </div>
 
@@ -99,8 +99,8 @@ The `Task` class represents a single unit of work with comprehensive metadata an
         name: str,
         description: str = "",
         priority: int = 1,
-        dependencies: List[str] = None,
-        config: Dict[str, Any] = None
+        dependencies: list[str] = None,
+        config: dict[str, Any] = None
     )
     ```
 
@@ -111,8 +111,8 @@ The `Task` class represents a single unit of work with comprehensive metadata an
 | `name` | `str` | *required* | Unique identifier for the task |
 | `description` | `str` | `""` | Human-readable description |
 | `priority` | `int` | `1` | Priority level (1=highest, 10=lowest) |
-| `dependencies` | `List[str]` | `None` | Prerequisite task names |
-| `config` | `Dict[str, Any]` | `None` | Task-specific configuration |
+| `dependencies` | `list[str]` | `None` | Prerequisite task names |
+| `config` | `dict[str, Any]` | `None` | Task-specific configuration |
 
 #### Properties
 
@@ -123,7 +123,7 @@ The `Task` class represents a single unit of work with comprehensive metadata an
 | `description` | str | Task description |
 | `status` | str | Current status (pending, running, completed, failed) |
 | `priority` | int | Task priority level |
-| `dependencies` | List[str] | Required predecessor tasks |
+| `dependencies` | list[str] | Required predecessor tasks |
 | `result` | Any | Task execution result |
 | `error` | str | Error message if task failed |
 | `created_at` | datetime | Task creation timestamp |
@@ -387,9 +387,9 @@ The `TaskScheduler` manages task execution timing and coordination.
 ```python
 def add_task(task: Task, schedule_time: datetime = None) -> None
 def remove_task(task_id: str) -> None
-def run_pending() -> List[str]
+def run_pending() -> list[str]
 def schedule_recurring(task: Task, interval: timedelta) -> None
-def get_scheduled_tasks() -> List[Task]
+def get_scheduled_tasks() -> list[Task]
 ```
 
 #### Scheduling Timeline
@@ -426,11 +426,11 @@ The `TaskQueue` provides advanced queue management with prioritization and depen
 
 ```python
 def enqueue(task: Task) -> None
-def dequeue() -> Optional[Task]
-def peek() -> Optional[Task]
+def dequeue() -> Task | None
+def peek() -> Task | None
 def get_queue_size() -> int
 def clear() -> None
-def get_tasks_by_status(status: str) -> List[Task]
+def get_tasks_by_status(status: str) -> list[Task]
 ```
 
 ### TaskManager Class
@@ -442,8 +442,8 @@ The `TaskManager` provides high-level task orchestration and lifecycle managemen
 ```python
 def create_task(name: str, **kwargs) -> Task
 def execute_task(task_id: str) -> Any
-def list_tasks(status: str = None) -> List[Task]
-def get_task(task_id: str) -> Optional[Task]
+def list_tasks(status: str = None) -> list[Task]
+def get_task(task_id: str) -> Task | None
 def cancel_task(task_id: str) -> None
 def retry_task(task_id: str) -> None
 ```
@@ -453,6 +453,10 @@ def retry_task(task_id: str) -> None
 ### Basic Task Creation
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tasks import Task, TaskManager
 
 # Create task manager
@@ -472,7 +476,7 @@ task = manager.create_task(
 
 # Execute the task
 result = manager.execute_task(task.id)
-print(f"Task result: {result}")
+logger.info(f"Task result: {result}")
 ```
 
 ### Advanced Task Configuration
@@ -556,6 +560,10 @@ manager.execute_workflow([validation_task, transformation_task, analysis_task])
 ### Time-Based Scheduling
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tasks import TaskScheduler
 from datetime import datetime, timedelta
 
@@ -573,7 +581,7 @@ scheduler.schedule_recurring(
 
 # Run pending tasks
 executed_tasks = scheduler.run_pending()
-print(f"Executed {len(executed_tasks)} tasks")
+logger.info(f"Executed {len(executed_tasks)} tasks")
 ```
 
 ### Conditional Scheduling
@@ -645,6 +653,10 @@ cron_scheduler.schedule_cron(weekly_backup_task, "0 9 * * 1")
 ### Priority Queue
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tasks import TaskQueue
 
 # Create priority queue
@@ -662,7 +674,7 @@ queue.enqueue(low_priority_task)
 # Process tasks in priority order
 while queue.get_queue_size() > 0:
     task = queue.dequeue()
-    print(f"Processing: {task.name} (priority: {task.priority})")
+    logger.info(f"Processing: {task.name} (priority: {task.priority})")
     task.execute()
 ```
 
@@ -691,6 +703,10 @@ while fifo_queue.get_queue_size() > 0:
 ### Advanced Queue Operations
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 class AdvancedTaskQueue(TaskQueue):
     def __init__(self):
         super().__init__()
@@ -712,9 +728,9 @@ class AdvancedTaskQueue(TaskQueue):
                         task.error = str(e)
                         task.status = "failed"
                         self.failed_tasks.append(task)
-                        print(f"Task {task.name} failed after {max_retries} retries")
+                        logger.info(f"Task {task.name} failed after {max_retries} retries")
                     else:
-                        print(f"Task {task.name} failed (attempt {attempt + 1}), retrying...")
+                        logger.info(f"Task {task.name} failed (attempt {attempt + 1}), retrying...")
                         time.sleep(2 ** attempt)  # Exponential backoff
     
     def get_statistics(self):
@@ -732,6 +748,10 @@ class AdvancedTaskQueue(TaskQueue):
 ### Sequential Workflows
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 class SequentialWorkflow:
     def __init__(self, name: str):
         self.name = name
@@ -753,9 +773,9 @@ class SequentialWorkflow:
             try:
                 result = task.execute()
                 results.append(result)
-                print(f"Completed step {i + 1}: {task.name}")
+                logger.info(f"Completed step {i + 1}: {task.name}")
             except Exception as e:
-                print(f"Workflow failed at step {i + 1}: {task.name}")
+                logger.info(f"Workflow failed at step {i + 1}: {task.name}")
                 self.status = "failed"
                 return {"status": "failed", "error": str(e), "step": i + 1}
         
@@ -774,6 +794,10 @@ result = workflow.execute()
 ### Parallel Workflows
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
@@ -804,10 +828,10 @@ class ParallelWorkflow:
                 try:
                     result = future.result()
                     results[task.name] = result
-                    print(f"Completed: {task.name}")
+                    logger.info(f"Completed: {task.name}")
                 except Exception as e:
                     results[task.name] = {"error": str(e)}
-                    print(f"Failed: {task.name} - {e}")
+                    logger.info(f"Failed: {task.name} - {e}")
         
         self.status = "completed"
         return results
@@ -848,6 +872,10 @@ results = parallel_workflow.execute_parallel()
 ### Conditional Workflows
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 class ConditionalWorkflow:
     def __init__(self, name: str):
         self.name = name
@@ -895,9 +923,9 @@ class ConditionalWorkflow:
                     result = step["task"].execute()
                     results.append(result)
                     context["last_result"] = result
-                    print(f"Executed: {step['task'].name}")
+                    logger.info(f"Executed: {step['task'].name}")
                 else:
-                    print(f"Skipped: {step['task'].name} (condition not met)")
+                    logger.info(f"Skipped: {step['task'].name} (condition not met)")
         
         self.status = "completed"
         return {"status": "completed", "results": results, "context": context}
@@ -932,6 +960,10 @@ result = conditional_workflow.execute({"input_available": True, "data_size": 150
 ### Retry Mechanisms
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 class RetryableTask(Task):
     def __init__(self, name: str, max_retries: int = 3, backoff_factor: float = 2.0, **kwargs):
         super().__init__(name, **kwargs)
@@ -953,7 +985,7 @@ class RetryableTask(Task):
                     raise e
                 else:
                     wait_time = self.backoff_factor ** attempt
-                    print(f"Task {self.name} failed (attempt {attempt + 1}), retrying in {wait_time}s...")
+                    logger.info(f"Task {self.name} failed (attempt {attempt + 1}), retrying in {wait_time}s...")
                     time.sleep(wait_time)
 
 # Usage
@@ -967,12 +999,16 @@ retryable_task = RetryableTask(
 try:
     result = retryable_task.execute_with_retry()
 except Exception as e:
-    print(f"Task ultimately failed: {e}")
+    logger.info(f"Task ultimately failed: {e}")
 ```
 
 ### Circuit Breaker Pattern
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 class CircuitBreakerTask(Task):
     def __init__(self, name: str, failure_threshold: int = 5, recovery_timeout: int = 60, **kwargs):
         super().__init__(name, **kwargs)
@@ -987,7 +1023,7 @@ class CircuitBreakerTask(Task):
         if self.state == "open":
             if time.time() - self.last_failure_time > self.recovery_timeout:
                 self.state = "half-open"
-                print(f"Circuit breaker for {self.name} moving to half-open state")
+                logger.info(f"Circuit breaker for {self.name} moving to half-open state")
             else:
                 raise Exception(f"Circuit breaker open for task {self.name}")
         
@@ -997,7 +1033,7 @@ class CircuitBreakerTask(Task):
             if self.state == "half-open":
                 self.state = "closed"
                 self.failure_count = 0
-                print(f"Circuit breaker for {self.name} closed - service recovered")
+                logger.info(f"Circuit breaker for {self.name} closed - service recovered")
             
             return result
             
@@ -1007,7 +1043,7 @@ class CircuitBreakerTask(Task):
             
             if self.failure_count >= self.failure_threshold:
                 self.state = "open"
-                print(f"Circuit breaker for {self.name} opened due to {self.failure_count} failures")
+                logger.info(f"Circuit breaker for {self.name} opened due to {self.failure_count} failures")
             
             raise e
 
@@ -1137,10 +1173,14 @@ class ResourceMonitoringTask(MetricsTask):
 ### Agent Integration
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.agents import Agent
 
 class TaskExecutingAgent(Agent):
-    def __init__(self, name: str, role: str, capabilities: List[str], config: Dict):
+    def __init__(self, name: str, role: str, capabilities: list[str], config: Dict):
         super().__init__(name, role, capabilities, config)
         self.task_queue = TaskQueue()
         self.task_history = []
@@ -1148,7 +1188,7 @@ class TaskExecutingAgent(Agent):
     def assign_task(self, task: Task):
         """Assign task to agent"""
         self.task_queue.enqueue(task)
-        print(f"Task {task.name} assigned to agent {self.name}")
+        logger.info(f"Task {task.name} assigned to agent {self.name}")
     
     def process_tasks(self):
         """Process all queued tasks"""
@@ -1156,7 +1196,7 @@ class TaskExecutingAgent(Agent):
             task = self.task_queue.dequeue()
             
             try:
-                print(f"Agent {self.name} executing task: {task.name}")
+                logger.info(f"Agent {self.name} executing task: {task.name}")
                 result = task.execute()
                 task.status = "completed"
                 task.result = result
@@ -1164,7 +1204,7 @@ class TaskExecutingAgent(Agent):
             except Exception as e:
                 task.status = "failed"
                 task.error = str(e)
-                print(f"Task {task.name} failed: {e}")
+                logger.info(f"Task {task.name} failed: {e}")
             
             self.task_history.append(task)
     
@@ -1198,7 +1238,7 @@ agent.process_tasks()
 
 # Get summary
 summary = agent.get_task_summary()
-print(f"Agent processed {summary['total_tasks']} tasks with {summary['success_rate']:.2%} success rate")
+logger.info(f"Agent processed {summary['total_tasks']} tasks with {summary['success_rate']:.2%} success rate")
 ```
 
 ### Memory Integration
@@ -1227,7 +1267,7 @@ class MemoryAwareTask(Task):
         
         return result
     
-    def get_memory_context(self, keys: List[str]):
+    def get_memory_context(self, keys: list[str]):
         """Retrieve specific keys from memory"""
         context = {}
         for key in keys:
@@ -1297,6 +1337,10 @@ class OptimizedTask(Task):
 ### Error Handling Best Practices
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 class RobustTask(Task):
     def __init__(self, name: str, **kwargs):
         super().__init__(name, **kwargs)
@@ -1319,14 +1363,14 @@ class RobustTask(Task):
                     try:
                         return handler(e, self)
                     except Exception as handler_error:
-                        print(f"Error handler failed: {handler_error}")
+                        logger.info(f"Error handler failed: {handler_error}")
             
             # Try fallback function
             if self.fallback_function:
                 try:
                     return self.fallback_function(e, self)
                 except Exception as fallback_error:
-                    print(f"Fallback function failed: {fallback_error}")
+                    logger.info(f"Fallback function failed: {fallback_error}")
             
             # Re-raise original exception if no handler worked
             raise e
@@ -1342,12 +1386,12 @@ class RobustTask(Task):
 
 # Usage with error handling
 def handle_connection_error(error, task):
-    print(f"Handling connection error for {task.name}: {error}")
+    logger.info(f"Handling connection error for {task.name}: {error}")
     # Implement retry logic or alternative approach
     return task.create_fallback_result(error)
 
 def handle_validation_error(error, task):
-    print(f"Handling validation error for {task.name}: {error}")
+    logger.info(f"Handling validation error for {task.name}: {error}")
     # Implement data cleaning or user notification
     return {"status": "validation_failed", "error": str(error)}
 
@@ -1366,6 +1410,10 @@ robust_task.register_error_handler(ValueError, handle_validation_error)
 
 1. **Task Dependencies Not Resolving**
    ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
    # Check dependency graph for cycles
    def check_dependency_cycles(tasks):
        visited = set()
@@ -1390,13 +1438,17 @@ robust_task.register_error_handler(ValueError, handle_validation_error)
        
        for task in tasks:
            if has_cycle(task.name):
-               print(f"Dependency cycle detected involving task: {task.name}")
+               logger.info(f"Dependency cycle detected involving task: {task.name}")
                return True
        return False
    ```
 
 2. **Memory Leaks in Long-Running Tasks**
    ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
    def monitor_memory_usage(task):
        initial_memory = psutil.virtual_memory().used
        
@@ -1406,7 +1458,7 @@ robust_task.register_error_handler(ValueError, handle_validation_error)
        memory_increase = final_memory - initial_memory
        
        if memory_increase > 100 * 1024 * 1024:  # 100MB threshold
-           print(f"Warning: Task {task.name} used {memory_increase / 1024 / 1024:.2f}MB")
+           logger.info(f"Warning: Task {task.name} used {memory_increase / 1024 / 1024:.2f}MB")
        
        return result
    ```

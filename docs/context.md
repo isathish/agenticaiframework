@@ -15,7 +15,7 @@ tags:
 
 **Advanced context management for AI agents**
 
-Semantic indexing, context windows, compression strategies, and intelligent retrieval across **380+ modules**
+Semantic indexing, context windows, compression strategies, and intelligent retrieval across **400+ modules**
 
 </div>
 
@@ -56,7 +56,7 @@ Semantic indexing, context windows, compression strategies, and intelligent retr
 
 ## 📊 Overview
 
-!!! success "Part of 380+ Modules"
+!!! success "Part of 400+ Modules"
     
     Context engineering works seamlessly with **7 memory managers**, **7 state managers**, and **14 ML/AI infrastructure modules**.
 
@@ -174,6 +174,10 @@ ContextPriority.LOW        # Removed first (old history)
 ### Build Context
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Build optimized context for prompt
 context = context_mgr.build_context(
     query="How do I create a class in Python?",
@@ -192,7 +196,7 @@ messages = context.to_messages()
 text = context.to_text()
 
 # Get token count
-print(f"Context tokens: {context.token_count}")
+logger.info(f"Context tokens: {context.token_count}")
 ```
 
 ### Context Sessions
@@ -246,6 +250,10 @@ index.add_documents([
 ### Semantic Search
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Search for relevant context
 results = index.search(
     query="How do I train a model?",
@@ -254,9 +262,9 @@ results = index.search(
 )
 
 for result in results:
-    print(f"Document: {result.id}")
-    print(f"Score: {result.score:.3f}")
-    print(f"Content: {result.content[:100]}...")
+    logger.info(f"Document: {result.id}")
+    logger.info(f"Score: {result.score:.3f}")
+    logger.info(f"Content: {result.content[:100]}...")
 ```
 
 ### Hybrid Search
@@ -293,6 +301,10 @@ context_mgr.set_retrieval_strategy(
 ### Index Management
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Update documents
 index.update_document("doc1", {"content": "Updated content..."})
 
@@ -301,8 +313,8 @@ index.delete_document("doc3")
 
 # Get index statistics
 stats = index.get_stats()
-print(f"Total documents: {stats.document_count}")
-print(f"Index size: {stats.size_mb} MB")
+logger.info(f"Total documents: {stats.document_count}")
+logger.info(f"Index size: {stats.size_mb} MB")
 
 # Persist index
 index.save("/path/to/index")
@@ -348,10 +360,14 @@ if not window.fits():
 ### Token Management
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Get token counts
-print(f"Used tokens: {window.used_tokens}")
-print(f"Available tokens: {window.available_tokens}")
-print(f"Utilization: {window.utilization:.1%}")
+logger.info(f"Used tokens: {window.used_tokens}")
+logger.info(f"Available tokens: {window.available_tokens}")
+logger.info(f"Utilization: {window.utilization:.1%}")
 
 # Token-aware truncation
 truncated = window.truncate_to_fit(
@@ -380,15 +396,19 @@ for message in conversation_history:
 ### Model-Specific Windows
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Auto-configure for model
 window = ContextWindow.for_model("gpt-4-turbo")
-print(f"Max tokens: {window.max_tokens}")  # 128000
+logger.info(f"Max tokens: {window.max_tokens}")  # 128000
 
 window = ContextWindow.for_model("claude-3-opus")
-print(f"Max tokens: {window.max_tokens}")  # 200000
+logger.info(f"Max tokens: {window.max_tokens}")  # 200000
 
 window = ContextWindow.for_model("gpt-4")
-print(f"Max tokens: {window.max_tokens}")  # 8192
+logger.info(f"Max tokens: {window.max_tokens}")  # 8192
 ```
 
 ---
@@ -400,6 +420,10 @@ Reduce context size while preserving meaning.
 ### Basic Compression
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.context import (
     ContextCompressor,
     CompressionStrategy,
@@ -417,8 +441,8 @@ compressor = ContextCompressor(
 # Compress text
 original = "Long context with lots of details..."
 compressed = compressor.compress(original)
-print(f"Original: {len(original)} chars")
-print(f"Compressed: {len(compressed)} chars")
+logger.info(f"Original: {len(original)} chars")
+logger.info(f"Compressed: {len(compressed)} chars")
 ```
 
 ### Compression Strategies

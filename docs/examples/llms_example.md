@@ -13,19 +13,23 @@ This guide provides a **professional, step-by-step walkthrough** for registering
 It is intended for developers integrating custom or third-party LLMs into their applications.
 
 !!! success "18+ LLM Providers Supported"
-    Part of **380+ modules** supporting OpenAI, Anthropic, Gemini, Azure, AWS Bedrock, Ollama, and more. See [LLM Documentation](../llms.md).
+    Part of **400+ modules** supporting OpenAI, Anthropic, Gemini, Azure, AWS Bedrock, Ollama, and more. See [LLM Documentation](../llms.md).
 
 
 ## Prerequisites & Configuration
 
 - **Installation**: Ensure `agenticaiframework` is installed and accessible in your Python environment.
 - **No additional configuration** is required for this example.
-- **Python Version**: Compatible with Python 3.8+.
+- **Python Version**: Compatible with Python 3.10+.
 
 
 ## Code
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.llms import LLMManager
 
 if __name__ == "__main__":
@@ -38,10 +42,10 @@ if __name__ == "__main__":
     llm_manager.set_active_model("demo-llm")
 
     # Generate text using the active model
-    print("Generated Text:", llm_manager.generate("Explain the concept of machine learning in simple terms."))
+    logger.info("Generated Text:", llm_manager.generate("Explain the concept of machine learning in simple terms."))
 
     # List available models
-    print("Available Models:", list(llm_manager.models.keys()))
+    logger.info("Available Models:", list(llm_manager.models.keys()))
 ```
 
 

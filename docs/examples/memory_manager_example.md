@@ -10,9 +10,13 @@ tags:
 # 🧠 Memory Manager Example
 
 !!! success "7 Memory Managers"
-    Part of **380+ modules** with Redis, PostgreSQL, SQLite, and vector store backends. See [Memory Documentation](../memory.md).
+    Part of **400+ modules** with Redis, PostgreSQL, SQLite, and vector store backends. See [Memory Documentation](../memory.md).
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.memory import MemoryManager
 
 # Example: Using the MemoryManager
@@ -33,7 +37,7 @@ if __name__ == "__main__":
     memory_manager.store("last_login", "2025-09-10")
 
     # Retrieve and display memory entries
-    print("User Name:", memory_manager.retrieve("user_name"))
-    print("Last Login:", memory_manager.retrieve("last_login"))
+    logger.info("User Name:", memory_manager.retrieve("user_name"))
+    logger.info("Last Login:", memory_manager.retrieve("last_login"))
 
 ```

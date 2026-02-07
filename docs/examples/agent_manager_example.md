@@ -11,9 +11,13 @@ tags:
 # 🤖 Agent Manager Example
 
 !!! success "Enterprise Agent Management"
-    Part of **380+ modules** with advanced agent lifecycle management, pooling, and multi-tenant isolation. See [Agents Documentation](../agents.md).
+    Part of **400+ modules** with advanced agent lifecycle management, pooling, and multi-tenant isolation. See [Agents Documentation](../agents.md).
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.agents import Agent, AgentManager
 
 # Example: Using the Agent and AgentManager
@@ -50,11 +54,11 @@ if __name__ == "__main__":
 
     # List all agents
     agents_list = agent_manager.list_agents()
-    print("Registered Agents:", [a.name for a in agents_list])
+    logger.info("Registered Agents:", [a.name for a in agents_list])
 
     # Retrieve the agent by ID
     retrieved_agent = agent_manager.get_agent(agent.id)
-    print("Retrieved Agent:", retrieved_agent.name if retrieved_agent else "Not found")
+    logger.info("Retrieved Agent:", retrieved_agent.name if retrieved_agent else "Not found")
 
     # Broadcast a message to all agents
     agent_manager.broadcast("System maintenance scheduled.")

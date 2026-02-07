@@ -18,7 +18,7 @@ tags:
 
 **Connect to external systems and services**
 
-Comprehensive integration guide for APIs, databases, and message queues across **380+ modules**
+Comprehensive integration guide for APIs, databases, and message queues across **400+ modules**
 
 </div>
 
@@ -121,7 +121,6 @@ graph TB
 ```python
 import aiohttp
 import asyncio
-from typing import Dict, Any
 
 class RESTAPIClient:
     """Async REST API client"""
@@ -305,7 +304,6 @@ new_user = await graphql_client.mutate(mutation, variables={
 
 ```python
 import asyncpg
-from typing import List, Dict, Any
 
 class PostgreSQLAdapter:
     """PostgreSQL database adapter"""
@@ -338,13 +336,13 @@ class PostgreSQLAdapter:
             row = await conn.fetchrow(query, *args)
             return dict(row) if row else None
     
-    async def fetch_all(self, query: str, *args) -> List[Dict]:
+    async def fetch_all(self, query: str, *args) -> list[Dict]:
         """Fetch all rows"""
         async with self.pool.acquire() as conn:
             rows = await conn.fetch(query, *args)
             return [dict(row) for row in rows]
     
-    async def transaction(self, queries: List[tuple]):
+    async def transaction(self, queries: list[tuple]):
         """Execute multiple queries in transaction"""
         async with self.pool.acquire() as conn:
             async with conn.transaction():
@@ -388,7 +386,6 @@ class DatabaseAgent(Agent):
 
 ```python
 from motor.motor_asyncio import AsyncIOMotorClient
-from typing import Dict, List
 
 class MongoDBAdapter:
     """MongoDB database adapter"""
@@ -402,7 +399,7 @@ class MongoDBAdapter:
         result = await self.db[collection].insert_one(document)
         return str(result.inserted_id)
     
-    async def insert_many(self, collection: str, documents: List[Dict]) -> List[str]:
+    async def insert_many(self, collection: str, documents: list[Dict]) -> list[str]:
         """Insert multiple documents"""
         result = await self.db[collection].insert_many(documents)
         return [str(id) for id in result.inserted_ids]
@@ -414,7 +411,7 @@ class MongoDBAdapter:
             document['_id'] = str(document['_id'])
         return document
     
-    async def find_many(self, collection: str, filter: Dict, limit: int = 100) -> List[Dict]:
+    async def find_many(self, collection: str, filter: Dict, limit: int = 100) -> list[Dict]:
         """Find multiple documents"""
         cursor = self.db[collection].find(filter).limit(limit)
         documents = await cursor.to_list(length=limit)
@@ -434,7 +431,7 @@ class MongoDBAdapter:
         result = await self.db[collection].delete_one(filter)
         return result.deleted_count
     
-    async def aggregate(self, collection: str, pipeline: List[Dict]) -> List[Dict]:
+    async def aggregate(self, collection: str, pipeline: list[Dict]) -> list[Dict]:
         """Execute aggregation pipeline"""
         cursor = self.db[collection].aggregate(pipeline)
         return await cursor.to_list(length=None)
@@ -458,7 +455,6 @@ agents = await mongo.find_many("agents", {"status": "active"})
 ```python
 import aioredis
 import json
-from typing import Any
 
 class RedisAdapter:
     """Redis cache adapter"""
@@ -504,7 +500,7 @@ class RedisAdapter:
         """Set expiration on key"""
         await self.redis.expire(key, ttl)
     
-    async def get_many(self, keys: List[str]) -> Dict[str, Any]:
+    async def get_many(self, keys: list[str]) -> dict[str, Any]:
         """Get multiple values"""
         values = await self.redis.mget(keys)
         return {
@@ -512,7 +508,7 @@ class RedisAdapter:
             for key, value in zip(keys, values)
         }
     
-    async def set_many(self, mapping: Dict[str, Any], ttl: int = None):
+    async def set_many(self, mapping: dict[str, Any], ttl: int = None):
         """Set multiple values"""
         serialized = {k: json.dumps(v) for k, v in mapping.items()}
         await self.redis.mset(serialized)
@@ -551,6 +547,10 @@ class CachedAgent(Agent):
 ### 1. Kafka Integration
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from aiokafka import AIOKafkaProducer, AIOKafkaConsumer
 import json
 
@@ -620,7 +620,7 @@ await kafka.send_message("agent_tasks", {
 
 # Consumer
 async def handle_task(message):
-    print(f"Processing task: {message}")
+    logger.info(f"Processing task: {message}")
     # Process task
 
 consumer = await kafka.connect_consumer("agent_tasks", group_id="agent_workers")
@@ -630,6 +630,10 @@ await kafka.consume_messages("agent_tasks", handle_task)
 ### 2. RabbitMQ Integration
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 import aio_pika
 import json
 
@@ -682,7 +686,7 @@ await rabbitmq.publish("task_queue", {
 
 # Consume
 async def process_task(task):
-    print(f"Processing: {task}")
+    logger.info(f"Processing: {task}")
 
 await rabbitmq.consume("task_queue", process_task)
 ```
@@ -691,8 +695,11 @@ await rabbitmq.consume("task_queue", process_task)
 ## 🔔 Webhook Integration
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from fastapi import FastAPI, Request, HTTPException
-from typing import Callable, Dict
 import hashlib
 import hmac
 
@@ -772,7 +779,7 @@ async def handle_github_webhook(payload: dict):
     event_type = payload.get("action")
     repository = payload.get("repository", {}).get("name")
     
-    print(f"GitHub event: {event_type} on {repository}")
+    logger.info(f"GitHub event: {event_type} on {repository}")
     
     # Process webhook
     # ...
@@ -804,6 +811,10 @@ The AgenticAI Framework provides built-in connectors for popular enterprise syst
 Central management for all integrations:
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.integrations import (
     IntegrationManager,
     IntegrationConfig,
@@ -826,7 +837,7 @@ integration_manager.connect(config.integration_id)
 
 # Health check
 health = integration_manager.health_check(config.integration_id)
-print(f"Status: {health['status']}")
+logger.info(f"Status: {health['status']}")
 
 # List all integrations
 all_integrations = integration_manager.list_integrations()
@@ -837,6 +848,10 @@ all_integrations = integration_manager.list_integrations()
 ITSM integration for incident, change, and problem management:
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.integrations import (
     ServiceNowIntegration,
     IntegrationConfig,
@@ -868,7 +883,7 @@ incident = snow.create_incident(
     assignment_group="IT-Operations",
     category="Performance"
 )
-print(f"Created incident: {incident['number']}")
+logger.info(f"Created incident: {incident['number']}")
 
 # Create a change request
 change = snow.create_change_request(
@@ -884,6 +899,10 @@ change = snow.create_change_request(
 Repository, issue, and pull request management:
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.integrations import GitHubIntegration, IntegrationConfig
 
 config = IntegrationConfig(
@@ -910,7 +929,7 @@ issue = github.create_issue(
     labels=["bug", "ai-detected"],
     assignees=["developer1"]
 )
-print(f"Created issue: {issue['html_url']}")
+logger.info(f"Created issue: {issue['html_url']}")
 
 # Create a pull request
 pr = github.create_pull_request(

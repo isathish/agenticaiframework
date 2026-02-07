@@ -272,7 +272,7 @@ class GuardrailManager:
 
     def _log(self, message: str):
         """Log a message."""
-        print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [GuardrailManager] {message}")
+        logger.info("[GuardrailManager] %s", message)
 
 
 __all__ = ['Guardrail', 'GuardrailManager']

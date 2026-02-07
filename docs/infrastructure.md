@@ -15,7 +15,7 @@ tags:
 
 **Enterprise-scale infrastructure management**
 
-Multi-region deployment, tenant isolation, serverless execution, and distributed coordination across **380+ modules**
+Multi-region deployment, tenant isolation, serverless execution, and distributed coordination across **400+ modules**
 
 </div>
 
@@ -185,14 +185,18 @@ region = manager.get_optimal_region(
 ### Health Monitoring
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Monitor region health
 health_status = manager.get_health_status()
 for region_name, status in health_status.items():
-    print(f"{region_name}:")
-    print(f"  Status: {status.state}")
-    print(f"  Latency: {status.avg_latency_ms}ms")
-    print(f"  Capacity: {status.available_capacity}/{status.total_capacity}")
-    print(f"  Error Rate: {status.error_rate}%")
+    logger.info(f"{region_name}:")
+    logger.info(f"  Status: {status.state}")
+    logger.info(f"  Latency: {status.avg_latency_ms}ms")
+    logger.info(f"  Capacity: {status.available_capacity}/{status.total_capacity}")
+    logger.info(f"  Error Rate: {status.error_rate}%")
 
 # Set health check configuration
 manager.configure_health_checks(
@@ -291,11 +295,15 @@ async def get_tenant_data(tenant_id: str, query: str):
 ### Resource Quotas
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Check tenant quota
 quota = tenant_mgr.get_quota("tenant-acme")
-print(f"Agents: {quota.agents_used}/{quota.agents_limit}")
-print(f"Storage: {quota.storage_used_gb}/{quota.storage_limit_gb}")
-print(f"Requests: {quota.requests_used}/{quota.requests_limit}")
+logger.info(f"Agents: {quota.agents_used}/{quota.agents_limit}")
+logger.info(f"Storage: {quota.storage_used_gb}/{quota.storage_limit_gb}")
+logger.info(f"Requests: {quota.requests_used}/{quota.requests_limit}")
 
 # Update quotas
 tenant_mgr.update_quota(
@@ -311,24 +319,28 @@ try:
         agent_config
     )
 except QuotaExceededError as e:
-    print(f"Quota exceeded: {e.resource} ({e.current}/{e.limit})")
+    logger.info(f"Quota exceeded: {e.resource} ({e.current}/{e.limit})")
 ```
 
 ### Tenant Metrics
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Get tenant usage metrics
 metrics = tenant_mgr.get_metrics("tenant-acme")
-print(f"Active agents: {metrics.active_agents}")
-print(f"Total requests: {metrics.total_requests}")
-print(f"Avg latency: {metrics.avg_latency_ms}ms")
-print(f"Error rate: {metrics.error_rate}%")
-print(f"Cost this month: ${metrics.monthly_cost}")
+logger.info(f"Active agents: {metrics.active_agents}")
+logger.info(f"Total requests: {metrics.total_requests}")
+logger.info(f"Avg latency: {metrics.avg_latency_ms}ms")
+logger.info(f"Error rate: {metrics.error_rate}%")
+logger.info(f"Cost this month: ${metrics.monthly_cost}")
 
 # List all tenants with usage
 for tenant in tenant_mgr.list_tenants():
     usage = tenant_mgr.get_usage(tenant.id)
-    print(f"{tenant.name}: {usage.requests_today} requests")
+    logger.info(f"{tenant.name}: {usage.requests_today} requests")
 ```
 
 ---
@@ -340,6 +352,10 @@ The `ServerlessExecutor` enables function-as-a-service execution.
 ### Basic Usage
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.infrastructure import (
     ServerlessExecutor,
     ServerlessFunction,
@@ -367,19 +383,23 @@ function = ServerlessFunction(
 
 # Deploy function
 deployed = await executor.deploy(function)
-print(f"Deployed: {deployed.arn}")
+logger.info(f"Deployed: {deployed.arn}")
 ```
 
 ### Invoke Functions
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Synchronous invocation
 result = await executor.invoke(
     function_name="process-document",
     payload={"document_id": "doc-123"},
     invocation_type="sync"
 )
-print(f"Result: {result.payload}")
+logger.info(f"Result: {result.payload}")
 
 # Asynchronous invocation
 invocation = await executor.invoke(
@@ -387,12 +407,12 @@ invocation = await executor.invoke(
     payload={"document_id": "doc-456"},
     invocation_type="async"
 )
-print(f"Invocation ID: {invocation.id}")
+logger.info(f"Invocation ID: {invocation.id}")
 
 # Check async result
 status = await executor.get_invocation_status(invocation.id)
 if status.completed:
-    print(f"Result: {status.result}")
+    logger.info(f"Result: {status.result}")
 ```
 
 ### Function Scaling
@@ -418,20 +438,24 @@ await executor.warm(
 ### Function Monitoring
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Get function metrics
 metrics = await executor.get_metrics(
     function_name="process-document",
     time_range="1h"
 )
-print(f"Invocations: {metrics.invocation_count}")
-print(f"Duration avg: {metrics.duration_avg_ms}ms")
-print(f"Duration p99: {metrics.duration_p99_ms}ms")
-print(f"Errors: {metrics.error_count}")
-print(f"Throttles: {metrics.throttle_count}")
+logger.info(f"Invocations: {metrics.invocation_count}")
+logger.info(f"Duration avg: {metrics.duration_avg_ms}ms")
+logger.info(f"Duration p99: {metrics.duration_p99_ms}ms")
+logger.info(f"Errors: {metrics.error_count}")
+logger.info(f"Throttles: {metrics.throttle_count}")
 
 # Stream logs
 async for log_entry in executor.stream_logs("process-document"):
-    print(f"{log_entry.timestamp}: {log_entry.message}")
+    logger.info(f"{log_entry.timestamp}: {log_entry.message}")
 ```
 
 ### Agent as Function
@@ -494,6 +518,10 @@ await coordinator.connect()
 ### Distributed Locks
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Acquire distributed lock
 async with coordinator.lock("resource-123", timeout=30) as lock:
     # Exclusive access to resource
@@ -507,19 +535,23 @@ if lock:
     finally:
         await lock.release()
 else:
-    print("Resource is locked by another process")
+    logger.info("Resource is locked by another process")
 ```
 
 ### Leader Election
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Participate in leader election
 async with coordinator.leader_election("agent-leaders") as election:
     if election.is_leader:
-        print("I am the leader")
+        logger.info("I am the leader")
         await perform_leader_tasks()
     else:
-        print(f"Leader is: {election.leader_id}")
+        logger.info(f"Leader is: {election.leader_id}")
         await perform_follower_tasks()
 
 # Watch for leader changes
@@ -534,6 +566,10 @@ async def handle_leader_change(new_leader: str, is_self: bool):
 ### Distributed State
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Set distributed state
 await coordinator.set_state("config/model", "gpt-4")
 await coordinator.set_state("config/temperature", 0.7)
@@ -544,7 +580,7 @@ model = await coordinator.get_state("config/model")
 # Watch for state changes
 @coordinator.watch("config/*")
 async def on_config_change(key: str, value: any):
-    print(f"Config changed: {key} = {value}")
+    logger.info(f"Config changed: {key} = {value}")
     await reload_config()
 
 # Atomic operations
@@ -559,6 +595,10 @@ await coordinator.compare_and_swap(
 ### Service Discovery
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Register service
 await coordinator.register_service(
     name="agent-service",
@@ -571,7 +611,7 @@ await coordinator.register_service(
 # Discover services
 services = await coordinator.discover_services("agent-service")
 for svc in services:
-    print(f"{svc.instance_id}: {svc.address}:{svc.port}")
+    logger.info(f"{svc.instance_id}: {svc.address}:{svc.port}")
 
 # Health-aware routing
 healthy_service = await coordinator.get_healthy_service("agent-service")
@@ -606,6 +646,10 @@ await priority_queue.put({"urgent": False}, priority=1)
 ## 🎯 Complete Example
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework import Agent, AgentRunner
 from agenticaiframework.infrastructure import (
     MultiRegionManager,
@@ -707,7 +751,7 @@ async def main():
             "location": "New York, US"
         }
     )
-    print(f"Result: {result}")
+    logger.info(f"Result: {result}")
 ```
 
 ---

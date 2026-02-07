@@ -14,7 +14,7 @@ tags:
 
 **Quick solutions to common issues**
 
-Resolve problems quickly with **380+ modules** and **237 enterprise features**
+Resolve problems quickly with **400+ modules** and **237 enterprise features**
 
 </div>
 
@@ -83,7 +83,7 @@ manager = AgentManager()
 manager.register_agent(agent)
 
 # Verify registration
-print([a.name for a in manager.agents])
+logger.info([a.name for a in manager.agents])
 ```
 
 ---
@@ -97,7 +97,7 @@ print([a.name for a in manager.agents])
 from agenticaiframework.tools import tool_registry
 
 # Check available tools
-print(tool_registry.list_tools())
+logger.info(tool_registry.list_tools())
 
 # Register a new tool
 from agenticaiframework.tools import register_tool, BaseTool
@@ -124,7 +124,7 @@ from agenticaiframework.llms import LLMManager
 llm = LLMManager()
 
 # Check available models
-print(llm.list_models())
+logger.info(llm.list_models())
 
 # Register a custom model
 def my_llm_function(prompt, **kwargs):
@@ -166,7 +166,7 @@ from agenticaiframework.processes import ProcessManager
 pm = ProcessManager()
 
 # List available processes
-print(pm.list_processes())
+logger.info(pm.list_processes())
 
 # Register your process
 pm.register_process("xyz", my_process_function)

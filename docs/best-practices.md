@@ -14,7 +14,7 @@ tags:
 
 **Production-ready patterns and expert recommendations**
 
-Build scalable, reliable AI agent applications with **380+ modules** and **237 enterprise features**
+Build scalable, reliable AI agent applications with **400+ modules** and **237 enterprise features**
 
 </div>
 

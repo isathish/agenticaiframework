@@ -1,22 +1,31 @@
 """
 Orchestration Engine for agent coordination.
+
+Thread-safe with bounded execution history and capped thread pools.
 """
 
-import uuid
+from __future__ import annotations
+
 import logging
-from collections import Counter
+import os
+import threading
+import uuid
+from collections import Counter, deque
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Callable
 
-from .types import OrchestrationPattern
 from .supervisor import AgentSupervisor
 from .teams import AgentTeam
+from .types import OrchestrationPattern
 
 if TYPE_CHECKING:
     from ..core.agent import Agent
 
 logger = logging.getLogger(__name__)
+
+_MAX_WORKERS = min(32, (os.cpu_count() or 1) + 4)
+_MAX_HISTORY = 5000
 
 
 class OrchestrationEngine:
@@ -35,12 +44,13 @@ class OrchestrationEngine:
     """
     
     def __init__(self, default_pattern: OrchestrationPattern = OrchestrationPattern.SEQUENTIAL):
+        self._lock = threading.Lock()
         self.default_pattern = default_pattern
-        self.supervisors: Dict[str, AgentSupervisor] = {}
-        self.teams: Dict[str, AgentTeam] = {}
-        self.workflows: Dict[str, Dict[str, Any]] = {}
+        self.supervisors: dict[str, AgentSupervisor] = {}
+        self.teams: dict[str, AgentTeam] = {}
+        self.workflows: dict[str, dict[str, Any]] = {}
         
-        self.execution_history: List[Dict[str, Any]] = []
+        self.execution_history: deque[dict[str, Any]] = deque(maxlen=_MAX_HISTORY)
         self.metrics = {
             'orchestrations_completed': 0,
             'orchestrations_failed': 0,
@@ -135,10 +145,11 @@ class OrchestrationEngine:
             self.metrics['total_agent_invocations'] += 1
         return results
     
-    def _parallel(self, agents: List['Agent'], task_callable: Callable, **kwargs) -> List[Any]:
+    def _parallel(self, agents: list['Agent'], task_callable: Callable, **kwargs) -> list[Any]:
         """Execute task in parallel across agents."""
         results = []
-        with ThreadPoolExecutor(max_workers=len(agents)) as executor:
+        workers = min(len(agents), _MAX_WORKERS)
+        with ThreadPoolExecutor(max_workers=workers) as executor:
             futures = {
                 executor.submit(agent.execute_task, task_callable, **kwargs): agent
                 for agent in agents
@@ -223,14 +234,15 @@ class OrchestrationEngine:
         
         return results
     
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get orchestration metrics."""
-        return {
-            **self.metrics,
-            'registered_supervisors': len(self.supervisors),
-            'registered_teams': len(self.teams),
-            'execution_history_size': len(self.execution_history)
-        }
+        with self._lock:
+            return {
+                **self.metrics,
+                'registered_supervisors': len(self.supervisors),
+                'registered_teams': len(self.teams),
+                'execution_history_size': len(self.execution_history)
+            }
 
 
 # Global instance

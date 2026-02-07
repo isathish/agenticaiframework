@@ -11,9 +11,13 @@ tags:
 # ⚙️ Advanced Process Example
 
 !!! tip "Enterprise Orchestration"
-    Part of **380+ modules** with 12 workflow types including DAG, parallel, and consensus-based orchestration. See [Processes Documentation](../processes.md).
+    Part of **400+ modules** with 12 workflow types including DAG, parallel, and consensus-based orchestration. See [Processes Documentation](../processes.md).
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.processes import Process
 
 # Example: Advanced Process usage with Tasks
@@ -32,13 +36,13 @@ if __name__ == "__main__":
 
     # Define some tasks
     def task_one():
-        print("Task One executed.")
+        logger.info("Task One executed.")
 
     def task_two():
-        print("Task Two executed.")
+        logger.info("Task Two executed.")
 
     def task_three():
-        print("Task Three executed.")
+        logger.info("Task Three executed.")
 
     # Add tasks to the process
     process.add_task(task_one)

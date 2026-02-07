@@ -2,63 +2,93 @@
 Circuit Breaker.
 
 Circuit breaker pattern to prevent cascading failures.
+Thread-safe implementation with proper exception re-raising.
 """
 
+from __future__ import annotations
+
+import logging
+import threading
 import time
-from typing import Callable, Any, Optional
+from typing import Any, Callable
 
 from ..exceptions import CircuitBreakerOpenError
 
+logger = logging.getLogger(__name__)
+
 
 class CircuitBreaker:
-    """Circuit breaker to prevent cascading failures."""
-    
-    def __init__(self, 
-                 failure_threshold: int = 5,
-                 recovery_timeout: int = 60):
+    """Thread-safe circuit breaker to prevent cascading failures."""
+
+    __slots__ = (
+        "failure_threshold",
+        "recovery_timeout",
+        "failure_count",
+        "last_failure_time",
+        "state",
+        "_lock",
+    )
+
+    def __init__(
+        self,
+        failure_threshold: int = 5,
+        recovery_timeout: int = 60,
+    ):
         self.failure_threshold = failure_threshold
         self.recovery_timeout = recovery_timeout
         self.failure_count = 0
-        self.last_failure_time: Optional[float] = None
+        self.last_failure_time: float | None = None
         self.state = "closed"  # closed, open, half-open
-    
-    def call(self, func: Callable, *args, **kwargs) -> Any:
+        self._lock = threading.Lock()
+
+    def call(self, func: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
         """Execute function with circuit breaker protection."""
-        if self.state == "open":
-            # Check if recovery timeout has passed
-            if (self.last_failure_time and 
-                time.time() - self.last_failure_time > self.recovery_timeout):
-                self.state = "half-open"
-                self.failure_count = 0
-            else:
-                raise CircuitBreakerOpenError(
-                    recovery_timeout=self.recovery_timeout
-                )
-        
+        with self._lock:
+            if self.state == "open":
+                if (
+                    self.last_failure_time
+                    and time.time() - self.last_failure_time > self.recovery_timeout
+                ):
+                    self.state = "half-open"
+                    self.failure_count = 0
+                    logger.info("Circuit breaker transitioning to half-open")
+                else:
+                    raise CircuitBreakerOpenError(
+                        recovery_timeout=self.recovery_timeout
+                    )
+
         try:
             result = func(*args, **kwargs)
-            
-            # Success - reset if in half-open state
-            if self.state == "half-open":
-                self.state = "closed"
-                self.failure_count = 0
-            
+
+            with self._lock:
+                if self.state == "half-open":
+                    self.state = "closed"
+                    self.failure_count = 0
+                    logger.info("Circuit breaker closed after successful call")
+
             return result
-            
-        except Exception as e:
-            self.failure_count += 1
-            self.last_failure_time = time.time()
-            
-            if self.failure_count >= self.failure_threshold:
-                self.state = "open"
-            
-            raise e
-    
-    def reset(self):
+
+        except Exception:
+            with self._lock:
+                self.failure_count += 1
+                self.last_failure_time = time.time()
+
+                if self.failure_count >= self.failure_threshold:
+                    self.state = "open"
+                    logger.warning(
+                        "Circuit breaker opened after %d failures",
+                        self.failure_count,
+                    )
+
+            raise  # preserve original traceback
+
+    def reset(self) -> None:
         """Manually reset the circuit breaker."""
-        self.state = "closed"
-        self.failure_count = 0
-        self.last_failure_time = None
+        with self._lock:
+            self.state = "closed"
+            self.failure_count = 0
+            self.last_failure_time = None
+            logger.info("Circuit breaker manually reset")
 
 
 __all__ = ['CircuitBreaker']

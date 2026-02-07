@@ -1,6 +1,6 @@
 ---
 title: Architecture
-description: Comprehensive architectural overview of AgenticAI Framework's 5-layer design and 380+ modules
+description: Comprehensive architectural overview of AgenticAI Framework's 5-layer design and 400+ modules
 tags:
   - architecture
   - design
@@ -14,7 +14,7 @@ tags:
 
 **Comprehensive architectural overview**
 
-Understand the design and structure of **380+ modules** and **237 enterprise features**
+Understand the design and structure of **400+ modules** and **237 enterprise features**
 
 </div>
 
@@ -57,14 +57,14 @@ Understand the design and structure of **380+ modules** and **237 enterprise fea
 
 !!! abstract "Design Philosophy"
     
-    AgenticAI Framework is built on a **modular, event-driven architecture** that enables scalable and maintainable agentic applications with **380+ modules** including **237 enterprise-grade modules**.
+    AgenticAI Framework is built on a **modular, event-driven architecture** that enables scalable and maintainable agentic applications with **400+ modules** including **237 enterprise-grade modules**.
 
 ### :star: Core Design Principles
 
 <div class="grid" markdown>
 
 :material-puzzle:{ .lg } **Modularity**
-:   380+ independently composable modules with single responsibilities
+:   400+ independently composable modules with single responsibilities
 
 :material-plus-circle:{ .lg } **Extensibility**
 :   237 enterprise modules across 14 categories

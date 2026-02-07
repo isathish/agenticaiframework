@@ -1,7 +1,15 @@
-from typing import Any, Dict, List, Callable, Optional
+"""
+Task management module.
+
+Thread-safe task registration, execution, and lifecycle tracking.
+"""
+
+from __future__ import annotations
+
 import logging
+import threading
 import uuid
-import time
+from typing import Any, Callable
 
 from .exceptions import TaskExecutionError  # noqa: F401 - exported for library users
 
@@ -9,76 +17,80 @@ logger = logging.getLogger(__name__)
 
 
 class Task:
-    def __init__(self, name: str, objective: str, executor: Callable, inputs: Dict[str, Any] = None):
+    """Represents a single executable task."""
+
+    __slots__ = ("id", "name", "objective", "executor", "inputs", "status", "result", "version")
+
+    def __init__(
+        self,
+        name: str,
+        objective: str,
+        executor: Callable[..., Any],
+        inputs: dict[str, Any] | None = None,
+    ):
         self.id = str(uuid.uuid4())
         self.name = name
         self.objective = objective
         self.executor = executor
         self.inputs = inputs or {}
         self.status = "pending"
-        self.result = None
+        self.result: Any = None
         self.version = "1.0.0"
 
-    def run(self):
+    def run(self) -> Any:
         self.status = "running"
-        self._log(f"Running task '{self.name}'")
+        logger.info("[Task:%s] Running", self.name)
         try:
             self.result = self.executor(**self.inputs)
             self.status = "completed"
-            self._log(f"Task '{self.name}' completed successfully")
+            logger.info("[Task:%s] Completed successfully", self.name)
         except (TypeError, ValueError, KeyError, AttributeError) as e:
             self.status = "failed"
-            self._log(f"Task '{self.name}' failed: {e}")
-            logger.error("Task '%s' failed with error: %s", self.name, e)
-        except Exception as e:  # noqa: BLE001 - Catch-all for unknown task errors
+            logger.error("Task '%s' failed: %s", self.name, e)
+        except Exception:  # noqa: BLE001
             self.status = "failed"
-            self._log(f"Task '{self.name}' failed with unexpected error: {e}")
             logger.exception("Unexpected error in task '%s'", self.name)
         return self.result
 
-    def _log(self, message: str):
-        print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [Task:{self.name}] {message}")
-
 
 class TaskManager:
-    def __init__(self):
-        self.tasks: Dict[str, Task] = {}
+    """Thread-safe task registry and executor."""
 
-    def register_task(self, task: Task):
-        self.tasks[task.id] = task
-        self._log(f"Registered task '{task.name}' with ID {task.id}")
+    def __init__(self) -> None:
+        self._lock = threading.Lock()
+        self.tasks: dict[str, Task] = {}
 
-    def get_task(self, task_id: str) -> Optional[Task]:
-        return self.tasks.get(task_id)
+    def register_task(self, task: Task) -> None:
+        with self._lock:
+            self.tasks[task.id] = task
+        logger.info("[TaskManager] Registered '%s' (id=%s)", task.name, task.id)
 
-    def list_tasks(self) -> List[Task]:
-        return list(self.tasks.values())
+    def get_task(self, task_id: str) -> Task | None:
+        with self._lock:
+            return self.tasks.get(task_id)
 
-    def remove_task(self, task_id: str):
-        if task_id in self.tasks:
-            del self.tasks[task_id]
-            self._log(f"Removed task with ID {task_id}")
+    def list_tasks(self) -> list[Task]:
+        with self._lock:
+            return list(self.tasks.values())
 
-    def run_all(self):
-        results = {}
-        for task_id, task in self.tasks.items():
-            results[task_id] = task.run()
-        return results
+    def remove_task(self, task_id: str) -> None:
+        with self._lock:
+            if task_id in self.tasks:
+                del self.tasks[task_id]
+                logger.info("[TaskManager] Removed task %s", task_id)
 
-    def execute_task(self, task_name_or_id: str):
-        """Execute a task by name or ID"""
-        # Try to find by ID first
-        task = self.get_task(task_name_or_id)
+    def run_all(self) -> dict[str, Any]:
+        with self._lock:
+            snapshot = dict(self.tasks)
+        return {tid: task.run() for tid, task in snapshot.items()}
+
+    def execute_task(self, task_name_or_id: str) -> Any:
+        """Execute a task by name or ID."""
+        with self._lock:
+            task = self.tasks.get(task_name_or_id)
+            if not task:
+                task = next((t for t in self.tasks.values() if t.name == task_name_or_id), None)
         if task:
             return task.run()
-        
-        # If not found by ID, try to find by name
-        for task in self.tasks.values():
-            if task.name == task_name_or_id:
-                return task.run()
-        
-        self._log(f"Task '{task_name_or_id}' not found")
+        logger.warning("[TaskManager] Task '%s' not found", task_name_or_id)
         return None
-
-    def _log(self, message: str):
-        print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [TaskManager] {message}")

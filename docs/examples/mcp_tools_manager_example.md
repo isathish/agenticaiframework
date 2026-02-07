@@ -10,9 +10,13 @@ tags:
 # 🔧 MCP Tools Manager Example
 
 !!! success "35+ Built-in Tools"
-    Part of **380+ modules** with 35+ built-in tools and 18 external connectors. See [MCP Tools Documentation](../mcp_tools.md).
+    Part of **400+ modules** with 35+ built-in tools and 18 external connectors. See [MCP Tools Documentation](../mcp_tools.md).
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.mcp_tools import MCPTool, MCPToolManager
 
 # Example: Using the MCPTool and MCPToolManager
@@ -45,7 +49,7 @@ if __name__ == "__main__":
     tool_manager.register_tool(tool2)
 
     # Execute tools
-    print("EchoTool result:", tool_manager.execute_tool("EchoTool", "Hello MCP"))
-    print("MultiplyTool result:", tool_manager.execute_tool("MultiplyTool", 6, 7))
+    logger.info("EchoTool result:", tool_manager.execute_tool("EchoTool", "Hello MCP"))
+    logger.info("MultiplyTool result:", tool_manager.execute_tool("MultiplyTool", 6, 7))
 
 ```

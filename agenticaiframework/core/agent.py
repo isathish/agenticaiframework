@@ -1879,7 +1879,6 @@ class Agent:
     def _log(self, message: str) -> None:
         """Log a message."""
         logger.info("[Agent:%s] %s", self.name, message)
-        print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [Agent:{self.name}] {message}")
     
     def log(self, message: str) -> None:
         """Public method to log a message."""

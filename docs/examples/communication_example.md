@@ -10,9 +10,13 @@ tags:
 # 📡 Communication Example
 
 !!! success "12 Communication Modules"
-    Part of **380+ modules** with 12 enterprise messaging modules including Kafka, RabbitMQ, and Redis Pub/Sub. See [Communication Documentation](../communication.md).
+    Part of **400+ modules** with 12 enterprise messaging modules including Kafka, RabbitMQ, and Redis Pub/Sub. See [Communication Documentation](../communication.md).
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.communication import CommunicationManager
 
 # Example: Using the CommunicationManager
@@ -30,7 +34,7 @@ if __name__ == "__main__":
 
     # Define a simple message handler
     def message_handler(message):
-        print(f"Received message: {message}")
+        logger.info(f"Received message: {message}")
 
     # Register the handler
     comm_manager.register_handler(message_handler)

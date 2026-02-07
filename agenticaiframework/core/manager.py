@@ -34,7 +34,7 @@ class AgentManager:
         """Register an agent with the manager."""
         self.agents[agent.id] = agent
         self.manager_metrics['total_agents_registered'] += 1
-        print(f"Registered agent {agent.name} with ID {agent.id}")
+        logger.info("Registered agent %s with ID %s", agent.name, agent.id)
 
     def get_agent(self, agent_id: str) -> Optional[Agent]:
         """Get an agent by ID."""
@@ -51,7 +51,7 @@ class AgentManager:
             agent.stop()
             del self.agents[agent_id]
             self.manager_metrics['total_agents_removed'] += 1
-            print(f"Removed agent with ID {agent_id}")
+            logger.info("Removed agent with ID %s", agent_id)
 
     def broadcast(self, message: str, importance: float = 0.5) -> None:
         """
@@ -140,4 +140,4 @@ class AgentManager:
         """Stop all agents."""
         for agent in self.agents.values():
             agent.stop()
-        print(f"Stopped all {len(self.agents)} agents")
+        logger.info("Stopped all %d agents", len(self.agents))

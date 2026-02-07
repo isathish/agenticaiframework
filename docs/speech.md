@@ -7,7 +7,7 @@ description: Full-featured speech-to-text and text-to-speech capabilities for vo
 
 AgenticAI Framework provides comprehensive speech processing capabilities including speech-to-text (STT), text-to-speech (TTS), and voice interaction management.
 
-!!! success "Part of 380+ Modules"
+!!! success "Part of 400+ Modules"
     
     Speech processing is one component of the comprehensive framework with 237 enterprise modules.
 
@@ -71,6 +71,10 @@ AgenticAI Framework provides comprehensive speech processing capabilities includ
 ### Basic Transcription
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.speech import SpeechToText
 
 # Initialize STT
@@ -78,9 +82,9 @@ stt = SpeechToText(provider="openai")
 
 # Transcribe audio file
 result = stt.transcribe("audio.wav")
-print(f"Text: {result.text}")
-print(f"Language: {result.language}")
-print(f"Confidence: {result.confidence:.2f}")
+logger.info(f"Text: {result.text}")
+logger.info(f"Language: {result.language}")
+logger.info(f"Confidence: {result.confidence:.2f}")
 ```
 
 ### Provider Configuration
@@ -146,18 +150,26 @@ print(f"Confidence: {result.confidence:.2f}")
 ### Word-Level Timestamps
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 result = stt.transcribe(
     "audio.wav",
     include_timestamps=True
 )
 
 for word in result.words:
-    print(f"{word.text}: {word.start_time:.2f}s - {word.end_time:.2f}s")
+    logger.info(f"{word.text}: {word.start_time:.2f}s - {word.end_time:.2f}s")
 ```
 
 ### Speaker Diarization
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 result = stt.transcribe(
     "meeting.wav",
     enable_diarization=True,
@@ -165,7 +177,7 @@ result = stt.transcribe(
 )
 
 for segment in result.segments:
-    print(f"[Speaker {segment.speaker}] {segment.text}")
+    logger.info(f"[Speaker {segment.speaker}] {segment.text}")
 ```
 
 ### Audio Formats
@@ -275,15 +287,19 @@ audio_bytes = audio.to_bytes()
 ### Available Voices
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # List available voices
 voices = tts.list_voices()
 
 for voice in voices:
-    print(f"ID: {voice.id}")
-    print(f"Name: {voice.name}")
-    print(f"Language: {voice.language}")
-    print(f"Gender: {voice.gender}")
-    print("---")
+    logger.info(f"ID: {voice.id}")
+    logger.info(f"Name: {voice.name}")
+    logger.info(f"Language: {voice.language}")
+    logger.info(f"Gender: {voice.gender}")
+    logger.info("---")
 
 # Filter by language
 english_voices = tts.list_voices(language="en")
@@ -321,6 +337,10 @@ async for chunk in tts.stream("This is a long text that will be streamed..."):
 ### Live Transcription
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.speech import RealtimeSTT
 
 # Initialize real-time STT
@@ -337,9 +357,9 @@ async def process_microphone():
             if stream.has_result():
                 result = await stream.receive()
                 if result.is_final:
-                    print(f"Final: {result.text}")
+                    logger.info(f"Final: {result.text}")
                 else:
-                    print(f"Interim: {result.text}", end="\r")
+                    logger.info(f"Interim: {result.text}", end="\r")
 ```
 
 ### Voice Activity Detection
@@ -367,6 +387,10 @@ async for audio_chunk in microphone.record():
 ### Bidirectional Voice Chat
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.speech import VoiceChat
 
 # Create voice chat session
@@ -384,11 +408,11 @@ async def voice_conversation():
         while True:
             # Listen for user speech
             user_text = await chat.listen()
-            print(f"User: {user_text}")
+            logger.info(f"User: {user_text}")
             
             # Get agent response
             response = await chat.respond(user_text)
-            print(f"Agent: {response}")
+            logger.info(f"Agent: {response}")
             
             # Speak response
             await chat.speak(response)
@@ -468,15 +492,19 @@ tts = TextToSpeech(
 ### Session Analytics
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Get session metrics
 metrics = speech_memory.get_session_metrics(session_id="voice_001")
 
-print(f"Total duration: {metrics.total_duration_ms}ms")
-print(f"User speaking time: {metrics.user_speaking_time_ms}ms")
-print(f"Agent speaking time: {metrics.agent_speaking_time_ms}ms")
-print(f"Turn count: {metrics.turn_count}")
-print(f"Average turn length: {metrics.avg_turn_length_ms}ms")
-print(f"Silence percentage: {metrics.silence_percentage:.1%}")
+logger.info(f"Total duration: {metrics.total_duration_ms}ms")
+logger.info(f"User speaking time: {metrics.user_speaking_time_ms}ms")
+logger.info(f"Agent speaking time: {metrics.agent_speaking_time_ms}ms")
+logger.info(f"Turn count: {metrics.turn_count}")
+logger.info(f"Average turn length: {metrics.avg_turn_length_ms}ms")
+logger.info(f"Silence percentage: {metrics.silence_percentage:.1%}")
 ```
 
 ---
@@ -517,6 +545,10 @@ await agent.speak(response.output)
 ### Multi-Modal Agent
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework import Agent, AgentConfig
 
 # Agent that handles both text and voice
@@ -535,7 +567,7 @@ if input_type == "voice":
     await agent.speak(response.output)
 else:
     response = agent.execute(text_input)
-    print(response.output)
+    logger.info(response.output)
 ```
 
 ---
@@ -591,6 +623,10 @@ for chunk in chunks:
 ### Retry Logic
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.speech import SpeechToText, STTError
 
 stt = SpeechToText(
@@ -603,10 +639,10 @@ try:
     result = stt.transcribe("audio.wav")
 except STTError as e:
     if e.is_rate_limit:
-        print("Rate limited, waiting...")
+        logger.info("Rate limited, waiting...")
         await asyncio.sleep(e.retry_after)
     elif e.is_audio_error:
-        print(f"Audio error: {e.message}")
+        logger.info(f"Audio error: {e.message}")
     else:
         raise
 ```
@@ -614,6 +650,10 @@ except STTError as e:
 ### Fallback Providers
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.speech import SpeechToText, FallbackChain
 
 # Configure fallback chain
@@ -628,7 +668,7 @@ stt = SpeechToText(
 
 # Automatically falls back on failure
 result = stt.transcribe("audio.wav")
-print(f"Transcribed using: {result.provider}")
+logger.info(f"Transcribed using: {result.provider}")
 ```
 
 ---

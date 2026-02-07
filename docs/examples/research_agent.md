@@ -13,7 +13,7 @@ tags:
 This example demonstrates building an AI research agent that can investigate topics and provide cited summaries.
 
 !!! success "Enterprise-Ready Pattern"
-    Leverages **380+ modules** including advanced guardrails and enterprise compliance features. See [Enterprise Documentation](../enterprise.md).
+    Leverages **400+ modules** including advanced guardrails and enterprise compliance features. See [Enterprise Documentation](../enterprise.md).
 
 ## Overview
 
@@ -62,5 +62,5 @@ if __name__ == "__main__":
     result = research_agent.run_task(research_task)
 
     # Output result
-    print("=== Research Result ===")
-    print(result)
+    logger.info("=== Research Result ===")
+    logger.info(result)

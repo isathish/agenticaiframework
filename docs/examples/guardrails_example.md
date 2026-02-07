@@ -21,12 +21,16 @@ It is intended for developers who want to enforce content safety, compliance, or
 
 - **Installation**: Ensure `agenticaiframework` is installed and accessible in your Python environment.
 - **No additional configuration** is required for this example.
-- **Python Version**: Compatible with Python 3.8+.
+- **Python Version**: Compatible with Python 3.10+.
 
 
 ## Code
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.guardrails import GuardrailManager
 
 if __name__ == "__main__":
@@ -36,8 +40,8 @@ if __name__ == "__main__":
     guardrail_manager.add_guardrail("No profanity", lambda text: "badword" not in text)
 
     # Validate compliant and non-compliant outputs
-    print("Compliant Output Valid:", guardrail_manager.validate("This is clean text."))
-    print("Non-Compliant Output Valid:", guardrail_manager.validate("This contains badword."))
+    logger.info("Compliant Output Valid:", guardrail_manager.validate("This is clean text."))
+    logger.info("Non-Compliant Output Valid:", guardrail_manager.validate("This contains badword."))
 ```
 
 

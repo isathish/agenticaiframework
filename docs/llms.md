@@ -14,7 +14,7 @@ tags:
 
 **Enterprise-grade LLM integration with reliability patterns**
 
-Connect to **18+ LLM providers** with intelligent fallbacks and monitoring across **380+ modules**
+Connect to **18+ LLM providers** with intelligent fallbacks and monitoring across **400+ modules**
 
 </div>
 
@@ -374,6 +374,10 @@ sequenceDiagram
 ### Registering and Using Models
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.llms import LLMManager
 
 # Initialize LLM manager
@@ -421,7 +425,7 @@ response = llm_manager.generate(
     temperature=0.7,
     max_tokens=500
 )
-print(response)
+logger.info(response)
 ```
 
 ### Configuring Fallback Chain
@@ -498,6 +502,10 @@ flowchart TD
 The circuit breaker prevents cascading failures by temporarily blocking calls to failing models:
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Circuit breaker is automatic per model
 llm_manager.register_model("unreliable-model", inference_fn)
 
@@ -506,34 +514,38 @@ for i in range(10):
     try:
         response = llm_manager.generate("Test prompt")
     except Exception as e:
-        print(f"Request failed: {e}")
+        logger.info(f"Request failed: {e}")
 
 # Manually reset if needed
 llm_manager.reset_circuit_breaker("unreliable-model")
 
 # Check circuit breaker state
 info = llm_manager.get_model_info("unreliable-model")
-print(f"Circuit breaker state: {info['circuit_breaker_state']}")
+logger.info(f"Circuit breaker state: {info['circuit_breaker_state']}")
 ```
 
 ### Performance Monitoring
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Get overall metrics
 metrics = llm_manager.get_metrics()
-print(f"Total requests: {metrics['total_requests']}")
-print(f"Success rate: {metrics['success_rate']:.2%}")
-print(f"Cache hit rate: {metrics['cache_hit_rate']:.2%}")
-print(f"Total tokens: {metrics['total_tokens']}")
-print(f"Total retries: {metrics['total_retries']}")
+logger.info(f"Total requests: {metrics['total_requests']}")
+logger.info(f"Success rate: {metrics['success_rate']:.2%}")
+logger.info(f"Cache hit rate: {metrics['cache_hit_rate']:.2%}")
+logger.info(f"Total tokens: {metrics['total_tokens']}")
+logger.info(f"Total retries: {metrics['total_retries']}")
 
 # Get model-specific information
 model_info = llm_manager.get_model_info("gpt-4")
-print(f"Requests: {model_info['stats']['requests']}")
-print(f"Successes: {model_info['stats']['successes']}")
-print(f"Failures: {model_info['stats']['failures']}")
-print(f"Average latency: {model_info['stats']['avg_latency']:.3f}s")
-print(f"Circuit state: {model_info['circuit_breaker_state']}")
+logger.info(f"Requests: {model_info['stats']['requests']}")
+logger.info(f"Successes: {model_info['stats']['successes']}")
+logger.info(f"Failures: {model_info['stats']['failures']}")
+logger.info(f"Average latency: {model_info['stats']['avg_latency']:.3f}s")
+logger.info(f"Circuit state: {model_info['circuit_breaker_state']}")
 ```
 
 ### Retry with Exponential Backoff
@@ -556,6 +568,10 @@ response = llm_manager.generate("Process this request")
 ## Integration with Agents
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework import Agent
 from agenticaiframework.llms import LLMManager
 
@@ -581,7 +597,7 @@ def agent_task(query: str):
 
 agent.start()
 result = agent.execute_task(agent_task, "What is machine learning?")
-print(result)
+logger.info(result)
 ```
 
 ## Real-World Example
@@ -589,6 +605,10 @@ print(result)
 ### Multi-Model System with Fallback
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.llms import LLMManager
 import os
 
@@ -640,8 +660,8 @@ response = llm.generate(
 
 # Monitor performance
 metrics = llm.get_metrics()
-print(f"Success rate: {metrics['success_rate']:.2%}")
-print(f"Cache hit rate: {metrics['cache_hit_rate']:.2%}")
+logger.info(f"Success rate: {metrics['success_rate']:.2%}")
+logger.info(f"Cache hit rate: {metrics['cache_hit_rate']:.2%}")
 ```
 
 ## Best Practices
@@ -671,10 +691,14 @@ response = llm.generate(prompt, use_cache=True)
 ### 3. Monitor Performance Metrics
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Regularly check metrics
 metrics = llm.get_metrics()
 if metrics['success_rate'] < 0.95:
-    print("WARNING: Low success rate detected")
+    logger.info("WARNING: Low success rate detected")
     # Take action (alert, fallback, etc.)
 ```
 

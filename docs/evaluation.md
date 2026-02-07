@@ -14,7 +14,7 @@ tags:
 
 **12-Tier Comprehensive Evaluation**
 
-Industry-leading evaluation with **100+ metrics** across **380+ modules**
+Industry-leading evaluation with **100+ metrics** across **400+ modules**
 
 </div>
 
@@ -33,7 +33,7 @@ Industry-leading evaluation with **100+ metrics** across **380+ modules**
 <div class="stat-label">Metrics</div>
 </div>
 <div class="stat-item">
-<div class="stat-number">380+</div>
+<div class="stat-number">400+</div>
 <div class="stat-label">Total Modules</div>
 </div>
 <div class="stat-item">
@@ -157,6 +157,10 @@ Comprehensive assessment of LLM response quality, accuracy, and reliability.
 ### Model Quality Evaluator
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation import ModelQualityEvaluator
 
 evaluator = ModelQualityEvaluator(
@@ -180,15 +184,19 @@ result = await evaluator.evaluate(
     context=retrieved_documents
 )
 
-print(f"Accuracy: {result.accuracy:.2%}")
-print(f"Hallucination Score: {result.hallucination_score:.2f}")
-print(f"Latency: {result.latency_ms}ms")
-print(f"Factual Grounding: {result.factual_grounding:.2%}")
+logger.info(f"Accuracy: {result.accuracy:.2%}")
+logger.info(f"Hallucination Score: {result.hallucination_score:.2f}")
+logger.info(f"Latency: {result.latency_ms}ms")
+logger.info(f"Factual Grounding: {result.factual_grounding:.2%}")
 ```
 
 ### Hallucination Detection
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.model_quality import HallucinationDetector
 
 detector = HallucinationDetector(
@@ -210,14 +218,18 @@ analysis = await detector.analyze(
 )
 
 if analysis.has_hallucination:
-    print(f"Detected hallucinations: {analysis.hallucinated_segments}")
-    print(f"Confidence: {analysis.confidence:.2%}")
-    print(f"Suggested corrections: {analysis.corrections}")
+    logger.info(f"Detected hallucinations: {analysis.hallucinated_segments}")
+    logger.info(f"Confidence: {analysis.confidence:.2%}")
+    logger.info(f"Suggested corrections: {analysis.corrections}")
 ```
 
 ### Response Quality Scoring
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.model_quality import QualityScorer
 
 scorer = QualityScorer(
@@ -240,9 +252,9 @@ scores = await scorer.score(
     user_intent="debugging_help"
 )
 
-print(f"Overall Quality: {scores.overall:.2f}/5.0")
+logger.info(f"Overall Quality: {scores.overall:.2f}/5.0")
 for dimension, score in scores.dimensions.items():
-    print(f"  {dimension}: {score:.2f}/5.0")
+    logger.info(f"  {dimension}: {score:.2f}/5.0")
 ```
 
 ---
@@ -254,6 +266,10 @@ Measure how effectively agents complete their assigned tasks.
 ### Task Performance Evaluator
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation import TaskPerformanceEvaluator
 
 evaluator = TaskPerformanceEvaluator(
@@ -275,15 +291,19 @@ task_result = await evaluator.evaluate_task(
     expected_outcome=ground_truth
 )
 
-print(f"Completion Rate: {task_result.completion_rate:.2%}")
-print(f"Steps Used: {task_result.steps_used}/{task_result.optimal_steps}")
-print(f"Efficiency Score: {task_result.efficiency:.2%}")
-print(f"Time: {task_result.execution_time}s")
+logger.info(f"Completion Rate: {task_result.completion_rate:.2%}")
+logger.info(f"Steps Used: {task_result.steps_used}/{task_result.optimal_steps}")
+logger.info(f"Efficiency Score: {task_result.efficiency:.2%}")
+logger.info(f"Time: {task_result.execution_time}s")
 ```
 
 ### Step Analysis
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.task_tool import StepAnalyzer
 
 analyzer = StepAnalyzer(
@@ -295,16 +315,20 @@ analyzer = StepAnalyzer(
 # Analyze task execution steps
 analysis = await analyzer.analyze(task_execution)
 
-print(f"Total Steps: {analysis.total_steps}")
-print(f"Redundant Steps: {analysis.redundant_steps}")
-print(f"Loops Detected: {len(analysis.loops)}")
-print(f"Bottlenecks: {analysis.bottlenecks}")
-print(f"Optimization Suggestions: {analysis.suggestions}")
+logger.info(f"Total Steps: {analysis.total_steps}")
+logger.info(f"Redundant Steps: {analysis.redundant_steps}")
+logger.info(f"Loops Detected: {len(analysis.loops)}")
+logger.info(f"Bottlenecks: {analysis.bottlenecks}")
+logger.info(f"Optimization Suggestions: {analysis.suggestions}")
 ```
 
 ### Task Complexity Assessment
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.task_tool import ComplexityAssessor
 
 assessor = ComplexityAssessor()
@@ -312,11 +336,11 @@ assessor = ComplexityAssessor()
 # Assess task complexity
 complexity = await assessor.assess(task)
 
-print(f"Complexity Score: {complexity.score}/10")
-print(f"Estimated Steps: {complexity.estimated_steps}")
-print(f"Skill Requirements: {complexity.required_skills}")
-print(f"Risk Level: {complexity.risk_level}")
-print(f"Recommended Agent Tier: {complexity.recommended_tier}")
+logger.info(f"Complexity Score: {complexity.score}/10")
+logger.info(f"Estimated Steps: {complexity.estimated_steps}")
+logger.info(f"Skill Requirements: {complexity.required_skills}")
+logger.info(f"Risk Level: {complexity.risk_level}")
+logger.info(f"Recommended Agent Tier: {complexity.recommended_tier}")
 ```
 
 ---
@@ -328,6 +352,10 @@ Analyze how well agents utilize tools and make optimal tool selections.
 ### Tool Effectiveness Evaluator
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation import ToolEffectivenessEvaluator
 
 evaluator = ToolEffectivenessEvaluator(
@@ -347,21 +375,25 @@ tool_stats = await evaluator.evaluate(
     task_executions=executions
 )
 
-print(f"Tool Selection Accuracy: {tool_stats.selection_accuracy:.2%}")
-print(f"Average Error Rate: {tool_stats.error_rate:.2%}")
-print(f"Retry Rate: {tool_stats.retry_rate:.2%}")
+logger.info(f"Tool Selection Accuracy: {tool_stats.selection_accuracy:.2%}")
+logger.info(f"Average Error Rate: {tool_stats.error_rate:.2%}")
+logger.info(f"Retry Rate: {tool_stats.retry_rate:.2%}")
 
 # Per-tool breakdown
 for tool_name, stats in tool_stats.per_tool.items():
-    print(f"\n{tool_name}:")
-    print(f"  Usage Count: {stats.usage_count}")
-    print(f"  Success Rate: {stats.success_rate:.2%}")
-    print(f"  Avg Latency: {stats.avg_latency_ms}ms")
+    logger.info(f"\n{tool_name}:")
+    logger.info(f"  Usage Count: {stats.usage_count}")
+    logger.info(f"  Success Rate: {stats.success_rate:.2%}")
+    logger.info(f"  Avg Latency: {stats.avg_latency_ms}ms")
 ```
 
 ### Tool Selection Optimization
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.task_tool import ToolOptimizer
 
 optimizer = ToolOptimizer(
@@ -372,10 +404,10 @@ optimizer = ToolOptimizer(
 # Analyze and optimize tool usage
 optimization = await optimizer.analyze(tool_usage_logs)
 
-print(f"Optimization Opportunities: {len(optimization.opportunities)}")
+logger.info(f"Optimization Opportunities: {len(optimization.opportunities)}")
 for opp in optimization.opportunities:
-    print(f"  - Replace {opp.current_tool} with {opp.suggested_tool}")
-    print(f"    Expected improvement: {opp.improvement:.2%}")
+    logger.info(f"  - Replace {opp.current_tool} with {opp.suggested_tool}")
+    logger.info(f"    Expected improvement: {opp.improvement:.2%}")
 ```
 
 ---
@@ -387,6 +419,10 @@ Evaluate memory systems and retrieval-augmented generation quality.
 ### Memory RAG Evaluator
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation import MemoryRAGEvaluator
 
 evaluator = MemoryRAGEvaluator(
@@ -408,15 +444,19 @@ rag_result = await evaluator.evaluate(
     ground_truth=actual_meeting_notes
 )
 
-print(f"Retrieval Precision: {rag_result.precision:.2%}")
-print(f"Retrieval Recall: {rag_result.recall:.2%}")
-print(f"Answer Faithfulness: {rag_result.faithfulness:.2%}")
-print(f"Context Relevance: {rag_result.relevance:.2%}")
+logger.info(f"Retrieval Precision: {rag_result.precision:.2%}")
+logger.info(f"Retrieval Recall: {rag_result.recall:.2%}")
+logger.info(f"Answer Faithfulness: {rag_result.faithfulness:.2%}")
+logger.info(f"Context Relevance: {rag_result.relevance:.2%}")
 ```
 
 ### Memory Performance Analysis
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.memory_rag import MemoryAnalyzer
 
 analyzer = MemoryAnalyzer(
@@ -426,20 +466,24 @@ analyzer = MemoryAnalyzer(
 # Analyze memory performance
 analysis = await analyzer.analyze(memory_manager)
 
-print(f"Memory Utilization: {analysis.utilization:.2%}")
-print(f"Hit Rate: {analysis.hit_rate:.2%}")
-print(f"Average Retrieval Time: {analysis.avg_retrieval_ms}ms")
+logger.info(f"Memory Utilization: {analysis.utilization:.2%}")
+logger.info(f"Hit Rate: {analysis.hit_rate:.2%}")
+logger.info(f"Average Retrieval Time: {analysis.avg_retrieval_ms}ms")
 
 for memory_type, stats in analysis.by_type.items():
-    print(f"\n{memory_type.title()} Memory:")
-    print(f"  Size: {stats.size} items")
-    print(f"  Access Frequency: {stats.access_frequency}")
-    print(f"  Decay Rate: {stats.decay_rate:.4f}")
+    logger.info(f"\n{memory_type.title()} Memory:")
+    logger.info(f"  Size: {stats.size} items")
+    logger.info(f"  Access Frequency: {stats.access_frequency}")
+    logger.info(f"  Decay Rate: {stats.decay_rate:.4f}")
 ```
 
 ### Retrieval Quality Benchmarking
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.memory_rag import RetrievalBenchmark
 
 benchmark = RetrievalBenchmark(
@@ -453,10 +497,10 @@ results = await benchmark.run(
     num_samples=1000
 )
 
-print(f"MRR@10: {results.mrr_10:.4f}")
-print(f"MAP: {results.map:.4f}")
-print(f"NDCG@10: {results.ndcg_10:.4f}")
-print(f"Hit Rate@10: {results.hit_rate_10:.2%}")
+logger.info(f"MRR@10: {results.mrr_10:.4f}")
+logger.info(f"MAP: {results.map:.4f}")
+logger.info(f"NDCG@10: {results.ndcg_10:.4f}")
+logger.info(f"Hit Rate@10: {results.hit_rate_10:.2%}")
 ```
 
 ---
@@ -468,6 +512,10 @@ Assess agent decision-making quality and appropriate escalation behavior.
 ### Autonomy Evaluator
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation import AutonomyPerformanceEvaluator
 
 evaluator = AutonomyPerformanceEvaluator(
@@ -486,15 +534,19 @@ autonomy = await evaluator.evaluate(
     decisions=decision_logs
 )
 
-print(f"Decision Accuracy: {autonomy.decision_accuracy:.2%}")
-print(f"Escalation Appropriateness: {autonomy.escalation_score:.2%}")
-print(f"Independence Score: {autonomy.independence:.2%}")
-print(f"Self-Correction Rate: {autonomy.self_correction:.2%}")
+logger.info(f"Decision Accuracy: {autonomy.decision_accuracy:.2%}")
+logger.info(f"Escalation Appropriateness: {autonomy.escalation_score:.2%}")
+logger.info(f"Independence Score: {autonomy.independence:.2%}")
+logger.info(f"Self-Correction Rate: {autonomy.self_correction:.2%}")
 ```
 
 ### Escalation Analysis
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.autonomy_performance import EscalationAnalyzer
 
 analyzer = EscalationAnalyzer(
@@ -505,16 +557,20 @@ analyzer = EscalationAnalyzer(
 # Analyze escalation behavior
 escalation = await analyzer.analyze(agent_logs)
 
-print(f"Escalation Rate: {escalation.rate:.2%}")
-print(f"Appropriate Escalations: {escalation.appropriate:.2%}")
-print(f"Missed Escalations: {escalation.missed_count}")
-print(f"Unnecessary Escalations: {escalation.unnecessary_count}")
-print(f"Top Escalation Reasons: {escalation.top_reasons}")
+logger.info(f"Escalation Rate: {escalation.rate:.2%}")
+logger.info(f"Appropriate Escalations: {escalation.appropriate:.2%}")
+logger.info(f"Missed Escalations: {escalation.missed_count}")
+logger.info(f"Unnecessary Escalations: {escalation.unnecessary_count}")
+logger.info(f"Top Escalation Reasons: {escalation.top_reasons}")
 ```
 
 ### Decision Quality Scoring
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.autonomy_performance import DecisionScorer
 
 scorer = DecisionScorer(
@@ -525,10 +581,10 @@ scorer = DecisionScorer(
 # Score agent decisions
 for decision in agent_decisions:
     score = await scorer.score(decision)
-    print(f"Decision: {decision.summary}")
-    print(f"  Quality Score: {score.quality:.2f}/5.0")
-    print(f"  Risk Assessment: {score.risk_level}")
-    print(f"  Confidence Calibration: {score.confidence_calibration:.2%}")
+    logger.info(f"Decision: {decision.summary}")
+    logger.info(f"  Quality Score: {score.quality:.2f}/5.0")
+    logger.info(f"  Risk Assessment: {score.risk_level}")
+    logger.info(f"  Confidence Calibration: {score.confidence_calibration:.2%}")
 ```
 
 ---
@@ -540,6 +596,10 @@ Comprehensive security assessment and risk monitoring.
 ### Security Risk Evaluator
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation import SecurityRiskEvaluator
 
 evaluator = SecurityRiskEvaluator(
@@ -560,20 +620,24 @@ security = await evaluator.evaluate(
     interactions=interaction_logs
 )
 
-print(f"Security Score: {security.overall_score:.2f}/100")
-print(f"Vulnerabilities Found: {len(security.vulnerabilities)}")
-print(f"High Severity: {security.high_severity_count}")
-print(f"Medium Severity: {security.medium_severity_count}")
+logger.info(f"Security Score: {security.overall_score:.2f}/100")
+logger.info(f"Vulnerabilities Found: {len(security.vulnerabilities)}")
+logger.info(f"High Severity: {security.high_severity_count}")
+logger.info(f"Medium Severity: {security.medium_severity_count}")
 
 for vuln in security.vulnerabilities:
-    print(f"\n⚠️ {vuln.type}: {vuln.description}")
-    print(f"   Severity: {vuln.severity}")
-    print(f"   Remediation: {vuln.remediation}")
+    logger.info(f"\n⚠️ {vuln.type}: {vuln.description}")
+    logger.info(f"   Severity: {vuln.severity}")
+    logger.info(f"   Remediation: {vuln.remediation}")
 ```
 
 ### Threat Detection
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.security_risk import ThreatDetector
 
 detector = ThreatDetector(
@@ -597,15 +661,19 @@ threats = await detector.get_threats(
 )
 
 for threat in threats:
-    print(f"🚨 {threat.type}: {threat.description}")
-    print(f"   Time: {threat.timestamp}")
-    print(f"   Source: {threat.source}")
-    print(f"   Mitigated: {threat.mitigated}")
+    logger.info(f"🚨 {threat.type}: {threat.description}")
+    logger.info(f"   Time: {threat.timestamp}")
+    logger.info(f"   Source: {threat.source}")
+    logger.info(f"   Mitigated: {threat.mitigated}")
 ```
 
 ### Compliance Verification
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.security_risk import ComplianceChecker
 
 checker = ComplianceChecker(
@@ -616,13 +684,13 @@ checker = ComplianceChecker(
 # Verify compliance
 compliance = await checker.verify(agent_system)
 
-print(f"Overall Compliance: {compliance.overall_score:.2%}")
+logger.info(f"Overall Compliance: {compliance.overall_score:.2%}")
 for framework in compliance.frameworks:
-    print(f"\n{framework.name}:")
-    print(f"  Score: {framework.score:.2%}")
-    print(f"  Controls Passed: {framework.passed}/{framework.total}")
+    logger.info(f"\n{framework.name}:")
+    logger.info(f"  Score: {framework.score:.2%}")
+    logger.info(f"  Controls Passed: {framework.passed}/{framework.total}")
     for issue in framework.issues:
-        print(f"  ❌ {issue.control}: {issue.description}")
+        logger.info(f"  ❌ {issue.control}: {issue.description}")
 ```
 
 ---
@@ -634,6 +702,10 @@ Balance cost efficiency with quality outcomes.
 ### Cost Quality Evaluator
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation import CostQualityEvaluator
 
 evaluator = CostQualityEvaluator(
@@ -648,16 +720,20 @@ analysis = await evaluator.evaluate(
     time_period="last_30_days"
 )
 
-print(f"Total Cost: ${analysis.total_cost:.2f}")
-print(f"Cost per Task: ${analysis.cost_per_task:.4f}")
-print(f"Quality Score: {analysis.quality_score:.2%}")
-print(f"Cost-Quality Ratio: {analysis.cost_quality_ratio:.4f}")
-print(f"Token Efficiency: {analysis.token_efficiency:.2%}")
+logger.info(f"Total Cost: ${analysis.total_cost:.2f}")
+logger.info(f"Cost per Task: ${analysis.cost_per_task:.4f}")
+logger.info(f"Quality Score: {analysis.quality_score:.2%}")
+logger.info(f"Cost-Quality Ratio: {analysis.cost_quality_ratio:.4f}")
+logger.info(f"Token Efficiency: {analysis.token_efficiency:.2%}")
 ```
 
 ### Token Usage Optimization
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.cost_quality import TokenOptimizer
 
 optimizer = TokenOptimizer(
@@ -669,20 +745,24 @@ optimizer = TokenOptimizer(
 # Analyze and optimize token usage
 optimization = await optimizer.analyze(usage_logs)
 
-print(f"Total Tokens Used: {optimization.total_tokens:,}")
-print(f"Wasted Tokens: {optimization.wasted_tokens:,} ({optimization.waste_rate:.1%})")
-print(f"Potential Savings: ${optimization.potential_savings:.2f}")
+logger.info(f"Total Tokens Used: {optimization.total_tokens:,}")
+logger.info(f"Wasted Tokens: {optimization.wasted_tokens:,} ({optimization.waste_rate:.1%})")
+logger.info(f"Potential Savings: ${optimization.potential_savings:.2f}")
 
-print("\nOptimization Suggestions:")
+logger.info("\nOptimization Suggestions:")
 for suggestion in optimization.suggestions:
-    print(f"  - {suggestion.action}")
-    print(f"    Impact: {suggestion.token_reduction:,} tokens saved")
-    print(f"    Savings: ${suggestion.cost_savings:.2f}/month")
+    logger.info(f"  - {suggestion.action}")
+    logger.info(f"    Impact: {suggestion.token_reduction:,} tokens saved")
+    logger.info(f"    Savings: ${suggestion.cost_savings:.2f}/month")
 ```
 
 ### Model Tier Optimization
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.model_tier import TierOptimizer
 
 optimizer = TierOptimizer(
@@ -693,13 +773,13 @@ optimizer = TierOptimizer(
 # Recommend optimal model tiers
 recommendations = await optimizer.analyze(task_history)
 
-print("Model Tier Recommendations:")
+logger.info("Model Tier Recommendations:")
 for task_type, rec in recommendations.by_task_type.items():
-    print(f"\n{task_type}:")
-    print(f"  Current Model: {rec.current_model}")
-    print(f"  Recommended: {rec.recommended_model}")
-    print(f"  Cost Reduction: {rec.cost_reduction:.1%}")
-    print(f"  Quality Impact: {rec.quality_impact:+.1%}")
+    logger.info(f"\n{task_type}:")
+    logger.info(f"  Current Model: {rec.current_model}")
+    logger.info(f"  Recommended: {rec.recommended_model}")
+    logger.info(f"  Cost Reduction: {rec.cost_reduction:.1%}")
+    logger.info(f"  Quality Impact: {rec.quality_impact:+.1%}")
 ```
 
 ---
@@ -711,6 +791,10 @@ Measure user satisfaction and business value generation.
 ### Human Business Evaluator
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation import HumanBusinessEvaluator
 
 evaluator = HumanBusinessEvaluator(
@@ -732,16 +816,20 @@ alignment = await evaluator.evaluate(
     business_metrics=business_data
 )
 
-print(f"User Satisfaction: {alignment.satisfaction:.2%}")
-print(f"NPS Score: {alignment.nps}")
-print(f"Business Value Generated: ${alignment.business_value:,.2f}")
-print(f"Time Saved: {alignment.hours_saved:,.1f} hours")
-print(f"Error Reduction: {alignment.error_reduction:.1%}")
+logger.info(f"User Satisfaction: {alignment.satisfaction:.2%}")
+logger.info(f"NPS Score: {alignment.nps}")
+logger.info(f"Business Value Generated: ${alignment.business_value:,.2f}")
+logger.info(f"Time Saved: {alignment.hours_saved:,.1f} hours")
+logger.info(f"Error Reduction: {alignment.error_reduction:.1%}")
 ```
 
 ### User Satisfaction Tracking
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.human_business import SatisfactionTracker
 
 tracker = SatisfactionTracker(
@@ -756,19 +844,23 @@ satisfaction = await tracker.analyze(
     time_range="last_90_days"
 )
 
-print(f"Current Satisfaction: {satisfaction.current:.2%}")
-print(f"Trend: {satisfaction.trend}")  # rising, falling, stable
-print(f"30-Day Change: {satisfaction.change_30d:+.1%}")
+logger.info(f"Current Satisfaction: {satisfaction.current:.2%}")
+logger.info(f"Trend: {satisfaction.trend}")  # rising, falling, stable
+logger.info(f"30-Day Change: {satisfaction.change_30d:+.1%}")
 
 # Identify satisfaction drivers
-print("\nSatisfaction Drivers:")
+logger.info("\nSatisfaction Drivers:")
 for driver in satisfaction.drivers:
-    print(f"  {driver.factor}: {driver.impact:+.2f}")
+    logger.info(f"  {driver.factor}: {driver.impact:+.2f}")
 ```
 
 ### Business Value Calculator
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.human_business import BusinessValueCalculator
 
 calculator = BusinessValueCalculator(
@@ -783,17 +875,17 @@ value = await calculator.calculate(
     period="quarterly"
 )
 
-print(f"Direct Value:")
-print(f"  Time Saved: ${value.time_savings:,.2f}")
-print(f"  Error Prevention: ${value.error_savings:,.2f}")
-print(f"  Productivity Gain: ${value.productivity_gain:,.2f}")
+logger.info(f"Direct Value:")
+logger.info(f"  Time Saved: ${value.time_savings:,.2f}")
+logger.info(f"  Error Prevention: ${value.error_savings:,.2f}")
+logger.info(f"  Productivity Gain: ${value.productivity_gain:,.2f}")
 
-print(f"\nIndirect Value:")
-print(f"  Employee Satisfaction: ${value.employee_satisfaction:,.2f}")
-print(f"  Customer Experience: ${value.customer_experience:,.2f}")
+logger.info(f"\nIndirect Value:")
+logger.info(f"  Employee Satisfaction: ${value.employee_satisfaction:,.2f}")
+logger.info(f"  Customer Experience: ${value.customer_experience:,.2f}")
 
-print(f"\nTotal Quarterly Value: ${value.total:,.2f}")
-print(f"ROI: {value.roi:.1%}")
+logger.info(f"\nTotal Quarterly Value: ${value.total:,.2f}")
+logger.info(f"ROI: {value.roi:.1%}")
 ```
 
 ---
@@ -805,6 +897,10 @@ Monitor for behavior drift and performance degradation over time.
 ### Drift Detector
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation import DriftDetector
 
 detector = DriftDetector(
@@ -825,16 +921,20 @@ drift = await detector.analyze(
     baseline_data=baseline_interactions
 )
 
-print(f"Drift Detected: {drift.detected}")
-print(f"Drift Score: {drift.score:.4f}")
-print(f"Drift Type: {drift.drift_type}")
-print(f"Affected Areas: {drift.affected_areas}")
-print(f"Recommended Action: {drift.recommendation}")
+logger.info(f"Drift Detected: {drift.detected}")
+logger.info(f"Drift Score: {drift.score:.4f}")
+logger.info(f"Drift Type: {drift.drift_type}")
+logger.info(f"Affected Areas: {drift.affected_areas}")
+logger.info(f"Recommended Action: {drift.recommendation}")
 ```
 
 ### Performance Monitoring
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.drift import PerformanceMonitor
 
 monitor = PerformanceMonitor(
@@ -853,17 +953,21 @@ monitor.start()
 # Check current performance vs baseline
 comparison = await monitor.compare_to_baseline()
 
-print(f"Accuracy Change: {comparison.accuracy_change:+.2%}")
-print(f"Latency Change: {comparison.latency_change:+.2%}")
-print(f"Success Rate Change: {comparison.success_rate_change:+.2%}")
+logger.info(f"Accuracy Change: {comparison.accuracy_change:+.2%}")
+logger.info(f"Latency Change: {comparison.latency_change:+.2%}")
+logger.info(f"Success Rate Change: {comparison.success_rate_change:+.2%}")
 
 for alert in comparison.alerts:
-    print(f"⚠️ {alert.metric}: {alert.message}")
+    logger.info(f"⚠️ {alert.metric}: {alert.message}")
 ```
 
 ### Concept Drift Analyzer
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.drift import ConceptDriftAnalyzer
 
 analyzer = ConceptDriftAnalyzer(
@@ -877,11 +981,11 @@ analysis = await analyzer.analyze(
     label_stream=label_data
 )
 
-print(f"Concept Drift Detected: {analysis.detected}")
-print(f"Drift Point: {analysis.drift_point}")
-print(f"Severity: {analysis.severity}")
-print(f"Affected Features: {analysis.affected_features}")
-print(f"Recommendation: {analysis.recommendation}")
+logger.info(f"Concept Drift Detected: {analysis.detected}")
+logger.info(f"Drift Point: {analysis.drift_point}")
+logger.info(f"Severity: {analysis.severity}")
+logger.info(f"Affected Features: {analysis.affected_features}")
+logger.info(f"Recommendation: {analysis.recommendation}")
 ```
 
 ---
@@ -893,6 +997,10 @@ Experiment with different configurations and measure impact.
 ### A/B Testing Framework
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation import ABTestingFramework
 
 ab_framework = ABTestingFramework(
@@ -920,21 +1028,25 @@ await experiment.start()
 # Check results
 results = await experiment.get_results()
 
-print(f"Experiment: {results.name}")
-print(f"Status: {results.status}")
-print(f"Sample Size: {results.total_samples}")
-print(f"Duration: {results.duration}")
+logger.info(f"Experiment: {results.name}")
+logger.info(f"Status: {results.status}")
+logger.info(f"Sample Size: {results.total_samples}")
+logger.info(f"Duration: {results.duration}")
 
 for variant, data in results.variants.items():
-    print(f"\n{variant}:")
-    print(f"  Success Rate: {data.success_rate:.2%}")
-    print(f"  Improvement: {data.improvement:+.2%}")
-    print(f"  Statistical Significance: {data.significance:.2%}")
+    logger.info(f"\n{variant}:")
+    logger.info(f"  Success Rate: {data.success_rate:.2%}")
+    logger.info(f"  Improvement: {data.improvement:+.2%}")
+    logger.info(f"  Statistical Significance: {data.significance:.2%}")
 ```
 
 ### Multi-Armed Bandit Optimization
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.ab_testing import MultiArmedBandit
 
 bandit = MultiArmedBandit(
@@ -952,20 +1064,24 @@ bandit.start()
 
 # Get current allocation
 allocation = await bandit.get_allocation()
-print(f"Current Traffic Allocation: {allocation}")
+logger.info(f"Current Traffic Allocation: {allocation}")
 
 # Get performance summary
 summary = await bandit.get_summary()
 for arm, stats in summary.items():
-    print(f"\n{arm}:")
-    print(f"  Trials: {stats.trials}")
-    print(f"  Success Rate: {stats.success_rate:.2%}")
-    print(f"  Confidence: {stats.confidence:.2%}")
+    logger.info(f"\n{arm}:")
+    logger.info(f"  Trials: {stats.trials}")
+    logger.info(f"  Success Rate: {stats.success_rate:.2%}")
+    logger.info(f"  Confidence: {stats.confidence:.2%}")
 ```
 
 ### Experiment Analytics
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.ab_testing import ExperimentAnalytics
 
 analytics = ExperimentAnalytics()
@@ -976,16 +1092,16 @@ history = await analytics.get_history(
     status="completed"
 )
 
-print(f"Total Experiments: {history.total}")
-print(f"Successful: {history.successful} ({history.success_rate:.1%})")
-print(f"Average Lift: {history.average_lift:+.2%}")
+logger.info(f"Total Experiments: {history.total}")
+logger.info(f"Successful: {history.successful} ({history.success_rate:.1%})")
+logger.info(f"Average Lift: {history.average_lift:+.2%}")
 
 # Get learnings
 learnings = await analytics.get_learnings()
 for learning in learnings:
-    print(f"\n📊 {learning.insight}")
-    print(f"   Confidence: {learning.confidence:.2%}")
-    print(f"   Based on: {learning.experiments} experiments")
+    logger.info(f"\n📊 {learning.insight}")
+    logger.info(f"   Confidence: {learning.confidence:.2%}")
+    logger.info(f"   Based on: {learning.experiments} experiments")
 ```
 
 ---
@@ -997,6 +1113,10 @@ Safely deploy changes with gradual rollout and automatic rollback.
 ### Canary Deployment Manager
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation import CanaryDeployment
 
 canary = CanaryDeployment(
@@ -1022,21 +1142,25 @@ deployment = await canary.deploy(
 # Monitor deployment
 status = await deployment.get_status()
 
-print(f"Deployment: {status.name}")
-print(f"Phase: {status.phase}")
-print(f"Traffic Percentage: {status.traffic_percentage}%")
-print(f"Health: {status.health}")
+logger.info(f"Deployment: {status.name}")
+logger.info(f"Phase: {status.phase}")
+logger.info(f"Traffic Percentage: {status.traffic_percentage}%")
+logger.info(f"Health: {status.health}")
 
 # Metrics comparison
-print("\nMetrics Comparison:")
-print(f"  Error Rate: {status.canary_error_rate:.3%} vs {status.baseline_error_rate:.3%}")
-print(f"  Latency P99: {status.canary_latency}ms vs {status.baseline_latency}ms")
-print(f"  Success Rate: {status.canary_success:.2%} vs {status.baseline_success:.2%}")
+logger.info("\nMetrics Comparison:")
+logger.info(f"  Error Rate: {status.canary_error_rate:.3%} vs {status.baseline_error_rate:.3%}")
+logger.info(f"  Latency P99: {status.canary_latency}ms vs {status.baseline_latency}ms")
+logger.info(f"  Success Rate: {status.canary_success:.2%} vs {status.baseline_success:.2%}")
 ```
 
 ### Rollback Management
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.canary import RollbackManager
 
 rollback_manager = RollbackManager(
@@ -1058,15 +1182,19 @@ rollback_manager.configure(
 # Check rollback history
 history = await rollback_manager.get_history()
 for rollback in history:
-    print(f"\n🔄 {rollback.deployment}")
-    print(f"   Time: {rollback.timestamp}")
-    print(f"   Trigger: {rollback.trigger_reason}")
-    print(f"   Recovery Time: {rollback.recovery_time_seconds}s")
+    logger.info(f"\n🔄 {rollback.deployment}")
+    logger.info(f"   Time: {rollback.timestamp}")
+    logger.info(f"   Trigger: {rollback.trigger_reason}")
+    logger.info(f"   Recovery Time: {rollback.recovery_time_seconds}s")
 ```
 
 ### Deployment Analytics
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.canary import DeploymentAnalytics
 
 analytics = DeploymentAnalytics()
@@ -1074,11 +1202,11 @@ analytics = DeploymentAnalytics()
 # Get deployment metrics
 metrics = await analytics.get_metrics(time_range="last_30_days")
 
-print(f"Deployments: {metrics.total}")
-print(f"Successful: {metrics.successful} ({metrics.success_rate:.1%})")
-print(f"Rolled Back: {metrics.rolled_back}")
-print(f"Mean Time to Deploy: {metrics.mttr_minutes:.1f} minutes")
-print(f"Mean Time to Rollback: {metrics.mttr_minutes:.1f} minutes")
+logger.info(f"Deployments: {metrics.total}")
+logger.info(f"Successful: {metrics.successful} ({metrics.success_rate:.1%})")
+logger.info(f"Rolled Back: {metrics.rolled_back}")
+logger.info(f"Mean Time to Deploy: {metrics.mttr_minutes:.1f} minutes")
+logger.info(f"Mean Time to Rollback: {metrics.mttr_minutes:.1f} minutes")
 ```
 
 ---
@@ -1090,6 +1218,10 @@ End-to-end analysis of multi-agent workflows and processes.
 ### Workflow Analytics Engine
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation import WorkflowAnalytics
 
 analytics = WorkflowAnalytics(
@@ -1109,21 +1241,25 @@ analysis = await analytics.analyze(
     time_range="last_7_days"
 )
 
-print(f"Total Executions: {analysis.total_executions}")
-print(f"Success Rate: {analysis.success_rate:.2%}")
-print(f"Average Duration: {analysis.avg_duration_seconds}s")
-print(f"P99 Duration: {analysis.p99_duration_seconds}s")
+logger.info(f"Total Executions: {analysis.total_executions}")
+logger.info(f"Success Rate: {analysis.success_rate:.2%}")
+logger.info(f"Average Duration: {analysis.avg_duration_seconds}s")
+logger.info(f"P99 Duration: {analysis.p99_duration_seconds}s")
 
 # Bottleneck analysis
-print("\nBottlenecks:")
+logger.info("\nBottlenecks:")
 for bottleneck in analysis.bottlenecks:
-    print(f"  {bottleneck.step}: {bottleneck.avg_wait_time}s wait time")
-    print(f"    Impact: {bottleneck.impact_percentage:.1%} of total time")
+    logger.info(f"  {bottleneck.step}: {bottleneck.avg_wait_time}s wait time")
+    logger.info(f"    Impact: {bottleneck.impact_percentage:.1%} of total time")
 ```
 
 ### Multi-Agent Performance Analysis
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.workflow import TeamAnalyzer
 
 analyzer = TeamAnalyzer()
@@ -1131,21 +1267,25 @@ analyzer = TeamAnalyzer()
 # Analyze team performance
 team_analysis = await analyzer.analyze(team)
 
-print(f"Team Efficiency: {team_analysis.efficiency:.2%}")
-print(f"Collaboration Score: {team_analysis.collaboration_score:.2f}/5.0")
+logger.info(f"Team Efficiency: {team_analysis.efficiency:.2%}")
+logger.info(f"Collaboration Score: {team_analysis.collaboration_score:.2f}/5.0")
 
-print("\nAgent Performance:")
+logger.info("\nAgent Performance:")
 for agent_stats in team_analysis.agents:
-    print(f"\n  {agent_stats.name}:")
-    print(f"    Tasks Completed: {agent_stats.tasks_completed}")
-    print(f"    Success Rate: {agent_stats.success_rate:.2%}")
-    print(f"    Avg Response Time: {agent_stats.avg_response_time}s")
-    print(f"    Contribution: {agent_stats.contribution:.1%}")
+    logger.info(f"\n  {agent_stats.name}:")
+    logger.info(f"    Tasks Completed: {agent_stats.tasks_completed}")
+    logger.info(f"    Success Rate: {agent_stats.success_rate:.2%}")
+    logger.info(f"    Avg Response Time: {agent_stats.avg_response_time}s")
+    logger.info(f"    Contribution: {agent_stats.contribution:.1%}")
 ```
 
 ### Process Mining
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation.workflow import ProcessMiner
 
 miner = ProcessMiner(
@@ -1156,20 +1296,20 @@ miner = ProcessMiner(
 # Mine workflow patterns
 patterns = await miner.mine(execution_logs)
 
-print(f"Discovered Patterns: {len(patterns.patterns)}")
-print(f"Process Conformance: {patterns.conformance:.2%}")
+logger.info(f"Discovered Patterns: {len(patterns.patterns)}")
+logger.info(f"Process Conformance: {patterns.conformance:.2%}")
 
 for pattern in patterns.patterns:
-    print(f"\n📊 {pattern.name}")
-    print(f"   Frequency: {pattern.frequency}")
-    print(f"   Avg Duration: {pattern.avg_duration}s")
-    print(f"   Success Rate: {pattern.success_rate:.2%}")
+    logger.info(f"\n📊 {pattern.name}")
+    logger.info(f"   Frequency: {pattern.frequency}")
+    logger.info(f"   Avg Duration: {pattern.avg_duration}s")
+    logger.info(f"   Success Rate: {pattern.success_rate:.2%}")
 
 # Get optimization recommendations
 recommendations = await miner.get_recommendations()
 for rec in recommendations:
-    print(f"\n💡 {rec.suggestion}")
-    print(f"   Expected Improvement: {rec.improvement:.1%}")
+    logger.info(f"\n💡 {rec.suggestion}")
+    logger.info(f"   Expected Improvement: {rec.improvement:.1%}")
 ```
 
 ---
@@ -1179,6 +1319,10 @@ for rec in recommendations:
 ### Online Evaluation (Real-time)
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation import OnlineEvaluator
 
 online = OnlineEvaluator(
@@ -1197,9 +1341,9 @@ online.attach(agent)
 
 # Get real-time metrics
 metrics = await online.get_current_metrics()
-print(f"Current Success Rate: {metrics.success_rate:.2%}")
-print(f"Current P50 Latency: {metrics.latency_p50}ms")
-print(f"Error Rate (last 5m): {metrics.error_rate_5m:.3%}")
+logger.info(f"Current Success Rate: {metrics.success_rate:.2%}")
+logger.info(f"Current P50 Latency: {metrics.latency_p50}ms")
+logger.info(f"Error Rate (last 5m): {metrics.error_rate_5m:.3%}")
 
 # Configure alerts
 online.set_alerts({
@@ -1212,6 +1356,10 @@ online.set_alerts({
 ### Offline Evaluation (Batch)
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation import OfflineEvaluator
 
 offline = OfflineEvaluator(
@@ -1231,10 +1379,10 @@ results = await offline.evaluate(
     num_samples=10000
 )
 
-print(f"Accuracy: {results.accuracy:.2%}")
-print(f"F1 Score: {results.f1_score:.4f}")
-print(f"Hallucination Rate: {results.hallucination_rate:.2%}")
-print(f"Task Completion: {results.task_completion:.2%}")
+logger.info(f"Accuracy: {results.accuracy:.2%}")
+logger.info(f"F1 Score: {results.f1_score:.4f}")
+logger.info(f"Hallucination Rate: {results.hallucination_rate:.2%}")
+logger.info(f"Task Completion: {results.task_completion:.2%}")
 
 # Compare with baseline
 comparison = await offline.compare(
@@ -1242,10 +1390,10 @@ comparison = await offline.compare(
     baseline_agent=baseline_agent
 )
 
-print("\nComparison with Baseline:")
+logger.info("\nComparison with Baseline:")
 for metric, diff in comparison.differences.items():
     symbol = "↑" if diff > 0 else "↓" if diff < 0 else "="
-    print(f"  {metric}: {diff:+.2%} {symbol}")
+    logger.info(f"  {metric}: {diff:+.2%} {symbol}")
 ```
 
 ---
@@ -1255,6 +1403,10 @@ for metric, diff in comparison.differences.items():
 ### Setting Up the Dashboard
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation import EvaluationDashboard
 
 dashboard = EvaluationDashboard(
@@ -1272,12 +1424,16 @@ dashboard.add_panel("security_overview", position="bottom-right")
 
 # Start dashboard server
 dashboard.serve(port=8080)
-print("Dashboard available at http://localhost:8080")
+logger.info("Dashboard available at http://localhost:8080")
 ```
 
 ### Automated Reporting
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation import ReportGenerator
 
 generator = ReportGenerator(
@@ -1298,9 +1454,9 @@ await report.send_to([
     "stakeholders@company.com"
 ])
 
-print(f"Report generated: {report.path}")
-print(f"Pages: {report.pages}")
-print(f"Recommendations: {len(report.recommendations)}")
+logger.info(f"Report generated: {report.path}")
+logger.info(f"Pages: {report.pages}")
+logger.info(f"Recommendations: {len(report.recommendations)}")
 ```
 
 ---
@@ -1329,6 +1485,10 @@ print(f"Recommendations: {len(report.recommendations)}")
 ### Evaluation Checklist
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation import EvaluationChecklist
 
 checklist = EvaluationChecklist()
@@ -1336,15 +1496,15 @@ checklist = EvaluationChecklist()
 # Run pre-deployment checklist
 results = await checklist.run_pre_deployment(agent)
 
-print("Pre-Deployment Checklist:")
+logger.info("Pre-Deployment Checklist:")
 for item in results.items:
     status = "✅" if item.passed else "❌"
-    print(f"  {status} {item.name}")
+    logger.info(f"  {status} {item.name}")
     if not item.passed:
-        print(f"      Reason: {item.failure_reason}")
-        print(f"      Fix: {item.suggestion}")
+        logger.info(f"      Reason: {item.failure_reason}")
+        logger.info(f"      Fix: {item.suggestion}")
 
-print(f"\nOverall: {'PASS' if results.passed else 'FAIL'}")
+logger.info(f"\nOverall: {'PASS' if results.passed else 'FAIL'}")
 ```
 
 ---

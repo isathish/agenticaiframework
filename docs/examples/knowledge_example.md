@@ -10,9 +10,13 @@ tags:
 # 📚 Knowledge Retriever Example
 
 !!! info "15 Knowledge Modules"
-    Part of **380+ modules** with vector stores, semantic search, and RAG pipeline support. See [Knowledge Documentation](../knowledge.md).
+    Part of **400+ modules** with vector stores, semantic search, and RAG pipeline support. See [Knowledge Documentation](../knowledge.md).
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.knowledge import KnowledgeRetriever
 
 # Example: Using the KnowledgeRetriever
@@ -37,6 +41,6 @@ if __name__ == "__main__":
     query = "Python"
     results = retriever.retrieve(query)
 
-    print(f"Knowledge results for '{query}':", results)
+    logger.info(f"Knowledge results for '{query}':", results)
 
 ```

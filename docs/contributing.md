@@ -14,12 +14,12 @@ tags:
 
 **Join our community of contributors**
 
-Help us build the most comprehensive AI agent framework with **380+ modules**
+Help us build the most comprehensive AI agent framework with **400+ modules**
 
 </div>
 
 !!! success "Framework Statistics"
-    - **380+ Total Modules** - Comprehensive coverage
+    - **400+ Total Modules** - Comprehensive coverage
     - **237 Enterprise Modules** - Production-ready
     - **1036+ Tests** - 66% coverage
     - **14 Enterprise Categories** - Full enterprise support
@@ -157,7 +157,7 @@ Help improve test coverage:
 
 ### Prerequisites
 
-- **Python 3.8+** (3.11+ recommended)
+- **Python 3.10+** (3.13+ recommended)
 - **Git**
 - **GitHub account**
 - **Text editor/IDE** (VS Code, PyCharm, etc.)
@@ -415,7 +415,7 @@ def execute_task(self, task: Task, agent_id: str) -> TaskResult:
     Example:
         ```python
         result = manager.execute_task(task, "agent_001")
-        print(result.output)
+        logger.info(result.output)
         ```
     """
     ...

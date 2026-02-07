@@ -13,7 +13,7 @@ tags:
 This guide provides a **professional, step-by-step walkthrough** for creating, registering, and controlling an agent using the `AgentManager` and `Agent` classes from the `agenticaiframework` package.  
 It is intended for developers building intelligent systems that require autonomous or semi-autonomous agents.
 
-!!! info "Part of 380+ Module Framework"
+!!! info "Part of 400+ Module Framework"
     This example uses core agent modules. For enterprise agent patterns including multi-tenant agents and advanced orchestration, see [Enterprise Documentation](../enterprise.md).
 
 
@@ -21,12 +21,16 @@ It is intended for developers building intelligent systems that require autonomo
 
 - **Installation**: Ensure `agenticaiframework` is installed and accessible in your Python environment.
 - **No additional configuration** is required for this example.
-- **Python Version**: Compatible with Python 3.8+.
+- **Python Version**: Compatible with Python 3.10+.
 
 
 ## Code
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.agents import AgentManager, Agent
 
 if __name__ == "__main__":
@@ -43,11 +47,11 @@ if __name__ == "__main__":
     example_agent.stop()
 
     # List registered agents
-    print("Registered Agents:", [agent.name for agent in agent_manager.agents])
+    logger.info("Registered Agents:", [agent.name for agent in agent_manager.agents])
 
     # Retrieve a specific agent
     retrieved_agent = agent_manager.get_agent("ExampleAgent")
-    print("Retrieved Agent:", retrieved_agent.name)
+    logger.info("Retrieved Agent:", retrieved_agent.name)
 ```
 
 

@@ -1,158 +1,194 @@
 ---
 title: MCP Tools
-description: Model Context Protocol integration for extending agent capabilities with standardized tool interfaces
+description: Model Context Protocol tool registration, execution, and lifecycle management
 tags:
-  - mcp-tools
+  - mcp
   - tools
-  - integration
-  - protocol
+  - model-context-protocol
 ---
 
-# 🔧 MCP Tools
+# :material-tools: MCP Tools
 
-<div class="annotate" markdown>
+**Model Context Protocol (MCP) tool registration, execution, and lifecycle management.**
 
-**Model Context Protocol integration for external systems**
+Define tools with `MCPTool`, manage them with `MCPToolManager`, and execute
+them by name or ID — all thread-safe.
 
-Extend agent capabilities with standardized tool interfaces across **380+ modules**
-
-</div>
-
-!!! success "Enterprise Tools"
-    Part of **237 enterprise modules** with **35+ built-in tools** and **18 enterprise connectors**. See [Enterprise Documentation](enterprise.md).
+!!! tip "v2.0 Improvements"
+    `MCPTool` uses `__slots__` for memory efficiency. `MCPToolManager` uses
+    `threading.Lock` for thread safety and provides `remove_tool()` cleanup.
 
 ---
 
-## 🎯 Quick Navigation
+## Overview
 
-<div class="grid cards" markdown>
+| Class | Purpose |
+|-------|---------|
+| `MCPTool` | Data class representing a single tool (id, name, capability, execute function) |
+| `MCPToolManager` | Registry that stores, lists, and executes tools |
 
--   :material-toolbox:{ .lg } **Tool Registry**
-    
-    Register and manage tools
-    
-    [:octicons-arrow-right-24: Learn More](#key-classes-and-functions)
+---
 
--   :material-creation:{ .lg } **Create Tools**
-    
-    Build custom MCP tools
-    
-    [:octicons-arrow-right-24: Create](#example-usage)
+## Quick Start
 
--   :material-api:{ .lg } **Integrations**
-    
-    Connect to external APIs
-    
-    [:octicons-arrow-right-24: Integrate](#mcp-architecture)
-
--   :material-book-open:{ .lg } **Examples**
-    
-    Tool implementation patterns
-    
-    [:octicons-arrow-right-24: View Examples](#use-cases)
-
-</div>
-
-## 📖 Overview
-
-!!! success "Enterprise Tools"
-    
-    MCP Tools work alongside **35+ built-in tools** and **18 enterprise integration connectors** for comprehensive capabilities.
-
-!!! abstract "What is MCP?"
-    
-    Model Context Protocol (MCP) provides a standardized way for AI agents to interact with external systems, APIs, and resources. The MCP Tools module enables dynamic tool discovery and execution.
-
-<div class="grid" markdown>
-
-:material-puzzle:{ .lg } **Tool Definition**
-:   Create reusable tool interfaces
-
-:material-database:{ .lg } **Tool Registry**
-:   Centralized tool management
-
-:material-play:{ .lg } **Dynamic Execution**
-:   Runtime tool invocation
-
-:material-shield-check:{ .lg } **Validation**
-:   Input/output validation
-
-</div>
-
-## 🏛️ MCP Architecture
-
-```mermaid
-graph TB
-    subgraph "Agents"
-        A1[Agent 1]
-        A2[Agent 2]
-        AN[Agent N]
-    end
-    
-    subgraph "MCP Layer"
-        REG[Tool Registry<br/>📚 Registry]
-        EXE[Tool Executor<br/>▶️ Executor]
-        VAL[Validator<br/>✔️ Validator]
-    end
-    
-    subgraph "External Tools"
-        API[APIs<br/>🌐 Weather, News]
-        DB[Databases<br/>📦 SQL, NoSQL]
-        SYS[System<br/>💻 File, Process]
-        CUSTOM[Custom Tools<br/>🔧 Domain-Specific]
-    end
-    
-    A1 & A2 & AN --> REG
-    REG --> EXE
-    EXE --> VAL
-    VAL --> API & DB & SYS & CUSTOM
-    
-    style REG fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
-    style EXE fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-    style VAL fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
-```
-
-## Key Classes and Functions
-- **MCPTool** — Base class for defining a new MCP tool.
-- **ToolRegistry** — Manages registration and discovery of available tools.
-- **execute_tool(name, **kwargs)** — Executes a registered tool by name.
-- **list_tools()** — Returns a list of all available tools.
-- **load_tools_from_config(config_path)** — Loads tool definitions from a configuration file.
-
-## Example Usage
 ```python
-from agenticaiframework.mcp_tools import MCPTool, ToolRegistry
+from agenticaiframework.mcp_tools import MCPTool, MCPToolManager
 
-# Define a custom tool
-class WeatherTool(MCPTool):
-    name = "get_weather"
-    description = "Fetches weather information for a given city."
+# Define a tool
+def calculate_sum(a: int, b: int) -> int:
+    return a + b
 
-    def run(self, city: str):
-        return f"Weather in {city}: Sunny, 25°C"
+tool = MCPTool(
+    id="sum_tool",
+    name="Calculator Sum",
+    capability="Adds two numbers together",
+    execute_fn=calculate_sum,
+)
 
-# Register the tool
-registry = ToolRegistry()
-registry.register(WeatherTool())
+# Register and execute
+manager = MCPToolManager()
+manager.register_tool(tool)
 
-# Execute the tool
-result = registry.execute_tool("get_weather", city="San Francisco")
-print(result)
+result = manager.execute_tool("sum_tool", a=5, b=3)   # 8
+result = manager.execute_tool_by_name("Calculator Sum", a=10, b=20)  # 30
 ```
 
-## Use Cases
-- Integrating with external APIs (weather, finance, news, etc.).
-- Automating system operations (file management, database queries).
-- Extending AI agent capabilities with domain-specific tools.
-- Enabling dynamic tool discovery and execution.
+---
+
+## Defining Tools
+
+Each `MCPTool` has four attributes (stored via `__slots__`):
+
+| Attribute | Type | Description |
+|-----------|------|-------------|
+| `id` | `str` | Unique identifier |
+| `name` | `str` | Human-readable name |
+| `capability` | `str` | Description of what the tool does |
+| `execute_fn` | `Callable` | The function to invoke |
+
+```python
+import httpx
+from agenticaiframework.mcp_tools import MCPTool
+
+def web_search(query: str) -> list[dict]:
+    resp = httpx.get("https://api.search.example/v1", params={"q": query})
+    return resp.json()["results"]
+
+search_tool = MCPTool(
+    id="web_search",
+    name="Web Search",
+    capability="Search the web for information",
+    execute_fn=web_search,
+)
+```
+
+---
+
+## Managing Tools
+
+### Register
+
+```python
+manager = MCPToolManager()
+manager.register_tool(tool)
+```
+
+### List
+
+```python
+tools = manager.list_tools()  # list of MCPTool objects
+for t in tools:
+    logger.info(f"{t.id}: {t.name} - {t.capability}")
+```
+
+### Execute by ID
+
+```python
+result = manager.execute_tool("web_search", query="Python async patterns")
+```
+
+### Execute by Name
+
+```python
+result = manager.execute_tool_by_name("Web Search", query="Python async patterns")
+```
+
+### Remove
+
+```python
+manager.remove_tool("web_search")
+```
+
+---
+
+## Thread Safety
+
+All `MCPToolManager` operations are protected by `threading.Lock`:
+
+```python
+import threading
+from agenticaiframework.mcp_tools import MCPTool, MCPToolManager
+
+manager = MCPToolManager()
+
+def register_in_thread(tool):
+    manager.register_tool(tool)
+
+tools = [MCPTool(id=f"t{i}", name=f"Tool {i}", capability="...", execute_fn=lambda: i) for i in range(10)]
+threads = [threading.Thread(target=register_in_thread, args=(t,)) for t in tools]
+for t in threads:
+    t.start()
+for t in threads:
+    t.join()
+
+assert len(manager.list_tools()) == 10
+```
+
+---
+
+## API Reference
+
+### `MCPTool`
+
+| Attribute | Type | Description |
+|-----------|------|-------------|
+| `id` | `str` | Unique tool identifier |
+| `name` | `str` | Human-readable name |
+| `capability` | `str` | Tool description |
+| `execute_fn` | `Callable` | Function to invoke |
+
+Uses `__slots__` — no `__dict__` overhead.
+
+### `MCPToolManager`
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `register_tool(tool)` | `None` | Register an `MCPTool` instance |
+| `execute_tool(tool_id, **kwargs)` | `Any` | Execute a tool by its ID |
+| `execute_tool_by_name(name, **kwargs)` | `Any` | Execute a tool by its name |
+| `list_tools()` | `list[MCPTool]` | List all registered tools |
+| `remove_tool(tool_id)` | `None` | Remove a tool by ID |
+
+---
 
 ## Best Practices
-- Keep tool interfaces simple and well-documented.
-- Validate input parameters to prevent errors.
-- Use secure authentication for tools that access sensitive data.
-- Organize tools into logical categories for easier discovery.
+
+!!! success "Do"
+    - Use descriptive `capability` strings — LLMs use them for tool selection.
+    - Use unique, stable `id` values (e.g. snake_case identifiers).
+    - Handle exceptions inside `execute_fn` or wrap calls in try/except.
+    - Clean up with `remove_tool()` when tools are no longer needed.
+
+!!! danger "Don't"
+    - Register multiple tools with the same `id` (last one wins).
+    - Use long-blocking operations in `execute_fn` without timeouts.
+    - Forget that `execute_fn` runs synchronously on the calling thread.
+
+---
 
 ## Related Documentation
-- [Processes Module](processes.md)
-- [Knowledge Module](knowledge.md)
-- [Monitoring Module](monitoring.md)
+
+- [Tools](tools.md) — general tool framework
+- [Hub](hub.md) — component registry
+- [Agents](agents.md) — agent lifecycle
+- [Integration](integration.md) — third-party integrations

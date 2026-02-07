@@ -12,7 +12,7 @@ tags:
 
 <div class="annotate" markdown>
 
-**Complete feature set across 380+ modules**
+**Complete feature set across 400+ modules**
 
 Everything you need to build intelligent multi-agent systems with **237 enterprise features**
 
@@ -387,7 +387,7 @@ graph TB
 
 | Feature | AgenticAI | LangChain | AutoGen | CrewAI |
 |---------|-----------|-----------|---------|--------|
-| **Total Modules** | ✅ 380+ | ⚠️ ~50 | ⚠️ ~30 | ⚠️ ~20 |
+| **Total Modules** | ✅ 400+ | ⚠️ ~50 | ⚠️ ~30 | ⚠️ ~20 |
 | **Enterprise Modules** | ✅ 237 | ⚠️ Limited | ❌ None | ❌ None |
 | **Multi-Agent** | ✅ Native | ⚠️ Limited | ✅ Yes | ✅ Yes |
 | **Memory Managers** | ✅ 7 Specialized | 🔌 Plugin | ❌ No | ⚠️ Basic |

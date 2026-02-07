@@ -1,6 +1,14 @@
-from typing import Dict, Any, Callable
+"""
+Communication manager for protocol-based message routing.
+
+Thread-safe protocol registration and message dispatch.
+"""
+
+from __future__ import annotations
+
 import logging
-import time
+import threading
+from typing import Any, Callable
 
 from .exceptions import ProtocolError, ProtocolNotFoundError  # noqa: F401 - exported for library users
 
@@ -8,46 +16,47 @@ logger = logging.getLogger(__name__)
 
 
 class CommunicationManager:
-    def __init__(self):
-        self.protocols: Dict[str, Callable[[Any], Any]] = {}
+    """Thread-safe communication manager."""
 
-    def register_protocol(self, name: str, handler_fn: Callable[[Any], Any]):
-        self.protocols[name] = handler_fn
-        self._log(f"Registered communication protocol '{name}'")
+    def __init__(self) -> None:
+        self._lock = threading.Lock()
+        self.protocols: dict[str, Callable[[Any], Any]] = {}
 
-    def register_handler(self, handler_fn: Callable[[Any], Any], name: str = None):
-        """Alternative method for registering handlers - alias for register_protocol"""
+    def register_protocol(self, name: str, handler_fn: Callable[[Any], Any]) -> None:
+        with self._lock:
+            self.protocols[name] = handler_fn
+        logger.info("[CommunicationManager] Registered protocol '%s'", name)
+
+    def register_handler(self, handler_fn: Callable[[Any], Any], name: str | None = None) -> None:
+        """Alternative method for registering handlers."""
         protocol_name = name or f"handler_{len(self.protocols)}"
         self.register_protocol(protocol_name, handler_fn)
 
-    def send(self, protocol: str, data: Any):
-        if protocol in self.protocols:
+    def send(self, protocol: str, data: Any) -> Any:
+        with self._lock:
+            handler = self.protocols.get(protocol)
+        if handler:
             try:
-                return self.protocols[protocol](data)
+                return handler(data)
             except (TypeError, ValueError, ConnectionError, TimeoutError) as e:
-                self._log(f"Error sending data via '{protocol}': {e}")
                 logger.warning("Protocol '%s' communication failed: %s", protocol, e)
-            except Exception as e:  # noqa: BLE001 - Log but don't crash
-                self._log(f"Unexpected error sending data via '{protocol}': {e}")
+            except Exception:  # noqa: BLE001
                 logger.exception("Unexpected error in protocol '%s'", protocol)
         else:
-            self._log(f"Protocol '{protocol}' not found")
+            logger.warning("[CommunicationManager] Protocol '%s' not found", protocol)
         return None
 
-    def list_protocols(self):
-        return list(self.protocols.keys())
+    def list_protocols(self) -> list[str]:
+        with self._lock:
+            return list(self.protocols.keys())
 
-    def send_message(self, message: Any, protocol: str = None):
-        """Send a message using the first available protocol or specified protocol"""
+    def send_message(self, message: Any, protocol: str | None = None) -> Any:
+        """Send a message using the specified or first available protocol."""
         if protocol:
             return self.send(protocol, message)
-        elif self.protocols:
-            # Use the first available protocol
-            first_protocol = next(iter(self.protocols))
-            return self.send(first_protocol, message)
-        else:
-            self._log("No protocols available to send message")
-            return None
-
-    def _log(self, message: str):
-        print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [CommunicationManager] {message}")
+        with self._lock:
+            first = next(iter(self.protocols), None)
+        if first:
+            return self.send(first, message)
+        logger.warning("[CommunicationManager] No protocols available")
+        return None

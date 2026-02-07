@@ -14,19 +14,23 @@ This guide provides a **professional, step-by-step walkthrough** for creating, r
 It is intended for developers who want to define reusable, modular units of work for their agents.
 
 !!! success "Enterprise Workflow Support"
-    Part of **380+ modules** with 12 workflow types including DAG orchestration and parallel execution. See [Tasks Documentation](../tasks.md).
+    Part of **400+ modules** with 12 workflow types including DAG orchestration and parallel execution. See [Tasks Documentation](../tasks.md).
 
 
 ## Prerequisites & Configuration
 
 - **Installation**: Ensure `agenticaiframework` is installed and accessible in your Python environment.
 - **No additional configuration** is required for this example.
-- **Python Version**: Compatible with Python 3.8+.
+- **Python Version**: Compatible with Python 3.10+.
 
 
 ## Code
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tasks import TaskManager, Task
 
 if __name__ == "__main__":
@@ -36,7 +40,7 @@ if __name__ == "__main__":
     class AdditionTask(Task):
         def run(self, a, b):
             result = a + b
-            print(f"Task Result: {result}")
+            logger.info(f"Task Result: {result}")
             return result
 
     # Create and register the task
@@ -47,11 +51,11 @@ if __name__ == "__main__":
     addition_task.run(5, 7)
 
     # List registered tasks
-    print("Registered Tasks:", [task.name for task in task_manager.tasks])
+    logger.info("Registered Tasks:", [task.name for task in task_manager.tasks])
 
     # Retrieve a specific task
     retrieved_task = task_manager.get_task("AdditionTask")
-    print("Retrieved Task:", retrieved_task.name)
+    logger.info("Retrieved Task:", retrieved_task.name)
 ```
 
 

@@ -417,4 +417,4 @@ class PromptManager:
 
     def _log(self, message: str):
         """Log a message."""
-        print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [PromptManager] {message}")
+        logger.info("[PromptManager] %s", message)

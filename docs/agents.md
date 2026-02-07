@@ -9,7 +9,7 @@ Agents are the core building blocks of AgenticAI Framework. They are autonomous 
 
 !!! success "Enterprise-Ready"
     
-    Part of a **380+ module framework** with 237 enterprise modules, 7 memory managers, 7 state managers, and 35+ built-in tools.
+    Part of a **400+ module framework** with 237 enterprise modules, 7 memory managers, 7 state managers, and 35+ built-in tools.
 
 ---
 
@@ -85,6 +85,10 @@ Agents are the core building blocks of AgenticAI Framework. They are autonomous 
 ### Basic Agent
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework import Agent, AgentConfig
 
 # Create a simple agent
@@ -98,13 +102,17 @@ agent = Agent(config=config)
 
 # Execute a task
 result = agent.execute("What is the capital of France?")
-print(result.output)
+logger.info(result.output)
 # Output: The capital of France is Paris.
 ```
 
 ### Agent with Memory
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework import Agent, AgentConfig, MemoryManager
 
 # Initialize memory
@@ -123,7 +131,7 @@ agent = Agent(
 # Agent remembers across interactions
 result1 = agent.execute("My name is Alice and I like Python")
 result2 = agent.execute("What's my name and what do I like?")
-print(result2.output)
+logger.info(result2.output)
 # Output: Your name is Alice and you like Python.
 ```
 
@@ -360,9 +368,13 @@ config = AgentConfig(
 
 === "Single Task"
     ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
     # Execute single task and return
     result = agent.execute("Analyze this data")
-    print(result.output)
+    logger.info(result.output)
     ```
 
 === "Iterative"
@@ -376,9 +388,13 @@ config = AgentConfig(
 
 === "Streaming"
     ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
     # Stream responses
     async for chunk in agent.stream("Tell me a story"):
-        print(chunk, end="", flush=True)
+        logger.info(chunk, end="", flush=True)
     ```
 
 === "Batch"
@@ -425,6 +441,10 @@ config = AgentConfig(
 ### Self-Correction
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework import AgentConfig
 
 config = AgentConfig(
@@ -442,8 +462,8 @@ agent = Agent(config=config)
 
 # Agent will automatically retry and correct errors
 result = agent.execute("Calculate complex analysis")
-print(f"Attempts: {result.attempts}")
-print(f"Self-corrections: {result.corrections}")
+logger.info(f"Attempts: {result.attempts}")
+logger.info(f"Self-corrections: {result.corrections}")
 ```
 
 ---
@@ -453,12 +473,16 @@ print(f"Self-corrections: {result.corrections}")
 ### States
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework import Agent, AgentState
 
 agent = Agent(config=config)
 
 # Check agent state
-print(agent.state)  # AgentState.IDLE
+logger.info(agent.state)  # AgentState.IDLE
 
 # State transitions happen automatically
 result = agent.execute("Task")  # State: RUNNING → IDLE
@@ -472,31 +496,35 @@ agent.stop()    # AgentState.TERMINATED
 ### Lifecycle Hooks
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework import Agent, AgentConfig
 
 class CustomAgent(Agent):
     def on_start(self):
         """Called when agent starts executing."""
-        print("Agent starting...")
+        logger.info("Agent starting...")
         self.start_time = time.time()
     
     def on_complete(self, result):
         """Called when task completes."""
         duration = time.time() - self.start_time
-        print(f"Completed in {duration:.2f}s")
+        logger.info(f"Completed in {duration:.2f}s")
     
     def on_error(self, error):
         """Called when an error occurs."""
-        print(f"Error: {error}")
+        logger.info(f"Error: {error}")
         self.log_error(error)
     
     def on_tool_use(self, tool_name, input_data):
         """Called before tool execution."""
-        print(f"Using tool: {tool_name}")
+        logger.info(f"Using tool: {tool_name}")
     
     def on_tool_result(self, tool_name, result):
         """Called after tool execution."""
-        print(f"Tool result: {result}")
+        logger.info(f"Tool result: {result}")
 
 agent = CustomAgent(config=config)
 ```
@@ -615,16 +643,20 @@ config = AgentConfig(
 ### Exception Handling
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework import Agent, AgentError, ToolError, LLMError
 
 try:
     result = agent.execute("Complex task")
 except ToolError as e:
-    print(f"Tool failed: {e.tool_name} - {e.message}")
+    logger.info(f"Tool failed: {e.tool_name} - {e.message}")
 except LLMError as e:
-    print(f"LLM error: {e.message}")
+    logger.info(f"LLM error: {e.message}")
 except AgentError as e:
-    print(f"Agent error: {e.message}")
+    logger.info(f"Agent error: {e.message}")
 ```
 
 ---
@@ -634,14 +666,18 @@ except AgentError as e:
 ### Execution Metrics
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 result = agent.execute("Task")
 
 # Access metrics
-print(f"Duration: {result.metrics.duration_ms}ms")
-print(f"Tokens used: {result.metrics.total_tokens}")
-print(f"Tool calls: {result.metrics.tool_calls}")
-print(f"LLM calls: {result.metrics.llm_calls}")
-print(f"Cost: ${result.metrics.estimated_cost:.4f}")
+logger.info(f"Duration: {result.metrics.duration_ms}ms")
+logger.info(f"Tokens used: {result.metrics.total_tokens}")
+logger.info(f"Tool calls: {result.metrics.tool_calls}")
+logger.info(f"LLM calls: {result.metrics.llm_calls}")
+logger.info(f"Cost: ${result.metrics.estimated_cost:.4f}")
 ```
 
 ### Tracing

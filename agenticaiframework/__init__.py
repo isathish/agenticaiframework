@@ -32,12 +32,23 @@ Quick Start:
     >>> print(output.response)
 """
 
-__version__ = "1.2.16"
-__author__ = "AgenticAI Framework Contributors"
+__version__ = "2.0.0"
+__author__ = "Sathishkumar Nagarajan"
 __license__ = "MIT"
 
-# Global configuration (import first)
-from .config import (
+# ---------------------------------------------------------------------------
+# Lazy import registry: maps symbol name → (submodule, real_name | None)
+# When real_name is None, it is the same as the symbol name.
+# ---------------------------------------------------------------------------
+import importlib as _importlib
+
+_LAZY_IMPORTS: dict[str, tuple[str, str | None]] = {
+    # --- config (always eagerly loaded for configure() convenience) ---
+    # keep config eager so `aaf.configure(...)` works immediately
+}
+
+# Eagerly import only the global configuration helpers (tiny module)
+from .config import (  # noqa: E402
     FrameworkConfig,
     configure,
     get_config,
@@ -45,568 +56,201 @@ from .config import (
     reset_config,
 )
 
-# Core components (modular imports)
-from .core import (
-    Agent,
-    AgentManager,
-    AgentInput,
-    AgentOutput,
-    AgentStep,
-    AgentThought,
-    AgentStatus,
-    StepType,
-    AgentRunner,
-)
+# Build the lazy-import map programmatically
+def _register(module: str, names: list[str], renames: dict[str, str] | None = None) -> None:
+    renames = renames or {}
+    for name in names:
+        real = renames.get(name)
+        _LAZY_IMPORTS[name] = (module, real)
 
-# ACE - Agentic Context Engine (modular imports)
-from .context import (
-    ContextManager,
-    ContextType,
-    ContextPriority,
-    ContextRetrievalStrategy,
-    ContextItem,
-    SemanticContextIndex,
-    ContextWindow,
-    ContextCompressionStrategy
-)
+_register(".core", [
+    "Agent", "AgentManager", "AgentInput", "AgentOutput", "AgentStep",
+    "AgentThought", "AgentStatus", "StepType", "AgentRunner",
+])
+_register(".context", [
+    "ContextManager", "ContextType", "ContextPriority",
+    "ContextRetrievalStrategy", "ContextItem", "SemanticContextIndex",
+    "ContextWindow", "ContextCompressionStrategy",
+])
+_register(".orchestration", [
+    "OrchestrationPattern", "SupervisionStrategy", "AgentRole", "AgentState",
+    "TaskAssignment", "AgentHandoff", "SupervisionConfig", "AgentSupervisor",
+    "TeamRole", "AgentTeam", "OrchestrationEngine", "orchestration_engine",
+])
+_register(".prompts", ["Prompt", "PromptManager"])
+_register(".processes", ["Process"])
+_register(".tasks", ["Task", "TaskManager"])
+_register(".workflows", ["SequentialWorkflow", "ParallelWorkflow"])
+_register(".framework", ["AgenticFramework"])
+_register(".mcp_tools", ["MCPTool", "MCPToolManager"])
+_register(".monitoring", ["MonitoringSystem"])
+_register(".guardrails", [
+    "Guardrail", "GuardrailManager", "GuardrailType", "GuardrailSeverity",
+    "GuardrailAction", "GuardrailViolation", "GuardrailRule",
+    "SemanticGuardrail", "ContentSafetyGuardrail", "OutputFormatGuardrail",
+    "ChainOfThoughtGuardrail", "ToolUseGuardrail", "GuardrailPipeline",
+    "PolicyScope", "PolicyEnforcement", "AgentPolicy", "BehaviorPolicy",
+    "ResourcePolicy", "SafetyPolicy", "AgentPolicyManager",
+    "guardrail_manager", "agent_policy_manager", "default_safety_policy",
+])
+_register(".evaluation_base", ["EvaluationSystem"])
+_register(".knowledge", [
+    "KnowledgeRetriever", "KnowledgeBuilder", "SourceType", "KnowledgeChunk",
+    "EmbeddingOutput", "EmbeddingProvider", "OpenAIEmbedding",
+    "AzureOpenAIEmbedding", "HuggingFaceEmbedding", "CohereEmbedding",
+    "SourceLoader", "TextLoader", "PDFLoader", "ImageLoader", "WebLoader",
+    "WebSearchLoader", "APILoader", "VectorDBType", "UnifiedVectorDBTool",
+    "create_vector_db_tool",
+])
+_register(".llms", [
+    "LLMManager", "CircuitBreaker", "ModelTier", "ModelCapability",
+    "ModelConfig", "ModelRouter", "MODEL_REGISTRY",
+])
+_register(".communication", [
+    "CommunicationManager", "ProtocolType", "ProtocolConfig",
+    "CommunicationProtocol", "STDIOProtocol", "HTTPProtocol", "SSEProtocol",
+    "MQTTProtocol", "WebSocketProtocol", "AgentChannel", "AgentMessage",
+    "MessageType", "RemoteAgentClient", "RemoteAgentServer", "AgentEndpoint",
+    "AgentCommunicationManager",
+])
+_register(".memory", [
+    "MemoryManager", "MemoryEntry", "MemoryStats", "memory_manager",
+    "MemoryType", "ConversationTurn", "Episode", "Fact", "WorkingMemoryItem",
+    "AgentMemoryManager", "StepResultType", "StepResult", "WorkflowContext",
+    "WorkflowMemoryCheckpoint", "WorkflowExecutionRecord", "WorkflowMemoryManager",
+    "MessagePriority", "TaskHandoff", "SharedContext", "AgentContribution",
+    "OrchestrationMemoryManager", "EmbeddingCache", "QueryResult",
+    "RetrievalRecord", "DocumentMemory", "KnowledgeMemoryManager",
+    "ToolResultCache", "ToolExecutionMemory", "ToolPattern",
+    "ToolPerformanceStats", "ToolMemoryManager", "TranscriptionMemory",
+    "SynthesisMemory", "VoiceProfile", "VoiceConversationMemory", "AudioCache",
+    "SpeechMemoryManager",
+], renames={"OrchestrationAgentMessage": "AgentMessage"})
+# OrchestrationAgentMessage is an alias for memory.AgentMessage
+_LAZY_IMPORTS["OrchestrationAgentMessage"] = (".memory", "AgentMessage")
 
-# Agent Orchestration Framework (modular imports)
-from .orchestration import (
-    OrchestrationPattern,
-    SupervisionStrategy,
-    AgentRole,
-    AgentState,
-    TaskAssignment,
-    AgentHandoff,
-    SupervisionConfig,
-    AgentSupervisor,
-    TeamRole,
-    AgentTeam,
-    OrchestrationEngine,
-    orchestration_engine
-)
-from .prompts import Prompt, PromptManager
-from .processes import Process
-from .tasks import Task, TaskManager
-from .workflows import SequentialWorkflow, ParallelWorkflow
-from .framework import AgenticFramework
-from .mcp_tools import MCPTool, MCPToolManager
-from .monitoring import MonitoringSystem
+_register(".tools", [
+    "BaseTool", "AsyncBaseTool", "ToolResult", "ToolConfig", "ToolStatus",
+    "ToolCategory", "ToolMetadata", "ToolRegistry", "tool_registry",
+    "register_tool", "ExecutionContext", "ExecutionPlan", "ToolExecutor",
+    "tool_executor", "AgentToolBinding", "AgentToolManager", "agent_tool_manager",
+    "MCPToolAdapter", "MCPBridge", "LegacyMCPToolWrapper", "wrap_mcp_tool",
+    "convert_to_mcp", "mcp_bridge",
+    "FileReadTool", "FileWriteTool", "DirectoryReadTool", "OCRTool",
+    "PDFTextWritingTool", "PDFRAGSearchTool", "DOCXRAGSearchTool",
+    "MDXRAGSearchTool", "XMLRAGSearchTool", "TXTRAGSearchTool",
+    "JSONRAGSearchTool", "CSVRAGSearchTool", "DirectoryRAGSearchTool",
+    "ScrapeWebsiteTool", "ScrapeElementTool", "ScrapflyScrapeWebsiteTool",
+    "SeleniumScraperTool", "ScrapegraphScrapeTool", "SpiderScraperTool",
+    "BrowserbaseWebLoaderTool", "HyperbrowserLoadTool", "StagehandTool",
+    "FirecrawlCrawlWebsiteTool", "FirecrawlScrapeWebsiteTool",
+    "OxylabsScraperTool", "BrightDataTool",
+    "MySQLRAGSearchTool", "PostgreSQLRAGSearchTool", "SnowflakeSearchTool",
+    "NL2SQLTool", "QdrantVectorSearchTool", "WeaviateVectorSearchTool",
+    "MongoDBVectorSearchTool", "SingleStoreSearchTool",
+    "DALLETool", "VisionTool", "AIMindTool", "LlamaIndexTool",
+    "LangChainTool", "RAGTool", "CodeInterpreterTool",
+    "JavaScriptCodeInterpreterTool",
+])
+_register(".hub", ["Hub"])
+_register(".configurations", ["ConfigurationManager"])
+_register(".security", [
+    "PromptInjectionDetector", "InputValidator", "RateLimiter",
+    "TieredRateLimiter", "ContentFilter", "ProfanityFilter", "PIIFilter",
+    "AuditLogger", "SecurityManager", "security_manager",
+    "injection_detector", "input_validator", "rate_limiter",
+    "content_filter", "audit_logger",
+])
+_register(".tracing", [
+    "AgentStepTracer", "LatencyMetrics", "Span", "SpanContext",
+    "tracer", "latency_metrics",
+])
+_register(".evaluation", [
+    "EvaluationType", "EvaluationResult", "OfflineEvaluator", "OnlineEvaluator",
+    "CostQualityScorer", "SecurityRiskScorer", "ABTestingFramework",
+    "CanaryDeploymentManager", "ModelQualityEvaluator", "ModelTierEvaluator",
+    "model_tier_evaluator", "TaskEvaluator", "ToolInvocationEvaluator",
+    "WorkflowEvaluator", "MemoryEvaluator", "RAGEvaluator",
+    "AutonomyEvaluator", "PerformanceEvaluator", "HITLEvaluator",
+    "BusinessOutcomeEvaluator", "DriftType", "DriftSeverity", "DriftAlert",
+    "PromptDriftDetector", "prompt_drift_detector",
+])
+_register(".prompt_versioning", [
+    "PromptVersionManager", "PromptLibrary", "PromptVersion",
+    "PromptStatus", "PromptAuditEntry", "prompt_version_manager",
+    "prompt_library",
+])
+_register(".infrastructure", [
+    "MultiRegionManager", "TenantManager", "ServerlessExecutor",
+    "DistributedCoordinator", "Region", "RegionConfig", "Tenant",
+    "ServerlessFunction", "FunctionInvocation", "multi_region_manager",
+    "tenant_manager", "serverless_executor", "distributed_coordinator",
+])
+_register(".compliance", [
+    "AuditTrailManager", "PolicyEngine", "DataMaskingEngine", "AuditEvent",
+    "AuditEventType", "AuditSeverity", "Policy", "PolicyType",
+    "MaskingRule", "MaskingType", "audit_trail", "policy_engine",
+    "data_masking", "audit_action", "enforce_policy", "mask_output",
+])
+_register(".integrations", [
+    "IntegrationManager", "WebhookManager", "ServiceNowIntegration",
+    "GitHubIntegration", "AzureDevOpsIntegration", "SnowflakeConnector",
+    "DatabricksConnector", "IntegrationConfig", "IntegrationStatus",
+    "integration_manager", "webhook_manager",
+])
+_register(".formatting", [
+    "OutputFormatter", "FormatType", "FormattedOutput", "CodeBlock",
+    "TableFormat", "MarkdownFormatter", "CodeFormatter", "JSONFormatter",
+    "HTMLFormatter", "TableFormatter", "PlainTextFormatter",
+])
+_register(".conversations", [
+    "ConversationManager", "SessionManager", "Message", "MessageRole",
+    "Turn", "Session", "ConversationConfig", "AgentLogger",
+    "StructuredLogger", "ConversationLogger", "LogLevel", "LogEntry",
+    "LogConfig",
+], renames={"ConversationMessageType": "MessageType"})
+_LAZY_IMPORTS["ConversationMessageType"] = (".conversations", "MessageType")
 
-# Guardrails (modular imports)
-from .guardrails import (
-    Guardrail, 
-    GuardrailManager,
-    # Guardrail types and enums
-    GuardrailType,
-    GuardrailSeverity,
-    GuardrailAction,
-    GuardrailViolation,
-    GuardrailRule,
-    # Specialized guardrails
-    SemanticGuardrail,
-    ContentSafetyGuardrail,
-    OutputFormatGuardrail,
-    ChainOfThoughtGuardrail,
-    ToolUseGuardrail,
-    GuardrailPipeline,
-    # Agent Policies
-    PolicyScope,
-    PolicyEnforcement,
-    AgentPolicy,
-    BehaviorPolicy,
-    ResourcePolicy,
-    SafetyPolicy,
-    AgentPolicyManager,
-    # Global instances
-    guardrail_manager,
-    agent_policy_manager,
-    default_safety_policy
-)
-from .evaluation_base import EvaluationSystem
-# Knowledge - Retriever, Builder, and Vector DB
-from .knowledge import (
-    # Legacy retriever
-    KnowledgeRetriever,
-    # Knowledge Builder
-    KnowledgeBuilder,
-    SourceType,
-    KnowledgeChunk,
-    EmbeddingOutput,
-    # Embedding Providers
-    EmbeddingProvider,
-    OpenAIEmbedding,
-    AzureOpenAIEmbedding,
-    HuggingFaceEmbedding,
-    CohereEmbedding,
-    # Source Loaders
-    SourceLoader,
-    TextLoader,
-    PDFLoader,
-    ImageLoader,
-    WebLoader,
-    WebSearchLoader,
-    APILoader,
-    # Vector DB
-    VectorDBType,
-    UnifiedVectorDBTool,
-    create_vector_db_tool,
-)
-from .llms import (
-    LLMManager, 
-    CircuitBreaker,
-    ModelTier,
-    ModelCapability,
-    ModelConfig,
-    ModelRouter,
-    MODEL_REGISTRY
-)
-from .communication import CommunicationManager
-# Multi-Protocol Communication (new)
-from .communication import (
-    # Protocol Types
-    ProtocolType,
-    ProtocolConfig,
-    # Protocols
-    CommunicationProtocol,
-    STDIOProtocol,
-    HTTPProtocol,
-    SSEProtocol,
-    MQTTProtocol,
-    WebSocketProtocol,
-    # Channel & Messages
-    AgentChannel,
-    AgentMessage,
-    MessageType,
-    # Remote Agent
-    RemoteAgentClient,
-    RemoteAgentServer,
-    AgentEndpoint,
-    # Manager
-    AgentCommunicationManager,
-)
+_register(".speech", [
+    "SpeechProcessor", "VoiceConfig", "STTResult", "TTSResult", "AudioFormat",
+    "OpenAISTT", "OpenAITTS", "AzureSTT", "AzureTTS", "GoogleSTT",
+    "GoogleTTS", "ElevenLabsTTS", "WhisperLocalSTT",
+])
+_register(".hitl", [
+    "HumanInTheLoop", "ApprovalStatus", "ApprovalRequest", "ApprovalDecision",
+    "FeedbackCollector", "Feedback", "FeedbackType", "EscalationLevel",
+    "InterventionRequest", "ConsoleApprovalHandler", "CallbackApprovalHandler",
+    "QueueApprovalHandler",
+])
+_register(".state", [
+    "StateManager", "StateBackend", "MemoryBackend", "FileBackend",
+    "RedisBackend", "StateConfig", "AgentStateStore", "AgentSnapshot",
+    "AgentCheckpoint", "AgentRecoveryManager", "WorkflowStateManager",
+    "WorkflowState", "WorkflowCheckpoint", "StepState", "WorkflowStatus",
+    "OrchestrationStateManager", "TeamState", "AgentCoordinationState",
+    "TaskQueueState", "KnowledgeStateManager", "IndexingProgress",
+    "IndexingStatus", "SyncStatus", "SourceState", "KnowledgeBaseState",
+    "ToolStateManager", "ToolExecution", "ToolExecutionStatus",
+    "ToolCacheEntry", "RetryState", "ToolStats", "SpeechStateManager",
+    "AudioSessionStatus", "StreamingMode", "TranscriptionStatus",
+    "AudioChunk", "TranscriptionResult", "STTState", "TTSState",
+    "VoiceConversationState",
+])
+_register(".exceptions", [
+    "AgenticAIError", "CircuitBreakerError", "CircuitBreakerOpenError",
+    "RateLimitError", "RateLimitExceededError", "SecurityError",
+    "InjectionDetectedError", "ContentFilteredError", "ValidationError",
+    "GuardrailViolationError", "PromptRenderError", "TaskError",
+    "TaskExecutionError", "TaskNotFoundError", "AgentError",
+    "AgentNotFoundError", "AgentExecutionError", "LLMError",
+    "ModelNotFoundError", "ModelInferenceError", "AgenticMemoryError",
+    "MemoryExportError", "KnowledgeError", "KnowledgeRetrievalError",
+    "CommunicationError", "ProtocolError", "ProtocolNotFoundError",
+    "EvaluationError", "CriterionEvaluationError",
+])
 
-# Memory Management (modular imports)
-from .memory import (
-    # Core
-    MemoryManager,
-    MemoryEntry,
-    MemoryStats,
-    memory_manager,
-    # Agent Memory
-    MemoryType,
-    ConversationTurn,
-    Episode,
-    Fact,
-    WorkingMemoryItem,
-    AgentMemoryManager,
-    # Workflow Memory
-    StepResultType,
-    StepResult,
-    WorkflowContext,
-    WorkflowMemoryCheckpoint,
-    WorkflowExecutionRecord,
-    WorkflowMemoryManager,
-    # Orchestration Memory
-    MessagePriority,
-    AgentMessage as OrchestrationAgentMessage,
-    TaskHandoff,
-    SharedContext,
-    AgentContribution,
-    OrchestrationMemoryManager,
-    # Knowledge Memory
-    EmbeddingCache,
-    QueryResult,
-    RetrievalRecord,
-    DocumentMemory,
-    KnowledgeMemoryManager,
-    # Tool Memory
-    ToolResultCache,
-    ToolExecutionMemory,
-    ToolPattern,
-    ToolPerformanceStats,
-    ToolMemoryManager,
-    # Speech Memory
-    TranscriptionMemory,
-    SynthesisMemory,
-    VoiceProfile,
-    VoiceConversationMemory,
-    AudioCache,
-    SpeechMemoryManager,
-)
-
-# Tools Framework (35+ tools across 4 categories)
-from .tools import (
-    # Base classes
-    BaseTool,
-    AsyncBaseTool,
-    ToolResult,
-    ToolConfig,
-    ToolStatus,
-    # Registry & Discovery
-    ToolCategory,
-    ToolMetadata,
-    ToolRegistry,
-    tool_registry,
-    register_tool,
-    # Executor
-    ExecutionContext,
-    ExecutionPlan,
-    ToolExecutor,
-    tool_executor,
-    # Agent Integration
-    AgentToolBinding,
-    AgentToolManager,
-    agent_tool_manager,
-    # MCP Compatibility
-    MCPToolAdapter,
-    MCPBridge,
-    LegacyMCPToolWrapper,
-    wrap_mcp_tool,
-    convert_to_mcp,
-    mcp_bridge,
-    # File & Document Tools
-    FileReadTool,
-    FileWriteTool,
-    DirectoryReadTool,
-    OCRTool,
-    PDFTextWritingTool,
-    PDFRAGSearchTool,
-    DOCXRAGSearchTool,
-    MDXRAGSearchTool,
-    XMLRAGSearchTool,
-    TXTRAGSearchTool,
-    JSONRAGSearchTool,
-    CSVRAGSearchTool,
-    DirectoryRAGSearchTool,
-    # Web Scraping Tools
-    ScrapeWebsiteTool,
-    ScrapeElementTool,
-    ScrapflyScrapeWebsiteTool,
-    SeleniumScraperTool,
-    ScrapegraphScrapeTool,
-    SpiderScraperTool,
-    BrowserbaseWebLoaderTool,
-    HyperbrowserLoadTool,
-    StagehandTool,
-    FirecrawlCrawlWebsiteTool,
-    FirecrawlScrapeWebsiteTool,
-    OxylabsScraperTool,
-    BrightDataTool,
-    # Database Tools
-    MySQLRAGSearchTool,
-    PostgreSQLRAGSearchTool,
-    SnowflakeSearchTool,
-    NL2SQLTool,
-    QdrantVectorSearchTool,
-    WeaviateVectorSearchTool,
-    MongoDBVectorSearchTool,
-    SingleStoreSearchTool,
-    # AI/ML Tools
-    DALLETool,
-    VisionTool,
-    AIMindTool,
-    LlamaIndexTool,
-    LangChainTool,
-    RAGTool,
-    CodeInterpreterTool,
-    JavaScriptCodeInterpreterTool,
-)
-from .hub import Hub
-from .configurations import ConfigurationManager
-
-# Security components (modular imports)
-from .security import (
-    PromptInjectionDetector,
-    InputValidator,
-    RateLimiter,
-    TieredRateLimiter,
-    ContentFilter,
-    ProfanityFilter,
-    PIIFilter,
-    AuditLogger,
-    SecurityManager,
-    security_manager,
-    injection_detector,
-    input_validator,
-    rate_limiter,
-    content_filter,
-    audit_logger
-)
-
-# Enterprise: Tracing & Metrics (modular imports)
-from .tracing import (
-    AgentStepTracer,
-    LatencyMetrics,
-    Span,
-    SpanContext,
-    tracer,
-    latency_metrics
-)
-
-# Enterprise: Advanced Evaluation (modular imports)
-from .evaluation import (
-    # Types
-    EvaluationType,
-    EvaluationResult,
-    # Core evaluators
-    OfflineEvaluator,
-    OnlineEvaluator,
-    # Quality and cost
-    CostQualityScorer,
-    SecurityRiskScorer,
-    # Testing frameworks
-    ABTestingFramework,
-    CanaryDeploymentManager,
-    # Model evaluation
-    ModelQualityEvaluator,
-    ModelTierEvaluator,
-    model_tier_evaluator,
-    # Task and tool evaluation
-    TaskEvaluator,
-    ToolInvocationEvaluator,
-    # System evaluation
-    WorkflowEvaluator,
-    MemoryEvaluator,
-    RAGEvaluator,
-    # Autonomy and performance
-    AutonomyEvaluator,
-    PerformanceEvaluator,
-    # Human and business
-    HITLEvaluator,
-    BusinessOutcomeEvaluator,
-    # Drift detection
-    DriftType,
-    DriftSeverity,
-    DriftAlert,
-    PromptDriftDetector,
-    prompt_drift_detector,
-)
-
-# Enterprise: Prompt Versioning (modular imports)
-from .prompt_versioning import (
-    PromptVersionManager,
-    PromptLibrary,
-    PromptVersion,
-    PromptStatus,
-    PromptAuditEntry,
-    prompt_version_manager,
-    prompt_library
-)
-
-# Enterprise: Infrastructure (modular imports)
-from .infrastructure import (
-    MultiRegionManager,
-    TenantManager,
-    ServerlessExecutor,
-    DistributedCoordinator,
-    Region,
-    RegionConfig,
-    Tenant,
-    ServerlessFunction,
-    FunctionInvocation,
-    multi_region_manager,
-    tenant_manager,
-    serverless_executor,
-    distributed_coordinator
-)
-
-# Enterprise: Compliance & Governance (modular imports)
-from .compliance import (
-    AuditTrailManager,
-    PolicyEngine,
-    DataMaskingEngine,
-    AuditEvent,
-    AuditEventType,
-    AuditSeverity,
-    Policy,
-    PolicyType,
-    MaskingRule,
-    MaskingType,
-    audit_trail,
-    policy_engine,
-    data_masking,
-    audit_action,
-    enforce_policy,
-    mask_output
-)
-
-# Enterprise: Integrations (modular imports)
-from .integrations import (
-    IntegrationManager,
-    WebhookManager,
-    ServiceNowIntegration,
-    GitHubIntegration,
-    AzureDevOpsIntegration,
-    SnowflakeConnector,
-    DatabricksConnector,
-    IntegrationConfig,
-    IntegrationStatus,
-    integration_manager,
-    webhook_manager
-)
-
-# Output Formatting (modular imports)
-from .formatting import (
-    OutputFormatter,
-    FormatType,
-    FormattedOutput,
-    CodeBlock,
-    TableFormat,
-    MarkdownFormatter,
-    CodeFormatter,
-    JSONFormatter,
-    HTMLFormatter,
-    TableFormatter,
-    PlainTextFormatter,
-)
-
-# Conversations & Logging (modular imports)
-from .conversations import (
-    ConversationManager,
-    SessionManager,
-    Message,
-    MessageRole,
-    MessageType as ConversationMessageType,
-    Turn,
-    Session,
-    ConversationConfig,
-    AgentLogger,
-    StructuredLogger,
-    ConversationLogger,
-    LogLevel,
-    LogEntry,
-    LogConfig,
-)
-
-# Speech - STT/TTS (modular imports)
-from .speech import (
-    SpeechProcessor,
-    VoiceConfig,
-    STTResult,
-    TTSResult,
-    AudioFormat,
-    OpenAISTT,
-    OpenAITTS,
-    AzureSTT,
-    AzureTTS,
-    GoogleSTT,
-    GoogleTTS,
-    ElevenLabsTTS,
-    WhisperLocalSTT,
-)
-
-# Human-in-the-Loop (modular imports)
-from .hitl import (
-    HumanInTheLoop,
-    ApprovalStatus,
-    ApprovalRequest,
-    ApprovalDecision,
-    FeedbackCollector,
-    Feedback,
-    FeedbackType,
-    EscalationLevel,
-    InterventionRequest,
-    ConsoleApprovalHandler,
-    CallbackApprovalHandler,
-    QueueApprovalHandler,
-)
-
-# State Management (modular imports)
-from .state import (
-    # Core State Manager
-    StateManager,
-    StateBackend,
-    MemoryBackend,
-    FileBackend,
-    RedisBackend,
-    StateConfig,
-    # Agent State
-    AgentStateStore,
-    AgentSnapshot,
-    AgentCheckpoint,
-    AgentRecoveryManager,
-    # Workflow State
-    WorkflowStateManager,
-    WorkflowState,
-    WorkflowCheckpoint,
-    StepState,
-    WorkflowStatus,
-    # Orchestration State
-    OrchestrationStateManager,
-    TeamState,
-    AgentCoordinationState,
-    TaskQueueState,
-    # Knowledge State
-    KnowledgeStateManager,
-    IndexingProgress,
-    IndexingStatus,
-    SyncStatus,
-    SourceState,
-    KnowledgeBaseState,
-    # Tool State
-    ToolStateManager,
-    ToolExecution,
-    ToolExecutionStatus,
-    ToolCacheEntry,
-    RetryState,
-    ToolStats,
-    # Speech State
-    SpeechStateManager,
-    AudioSessionStatus,
-    StreamingMode,
-    TranscriptionStatus,
-    AudioChunk,
-    TranscriptionResult,
-    STTState,
-    TTSState,
-    VoiceConversationState,
-)
-
-# Exceptions
-from .exceptions import (
-    # Base exception
-    AgenticAIError,
-    # Circuit breaker exceptions
-    CircuitBreakerError,
-    CircuitBreakerOpenError,
-    # Rate limiting exceptions
-    RateLimitError,
-    RateLimitExceededError,
-    # Security exceptions
-    SecurityError,
-    InjectionDetectedError,
-    ContentFilteredError,
-    # Validation exceptions
-    ValidationError,
-    GuardrailViolationError,
-    PromptRenderError,
-    # Task exceptions
-    TaskError,
-    TaskExecutionError,
-    TaskNotFoundError,
-    # Agent exceptions
-    AgentError,
-    AgentNotFoundError,
-    AgentExecutionError,
-    # LLM exceptions
-    LLMError,
-    ModelNotFoundError,
-    ModelInferenceError,
-    # Memory exceptions
-    AgenticMemoryError,
-    MemoryExportError,
-    # Knowledge exceptions
-    KnowledgeError,
-    KnowledgeRetrievalError,
-    # Communication exceptions
-    CommunicationError,
-    ProtocolError,
-    ProtocolNotFoundError,
-    # Evaluation exceptions
-    EvaluationError,
-    CriterionEvaluationError,
-)
+# Clean up helper
+del _register
 
 __all__ = [
     # ========================================================================
@@ -1176,5 +820,18 @@ __all__ = [
     "enterprise",
 ]
 
-# Import enterprise module for submodule access
-from . import enterprise
+# Enterprise submodule is lazy-loaded via __getattr__
+# Special handling: 'enterprise' is a subpackage, not a symbol
+def __getattr__(name: str):  # noqa: F811 - intentional override
+    """Lazy-load symbols on first access for fast startup."""
+    if name == "enterprise":
+        mod = _importlib.import_module(".enterprise", __package__)
+        globals()["enterprise"] = mod
+        return mod
+    if name in _LAZY_IMPORTS:
+        module_path, real_name = _LAZY_IMPORTS[name]
+        module = _importlib.import_module(module_path, __package__)
+        attr = getattr(module, real_name or name)
+        globals()[name] = attr
+        return attr
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

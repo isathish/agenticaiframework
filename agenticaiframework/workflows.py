@@ -1,16 +1,39 @@
 """
 Workflow helpers for coordinating agent execution.
+
+Supports sequential and parallel execution patterns with bounded
+thread pools and modern asyncio best practices.
 """
 
+from __future__ import annotations
+
 import asyncio
+import logging
+import os
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any, Callable, List, Sequence
+from typing import Any, Callable, Sequence
 
 from .core import AgentManager
+
+logger = logging.getLogger(__name__)
+
+_DEFAULT_MAX_WORKERS = min(32, (os.cpu_count() or 1) + 4)
+
+
+def _resolve_agent(manager: AgentManager, agent_key: str):
+    """Resolve an agent by ID or name, raising ValueError if not found."""
+    agent = manager.get_agent(agent_key)
+    if agent is None:
+        agent = manager.get_agent_by_name(agent_key)
+    if agent is None:
+        raise ValueError(f"Agent not found: {agent_key}")
+    return agent
 
 
 class SequentialWorkflow:
     """Sequential agent workflow execution."""
+
+    __slots__ = ("manager",)
 
     def __init__(self, manager: AgentManager):
         self.manager = manager
@@ -21,31 +44,18 @@ class SequentialWorkflow:
         agent_chain: Sequence[str],
         task_callable: Callable[[Any], Any],
     ) -> Any:
-        """
-        Execute a workflow sequentially through a chain of agents.
-
-        Args:
-            data: Initial input to the workflow
-            agent_chain: Agent names or IDs in execution order
-            task_callable: Task function to run per agent
-        """
+        """Execute a workflow sequentially through a chain of agents."""
         result = data
         for agent_key in agent_chain:
-            agent = self._get_agent(agent_key)
+            agent = _resolve_agent(self.manager, agent_key)
             result = agent.execute_task(task_callable, result)
         return result
-
-    def _get_agent(self, agent_key: str):
-        agent = self.manager.get_agent(agent_key)
-        if agent is None:
-            agent = self.manager.get_agent_by_name(agent_key)
-        if agent is None:
-            raise ValueError(f"Agent not found: {agent_key}")
-        return agent
 
 
 class ParallelWorkflow:
     """Parallel agent workflow execution."""
+
+    __slots__ = ("manager",)
 
     def __init__(self, manager: AgentManager):
         self.manager = manager
@@ -55,39 +65,39 @@ class ParallelWorkflow:
         data: Any,
         agent_names: Sequence[str],
         task_callable: Callable[[Any], Any],
-    ) -> List[Any]:
+    ) -> list[Any]:
         """Execute a workflow in parallel using asyncio."""
-        loop = asyncio.get_event_loop()
-        tasks = []
-
-        for agent_key in agent_names:
-            agent = self._get_agent(agent_key)
-            tasks.append(loop.run_in_executor(None, agent.execute_task, task_callable, data))
-
-        return await asyncio.gather(*tasks)
+        loop = asyncio.get_running_loop()
+        tasks = [
+            loop.run_in_executor(
+                None,
+                _resolve_agent(self.manager, key).execute_task,
+                task_callable,
+                data,
+            )
+            for key in agent_names
+        ]
+        return list(await asyncio.gather(*tasks))
 
     def execute_parallel_sync(
         self,
         data: Any,
         agent_names: Sequence[str],
         task_callable: Callable[[Any], Any],
-        max_workers: int = 4,
-    ) -> List[Any]:
+        max_workers: int | None = None,
+    ) -> list[Any]:
         """Execute a workflow in parallel using threads (sync)."""
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            futures = []
-            for agent_key in agent_names:
-                agent = self._get_agent(agent_key)
-                futures.append(executor.submit(agent.execute_task, task_callable, data))
-            return [future.result() for future in futures]
-
-    def _get_agent(self, agent_key: str):
-        agent = self.manager.get_agent(agent_key)
-        if agent is None:
-            agent = self.manager.get_agent_by_name(agent_key)
-        if agent is None:
-            raise ValueError(f"Agent not found: {agent_key}")
-        return agent
+        workers = max_workers or _DEFAULT_MAX_WORKERS
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            futures = [
+                executor.submit(
+                    _resolve_agent(self.manager, key).execute_task,
+                    task_callable,
+                    data,
+                )
+                for key in agent_names
+            ]
+            return [f.result() for f in futures]
 
 
 __all__ = [

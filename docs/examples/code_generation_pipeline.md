@@ -22,6 +22,10 @@ This pipeline combines LLMs, guardrails, monitoring, and evaluation to create a 
 ## Code
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.agents import Agent
 from agenticaiframework.tasks import Task
 from agenticaiframework.llms import LLMManager
@@ -58,8 +62,8 @@ if __name__ == "__main__":
     result = code_agent.execute_task(code_task)
     evaluation = evaluator.evaluate(result)
     
-    print(f"Generated Code: {result}")
-    print(f"Evaluation: {evaluation}")
+    logger.info(f"Generated Code: {result}")
+    logger.info(f"Evaluation: {evaluation}")
 ```
 
 ## Key Components
@@ -86,7 +90,7 @@ The pipeline will:
     evaluation_result = evaluator.evaluate(generated_code)
 
     # Output results
-    print("=== Generated Code ===")
-    print(generated_code)
-    print("\n=== Evaluation Result ===")
-    print(evaluation_result)
+    logger.info("=== Generated Code ===")
+    logger.info(generated_code)
+    logger.info("\n=== Evaluation Result ===")
+    logger.info(evaluation_result)

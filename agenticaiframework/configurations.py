@@ -1,35 +1,41 @@
-from typing import Dict, Any
+from typing import Any, Dict
 import logging
-import time
+import threading
 
 logger = logging.getLogger(__name__)
 
 
 class ConfigurationManager:
-    def __init__(self):
-        self.configurations: Dict[str, Dict[str, Any]] = {}
+    """Thread-safe configuration manager for framework components."""
 
-    def set_config(self, component: str, config: Dict[str, Any]):
-        self.configurations[component] = config
-        self._log(f"Configuration set for '{component}'")
+    def __init__(self) -> None:
+        self.configurations: Dict[str, Dict[str, Any]] = {}
+        self._lock = threading.Lock()
+
+    def set_config(self, component: str, config: Dict[str, Any]) -> None:
+        with self._lock:
+            self.configurations[component] = config
+        logger.info("Configuration set for '%s'", component)
 
     def get_config(self, component: str) -> Dict[str, Any]:
-        return self.configurations.get(component, {})
+        with self._lock:
+            return self.configurations.get(component, {})
 
-    def update_config(self, component: str, updates: Dict[str, Any]):
-        if component in self.configurations:
-            self.configurations[component].update(updates)
-            self._log(f"Configuration updated for '{component}'")
-        else:
-            self.set_config(component, updates)
+    def update_config(self, component: str, updates: Dict[str, Any]) -> None:
+        with self._lock:
+            if component in self.configurations:
+                self.configurations[component].update(updates)
+                logger.info("Configuration updated for '%s'", component)
+            else:
+                self.configurations[component] = updates
+                logger.info("Configuration set for '%s'", component)
 
-    def remove_config(self, component: str):
-        if component in self.configurations:
-            del self.configurations[component]
-            self._log(f"Configuration removed for '{component}'")
+    def remove_config(self, component: str) -> None:
+        with self._lock:
+            if component in self.configurations:
+                del self.configurations[component]
+                logger.info("Configuration removed for '%s'", component)
 
-    def list_components(self):
-        return list(self.configurations.keys())
-
-    def _log(self, message: str):
-        print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [ConfigurationManager] {message}")
+    def list_components(self) -> list[str]:
+        with self._lock:
+            return list(self.configurations.keys())

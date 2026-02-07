@@ -15,7 +15,7 @@ tags:
 
 **Enterprise compliance, audit trails, and data governance**
 
-Ensure regulatory compliance with comprehensive audit logging, policy enforcement, and data masking across **380+ modules**
+Ensure regulatory compliance with comprehensive audit logging, policy enforcement, and data masking across **400+ modules**
 
 </div>
 
@@ -180,6 +180,10 @@ data = get_customer_data("12345", ["name", "email"])
 ### Query Audit Logs
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Query recent events
 events = audit.query_events(
     event_type=AuditEventType.DATA_ACCESS,
@@ -192,12 +196,16 @@ events = audit.query_events(
 # Verify integrity
 integrity_check = audit.verify_integrity()
 if not integrity_check.valid:
-    print(f"Integrity violation at event {integrity_check.failed_at}")
+    logger.info(f"Integrity violation at event {integrity_check.failed_at}")
 ```
 
 ### Hash Chain Integrity
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # The audit trail uses hash chaining
 # Each event includes hash of previous event
 
@@ -207,8 +215,8 @@ event3 = audit.log_event(...)  # prev_hash: def456, hash: ghi789
 
 # Verify chain integrity
 result = audit.verify_chain()
-print(f"Chain valid: {result.valid}")
-print(f"Events verified: {result.event_count}")
+logger.info(f"Chain valid: {result.valid}")
+logger.info(f"Events verified: {result.event_count}")
 ```
 
 ---
@@ -273,6 +281,10 @@ PolicyType.COMPLIANCE       # Regulatory compliance
 ### Using the Decorator
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.compliance import enforce_policy
 
 @enforce_policy(
@@ -290,12 +302,16 @@ try:
         context={"role": "analyst", "user": "alice@example.com"}
     )
 except PolicyViolationError as e:
-    print(f"Access denied: {e.policy_name}")
+    logger.info(f"Access denied: {e.policy_name}")
 ```
 
 ### Evaluate Policies
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Manual policy evaluation
 result = engine.evaluate(
     policy_name="customer_data_access",
@@ -307,9 +323,9 @@ result = engine.evaluate(
 )
 
 if result.allowed:
-    print("Access granted")
+    logger.info("Access granted")
 else:
-    print(f"Access denied: {result.reason}")
+    logger.info(f"Access denied: {result.reason}")
 ```
 
 ### Policy Conditions
@@ -453,12 +469,16 @@ masked_data = masker.mask_dict(
 ### PII Detection
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Detect PII without masking
 pii_found = masker.detect_pii(text)
 for pii in pii_found:
-    print(f"Found {pii.type} at position {pii.start}-{pii.end}")
-    print(f"Value: {pii.value}")
-    print(f"Confidence: {pii.confidence}")
+    logger.info(f"Found {pii.type} at position {pii.start}-{pii.end}")
+    logger.info(f"Value: {pii.value}")
+    logger.info(f"Confidence: {pii.confidence}")
 ```
 
 ---

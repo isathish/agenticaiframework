@@ -18,7 +18,8 @@ class MemoryCompatMixin:
     
     def _compat_log(self, message: str):
         """Log a message for compatibility operations."""
-        print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [MemoryManager] {message}")
+        import logging as _logging
+        _logging.getLogger(__name__).info("[MemoryManager] %s", message)
     
     def set_memory(self, memory_type: str, key: str, value: Any):
         """Legacy API: Store in specified memory tier."""

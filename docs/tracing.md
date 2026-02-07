@@ -15,7 +15,7 @@ tags:
 
 **Distributed tracing and latency metrics for AI agents**
 
-Track agent execution, measure performance, and debug complex workflows across **380+ modules**
+Track agent execution, measure performance, and debug complex workflows across **400+ modules**
 
 </div>
 
@@ -236,19 +236,23 @@ metrics.record("tool_execution", 0.5, {
 ### Percentile Calculations
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Get percentiles for an operation
 percentiles = metrics.get_percentiles("llm_inference")
-print(f"P50: {percentiles['p50']:.3f}s")
-print(f"P95: {percentiles['p95']:.3f}s")
-print(f"P99: {percentiles['p99']:.3f}s")
+logger.info(f"P50: {percentiles['p50']:.3f}s")
+logger.info(f"P95: {percentiles['p95']:.3f}s")
+logger.info(f"P99: {percentiles['p99']:.3f}s")
 
 # Get all statistics
 stats = metrics.get_stats("llm_inference")
-print(f"Count: {stats['count']}")
-print(f"Mean: {stats['mean']:.3f}s")
-print(f"Min: {stats['min']:.3f}s")
-print(f"Max: {stats['max']:.3f}s")
-print(f"Std Dev: {stats['std']:.3f}s")
+logger.info(f"Count: {stats['count']}")
+logger.info(f"Mean: {stats['mean']:.3f}s")
+logger.info(f"Min: {stats['min']:.3f}s")
+logger.info(f"Max: {stats['max']:.3f}s")
+logger.info(f"Std Dev: {stats['std']:.3f}s")
 ```
 
 ### Time Windows
@@ -256,6 +260,10 @@ print(f"Std Dev: {stats['std']:.3f}s")
 Analyze latencies over time periods:
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Get metrics for last hour
 hourly_stats = metrics.get_stats(
     "llm_inference",
@@ -274,7 +282,7 @@ comparison = metrics.compare_periods(
     period1="1h",
     period2="24h"
 )
-print(f"Latency change: {comparison['p50_change']:.2%}")
+logger.info(f"Latency change: {comparison['p50_change']:.2%}")
 ```
 
 ### Alerts and Thresholds
@@ -282,6 +290,10 @@ print(f"Latency change: {comparison['p50_change']:.2%}")
 Set up latency alerts:
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Configure thresholds
 metrics.set_threshold("llm_inference", p95=2.0, p99=5.0)
 
@@ -289,7 +301,7 @@ metrics.set_threshold("llm_inference", p95=2.0, p99=5.0)
 violations = metrics.check_thresholds("llm_inference")
 if violations:
     for v in violations:
-        print(f"Alert: {v['metric']} {v['percentile']} exceeded threshold")
+        logger.info(f"Alert: {v['metric']} {v['percentile']} exceeded threshold")
 ```
 
 ---
@@ -441,6 +453,10 @@ tracer.configure_export(
 ## 🎯 Complete Example
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework import Agent, AgentManager
 from agenticaiframework.tracing import tracer, latency_metrics
 import time
@@ -488,7 +504,7 @@ result = analyze_data_workflow(my_data)
 # Check performance
 for operation in ["validation", "llm_analysis", "report_generation"]:
     stats = latency_metrics.get_percentiles(operation)
-    print(f"{operation}: P50={stats['p50']:.3f}s, P95={stats['p95']:.3f}s")
+    logger.info(f"{operation}: P50={stats['p50']:.3f}s, P95={stats['p95']:.3f}s")
 ```
 
 ---

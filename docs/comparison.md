@@ -14,7 +14,7 @@ tags:
 
 **How AgenticAI Framework compares to alternatives**
 
-Make an informed decision with **380+ modules** vs competitors
+Make an informed decision with **400+ modules** vs competitors
 
 </div>
 
@@ -83,7 +83,7 @@ Make an informed decision with **380+ modules** vs competitors
 
 | Feature | AgenticAI | LangChain | AutoGen | CrewAI | Haystack |
 |---------|-----------|-----------|---------|--------|----------|
-| **📦 Total Modules** | ✅ 380+ | ⚠️ ~50 | ⚠️ ~30 | ⚠️ ~20 | ⚠️ ~40 |
+| **📦 Total Modules** | ✅ 400+ | ⚠️ ~50 | ⚠️ ~30 | ⚠️ ~20 | ⚠️ ~40 |
 | **🏢 Enterprise Modules** | ✅ 237 | ⚠️ Limited | ❌ None | ❌ None | ⚠️ Few |
 | **🤖 Multi-Agent Coordination** | ✅ Native | ⚠️ Limited | ✅ Yes | ✅ Yes | ❌ No |
 | **🧠 Memory Systems** | ✅ 7 Managers | 🔌 Plugin | ❌ Basic | ⚠️ Limited | 🔌 Plugin |
@@ -158,7 +158,7 @@ graph TB
 
 !!! success "Perfect Fit"
 
-    - 📦 **380+ modules** with comprehensive coverage
+    - 📦 **400+ modules** with comprehensive coverage
     - 🏢 **237 enterprise modules** across 14 categories
     - ✨ **Multiple agents** coordinating together
     - 🛡️ **Production-grade safety** with 18 security modules

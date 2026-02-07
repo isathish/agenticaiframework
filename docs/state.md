@@ -11,7 +11,7 @@ description: Production-ready state management with 7 specialized managers for a
 </div>
 
 !!! success "Enterprise State Management"
-    Part of **380+ modules** with **7 specialized state managers** and **14 enterprise caching features**. See [Enterprise Documentation](enterprise.md).
+    Part of **400+ modules** with **7 specialized state managers** and **14 enterprise caching features**. See [Enterprise Documentation](enterprise.md).
 
 <div class="stats-grid">
 <div class="stat-item">
@@ -136,6 +136,10 @@ state_manager = StateManager(
 ### Basic Operations
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Save state
 await state_manager.save("agent:researcher", {
     "status": "running",
@@ -145,7 +149,7 @@ await state_manager.save("agent:researcher", {
 
 # Get state
 agent_state = await state_manager.get("agent:researcher")
-print(f"Status: {agent_state['status']}")
+logger.info(f"Status: {agent_state['status']}")
 
 # Update partial state
 await state_manager.update("agent:researcher", {
@@ -162,11 +166,15 @@ keys = await state_manager.list_keys("agent:*")
 ### State Subscriptions
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Subscribe to state changes
 async def on_state_change(key: str, old_value: dict, new_value: dict):
-    print(f"State changed for {key}")
-    print(f"  Old: {old_value}")
-    print(f"  New: {new_value}")
+    logger.info(f"State changed for {key}")
+    logger.info(f"  Old: {old_value}")
+    logger.info(f"  New: {new_value}")
 
 state_manager.subscribe("agent:*", on_state_change)
 
@@ -183,6 +191,10 @@ Manages agent snapshots, checkpoints, and recovery.
 ### Creating Agent Snapshots
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.state import (
     AgentStateStore,
     AgentSnapshot,
@@ -214,7 +226,7 @@ await agent_store.save_snapshot(snapshot)
 # List available snapshots
 snapshots = await agent_store.list_snapshots("researcher_01")
 for snap in snapshots:
-    print(f"Snapshot: {snap.timestamp} - {snap.metadata}")
+    logger.info(f"Snapshot: {snap.timestamp} - {snap.metadata}")
 ```
 
 ### Checkpointing
@@ -248,6 +260,10 @@ if checkpoint:
 ### Agent Recovery
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.state import AgentRecoveryManager
 
 recovery_manager = AgentRecoveryManager(
@@ -270,7 +286,7 @@ except Exception as e:
     )
     
     if recovered:
-        print("Agent recovered successfully")
+        logger.info("Agent recovered successfully")
         result = await agent.resume()
 ```
 
@@ -283,6 +299,10 @@ Tracks workflow execution, steps, and enables pause/resume.
 ### Workflow State Tracking
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.state import (
     WorkflowStateManager,
     WorkflowState,
@@ -321,7 +341,7 @@ await workflow_state.update_step(
 
 # Get current state
 current = await workflow_state.get("research_pipeline")
-print(f"Progress: {current.current_step}/{current.total_steps}")
+logger.info(f"Progress: {current.current_step}/{current.total_steps}")
 ```
 
 ### Workflow Checkpointing
@@ -354,10 +374,14 @@ await workflow_state.resume_from(
 ### Pause and Resume
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Pause workflow
 await workflow_state.pause("research_pipeline")
 status = await workflow_state.get_status("research_pipeline")
-print(f"Status: {status}")  # WorkflowStatus.PAUSED
+logger.info(f"Status: {status}")  # WorkflowStatus.PAUSED
 
 # Resume workflow
 await workflow_state.resume("research_pipeline")
@@ -421,6 +445,10 @@ await orch_state.create_team(team_state)
 ### Agent Coordination
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Update agent status
 await orch_state.update_agent_status(
     team_id="research_team",
@@ -432,7 +460,7 @@ await orch_state.update_agent_status(
 # Get team overview
 team = await orch_state.get_team("research_team")
 for agent_id, agent_state in team.agents.items():
-    print(f"{agent_id}: {agent_state.status}")
+    logger.info(f"{agent_id}: {agent_state.status}")
 
 # Get available agents
 available = await orch_state.get_available_agents(
@@ -444,6 +472,10 @@ available = await orch_state.get_available_agents(
 ### Task Queue Management
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Add task to queue
 await orch_state.enqueue_task(
     team_id="research_team",
@@ -471,9 +503,9 @@ await orch_state.complete_task(
 
 # Get queue status
 queue = await orch_state.get_queue_status("research_team")
-print(f"Pending: {len(queue.pending)}")
-print(f"In Progress: {len(queue.in_progress)}")
-print(f"Completed: {len(queue.completed)}")
+logger.info(f"Pending: {len(queue.pending)}")
+logger.info(f"In Progress: {len(queue.in_progress)}")
+logger.info(f"Completed: {len(queue.completed)}")
 ```
 
 ---
@@ -485,6 +517,10 @@ Tracks knowledge base indexing and synchronization.
 ### Indexing Progress
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.state import (
     KnowledgeStateManager,
     IndexingProgress,
@@ -511,13 +547,17 @@ await kb_state.update_indexing_progress(progress)
 
 # Check progress
 current = await kb_state.get_indexing_progress("company_docs")
-print(f"Progress: {current.processed_documents}/{current.total_documents}")
-print(f"Failed: {current.failed_documents}")
+logger.info(f"Progress: {current.processed_documents}/{current.total_documents}")
+logger.info(f"Failed: {current.failed_documents}")
 ```
 
 ### Source Synchronization
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.state import SourceState
 
 # Track source sync status
@@ -535,21 +575,25 @@ await kb_state.update_source_state(source_state)
 # Get all sources for knowledge base
 sources = await kb_state.get_sources("company_docs")
 for source in sources:
-    print(f"{source.source_id}: {source.sync_status}")
+    logger.info(f"{source.source_id}: {source.sync_status}")
 ```
 
 ### Knowledge Base State
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.state import KnowledgeBaseState
 
 # Get overall knowledge base state
 kb_overview = await kb_state.get_knowledge_base_state("company_docs")
 
-print(f"Total Documents: {kb_overview.total_documents}")
-print(f"Total Embeddings: {kb_overview.total_embeddings}")
-print(f"Last Updated: {kb_overview.last_updated}")
-print(f"Storage Size: {kb_overview.storage_size_mb}MB")
+logger.info(f"Total Documents: {kb_overview.total_documents}")
+logger.info(f"Total Embeddings: {kb_overview.total_embeddings}")
+logger.info(f"Last Updated: {kb_overview.last_updated}")
+logger.info(f"Storage Size: {kb_overview.storage_size_mb}MB")
 ```
 
 ---
@@ -602,6 +646,10 @@ history = await tool_state.get_execution_history(
 ### Result Caching
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.state import ToolCacheEntry
 
 # Cache tool result
@@ -622,7 +670,7 @@ cached = await tool_state.get_cached_result(
 )
 
 if cached:
-    print("Using cached result")
+    logger.info("Using cached result")
     result = cached.result
 else:
     result = await tool.execute({"query": "AI news"})
@@ -655,16 +703,20 @@ for retry in pending_retries:
 ### Tool Statistics
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.state import ToolStats
 
 # Get tool statistics
 stats = await tool_state.get_tool_stats("search_web")
 
-print(f"Total Executions: {stats.total_executions}")
-print(f"Success Rate: {stats.success_rate:.2%}")
-print(f"Avg Duration: {stats.avg_duration_ms}ms")
-print(f"Cache Hit Rate: {stats.cache_hit_rate:.2%}")
-print(f"Error Rate: {stats.error_rate:.2%}")
+logger.info(f"Total Executions: {stats.total_executions}")
+logger.info(f"Success Rate: {stats.success_rate:.2%}")
+logger.info(f"Avg Duration: {stats.avg_duration_ms}ms")
+logger.info(f"Cache Hit Rate: {stats.cache_hit_rate:.2%}")
+logger.info(f"Error Rate: {stats.error_rate:.2%}")
 ```
 
 ---
@@ -708,6 +760,10 @@ await speech_state.update_session_status(
 ### STT State Tracking
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.state import STTState, TranscriptionStatus
 
 # Track STT state
@@ -723,13 +779,17 @@ await speech_state.update_stt_state(stt_state)
 
 # Get current STT state
 current_stt = await speech_state.get_stt_state(session_id)
-print(f"Progress: {current_stt.transcription_progress:.0%}")
-print(f"Interim: {current_stt.interim_transcript}")
+logger.info(f"Progress: {current_stt.transcription_progress:.0%}")
+logger.info(f"Interim: {current_stt.interim_transcript}")
 ```
 
 ### TTS State Tracking
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.state import TTSState
 
 # Track TTS state
@@ -746,7 +806,7 @@ await speech_state.update_tts_state(tts_state)
 # Check if speaking
 current_tts = await speech_state.get_tts_state(session_id)
 if current_tts.is_speaking:
-    print("Agent is currently speaking...")
+    logger.info("Agent is currently speaking...")
 ```
 
 ### Voice Conversation State

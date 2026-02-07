@@ -1,49 +1,68 @@
-from typing import Dict, Any, List
+"""
+Hub – central registry for agents, prompts, tools, guardrails, LLMs, and services.
+
+Thread-safe implementation with proper logging.
+"""
+
+from __future__ import annotations
+
 import logging
-import time
+import threading
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
 
 class Hub:
-    def __init__(self):
-        self.agents: Dict[str, Any] = {}
-        self.prompts: Dict[str, Any] = {}
-        self.tools: Dict[str, Any] = {}
-        self.guardrails: Dict[str, Any] = {}
-        self.llms: Dict[str, Any] = {}
-        self.services: Dict[str, Any] = {}
+    """Thread-safe central registry for framework components."""
 
-    def register(self, category: str, name: str, item: Any):
-        if hasattr(self, category):
+    _CATEGORIES = frozenset({"agents", "prompts", "tools", "guardrails", "llms", "services"})
+
+    def __init__(self) -> None:
+        self._lock = threading.Lock()
+        self.agents: dict[str, Any] = {}
+        self.prompts: dict[str, Any] = {}
+        self.tools: dict[str, Any] = {}
+        self.guardrails: dict[str, Any] = {}
+        self.llms: dict[str, Any] = {}
+        self.services: dict[str, Any] = {}
+
+    def register(self, category: str, name: str, item: Any) -> None:
+        if category not in self._CATEGORIES:
+            logger.warning("[Hub] Invalid category '%s'", category)
+            return
+        with self._lock:
             getattr(self, category)[name] = item
-            self._log(f"Registered {category[:-1]} '{name}'")
-        else:
-            self._log(f"Invalid category '{category}'")
+        logger.info("[Hub] Registered %s '%s'", category[:-1], name)
 
-    def register_service(self, name: str, service: Any):
-        """Register a service in the hub"""
-        self.services[name] = service
-        self._log(f"Registered service '{name}'")
+    def register_service(self, name: str, service: Any) -> None:
+        """Register a service in the hub."""
+        with self._lock:
+            self.services[name] = service
+        logger.info("[Hub] Registered service '%s'", name)
 
     def get_service(self, name: str) -> Any:
-        """Get a service by name"""
-        return self.services.get(name)
+        """Get a service by name."""
+        with self._lock:
+            return self.services.get(name)
 
     def get(self, category: str, name: str) -> Any:
-        if hasattr(self, category):
+        if category not in self._CATEGORIES:
+            return None
+        with self._lock:
             return getattr(self, category).get(name)
-        return None
 
-    def list_items(self, category: str) -> List[str]:
-        if hasattr(self, category):
+    def list_items(self, category: str) -> list[str]:
+        if category not in self._CATEGORIES:
+            return []
+        with self._lock:
             return list(getattr(self, category).keys())
-        return []
 
-    def remove(self, category: str, name: str):
-        if hasattr(self, category) and name in getattr(self, category):
-            del getattr(self, category)[name]
-            self._log(f"Removed {category[:-1]} '{name}'")
-
-    def _log(self, message: str):
-        print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [Hub] {message}")
+    def remove(self, category: str, name: str) -> None:
+        if category not in self._CATEGORIES:
+            return
+        with self._lock:
+            store = getattr(self, category)
+            if name in store:
+                del store[name]
+                logger.info("[Hub] Removed %s '%s'", category[:-1], name)

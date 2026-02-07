@@ -89,6 +89,10 @@ AgenticAI Framework includes **35+ production-ready tools** that extend agent ca
 Web search using multiple search engines.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import SearchTool
 
 # Basic usage
@@ -105,9 +109,9 @@ search = SearchTool(
 
 results = search.run("machine learning tutorials")
 for result in results:
-    print(f"Title: {result['title']}")
-    print(f"URL: {result['url']}")
-    print(f"Snippet: {result['snippet']}")
+    logger.info(f"Title: {result['title']}")
+    logger.info(f"URL: {result['url']}")
+    logger.info(f"Snippet: {result['snippet']}")
 ```
 
 ### NewsSearchTool
@@ -115,6 +119,10 @@ for result in results:
 Search for recent news articles.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import NewsSearchTool
 
 news = NewsSearchTool(
@@ -125,8 +133,8 @@ news = NewsSearchTool(
 
 articles = news.run("artificial intelligence")
 for article in articles:
-    print(f"{article['title']} - {article['source']}")
-    print(f"Published: {article['published_date']}")
+    logger.info(f"{article['title']} - {article['source']}")
+    logger.info(f"Published: {article['published_date']}")
 ```
 
 ### WikipediaTool
@@ -134,6 +142,10 @@ for article in articles:
 Access Wikipedia content.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import WikipediaTool
 
 wiki = WikipediaTool(
@@ -143,7 +155,7 @@ wiki = WikipediaTool(
 
 # Search Wikipedia
 content = wiki.run("Quantum computing")
-print(content)
+logger.info(content)
 
 # Get specific sections
 content = wiki.run("Quantum computing", sections=["Applications", "History"])
@@ -154,6 +166,10 @@ content = wiki.run("Quantum computing", sections=["Applications", "History"])
 Fetch and parse web page content.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import URLFetchTool
 
 fetcher = URLFetchTool(
@@ -163,8 +179,8 @@ fetcher = URLFetchTool(
 )
 
 content = fetcher.run("https://example.com/article")
-print(f"Title: {content['title']}")
-print(f"Text: {content['text'][:500]}...")
+logger.info(f"Title: {content['title']}")
+logger.info(f"Text: {content['text'][:500]}...")
 ```
 
 ### DNSLookupTool
@@ -172,13 +188,17 @@ print(f"Text: {content['text'][:500]}...")
 DNS and network lookups.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import DNSLookupTool
 
 dns = DNSLookupTool()
 
 # Lookup domain
 result = dns.run("example.com", record_type="A")
-print(f"IP Addresses: {result['addresses']}")
+logger.info(f"IP Addresses: {result['addresses']}")
 
 # MX records
 mx_records = dns.run("example.com", record_type="MX")
@@ -189,13 +209,17 @@ mx_records = dns.run("example.com", record_type="MX")
 Get weather information.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import WeatherTool
 
 weather = WeatherTool(provider="openweathermap")
 
 current = weather.run("London, UK")
-print(f"Temperature: {current['temperature']}°C")
-print(f"Conditions: {current['conditions']}")
+logger.info(f"Temperature: {current['temperature']}°C")
+logger.info(f"Conditions: {current['conditions']}")
 
 # Forecast
 forecast = weather.run("London, UK", forecast_days=5)
@@ -206,6 +230,10 @@ forecast = weather.run("London, UK", forecast_days=5)
 Translate text between languages.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import TranslationTool
 
 translator = TranslationTool(provider="google")
@@ -215,7 +243,7 @@ translated = translator.run(
     source_lang="en",
     target_lang="es"
 )
-print(translated)  # "Hola, ¿cómo estás?"
+logger.info(translated)  # "Hola, ¿cómo estás?"
 ```
 
 ### ArxivTool
@@ -223,15 +251,19 @@ print(translated)  # "Hola, ¿cómo estás?"
 Search academic papers on arXiv.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import ArxivTool
 
 arxiv = ArxivTool(max_results=10)
 
 papers = arxiv.run("large language models")
 for paper in papers:
-    print(f"Title: {paper['title']}")
-    print(f"Authors: {', '.join(paper['authors'])}")
-    print(f"Abstract: {paper['abstract'][:200]}...")
+    logger.info(f"Title: {paper['title']}")
+    logger.info(f"Authors: {', '.join(paper['authors'])}")
+    logger.info(f"Abstract: {paper['abstract'][:200]}...")
 ```
 
 ---
@@ -243,6 +275,10 @@ for paper in papers:
 Execute Python code safely.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import PythonREPLTool
 
 python = PythonREPLTool(
@@ -260,9 +296,9 @@ mean = sum(data) / len(data)
 std = math.sqrt(sum((x - mean) ** 2 for x in data) / len(data))
 
 result = {"mean": mean, "std": std}
-print(json.dumps(result, indent=2))
+logger.info(json.dumps(result, indent=2))
 """)
-print(result)
+logger.info(result)
 ```
 
 ### ShellTool
@@ -270,6 +306,10 @@ print(result)
 Execute shell commands.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import ShellTool
 
 shell = ShellTool(
@@ -279,7 +319,7 @@ shell = ShellTool(
 )
 
 result = shell.run("ls -la")
-print(result)
+logger.info(result)
 ```
 
 ### CodeAnalysisTool
@@ -287,6 +327,10 @@ print(result)
 Static code analysis.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import CodeAnalysisTool
 
 analyzer = CodeAnalysisTool(
@@ -295,9 +339,9 @@ analyzer = CodeAnalysisTool(
 )
 
 analysis = analyzer.run(code_content, language="python")
-print(f"Issues found: {len(analysis['issues'])}")
+logger.info(f"Issues found: {len(analysis['issues'])}")
 for issue in analysis['issues']:
-    print(f"  Line {issue['line']}: {issue['message']}")
+    logger.info(f"  Line {issue['line']}: {issue['message']}")
 ```
 
 ### TestRunnerTool
@@ -305,6 +349,10 @@ for issue in analysis['issues']:
 Run unit tests.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import TestRunnerTool
 
 runner = TestRunnerTool(
@@ -313,9 +361,9 @@ runner = TestRunnerTool(
 )
 
 results = runner.run("tests/")
-print(f"Passed: {results['passed']}")
-print(f"Failed: {results['failed']}")
-print(f"Coverage: {results['coverage']}%")
+logger.info(f"Passed: {results['passed']}")
+logger.info(f"Failed: {results['failed']}")
+logger.info(f"Coverage: {results['coverage']}%")
 ```
 
 ### GitTool
@@ -342,6 +390,10 @@ log = git.run("log", args=["--oneline", "-10"])
 Manage packages.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import PackageManagerTool
 
 pm = PackageManagerTool(manager="pip")
@@ -351,8 +403,8 @@ results = pm.run("search", package="requests")
 
 # Get package info
 info = pm.run("info", package="pandas")
-print(f"Version: {info['version']}")
-print(f"Dependencies: {info['dependencies']}")
+logger.info(f"Version: {info['version']}")
+logger.info(f"Dependencies: {info['dependencies']}")
 ```
 
 ---
@@ -364,6 +416,10 @@ print(f"Dependencies: {info['dependencies']}")
 Read file contents.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import FileReadTool
 
 reader = FileReadTool(
@@ -372,7 +428,7 @@ reader = FileReadTool(
 )
 
 content = reader.run("/path/to/file.txt")
-print(content)
+logger.info(content)
 
 # Read specific lines
 content = reader.run("/path/to/file.txt", start_line=10, end_line=50)
@@ -402,6 +458,10 @@ writer.run(
 Directory operations.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import DirectoryTool
 
 dir_tool = DirectoryTool()
@@ -409,7 +469,7 @@ dir_tool = DirectoryTool()
 # List directory
 files = dir_tool.run("list", path="/data")
 for f in files:
-    print(f"{f['name']} - {f['size']} bytes")
+    logger.info(f"{f['name']} - {f['size']} bytes")
 
 # Create directory
 dir_tool.run("create", path="/data/new_folder")
@@ -423,14 +483,18 @@ matches = dir_tool.run("search", path="/data", pattern="*.json")
 CSV file operations.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import CSVTool
 
 csv = CSVTool()
 
 # Read CSV
 data = csv.run("read", path="/data/sales.csv")
-print(f"Rows: {len(data)}")
-print(f"Columns: {data[0].keys()}")
+logger.info(f"Rows: {len(data)}")
+logger.info(f"Columns: {data[0].keys()}")
 
 # Filter CSV
 filtered = csv.run(
@@ -508,6 +572,10 @@ matches = search.run(
 SQL database operations.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import SQLTool
 
 sql = SQLTool(
@@ -517,7 +585,7 @@ sql = SQLTool(
 # Query
 results = sql.run("SELECT * FROM users WHERE active = true LIMIT 10")
 for row in results:
-    print(row)
+    logger.info(row)
 
 # With parameters (safe from SQL injection)
 results = sql.run(
@@ -577,6 +645,10 @@ item = redis.run("pop", key="queue")
 Vector database operations.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import VectorStoreTool
 
 vectors = VectorStoreTool(
@@ -598,7 +670,7 @@ results = vectors.run(
     top_k=5
 )
 for result in results:
-    print(f"Score: {result['score']:.3f} - {result['content'][:100]}...")
+    logger.info(f"Score: {result['score']:.3f} - {result['content'][:100]}...")
 ```
 
 ### S3Tool
@@ -660,6 +732,10 @@ results = es.run(
 Generate text embeddings.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import EmbeddingsTool
 
 embeddings = EmbeddingsTool(
@@ -669,7 +745,7 @@ embeddings = EmbeddingsTool(
 
 # Single embedding
 vector = embeddings.run("Hello, world!")
-print(f"Dimensions: {len(vector)}")
+logger.info(f"Dimensions: {len(vector)}")
 
 # Batch embeddings
 vectors = embeddings.run([
@@ -708,6 +784,10 @@ with open("city.png", "wb") as f:
 Analyze images.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import VisionTool
 
 vision = VisionTool(
@@ -720,7 +800,7 @@ analysis = vision.run(
     image_path="/path/to/image.jpg",
     prompt="Describe this image in detail"
 )
-print(analysis)
+logger.info(analysis)
 
 # From URL
 analysis = vision.run(
@@ -734,6 +814,10 @@ analysis = vision.run(
 Transcribe audio.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import SpeechToTextTool
 
 stt = SpeechToTextTool(
@@ -743,8 +827,8 @@ stt = SpeechToTextTool(
 
 # Transcribe
 transcript = stt.run("/path/to/audio.wav")
-print(transcript["text"])
-print(f"Language: {transcript['language']}")
+logger.info(transcript["text"])
+logger.info(f"Language: {transcript['language']}")
 ```
 
 ### TextToSpeechTool
@@ -776,20 +860,24 @@ with open("output.mp3", "wb") as f:
 Date and time operations.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import DateTimeTool
 
 dt = DateTimeTool()
 
 # Current time
 now = dt.run("now", timezone="America/New_York")
-print(f"Current time: {now}")
+logger.info(f"Current time: {now}")
 
 # Parse date
 parsed = dt.run("parse", date_string="January 15, 2024")
 
 # Calculate difference
 diff = dt.run("diff", date1="2024-01-01", date2="2024-12-31")
-print(f"Days between: {diff['days']}")
+logger.info(f"Days between: {diff['days']}")
 
 # Add duration
 future = dt.run("add", date="2024-01-15", days=30)
@@ -800,21 +888,25 @@ future = dt.run("add", date="2024-01-15", days=30)
 Mathematical calculations.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tools import CalculatorTool
 
 calc = CalculatorTool()
 
 # Basic math
 result = calc.run("2 + 2 * 3")
-print(result)  # 8
+logger.info(result)  # 8
 
 # Advanced math
 result = calc.run("sqrt(16) + sin(pi/2)")
-print(result)  # 5.0
+logger.info(result)  # 5.0
 
 # Statistics
 result = calc.run("mean([1, 2, 3, 4, 5])")
-print(result)  # 3.0
+logger.info(result)  # 3.0
 ```
 
 ### EncryptionTool

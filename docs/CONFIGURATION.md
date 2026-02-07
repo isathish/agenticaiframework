@@ -13,7 +13,7 @@ tags:
 
 **Configure AgenticAI for your environment**
 
-Flexible configuration options for **380+ modules** and **237 enterprise features**
+Flexible configuration options for **400+ modules** and **237 enterprise features**
 
 </div>
 
@@ -94,7 +94,7 @@ CONFIG = {
 from agenticaiframework.configurations import ConfigurationManager
 
 config = ConfigurationManager()
-print(config.get_config("LLM"))
+logger.info(config.get_config("LLM"))
 ```
 
 ---
@@ -133,7 +133,7 @@ from agenticaiframework.configurations import ConfigurationManager
 
 config = ConfigurationManager()
 config.set_config("Logging", {"log_level": "DEBUG"})
-print(config.get_config("Logging"))
+logger.info(config.get_config("Logging"))
 ```
 
 ---

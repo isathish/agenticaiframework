@@ -14,7 +14,7 @@ tags:
 
 **Release history and notable changes**
 
-Track evolution across **380+ modules** and **237 enterprise features**
+Track evolution across **400+ modules** and **237 enterprise features**
 
 </div>
 
@@ -56,7 +56,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated README with comprehensive enterprise module documentation
 - Updated architecture diagram to include enterprise layer
 - Updated framework comparison table with accurate metrics
-- Expanded from 50+ modules to 380+ total modules
+- Expanded from 50+ modules to 400+ total modules
 
 ## [v1.2.16](https://github.com/isathish/agenticaiframework/releases/tag/v1.2.16) - 2026-01-19
 

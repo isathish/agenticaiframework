@@ -13,19 +13,23 @@ tags:
 This guide provides a **professional, step-by-step walkthrough** of using the `MemoryManager` in the `agenticaiframework` package to efficiently store, retrieve, inspect, and clear different types of memory. It is designed for developers building intelligent agents that require persistent or temporary state management.
 
 !!! info "7 Memory Managers Available"
-    Part of **380+ modules** with **7 specialized memory managers** including Redis, PostgreSQL, and vector store backends. See [Enterprise Documentation](../enterprise.md).
+    Part of **400+ modules** with **7 specialized memory managers** including Redis, PostgreSQL, and vector store backends. See [Enterprise Documentation](../enterprise.md).
 
 
 ## Prerequisites & Configuration
 
 - **Installation**: Ensure `agenticaiframework` is installed and accessible in your Python environment.
 - **No additional configuration** is required for this example.
-- **Python Version**: Compatible with Python 3.8+.
+- **Python Version**: Compatible with Python 3.10+.
 
 
 ## Code
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.memory import MemoryManager
 
 if __name__ == "__main__":
@@ -36,18 +40,18 @@ if __name__ == "__main__":
     memory.store_short_term("last_query", "What is the capital of France?")
 
     # Retrieve values
-    print("Retrieved User Name:", memory.retrieve("user_name"))
-    print("Retrieved Last Query:", memory.retrieve("last_query"))
+    logger.info("Retrieved User Name:", memory.retrieve("user_name"))
+    logger.info("Retrieved Last Query:", memory.retrieve("last_query"))
 
     # List stored keys
     keys = list(memory.short_term.keys()) + list(memory.long_term.keys()) + list(memory.external.keys())
-    print("Stored Keys:", keys)
+    logger.info("Stored Keys:", keys)
 
     # Clear memory
     memory.clear_short_term()
     memory.clear_long_term()
     memory.clear_external()
-    print("Memory cleared. Keys now:", list(memory.short_term.keys()) + list(memory.long_term.keys()) + list(memory.external.keys()))
+    logger.info("Memory cleared. Keys now:", list(memory.short_term.keys()) + list(memory.long_term.keys()) + list(memory.external.keys()))
 ```
 
 

@@ -17,7 +17,7 @@ tags:
 
 **Enforce safety, compliance, and quality constraints**
 
-Protect your AI applications with intelligent validation and content moderation across **380+ modules**
+Protect your AI applications with intelligent validation and content moderation across **400+ modules**
 
 </div>
 
@@ -94,7 +94,7 @@ The `Guardrail` class defines individual validation rules with priority and seve
 Guardrail(
     name: str,
     validation_fn: Callable[[Any], bool],
-    policy: Dict[str, Any] = None,
+    policy: dict[str, Any] = None,
     severity: str = "medium"
 )
 ```
@@ -103,19 +103,23 @@ Guardrail(
 
 - **`name`** *(str)*: Unique identifier for the guardrail
 - **`validation_fn`** *(Callable[[Any], bool])*: Function that returns True if validation passes
-- **`policy`** *(Dict[str, Any])*: Policy configuration (e.g., priority, max_retries)
+- **`policy`** *(dict[str, Any])*: Policy configuration (e.g., priority, max_retries)
 - **`severity`** *(str)*: Severity level ("low", "medium", "high", "critical")
 
 #### Methods
 
 ```python
 def validate(data: Any) -> bool
-def get_stats() -> Dict[str, Any]
+def get_stats() -> dict[str, Any]
 ```
 
 **Example:**
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.guardrails import Guardrail
 
 # Create a guardrail
@@ -129,12 +133,12 @@ age_check = Guardrail(
 # Validate data
 user_data = {"age": 25, "name": "Alice"}
 is_valid = age_check.validate(user_data)
-print(f"Validation result: {is_valid}")
+logger.info(f"Validation result: {is_valid}")
 
 # Get statistics
 stats = age_check.get_stats()
-print(f"Validation count: {stats['validation_count']}")
-print(f"Violation rate: {stats['violation_rate']:.2%}")
+logger.info(f"Validation count: {stats['validation_count']}")
+logger.info(f"Violation rate: {stats['violation_rate']:.2%}")
 ```
 
 ### GuardrailManager Class
@@ -145,14 +149,18 @@ The `GuardrailManager` orchestrates multiple guardrails with priority-based enfo
 
 ```python
 def register_guardrail(guardrail: Guardrail) -> None
-def enforce_guardrails(data: Any) -> Dict[str, Any]
-def get_guardrail_by_name(name: str) -> Optional[Guardrail]
-def list_guardrails() -> List[Guardrail]
+def enforce_guardrails(data: Any) -> dict[str, Any]
+def get_guardrail_by_name(name: str) -> Guardrail | None
+def list_guardrails() -> list[Guardrail]
 ```
 
 **Example:**
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.guardrails import Guardrail, GuardrailManager
 
 # Create manager
@@ -173,8 +181,8 @@ manager.register_guardrail(Guardrail(
 
 # Enforce all guardrails
 result = manager.enforce_guardrails(50)
-print(f"Valid: {result['is_valid']}")
-print(f"Violations: {result.get('violations', [])}")
+logger.info(f"Valid: {result['is_valid']}")
+logger.info(f"Violations: {result.get('violations', [])}")
 ```
 
 ## Use Cases
@@ -194,6 +202,10 @@ The framework provides pre-built guardrails for common validation scenarios.
 Validates content based on semantic meaning and intent:
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.guardrails import SemanticGuardrail
 
 # Create semantic guardrail
@@ -206,8 +218,8 @@ semantic = SemanticGuardrail(
 
 # Validate content
 result = semantic.validate("Explain quantum computing basics")
-print(f"Valid: {result.is_valid}")
-print(f"Detected topics: {result.detected_topics}")
+logger.info(f"Valid: {result.is_valid}")
+logger.info(f"Detected topics: {result.detected_topics}")
 ```
 
 ### ContentSafetyGuardrail
@@ -215,6 +227,10 @@ print(f"Detected topics: {result.detected_topics}")
 Comprehensive content safety checking:
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.guardrails import ContentSafetyGuardrail
 
 # Create content safety guardrail
@@ -228,8 +244,8 @@ content_safety = ContentSafetyGuardrail(
 
 # Validate content
 result = content_safety.validate("Check this message for safety issues")
-print(f"Safe: {result.is_valid}")
-print(f"Flags: {result.flags}")
+logger.info(f"Safe: {result.is_valid}")
+logger.info(f"Flags: {result.flags}")
 ```
 
 ### OutputFormatGuardrail
@@ -237,6 +253,10 @@ print(f"Flags: {result.flags}")
 Validates output format and structure:
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.guardrails import OutputFormatGuardrail
 
 # Create format guardrail for JSON output
@@ -250,7 +270,7 @@ format_guard = OutputFormatGuardrail(
 # Validate output
 output = '{"result": "answer", "confidence": 0.95, "sources": ["doc1"]}'
 result = format_guard.validate(output)
-print(f"Format valid: {result.is_valid}")
+logger.info(f"Format valid: {result.is_valid}")
 ```
 
 ### ChainOfThoughtGuardrail
@@ -258,6 +278,10 @@ print(f"Format valid: {result.is_valid}")
 Validates reasoning chains for quality:
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.guardrails import ChainOfThoughtGuardrail
 
 # Create CoT guardrail
@@ -276,7 +300,7 @@ Step 3: Draw conclusions
 Conclusion: Based on the analysis, the answer is X.
 """
 result = cot_guard.validate(reasoning)
-print(f"Valid reasoning: {result.is_valid}")
+logger.info(f"Valid reasoning: {result.is_valid}")
 ```
 
 ### ToolUseGuardrail
@@ -284,6 +308,10 @@ print(f"Valid reasoning: {result.is_valid}")
 Validates tool invocations:
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.guardrails import ToolUseGuardrail
 
 # Create tool use guardrail
@@ -299,7 +327,7 @@ result = tool_guard.validate({
     "tool": "file_read",
     "params": {"path": "/data/config.json"}
 })
-print(f"Tool allowed: {result.is_valid}")
+logger.info(f"Tool allowed: {result.is_valid}")
 ```
 
 ---
@@ -309,6 +337,10 @@ print(f"Tool allowed: {result.is_valid}")
 Chain multiple guardrails for comprehensive validation:
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.guardrails import (
     GuardrailPipeline,
     ContentSafetyGuardrail,
@@ -338,8 +370,8 @@ pipeline.add_guardrail(OutputFormatGuardrail(
 
 # Execute pipeline
 result = pipeline.execute(content)
-print(f"All passed: {result.all_passed}")
-print(f"Failed guardrails: {result.failures}")
+logger.info(f"All passed: {result.all_passed}")
+logger.info(f"Failed guardrails: {result.failures}")
 ```
 
 ---
@@ -431,6 +463,10 @@ agent_policy_manager.register_safety_policy("enterprise", safety_policy)
 ### Enforcing Policies
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Apply policies to an agent
 agent_policy_manager.apply_policies(
     agent_id="agent-001",
@@ -445,8 +481,8 @@ compliance = agent_policy_manager.check_compliance(
 )
 
 if not compliance.is_allowed:
-    print(f"Policy violation: {compliance.violated_policy}")
-    print(f"Reason: {compliance.reason}")
+    logger.info(f"Policy violation: {compliance.violated_policy}")
+    logger.info(f"Reason: {compliance.reason}")
 ```
 
 ---

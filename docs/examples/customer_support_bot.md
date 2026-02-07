@@ -13,7 +13,7 @@ tags:
 This example demonstrates building an automated customer support bot using the AgenticAI Framework.
 
 !!! success "Enterprise-Ready Pattern"
-    Part of **380+ modules** with **237 enterprise features** including multi-tenant support, compliance guardrails, and advanced monitoring.
+    Part of **400+ modules** with **237 enterprise features** including multi-tenant support, compliance guardrails, and advanced monitoring.
 
 ## Overview
 
@@ -62,5 +62,5 @@ if __name__ == "__main__":
     result = support_agent.run_task(support_task)
 
     # Output result
-    print("=== Customer Support Response ===")
-    print(result)
+    logger.info("=== Customer Support Response ===")
+    logger.info(result)

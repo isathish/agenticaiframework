@@ -10,9 +10,13 @@ tags:
 # 🏛️ Hub Example
 
 !!! success "Central Service Registry"
-    The Hub provides service discovery across **380+ modules** and **237 enterprise features**. See [Hub Documentation](../hub.md).
+    The Hub provides service discovery across **400+ modules** and **237 enterprise features**. See [Hub Documentation](../hub.md).
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.hub import Hub
 
 # Example: Using the Hub
@@ -36,13 +40,13 @@ if __name__ == "__main__":
 
     # Register the service
     hub.register_service("SampleService", sample_service)
-    print("Service 'SampleService' registered.")
+    logger.info("Service 'SampleService' registered.")
 
     # Retrieve and use the service
     service = hub.get_service("SampleService")
     if service:
-        print("Service Output:", service())
+        logger.info("Service Output:", service())
     else:
-        print("Service not found.")
+        logger.info("Service not found.")
 
 ```

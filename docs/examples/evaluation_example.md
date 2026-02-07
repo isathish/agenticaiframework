@@ -10,9 +10,13 @@ tags:
 # 📊 Evaluation System Example
 
 !!! tip "12-Tier Evaluation System"
-    Part of **380+ modules** with a comprehensive **12-tier evaluation system** and 100+ metrics. See [Evaluation Documentation](../evaluation.md).
+    Part of **400+ modules** with a comprehensive **12-tier evaluation system** and 100+ metrics. See [Evaluation Documentation](../evaluation.md).
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.evaluation import EvaluationSystem
 
 # Example: Using the EvaluationSystem
@@ -40,6 +44,6 @@ if __name__ == "__main__":
     sample_output = "Hello World"
     results = evaluator.evaluate(sample_output)
 
-    print("Evaluation Results:", results)
+    logger.info("Evaluation Results:", results)
 
 ```

@@ -1,0 +1,125 @@
+[build-system]
+requires = ["setuptools>=75.0", "wheel>=0.45"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "agenticaiframework"
+version = "2.0.0"
+description = "AgenticAI - Enterprise-grade Python SDK with advanced orchestration, monitoring, and production-ready AI agent capabilities."
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "Sathishkumar Nagarajan", email = "mail@sathishkumarnagarajan.com"},
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Typing :: Typed",
+]
+keywords = ["ai", "agents", "framework", "llm", "orchestration", "enterprise"]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/isathish/agenticaiframework"
+Repository = "https://github.com/isathish/agenticaiframework"
+Documentation = "https://isathish.github.io/agenticaiframework/"
+Issues = "https://github.com/isathish/agenticaiframework/issues"
+
+[project.optional-dependencies]
+docs = [
+    "mkdocs>=1.6.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocstrings[python]>=0.27.0",
+    "pymdown-extensions>=10.0.0",
+    "mkdocs-git-revision-date-localized-plugin>=1.3.0",
+    "mkdocs-minify-plugin>=0.8.0",
+    "mkdocs-glightbox>=0.4.0",
+]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-cov>=6.0",
+    "pytest-asyncio>=0.25.0",
+    "pytest-timeout>=2.3.0",
+    "pytest-xdist>=3.5.0",
+    "ruff>=0.8.0",
+    "mypy>=1.14.0",
+    "black>=24.10.0",
+    "isort>=5.13.0",
+    "pre-commit>=4.0.0",
+]
+all = [
+    "agenticaiframework[docs,dev]",
+]
+
+[tool.setuptools.packages.find]
+include = ["agenticaiframework*"]
+
+[tool.setuptools.package-data]
+agenticaiframework = ["py.typed"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+fix = true
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "B",    # flake8-bugbear
+    "UP",   # pyupgrade
+    "S",    # flake8-bandit
+    "A",    # flake8-builtins
+    "C4",   # flake8-comprehensions
+    "RET",  # flake8-return
+    "SIM",  # flake8-simplify
+    "TCH",  # flake8-type-checking
+    "LOG",  # flake8-logging
+]
+ignore = [
+    "S101",  # assert usage (ok in tests)
+    "B008",  # function call in default arg
+    "E501",  # line length (handled by formatter)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101", "S106", "S105"]
+
+[tool.black]
+line-length = 120
+target-version = ["py310"]
+
+[tool.isort]
+profile = "black"
+line_length = 120
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+check_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = "-q --tb=short --strict-markers"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks integration tests",
+]
+asyncio_mode = "auto"
+timeout = 30

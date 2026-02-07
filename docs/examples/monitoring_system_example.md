@@ -13,6 +13,10 @@ tags:
     Part of **237 enterprise modules** with distributed tracing, APM integration, and real-time dashboards. See [Monitoring Documentation](../monitoring.md).
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.monitoring import MonitoringSystem
 
 # Example: Using the MonitoringSystem
@@ -35,6 +39,6 @@ if __name__ == "__main__":
 
     # Retrieve and display metrics
     metrics = monitor.get_metrics()
-    print("Recorded Metrics:", metrics)
+    logger.info("Recorded Metrics:", metrics)
 
 ```

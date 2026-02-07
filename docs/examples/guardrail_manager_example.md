@@ -14,6 +14,10 @@ tags:
     Part of **237 enterprise modules** with 18 compliance/audit modules and 12 guardrail types. See [Guardrails Documentation](../guardrails.md).
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.guardrails import Guardrail, GuardrailManager
 
 # Example: Using the Guardrail and GuardrailManager
@@ -46,9 +50,9 @@ if __name__ == "__main__":
     guardrail_manager.register_guardrail(guardrail2)
 
     # Validate some inputs
-    print("Validate 'Hello':", guardrail_manager.validate("NonEmptyString", "Hello"))
-    print("Validate '':", guardrail_manager.validate("NonEmptyString", ""))
-    print("Validate 42:", guardrail_manager.validate("PositiveNumber", 42))
-    print("Validate -5:", guardrail_manager.validate("PositiveNumber", -5))
+    logger.info("Validate 'Hello':", guardrail_manager.validate("NonEmptyString", "Hello"))
+    logger.info("Validate '':", guardrail_manager.validate("NonEmptyString", ""))
+    logger.info("Validate 42:", guardrail_manager.validate("PositiveNumber", 42))
+    logger.info("Validate -5:", guardrail_manager.validate("PositiveNumber", -5))
 
 ```

@@ -1,259 +1,265 @@
 ---
 title: Usage Guide
-description: Complete guide to using AgenticAI Framework for building AI agent applications
+description: Comprehensive usage guide for AgenticAI Framework v2.0
 tags:
   - usage
   - guide
-  - getting-started
   - tutorial
 ---
 
-# 📖 Usage Guide
+# :material-book-open: Usage Guide
 
-<div align="center">
-
-**Complete guide to using AgenticAI Framework (380+ Modules)**
-
-[![Modules](https://img.shields.io/badge/modules-380%2B-brightgreen.svg)](https://github.com/isathish/agenticaiframework)
-[![Enterprise](https://img.shields.io/badge/enterprise-237%20modules-gold.svg)](https://github.com/isathish/agenticaiframework)
-[![PyPI Version](https://img.shields.io/pypi/v/agenticaiframework?color=blue&label=PyPI&logo=python&logoColor=white)](https://pypi.org/project/agenticaiframework/)
-
-</div>
-
-!!! success "Enterprise Framework"
-    Part of **237 enterprise modules** with comprehensive features. See [Enterprise Documentation](enterprise.md).
+This guide covers everyday patterns for building AI agent systems with
+**AgenticAI Framework v2.0**.
 
 ---
 
-## 🚀 Quick Navigation
-
-<div class="grid cards" markdown>
-
--   :material-package-variant:{ .lg } **Installation**
-    
-    Get started in minutes
-    
-    [:octicons-arrow-right-24: Install](#installation)
-
--   :material-code-braces:{ .lg } **Quick Start**
-    
-    Your first agent
-    
-    [:octicons-arrow-right-24: Start Coding](#basic-usage)
-
--   :material-school:{ .lg } **Examples**
-    
-    25+ working examples
-    
-    [:octicons-arrow-right-24: View Examples](examples/full_examples_index.md)
-
--   :material-api:{ .lg } **API Reference**
-    
-    Complete documentation
-    
-    [:octicons-arrow-right-24: API Docs](API_REFERENCE.md)
-
-</div>
-
----
-
-## 📦 Installation
-
-Install AgenticAI from PyPI:
+## Installation
 
 ```bash
 pip install agenticaiframework
 ```
 
-Or install from source:
-
-```bash
-git clone https://github.com/isathish/agenticaiframework.git
-cd agenticaiframework
-pip install -e .
-```
+**Requirements**: Python >= 3.10
 
 ---
 
-## 🎯 Basic Usage
-
-### Creating and Running an Agent
+## Core Imports
 
 ```python
-from agenticaiframework import Agent, AgentManager
-
-# Create an agent
-agent = Agent(
-    name="MyAgent",
-    role="assistant",
-    capabilities=["text", "analysis"]
+from agenticaiframework import (
+    Agent,
+    Task,
+    Process,
+    Hub,
+    MonitoringSystem,
+    KnowledgeRetriever,
+    Workflow,
 )
-
-# Register with manager
-manager = AgentManager()
-manager.register_agent(agent)
-
-# Start the agent
-agent.start()
-result = agent.act("Analyze this text for sentiment")
-print(result)
 ```
 
 ---
 
-## ⚙️ Configuration
-
-Configure AgenticAI programmatically or via environment variables:
+## Creating Agents
 
 ```python
-from agenticaiframework.configurations import ConfigurationManager
+from agenticaiframework import Agent
 
-config = ConfigurationManager()
-config.set_config("LLM", {"provider": "openai", "model": "gpt-4"})
-config.set_config("Logging", {"log_level": "INFO"})
-```
-
-Or via environment variables:
-
-```bash
-export OPENAI_API_KEY=your_api_key_here
+agent = Agent(
+    name="researcher",
+    role="Research Assistant",
+    goal="Find and summarise relevant information",
+    backstory="Expert researcher with deep analytical skills",
+)
 ```
 
 ---
 
-## 🔧 Using Tools
-
-```python
-from agenticaiframework.tools import tool_registry
-
-# List available tools
-print(tool_registry.list_tools())
-
-# Get and use a tool
-tool = tool_registry.get_tool("web_search")
-result = tool.run({"query": "AI news"})
-```
-
----
-
-## 🧠 Memory Usage
-
-```python
-from agenticaiframework.memory import MemoryManager
-
-memory = MemoryManager()
-
-# Store data
-memory.store("user_preference", "dark_mode")
-
-# Retrieve data
-pref = memory.retrieve("user_preference")
-print(pref)
-```
-
----
-
-## 📋 Running Tasks
+## Defining Tasks
 
 ```python
 from agenticaiframework import Task
 
-def analyze_data(inputs):
-    return {"result": f"Analyzed: {inputs['data']}"}
-
 task = Task(
-    name="DataAnalysis",
-    objective="Analyze user data",
-    executor=analyze_data,
-    inputs={"data": "sample_data.csv"}
+    description="Summarise the latest AI research papers",
+    agent=agent,
+    expected_output="A concise summary of 3-5 key papers",
 )
-
-result = task.run()
-print(result)
 ```
 
 ---
 
-## 🤝 Multi-Agent Collaboration
+## Running Processes
 
-Orchestrate multiple agents for complex tasks:
+### Sequential
 
 ```python
-from agenticaiframework import Agent, AgentManager
+from agenticaiframework import Process
 
-# Create specialized agents
-researcher = Agent(name="Researcher", role="research", capabilities=["web", "text"])
-summarizer = Agent(name="Summarizer", role="summarize", capabilities=["text"])
+proc = Process(name="research_pipeline", strategy="sequential")
+proc.add_task(fetch_papers, "arxiv")
+proc.add_task(summarise, papers)
+results = proc.execute()
+```
 
-manager = AgentManager()
-manager.register_agent(researcher)
-manager.register_agent(summarizer)
+### Parallel
 
-# Agents can collaborate
-research_result = researcher.act("Find the latest AI research papers")
-summary = summarizer.act(f"Summarize: {research_result}")
+```python
+proc = Process(name="multi_fetch", strategy="parallel", max_workers=4)
+for source in ["arxiv", "scholar", "semantic"]:
+    proc.add_task(fetch_papers, source)
+results = proc.execute()
 ```
 
 ---
 
-## 🚀 Deployment
+## Using the Hub
 
-### Docker Deployment
+```python
+from agenticaiframework import Hub
 
-```dockerfile
-FROM python:3.11-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
-CMD ["python", "main.py"]
-```
+hub = Hub()
 
-### Cloud Deployment
+# Register components
+hub.register("agents", "researcher", agent)
+hub.register("tools", "search", search_tool)
 
-Deploy to AWS Lambda, Google Cloud Functions, or Azure Functions by packaging the code and dependencies.
-
----
-
-## 🔒 Security
-
-- Always validate and sanitize inputs to agents
-- Use guardrails to prevent unsafe actions
-- Store API keys securely using environment variables
-- Limit network access for agents in untrusted environments
-
----
-
-## ⚡ Performance Optimization
-
-- Use caching for repeated computations
-- Optimize prompt templates for LLMs to reduce token usage
-- Use batch processing for large datasets
-- Monitor performance using the monitoring module
-
----
-
-## 🧪 Testing
-
-Run tests with:
-
-```bash
-pytest tests/ -v
-```
-
-With coverage:
-
-```bash
-pytest tests/ --cov=agenticaiframework --cov-report=html
+# Retrieve
+researcher = hub.get("agents", "researcher")
 ```
 
 ---
 
-## 📚 Additional Resources
+## Knowledge Retrieval
 
-- [Quick Start Guide](quick-start.md)
-- [API Reference](API_REFERENCE.md)
-- [Configuration Guide](CONFIGURATION.md)
-- [Extending the Framework](EXTENDING.md)
-- [Examples](EXAMPLES.md)
-- [Troubleshooting](TROUBLESHOOTING.md)
+```python
+from agenticaiframework import KnowledgeRetriever
+
+retriever = KnowledgeRetriever()
+retriever.register_source("docs", my_search_function)
+
+result = retriever.retrieve("docs", "How to configure agents?")
+# Cached automatically on second call
+```
+
+---
+
+## Monitoring
+
+```python
+from agenticaiframework import MonitoringSystem
+
+monitor = MonitoringSystem()
+monitor.record_metric("latency_ms", 42.5)
+monitor.log_event("task_completed", {"task": "summarise"})
+
+metrics = monitor.get_metrics()
+events = monitor.get_events()
+gc_stats = monitor.get_gc_stats()
+```
+
+---
+
+## MCP Tools
+
+```python
+from agenticaiframework.mcp_tools import MCPTool, MCPToolManager
+
+tool = MCPTool(
+    id="calculator",
+    name="Calculator",
+    capability="Perform arithmetic operations",
+    execute_fn=lambda a, b: a + b,
+)
+
+manager = MCPToolManager()
+manager.register_tool(tool)
+result = manager.execute_tool("calculator", a=5, b=3)
+```
+
+---
+
+## Workflows
+
+```python
+from agenticaiframework import Workflow
+
+workflow = Workflow(name="data_pipeline")
+workflow.add_step("extract", extract_fn)
+workflow.add_step("transform", transform_fn)
+workflow.add_step("load", load_fn)
+
+results = workflow.run()
+```
+
+---
+
+## Configuration
+
+```python
+from agenticaiframework import Configurations
+
+config = Configurations()
+config.set("llm.provider", "openai")
+config.set("llm.model", "gpt-4o")
+config.set("llm.temperature", 0.7)
+
+provider = config.get("llm.provider")
+```
+
+---
+
+## Guardrails
+
+```python
+from agenticaiframework.guardrails import InputGuardrail, OutputGuardrail
+
+# Validate inputs before agent processing
+input_guard = InputGuardrail(
+    name="length_check",
+    validator=lambda text: len(text) < 10000,
+    error_message="Input too long",
+)
+
+# Validate outputs before returning to user
+output_guard = OutputGuardrail(
+    name="pii_check",
+    validator=lambda text: "SSN" not in text,
+    error_message="Output contains PII",
+)
+```
+
+---
+
+## Error Handling
+
+```python
+from agenticaiframework.exceptions import (
+    AgenticAIError,
+    ConfigurationError,
+    ProcessExecutionError,
+)
+
+try:
+    results = process.execute()
+except ProcessExecutionError as e:
+    logger.error("Process failed: %s", e)
+except AgenticAIError as e:
+    logger.error("Framework error: %s", e)
+```
+
+---
+
+## Logging
+
+The framework uses Python's built-in `logging` module. Configure the log
+level to control output:
+
+```python
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("agenticaiframework")
+logger.setLevel(logging.DEBUG)
+```
+
+---
+
+## Best Practices
+
+1. **Use structured logging** — the framework logs via `logging`, not `print()`.
+2. **Register components in the Hub** — enables discovery and dependency injection.
+3. **Set `max_workers` explicitly** for parallel processes.
+4. **Clear caches** after data changes (`retriever.clear_cache()`).
+5. **Handle exceptions** at the process level for graceful degradation.
+6. **Use `__slots__`** in custom classes for memory-efficient agents.
+
+---
+
+## Related Documentation
+
+- [Quick Start](quick-start.md) — get started in 5 minutes
+- [Configuration](CONFIGURATION.md) — framework configuration
+- [API Reference](API_REFERENCE.md) — full API docs
+- [Examples](EXAMPLES.md) — code samples
+- [Best Practices](best-practices.md) — production patterns

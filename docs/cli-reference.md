@@ -13,7 +13,7 @@ tags:
 <div align="center">
 
 [![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/isathish/agenticaiframework)
-[![Modules](https://img.shields.io/badge/modules-380%2B-brightgreen.svg)](https://github.com/isathish/agenticaiframework)
+[![Modules](https://img.shields.io/badge/modules-400%2B-brightgreen.svg)](https://github.com/isathish/agenticaiframework)
 [![Enterprise](https://img.shields.io/badge/enterprise-237%20modules-gold.svg)](https://github.com/isathish/agenticaiframework)
 [![CLI](https://img.shields.io/badge/CLI-Command--Line-success.svg)](https://github.com/isathish/agenticaiframework)
 

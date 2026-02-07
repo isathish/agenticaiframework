@@ -15,7 +15,7 @@ tags:
 
 **Comprehensive prompt management with security and versioning**
 
-Create, manage, and render safe prompts for LLMs across **380+ modules**
+Create, manage, and render safe prompts for LLMs across **400+ modules**
 
 </div>
 
@@ -91,7 +91,7 @@ The `Prompt` class represents a prompt template with security and versioning fea
 ```python
 Prompt(
     template: str,
-    metadata: Dict[str, Any] = None,
+    metadata: dict[str, Any] = None,
     enable_security: bool = True
 )
 ```
@@ -99,7 +99,7 @@ Prompt(
 **Parameters:**
 
 - **`template`** *(str)*: The prompt template with `{variable}` placeholders
-- **`metadata`** *(Dict[str, Any])*: Additional metadata (tags, description, etc.)
+- **`metadata`** *(dict[str, Any])*: Additional metadata (tags, description, etc.)
 - **`enable_security`** *(bool)*: Enable injection detection and sanitization
 
 #### Methods
@@ -113,6 +113,10 @@ def update_template(new_template: str) -> None
 **Example:**
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.prompts import Prompt
 
 # Create a prompt with security enabled
@@ -124,14 +128,14 @@ prompt = Prompt(
 
 # Render with variables
 result = prompt.render(name="Alice", task="analyze data")
-print(result)
+logger.info(result)
 
 # Safe rendering with automatic sanitization
 safe_result = prompt.render_safe(
     name="Bob",
     task="<script>alert('xss')</script>"
 )
-print(safe_result)  # Script tags removed
+logger.info(safe_result)  # Script tags removed
 ```
 
 ### PromptManager Class
@@ -148,15 +152,19 @@ PromptManager(enable_security: bool = True)
 
 ```python
 def register_prompt(prompt: Prompt) -> None
-def get_prompt(prompt_id: str) -> Optional[Prompt]
+def get_prompt(prompt_id: str) -> Prompt | None
 def render_prompt(prompt_id: str, **kwargs) -> str
-def list_prompts() -> List[str]
+def list_prompts() -> list[str]
 def delete_prompt(prompt_id: str) -> None
 ```
 
 **Example:**
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.prompts import Prompt, PromptManager
 
 # Create manager with security enabled
@@ -180,11 +188,11 @@ result = manager.render_prompt(
     greeting_prompt.id,
     user="Alice"
 )
-print(result)
+logger.info(result)
 
 # List all prompts
 prompts = manager.list_prompts()
-print(f"Registered prompts: {len(prompts)}")
+logger.info(f"Registered prompts: {len(prompts)}")
 ```
 
 ---
@@ -198,6 +206,10 @@ The Prompt Versioning module provides enterprise-grade version control for promp
 Manages versioned prompts with full lifecycle support.
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.prompt_versioning import (
     PromptVersionManager,
     PromptVersion,
@@ -216,7 +228,7 @@ prompt = manager.create_prompt(
     tags=["support", "customer-facing"]
 )
 
-print(f"Created: {prompt.name} v{prompt.version}")  # v1.0.0
+logger.info(f"Created: {prompt.name} v{prompt.version}")  # v1.0.0
 ```
 
 #### Version Lifecycle
@@ -232,6 +244,10 @@ graph LR
 #### Creating New Versions
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Create a new version with semantic versioning
 new_version = manager.create_version(
     prompt_id=prompt.prompt_id,
@@ -241,12 +257,16 @@ new_version = manager.create_version(
     changelog="Improved greeting tone"
 )
 
-print(f"New version: v{new_version.version}")  # v1.1.0
+logger.info(f"New version: v{new_version.version}")  # v1.1.0
 ```
 
 #### Activation and Rollback
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Activate a version (makes it the default)
 manager.activate(
     prompt_id=prompt.prompt_id,
@@ -260,7 +280,7 @@ rolled_back = manager.rollback(
     target_version="1.0.0",
     rolled_back_by="admin"
 )
-print(f"Rolled back, new version: v{rolled_back.version}")  # v1.1.1
+logger.info(f"Rolled back, new version: v{rolled_back.version}")  # v1.1.1
 ```
 
 #### Rendering Prompts
@@ -287,11 +307,15 @@ result_v1 = manager.render(
 #### Audit Trail
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Get audit log for a prompt
 audit_log = manager.get_audit_log(prompt_id=prompt.prompt_id, limit=50)
 
 for entry in audit_log:
-    print(f"{entry['action']} by {entry['actor']} at {entry['timestamp']}")
+    logger.info(f"{entry['action']} by {entry['actor']} at {entry['timestamp']}")
 ```
 
 ### PromptLibrary

@@ -14,19 +14,23 @@ This guide provides a **professional, step-by-step walkthrough** for using the `
 It is intended for developers building AI-driven applications that require flexible, parameterized prompt generation.
 
 !!! info "Enterprise ML/AI Features"
-    Part of **380+ modules** with 14 ML/AI modules including prompt versioning and A/B testing. See [Prompts Documentation](../prompts.md).
+    Part of **400+ modules** with 14 ML/AI modules including prompt versioning and A/B testing. See [Prompts Documentation](../prompts.md).
 
 
 ## Prerequisites & Configuration
 
 - **Installation**: Ensure `agenticaiframework` is installed and accessible in your Python environment.
 - **No additional configuration** is required for this example.
-- **Python Version**: Compatible with Python 3.8+.
+- **Python Version**: Compatible with Python 3.10+.
 
 
 ## Code
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.prompts import Prompt
 
 if __name__ == "__main__":
@@ -37,7 +41,7 @@ if __name__ == "__main__":
 
     # Render the prompt with variables
     rendered_prompt = prompt_instance.render(length="short", topic="artificial intelligence")
-    print("Rendered Prompt:", rendered_prompt)
+    logger.info("Rendered Prompt:", rendered_prompt)
 ```
 
 

@@ -77,7 +77,8 @@ class CommunicationManager:
     
     def _log(self, message: str):
         import time
-        print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [CommunicationManager] {message}")
+        import logging as _logging
+        _logging.getLogger(__name__).info("[CommunicationManager] %s", message)
 
     def register_protocol(self, name: str, handler_fn):
         self.protocols[name] = handler_fn

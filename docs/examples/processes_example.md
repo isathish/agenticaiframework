@@ -10,9 +10,13 @@ tags:
 # ⚙️ Process Example
 
 !!! tip "12 Workflow Types"
-    Part of **380+ modules** with sequential, parallel, DAG, and consensus-based orchestration. See [Processes Documentation](../processes.md).
+    Part of **400+ modules** with sequential, parallel, DAG, and consensus-based orchestration. See [Processes Documentation](../processes.md).
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.processes import Process
 
 # Example: Using the Process class
@@ -31,10 +35,10 @@ if __name__ == "__main__":
 
     # Define some example steps
     def step_one():
-        print("Step One executed.")
+        logger.info("Step One executed.")
 
     def step_two():
-        print("Step Two executed.")
+        logger.info("Step Two executed.")
 
     # Add steps to the process
     process.add_step(step_one)

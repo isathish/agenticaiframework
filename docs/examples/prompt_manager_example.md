@@ -10,9 +10,13 @@ tags:
 # 📝 Prompt Manager Example
 
 !!! info "Prompt Versioning & A/B Testing"
-    Part of **380+ modules** with prompt versioning, templates, and A/B testing support. See [Prompts Documentation](../prompts.md).
+    Part of **400+ modules** with prompt versioning, templates, and A/B testing support. See [Prompts Documentation](../prompts.md).
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.prompts import Prompt, PromptManager
 
 # Example: Using the Prompt and PromptManager
@@ -40,10 +44,10 @@ if __name__ == "__main__":
     # Retrieve and use prompts
     greet_prompt = prompt_manager.get_prompt("GreetPrompt")
     if greet_prompt:
-        print("GreetPrompt filled:", greet_prompt.fill({"name": "Alice"}))
+        logger.info("GreetPrompt filled:", greet_prompt.fill({"name": "Alice"}))
 
     sum_prompt = prompt_manager.get_prompt("SumPrompt")
     if sum_prompt:
-        print("SumPrompt filled:", sum_prompt.fill({"a": 5, "b": 7, "result": 12}))
+        logger.info("SumPrompt filled:", sum_prompt.fill({"a": 5, "b": 7, "result": 12}))
 
 ```

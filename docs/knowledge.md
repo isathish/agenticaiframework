@@ -1,163 +1,196 @@
 ---
-title: Knowledge Management
-description: Retrieval-Augmented Generation (RAG) and intelligent knowledge management for AI agents
+title: Knowledge
+description: Knowledge retrieval with LRU caching, pluggable sources, and thread-safe operations
 tags:
   - knowledge
-  - RAG
-  - vector-search
   - retrieval
+  - caching
+  - rag
 ---
 
-# 📚 Knowledge Management
+# :material-book-open-variant: Knowledge
 
-<div class="annotate" markdown>
+**Pluggable knowledge retrieval with LRU caching and thread-safe operations.**
 
-**Retrieval-Augmented Generation (RAG) for intelligent agents**
+Register custom retrieval functions, query them by name, and benefit from
+automatic caching via an `OrderedDict`-based LRU cache.
 
-Manage structured and unstructured knowledge sources with vector search across **380+ modules**
-
-</div>
-
-!!! success "Enterprise Knowledge"
-    Part of **237 enterprise modules** with **15 knowledge management features** including RAG pipelines, vector stores, and semantic search. See [Enterprise Documentation](enterprise.md).
+!!! tip "v2.0 Improvements"
+    KnowledgeRetriever now uses an `OrderedDict` LRU cache (max 1024 entries),
+    `threading.Lock` for thread safety, and structured logging.
 
 ---
 
-## 🎯 Quick Navigation
+## Overview
 
-<div class="grid cards" markdown>
+The `KnowledgeRetriever` class provides a unified interface for knowledge
+retrieval across multiple sources:
 
--   :material-database:{ .lg } **Knowledge Base**
-    
-    Store and organize documents
-    
-    [:octicons-arrow-right-24: Setup](#key-classes-and-functions)
+| Feature | Description |
+|---------|-------------|
+| **Pluggable sources** | Register any callable as a retrieval function |
+| **LRU cache** | Automatic caching with bounded `OrderedDict` (max 1024) |
+| **Direct storage** | Add key-value knowledge entries directly |
+| **Thread safety** | All operations protected by `threading.Lock` |
 
--   :material-vector-triangle:{ .lg } **Vector Search**
-    
-    Semantic similarity retrieval
-    
-    [:octicons-arrow-right-24: Configure](#knowledge-architecture)
+---
 
--   :material-file-document:{ .lg } **Documents**
-    
-    Add and manage content
-    
-    [:octicons-arrow-right-24: Learn More](#use-cases)
+## Quick Start
 
--   :material-book-open:{ .lg } **RAG Patterns**
-    
-    Implementation examples
-    
-    [:octicons-arrow-right-24: View Examples](#example-usage)
-
-</div>
-
-## 📖 Overview
-
-!!! abstract "What is the Knowledge Module?"
-    
-    The Knowledge module manages structured and unstructured knowledge sources for AI agents, enabling retrieval, storage, and querying of domain-specific information to enhance reasoning and contextual understanding.
-
-!!! tip "Enterprise ML/AI"
-    
-    The framework includes **14 ML/AI infrastructure modules** with feature store, model registry, RAG, embeddings, and recommendation engine.
-
-<div class="grid" markdown>
-
-:material-file-document-multiple:{ .lg } **Document Management**
-:   Add, update, and organize knowledge documents
-
-:material-magnify:{ .lg } **Semantic Search**
-:   Find relevant information using embeddings
-
-:material-database-sync:{ .lg } **External Integration**
-:   Connect to APIs, databases, and file systems
-
-:material-brain:{ .lg } **RAG Support**
-:   Retrieval-Augmented Generation patterns
-
-</div>
-
-## 🏛️ Knowledge Architecture
-
-```mermaid
-graph TB
-    subgraph "Input Sources"
-        FILES[Files<br/>📄 PDF, TXT, MD]
-        API[APIs<br/>🌐 REST, GraphQL]
-        DB[Databases<br/>📦 SQL, NoSQL]
-    end
-    
-    subgraph "Knowledge Processing"
-        LOADER[Document Loader]
-        CHUNK[Text Chunking]
-        EMBED[Embeddings<br/>🧠 OpenAI, Sentence Transformers]
-    end
-    
-    subgraph "Storage"
-        VECTOR[Vector Database<br/>🔍 Pinecone, Weaviate, Chroma]
-        META[Metadata Store<br/>🏷️ PostgreSQL, MongoDB]
-    end
-    
-    subgraph "Retrieval"
-        SEARCH[Semantic Search]
-        FILTER[Metadata Filtering]
-        RANK[Relevance Ranking]
-    end
-    
-    FILES & API & DB --> LOADER
-    LOADER --> CHUNK
-    CHUNK --> EMBED
-    EMBED --> VECTOR
-    EMBED --> META
-    
-    VECTOR --> SEARCH
-    META --> FILTER
-    SEARCH & FILTER --> RANK
-    
-    style EMBED fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
-    style VECTOR fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-    style SEARCH fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
-```
-
-## Key Classes and Functions
-- **KnowledgeBase** — Core class for storing and retrieving knowledge entries.
-- **Document** — Represents a single knowledge item with metadata.
-- **add_document(document)** — Adds a new document to the knowledge base.
-- **search(query, **kwargs)** — Searches the knowledge base for relevant documents.
-- **load_from_source(source)** — Loads knowledge from external sources (files, APIs, databases).
-
-## Example Usage
 ```python
-from agenticaiframework.knowledge import KnowledgeBase, Document
+from agenticaiframework import KnowledgeRetriever
 
-# Initialize knowledge base
-kb = KnowledgeBase()
+retriever = KnowledgeRetriever()
 
-# Add a document
-doc = Document(content="Python is a high-level programming language.", metadata={"topic": "programming"})
-kb.add_document(doc)
+# Register a retrieval source
+def search_docs(query: str) -> str:
+    # Your retrieval logic (vector DB, API, file search, etc.)
+    return f"Result for: {query}"
 
-# Search for information
-results = kb.search("What is Python?")
-for r in results:
-    print(r.content)
+retriever.register_source("docs", search_docs)
+
+# Query the source
+result = retriever.retrieve("docs", "How do I configure agents?")
+
+# Results are cached automatically — second call is instant
+cached = retriever.retrieve("docs", "How do I configure agents?")
 ```
 
-## Use Cases
-- Enhancing LLM responses with domain-specific facts.
-- Building retrieval-augmented generation (RAG) systems.
-- Creating searchable internal knowledge repositories.
-- Integrating with external data sources for dynamic updates.
+---
+
+## Registering Sources
+
+A source is any callable that accepts a query string and returns a result:
+
+```python
+# Simple function
+def search_wiki(query: str) -> str:
+    return wiki_api.search(query)
+
+retriever.register_source("wiki", search_wiki)
+
+# Lambda
+retriever.register_source("echo", lambda q: f"Echo: {q}")
+
+# Class method
+class VectorDB:
+    def search(self, query: str) -> list[dict]:
+        return self.index.query(query, top_k=5)
+
+db = VectorDB()
+retriever.register_source("vectors", db.search)
+```
+
+---
+
+## Direct Knowledge Storage
+
+Add static knowledge entries directly without a retrieval function:
+
+```python
+retriever.add_knowledge("company_name", "Acme Corp")
+retriever.add_knowledge("max_tokens", "4096")
+```
+
+---
+
+## LRU Cache
+
+The cache uses `OrderedDict` with a maximum of 1024 entries. When the limit is
+reached, the least recently used entry is evicted.
+
+```python
+# Check cache contents
+cache = retriever.cache
+
+# Clear the cache (e.g. after updating source data)
+retriever.clear_cache()
+```
+
+!!! info "Cache Key"
+    The cache key is `(source_name, query)` — so the same query to different
+    sources produces separate cache entries.
+
+---
+
+## Bypassing the Cache
+
+Pass `use_cache=False` to skip the cache for a specific query:
+
+```python
+# Always fetch fresh data
+fresh = retriever.retrieve("docs", "latest updates", use_cache=False)
+```
+
+---
+
+## API Reference
+
+### `KnowledgeRetriever`
+
+#### Methods
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `register_source(name, retrieval_fn)` | `None` | Register a named retrieval function |
+| `add_knowledge(key, content)` | `None` | Add a static knowledge entry |
+| `retrieve(source, query, use_cache=True)` | `Any` | Query a source with optional caching |
+| `clear_cache()` | `None` | Clear the LRU cache |
+
+#### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `cache` | `OrderedDict` | Current cache contents |
+
+#### Internal
+
+| Attribute | Type | Description |
+|-----------|------|-------------|
+| `_sources` | `dict` | Registered retrieval functions |
+| `_knowledge` | `dict` | Direct knowledge entries |
+| `_cache` | `OrderedDict` | LRU cache (max 1024) |
+| `_lock` | `threading.Lock` | Thread synchronisation |
+
+---
+
+## Integration with RAG
+
+Combine KnowledgeRetriever with an LLM for retrieval-augmented generation:
+
+```python
+from agenticaiframework import KnowledgeRetriever
+
+retriever = KnowledgeRetriever()
+retriever.register_source("docs", doc_search_fn)
+
+# Retrieve context
+context = retriever.retrieve("docs", user_question)
+
+# Build prompt with context
+prompt = f"Context: {context}\n\nQuestion: {user_question}\nAnswer:"
+```
+
+---
 
 ## Best Practices
-- Keep metadata consistent for better filtering and retrieval.
-- Periodically update the knowledge base to maintain relevance.
-- Use embeddings for semantic search to improve accuracy.
-- Secure sensitive knowledge sources with access controls.
+
+!!! success "Do"
+    - Register sources during application startup.
+    - Use `clear_cache()` when underlying data changes.
+    - Use `use_cache=False` for time-sensitive queries.
+    - Keep retrieval functions fast — they block the calling thread.
+
+!!! danger "Don't"
+    - Register sources with the same name (the second overwrites the first).
+    - Store large binary blobs via `add_knowledge()` — use object storage instead.
+    - Forget to call `clear_cache()` after data updates.
+
+---
 
 ## Related Documentation
-- [LLMs Module](llms.md)
-- [Prompts Module](prompts.md)
-- [Agents Module](agents.md)
+
+- [Memory](memory.md) — persistent agent memory
+- [Agents](agents.md) — agent lifecycle
+- [Tools](tools.md) — tool definitions for agents
+- [Hub](hub.md) — component registry

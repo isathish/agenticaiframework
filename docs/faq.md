@@ -14,7 +14,7 @@ tags:
 
 **Quick answers to common questions**
 
-Find solutions and learn best practices for **380+ modules** and **237 enterprise features**
+Find solutions and learn best practices for **400+ modules** and **237 enterprise features**
 
 </div>
 
@@ -58,7 +58,7 @@ Find solutions and learn best practices for **380+ modules** and **237 enterpris
 
 ### What is AgenticAI Framework?
 
-AgenticAI Framework is an enterprise-grade Python SDK with **380+ modules** for building intelligent agentic applications. It provides a comprehensive toolkit including **237 enterprise modules** for creating, managing, and orchestrating AI agents with advanced features like memory management, multi-agent collaboration, guardrails, and 12-tier evaluation systems.
+AgenticAI Framework is an enterprise-grade Python SDK with **400+ modules** for building intelligent agentic applications. It provides a comprehensive toolkit including **237 enterprise modules** for creating, managing, and orchestrating AI agents with advanced features like memory management, multi-agent collaboration, guardrails, and 12-tier evaluation systems.
 
 ### Who should use AgenticAI Framework?
 
@@ -70,7 +70,7 @@ AgenticAI Framework is an enterprise-grade Python SDK with **380+ modules** for 
 
 ### What are the system requirements?
 
-- **Python**: 3.8 or higher (3.11+ recommended)
+- **Python**: 3.10 or higher (3.13+ recommended)
 - **Memory**: Minimum 4GB RAM (8GB+ recommended)
 - **OS**: Linux, macOS, or Windows
 - **Dependencies**: See `requirements.txt`
@@ -79,7 +79,7 @@ AgenticAI Framework is an enterprise-grade Python SDK with **380+ modules** for 
 
 | Feature | AgenticAI | CrewAI | LangChain | AutoGPT |
 |---------|-----------|---------|-----------|---------|
-| Total Modules | ✅ 380+ | ⚠️ ~20 | ⚠️ ~50 | ⚠️ ~30 |
+| Total Modules | ✅ 400+ | ⚠️ ~20 | ⚠️ ~50 | ⚠️ ~30 |
 | Enterprise Modules | ✅ 237 | ❌ None | ⚠️ Limited | ❌ None |
 | Multi-Agent Orchestration | ✅ | ✅ | ⚠️ | ✅ |
 | Memory Managers | ✅ 7 | ⚠️ Basic | ✅ | ⚠️ |
@@ -303,8 +303,12 @@ responses = llm_manager.generate_batch(prompts)
 Yes!
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 async for chunk in llm_manager.generate_stream(prompt):
-    print(chunk, end="", flush=True)
+    logger.info(chunk, end="", flush=True)
 ```
 
 ### Can I use local models?
@@ -464,7 +468,7 @@ Common causes:
 ```python
 # Check environment
 import os
-print(os.getenv("OPENAI_API_KEY"))
+logger.info(os.getenv("OPENAI_API_KEY"))
 ```
 
 2. **Invalid Configuration**:

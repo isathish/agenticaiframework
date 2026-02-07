@@ -14,7 +14,7 @@ tags:
 
 **Comprehensive testing strategies and best practices**
 
-Build reliable AI agent applications with **380+ modules** and **66% test coverage**
+Build reliable AI agent applications with **400+ modules** and **66% test coverage**
 
 </div>
 
@@ -27,7 +27,7 @@ Build reliable AI agent applications with **380+ modules** and **66% test covera
 
 !!! success "Test Coverage"
     
-    The AgenticAI Framework maintains **66% test coverage** with **1036+ tests** across **380+ modules** ensuring reliability and quality.
+    The AgenticAI Framework maintains **66% test coverage** with **1036+ tests** across **400+ modules** ensuring reliability and quality.
 
 <div class="grid" markdown>
 

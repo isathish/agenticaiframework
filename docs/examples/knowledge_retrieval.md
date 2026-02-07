@@ -11,9 +11,13 @@ tags:
 # 📚 Knowledge Retrieval Example
 
 !!! info "Enterprise Knowledge Management"
-    Part of **380+ modules** with 15 knowledge management modules supporting vector stores, RAG pipelines, and semantic search. See [Knowledge Documentation](../knowledge.md).
+    Part of **400+ modules** with 15 knowledge management modules supporting vector stores, RAG pipelines, and semantic search. See [Knowledge Documentation](../knowledge.md).
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.agents import Agent
 from agenticaiframework.tasks import Task
 from agenticaiframework.llms import LLMManager
@@ -54,7 +58,7 @@ if __name__ == "__main__":
     result = knowledge_task.run()
 
     # Output result
-    print("=== Knowledge Retrieval Summary ===")
-    print(result)
+    logger.info("=== Knowledge Retrieval Summary ===")
+    logger.info(result)
 
 ```

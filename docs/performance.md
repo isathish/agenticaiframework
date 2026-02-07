@@ -14,7 +14,7 @@ tags:
 
 **Maximize speed, efficiency, and scalability**
 
-From microseconds to enterprise scale with **380+ optimized modules**
+From microseconds to enterprise scale with **400+ optimized modules**
 
 </div>
 
@@ -61,7 +61,7 @@ From microseconds to enterprise scale with **380+ optimized modules**
 <div align="center">
 
 [![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/isathish/agenticaiframework)
-[![Modules](https://img.shields.io/badge/Modules-380%2B-purple.svg)](https://github.com/isathish/agenticaiframework)
+[![Modules](https://img.shields.io/badge/Modules-400%2B-purple.svg)](https://github.com/isathish/agenticaiframework)
 [![Performance](https://img.shields.io/badge/Performance-Optimized-success.svg)](https://github.com/isathish/agenticaiframework)
 [![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://isathish.github.io/agenticaiframework/)
 
@@ -322,6 +322,10 @@ response = llm_manager.generate(
 ### 4. Streaming Responses
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 async def stream_llm_response(prompt: str):
     """Stream LLM response for better UX"""
     
@@ -334,7 +338,7 @@ async def stream_llm_response(prompt: str):
 
 # Usage
 async for token in stream_llm_response("Explain quantum computing"):
-    print(token, end="", flush=True)
+    logger.info(token, end="", flush=True)
 ```
 
 
@@ -396,6 +400,10 @@ recent_memories = memory_manager.retrieve(
 ### 3. Memory Cleanup Strategy
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 import schedule
 import time
 
@@ -409,7 +417,7 @@ def cleanup_stale_memories():
         filter={"timestamp": {"$lt": cutoff_time}}
     )
     
-    print(f"Cleaned up {deleted} stale memories")
+    logger.info(f"Cleaned up {deleted} stale memories")
 
 # Schedule cleanup
 schedule.every().day.at("02:00").do(cleanup_stale_memories)
@@ -585,7 +593,7 @@ def profile_function(func, *args, **kwargs):
     ps = pstats.Stats(profiler, stream=s).sort_stats('cumulative')
     ps.print_stats(20)  # Top 20 functions
     
-    print(s.getvalue())
+    logger.info(s.getvalue())
     return result
 
 # Usage

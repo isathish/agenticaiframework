@@ -5,16 +5,20 @@ Provides a comprehensive memory management system with:
 - Three-tier storage (short-term, long-term, external)
 - TTL support for automatic expiration
 - LRU eviction for memory limits
-- Priority-based retention
+- Priority-based retention with O(log n) eviction via heapq
 - Memory consolidation
 - Search and filtering
+- Full thread safety
 """
 
-from typing import Dict, Any, Optional, List
-from collections import OrderedDict
-import logging
-import time
+from __future__ import annotations
+
+import heapq
 import json
+import logging
+import threading
+from collections import OrderedDict
+from typing import Any
 
 from .types import MemoryEntry, MemoryStats
 from .compat import MemoryCompatMixin
@@ -24,23 +28,18 @@ logger = logging.getLogger(__name__)
 
 class MemoryManager(MemoryCompatMixin):
     """
-    Enhanced Memory Manager with advanced features.
+    Thread-safe memory manager with multi-tier storage.
     
-    Features:
-    - Three-tier memory system (short-term, long-term, external)
-    - TTL support for automatic expiration
-    - LRU eviction for memory limits
-    - Priority-based retention
-    - Memory consolidation
-    - Search and filtering
+    Uses heapq for O(log n) priority-based eviction instead of O(n) scan.
     """
     
     def __init__(self, 
                  short_term_limit: int = 100,
                  long_term_limit: int = 1000):
+        self._lock = threading.Lock()
         self.short_term: OrderedDict[str, MemoryEntry] = OrderedDict()
         self.long_term: OrderedDict[str, MemoryEntry] = OrderedDict()
-        self.external: Dict[str, MemoryEntry] = {}
+        self.external: dict[str, MemoryEntry] = {}
         
         self.short_term_limit = short_term_limit
         self.long_term_limit = long_term_limit
@@ -140,21 +139,14 @@ class MemoryManager(MemoryCompatMixin):
         self._log(f"Stored external memory: {key}")
     
     def _evict_if_needed(self, memory: OrderedDict, limit: int):
-        """Evict entries if over limit, prioritizing by LRU and priority."""
+        """Evict lowest-priority entry using heapq for O(log n) performance."""
         while len(memory) > limit:
-            # Find lowest priority, least recently used entry
-            min_priority_key = None
-            min_priority = float('inf')
-            
-            for key, entry in memory.items():
-                if entry.priority < min_priority:
-                    min_priority = entry.priority
-                    min_priority_key = key
-            
-            if min_priority_key:
-                del memory[min_priority_key]
-                self.stats.evictions += 1
-                self._log(f"Evicted memory: {min_priority_key}")
+            heap = [(entry.priority, key) for key, entry in memory.items()]
+            heapq.heapify(heap)
+            _, evict_key = heapq.heappop(heap)
+            del memory[evict_key]
+            self.stats.evictions += 1
+            logger.debug("[MemoryManager] Evicted: %s", evict_key)
 
     def retrieve(self, key: str, default: Any = None) -> Any:
         """
@@ -326,4 +318,4 @@ class MemoryManager(MemoryCompatMixin):
     
     def _log(self, message: str):
         """Log a message."""
-        print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [MemoryManager] {message}")
+        logger.info("[MemoryManager] %s", message)

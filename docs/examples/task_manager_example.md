@@ -10,9 +10,13 @@ tags:
 # ✅ Task Manager Example
 
 !!! success "Enterprise Task Orchestration"
-    Part of **380+ modules** with 12 workflow types and advanced scheduling. See [Tasks Documentation](../tasks.md).
+    Part of **400+ modules** with 12 workflow types and advanced scheduling. See [Tasks Documentation](../tasks.md).
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework.tasks import Task, TaskManager
 
 # Example: Using the Task and TaskManager
@@ -47,6 +51,6 @@ if __name__ == "__main__":
     # Execute tasks
     for task in task_manager.list_tasks():
         result = task_manager.execute_task(task.name)
-        print(f"Task '{task.name}' result:", result)
+        logger.info(f"Task '{task.name}' result:", result)
 
 ```

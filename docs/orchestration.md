@@ -85,6 +85,10 @@ AgenticAI Framework provides powerful orchestration capabilities for building so
 ### Creating a Basic Team
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework import Agent, AgentConfig, Team
 
 # Create specialized agents
@@ -124,7 +128,7 @@ team = Team(
 
 # Execute team task
 result = team.execute("Create an article about quantum computing")
-print(result.final_output)
+logger.info(result.final_output)
 ```
 
 ### Team Configuration
@@ -521,16 +525,20 @@ delegation.assign(
 ### Delegation Tracking
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Track delegation status
 status = delegation.get_status()
-print(f"Assigned: {status.assigned}")
-print(f"In Progress: {status.in_progress}")
-print(f"Completed: {status.completed}")
+logger.info(f"Assigned: {status.assigned}")
+logger.info(f"In Progress: {status.in_progress}")
+logger.info(f"Completed: {status.completed}")
 
 # Get agent workload
 workload = delegation.get_agent_workload("researcher")
-print(f"Current tasks: {workload.current_tasks}")
-print(f"Capacity: {workload.remaining_capacity}")
+logger.info(f"Current tasks: {workload.current_tasks}")
+logger.info(f"Capacity: {workload.remaining_capacity}")
 ```
 
 ---
@@ -660,32 +668,40 @@ agent = Agent(
 ### Orchestration Metrics
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 from agenticaiframework import OrchestrationMonitor
 
 monitor = OrchestrationMonitor(team=team)
 
 # Get team metrics
 metrics = monitor.get_metrics()
-print(f"Total tasks: {metrics.total_tasks}")
-print(f"Success rate: {metrics.success_rate:.2%}")
-print(f"Avg completion time: {metrics.avg_completion_time_ms}ms")
+logger.info(f"Total tasks: {metrics.total_tasks}")
+logger.info(f"Success rate: {metrics.success_rate:.2%}")
+logger.info(f"Avg completion time: {metrics.avg_completion_time_ms}ms")
 
 # Get agent-level metrics
 for agent_id, agent_metrics in metrics.agent_metrics.items():
-    print(f"{agent_id}: {agent_metrics.tasks_completed} tasks")
+    logger.info(f"{agent_id}: {agent_metrics.tasks_completed} tasks")
 ```
 
 ### Event Streaming
 
 ```python
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Stream orchestration events
 async for event in monitor.stream_events():
     if event.type == "task_started":
-        print(f"Task started: {event.task_id} by {event.agent_id}")
+        logger.info(f"Task started: {event.task_id} by {event.agent_id}")
     elif event.type == "task_completed":
-        print(f"Task completed: {event.task_id}")
+        logger.info(f"Task completed: {event.task_id}")
     elif event.type == "agent_failed":
-        print(f"Agent failed: {event.agent_id}: {event.error}")
+        logger.info(f"Agent failed: {event.agent_id}: {event.error}")
 ```
 
 ### Visualization
