@@ -104,62 +104,123 @@
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ AgenticAI Framework (400+ Modules) │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
-│ │ Agents │ │ Workflows │ │Orchestration│ │ Speech │ │
-│ │ • Context │ │ • Steps │ │ • Teams │ │ • STT/TTS │ │
-│ │ • Memory │ │ • Routing │ │ • Handoffs │ │ • Profiles │ │
-│ │ • Tools │ │ • State │ │ • Messages │ │ • Cache │ │
-│ └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
-│ │ Memory │ │ State │ │Communication│ │ Knowledge │ │
-│ │ • Agent │ │ • Agent │ │ • HTTP/WS │ │ • Retrieval │ │
-│ │ • Workflow │ │ • Workflow │ │ • MQTT/SSE │ │ • Embedding │ │
-│ │ • Orch. │ │ • Orch. │ │ • gRPC │ │ • RAG │ │
-│ │ • Knowledge │ │ • Tools │ │ • STDIO │ │ • Search │ │
-│ │ • Tools │ │ • Speech │ │ • Remote │ │ • Indexing │ │
-│ │ • Speech │ │ • Knowledge │ │ Agents │ │ │ │
-│ └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
-│ │ Guardrails │ │ Security │ │ Evaluation │ │ Monitoring │ │
-│ │ • Content │ │ • Injection │ │ • 12-Tier │ │ • Metrics │ │
-│ │ • Policy │ │ • PII │ │ • A/B Test │ │ • Tracing │ │
-│ │ • Semantic │ │ • Rate Lim │ │ • Canary │ │ • Events │ │
-│ └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
-│ │ LLMs │ │ Tools │ │ Prompts │ │ Compliance │ │
-│ │ • Routing │ │ • 35+ Built │ │ • Versioning│ │ • Audit │ │
-│ │ • Caching │ │ • Registry │ │ • Templates │ │ • Masking │ │
-│ │ • Fallback │ │ • MCP │ │ • Security │ │ • Policy │ │
-│ └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│ Enterprise Layer (237 Modules) │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│ ┌───────────────┐ ┌───────────────┐ ┌───────────────┐ ┌───────────────┐ │
-│ │ API Management│ │ Security │ │Data Processing│ │ML/AI Infra │ │
-│ │ • Gateway │ │ • Encryption │ │ • Pipeline │ │ • Inference │ │
-│ │ • Versioning │ │ • Vault │ │ • Lineage │ │ • Feature Str │ │
-│ │ • Lifecycle │ │ • Auth/RBAC │ │ • ETL │ │ • RAG/Vector │ │
-│ └───────────────┘ └───────────────┘ └───────────────┘ └───────────────┘ │
-│ ┌───────────────┐ ┌───────────────┐ ┌───────────────┐ ┌───────────────┐ │
-│ │ Messaging │ │Infrastructure │ │ DevOps │ │ DDD │ │
-│ │ • Event Bus │ │ • Load Bal. │ │ • Canary │ │ • Aggregate │ │
-│ │ • Pub/Sub │ │ • Circuit Brk │ │ • Blue-Green │ │ • Saga │ │
-│ │ • CQRS │ │ • Service Msh │ │ • Chaos │ │ • Repository │ │
-│ └───────────────┘ └───────────────┘ └───────────────┘ └───────────────┘ │
-│ ┌───────────────┐ ┌───────────────┐ ┌───────────────┐ ┌───────────────┐ │
-│ │ Caching │ │ Observability │ │ Workflow │ │ Integrations │ │
-│ │ • Redis │ │ • Tracing │ │ • Engine │ │ • ServiceNow │ │
-│ │ • Distributed │ │ • Metrics │ │ • Scheduler │ │ • Cloud APIs │ │
-│ │ • Multi-tier │ │ • APM │ │ • State Mach │ │ • Webhooks │ │
-│ └───────────────┘ └───────────────┘ └───────────────┘ └───────────────┘ │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph Framework["AgenticAI Framework -- 400+ Modules"]
+        direction TB
+
+        subgraph Core["Core Layer"]
+            direction LR
+            subgraph G1[" "]
+                direction TB
+                A["Agents\nContext - Memory - Tools"]
+                W["Workflows\nSteps - Routing - State"]
+            end
+            subgraph G2[" "]
+                direction TB
+                O["Orchestration\nTeams - Handoffs - Messages"]
+                SP["Speech\nSTT/TTS - Profiles - Cache"]
+            end
+        end
+
+        subgraph Middle["Services Layer"]
+            direction LR
+            subgraph G3[" "]
+                direction TB
+                M["Memory\n7 Managers - Multi-tier - TTL"]
+                S["State\n7 Managers - Persistence"]
+            end
+            subgraph G4[" "]
+                direction TB
+                C["Communication\nHTTP - WS - MQTT - gRPC - SSE - STDIO"]
+                K["Knowledge\nRetrieval - RAG - Embedding - Search"]
+            end
+        end
+
+        subgraph Safety["Safety and Quality Layer"]
+            direction LR
+            GR["Guardrails\nContent - Policy - Semantic"]
+            SEC["Security\nInjection - PII - Rate Limiting"]
+            EV["Evaluation\n12-Tier - A/B - Canary"]
+            MON["Monitoring\nMetrics - Tracing - Events"]
+        end
+
+        subgraph Foundation["Foundation Layer"]
+            direction LR
+            LLM["LLMs\nRouting - Caching - Fallback"]
+            T["Tools\n35+ Built-in - Registry - MCP"]
+            P["Prompts\nVersioning - Templates - Security"]
+            CO["Compliance\nAudit - Masking - Policy"]
+        end
+
+        subgraph Enterprise["Enterprise Layer -- 237 Modules"]
+            direction LR
+            subgraph E1[" "]
+                direction TB
+                API["API Management\nGateway - Versioning - Lifecycle"]
+                ESEC["Security\nEncryption - Vault - Auth/RBAC"]
+                DP["Data Processing\nPipeline - Lineage - ETL"]
+            end
+            subgraph E2[" "]
+                direction TB
+                ML["ML/AI Infra\nInference - Feature Store - RAG"]
+                MSG["Messaging\nEvent Bus - Pub/Sub - CQRS"]
+                INF["Infrastructure\nLoad Bal. - Circuit Brk - Mesh"]
+            end
+            subgraph E3[" "]
+                direction TB
+                DEV["DevOps\nCanary - Blue-Green - Chaos"]
+                DDD["DDD\nAggregate - Saga - Repository"]
+                CAC["Caching\nRedis - Distributed - Multi-tier"]
+            end
+            subgraph E4[" "]
+                direction TB
+                OBS["Observability\nTracing - Metrics - APM"]
+                WF["Workflow\nEngine - Scheduler - State Machine"]
+                INT["Integrations\nServiceNow - Cloud - Webhooks"]
+            end
+        end
+    end
+
+    Core --> Middle
+    Middle --> Safety
+    Safety --> Foundation
+    Foundation --> Enterprise
+
+    style Framework fill:#0d1117,stroke:#30363d,color:#c9d1d9
+    style Core fill:#161b22,stroke:#58a6ff,color:#c9d1d9
+    style Middle fill:#161b22,stroke:#3fb950,color:#c9d1d9
+    style Safety fill:#161b22,stroke:#d29922,color:#c9d1d9
+    style Foundation fill:#161b22,stroke:#bc8cff,color:#c9d1d9
+    style Enterprise fill:#161b22,stroke:#f778ba,color:#c9d1d9
+    style A fill:#1f6feb,stroke:#58a6ff,color:#fff
+    style W fill:#1f6feb,stroke:#58a6ff,color:#fff
+    style O fill:#1f6feb,stroke:#58a6ff,color:#fff
+    style SP fill:#1f6feb,stroke:#58a6ff,color:#fff
+    style M fill:#238636,stroke:#3fb950,color:#fff
+    style S fill:#238636,stroke:#3fb950,color:#fff
+    style C fill:#238636,stroke:#3fb950,color:#fff
+    style K fill:#238636,stroke:#3fb950,color:#fff
+    style GR fill:#9e6a03,stroke:#d29922,color:#fff
+    style SEC fill:#9e6a03,stroke:#d29922,color:#fff
+    style EV fill:#9e6a03,stroke:#d29922,color:#fff
+    style MON fill:#9e6a03,stroke:#d29922,color:#fff
+    style LLM fill:#6e40c9,stroke:#bc8cff,color:#fff
+    style T fill:#6e40c9,stroke:#bc8cff,color:#fff
+    style P fill:#6e40c9,stroke:#bc8cff,color:#fff
+    style CO fill:#6e40c9,stroke:#bc8cff,color:#fff
+    style API fill:#b62324,stroke:#f778ba,color:#fff
+    style ESEC fill:#b62324,stroke:#f778ba,color:#fff
+    style DP fill:#b62324,stroke:#f778ba,color:#fff
+    style ML fill:#b62324,stroke:#f778ba,color:#fff
+    style MSG fill:#b62324,stroke:#f778ba,color:#fff
+    style INF fill:#b62324,stroke:#f778ba,color:#fff
+    style DEV fill:#b62324,stroke:#f778ba,color:#fff
+    style DDD fill:#b62324,stroke:#f778ba,color:#fff
+    style CAC fill:#b62324,stroke:#f778ba,color:#fff
+    style OBS fill:#b62324,stroke:#f778ba,color:#fff
+    style WF fill:#b62324,stroke:#f778ba,color:#fff
+    style INT fill:#b62324,stroke:#f778ba,color:#fff
 ```
 
 ---
@@ -787,7 +848,7 @@ canary.deploy(
 | Feature | AgenticAI | LangChain | CrewAI | AutoGen |
 |:--------|:---------:|:---------:|:------:|:-------:|
 | **Production Ready** | Enterprise | Experimental | Limited | Research |
-| **Total Modules** | 380+ | ~50 | ~20 | ~30 |
+| **Total Modules** | 400+ | ~50 | ~20 | ~30 |
 | **Test Coverage** | 66% (1036 tests) | Variable | Limited | Basic |
 | **Built-in Tools** | 35+ | Community | Limited | Basic |
 | **Memory Managers** | 7 Specialized | 1 Basic | None | Simple |
