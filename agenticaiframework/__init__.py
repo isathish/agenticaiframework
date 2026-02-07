@@ -32,7 +32,7 @@ Quick Start:
     >>> print(output.response)
 """
 
-__version__ = "2.0.17"
+__version__ = "2.0.18"
 __author__ = "Sathishkumar Nagarajan"
 __license__ = "MIT"
 
