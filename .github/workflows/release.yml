@@ -1,9 +1,21 @@
 name: Release
 
-# MANUAL ONLY - Trigger via workflow_dispatch to release a new version
-# This prevents infinite loops from auto-triggered version bump commits
+# Auto-releases on push to main (patch bump).
+# Manual workflow_dispatch allows choosing patch/minor/major.
+# The [skip ci] tag in the version-bump commit prevents infinite loops.
 
 on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+      - "mkdocs.yml"
+      - "requirements-docs.txt"
+      - ".github/workflows/static.yml"
+      - ".github/workflows/ci.yml"
+      - "LICENSE"
+
   workflow_dispatch:
     inputs:
       release_type:
@@ -23,8 +35,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
-      id-token: write
-      contents: write
+      id-token: write   # PyPI trusted publishing (OIDC)
+      contents: write    # push commits & tags
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,81 +44,119 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUBPATTOKEN || secrets.GITHUB_TOKEN }}
 
+      # Guard against infinite loops: skip if the push was a bot version-bump
+      - name: Check for skip
+        id: guard
+        run: |
+          MSG=$(git log -1 --pretty=%s)
+          if [[ "$MSG" == *"[skip ci]"* ]]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "⏭️  Skipping – commit is a release bot bump"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Setup Python
+        if: steps.guard.outputs.skip != 'true'
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.13"
 
       - name: Install tools
-        run: pip install build bump2version twine
+        if: steps.guard.outputs.skip != 'true'
+        run: pip install --upgrade build bump2version
 
       - name: Bump version
+        if: steps.guard.outputs.skip != 'true'
         id: version
         run: |
-          CURRENT=$(python setup.py --version 2>/dev/null || echo "1.0.0")
-          TYPE="${{ github.event.inputs.release_type }}"
-          
-          git config user.name "github-actions[bot]"
+          # Read current version from pyproject.toml (canonical source)
+          CURRENT=$(python -c "
+          import tomllib, pathlib
+          data = tomllib.loads(pathlib.Path('pyproject.toml').read_text())
+          print(data['project']['version'])
+          ")
+
+          # Auto-push → patch; manual dispatch → user choice
+          TYPE="${{ github.event.inputs.release_type || 'patch' }}"
+
+          git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
-          bump2version --current-version "$CURRENT" "$TYPE" setup.py --allow-dirty
-          VERSION=$(python setup.py --version)
-          
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+          # bump2version reads .bumpversion.cfg → updates pyproject.toml + __init__.py
+          bump2version --current-version "$CURRENT" "$TYPE" --allow-dirty
+
+          # Re-read the new version
+          VERSION=$(python -c "
+          import tomllib, pathlib
+          data = tomllib.loads(pathlib.Path('pyproject.toml').read_text())
+          print(data['project']['version'])
+          ")
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "📦 Version: $VERSION"
 
       - name: Build
+        if: steps.guard.outputs.skip != 'true'
         run: python -m build
 
       - name: Generate release notes
+        if: steps.guard.outputs.skip != 'true'
         id: notes
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          PREV=$(git tag --sort=-creatordate | head -1 || echo "")
-          
-          cat > RELEASE_NOTES.md << EOF
-          ## 🚀 Release v$VERSION
-          
-          ### ✨ Changes
-          EOF
-          
+          PREV=$(git tag --sort=-v:refname | head -1 || echo "")
+
+          {
+            echo "## Release v${VERSION}"
+            echo ""
+            echo "### Changes"
+          } > RELEASE_NOTES.md
+
           if [ -n "$PREV" ]; then
-            git log $PREV..HEAD --pretty=format:"- %s" --no-merges >> RELEASE_NOTES.md
+            git log "${PREV}..HEAD" --pretty=format:"- %s" --no-merges >> RELEASE_NOTES.md
           else
             echo "- Initial release" >> RELEASE_NOTES.md
           fi
-          
-          cat >> RELEASE_NOTES.md << EOF
-          
-          ### 📥 Install
-          \`\`\`bash
-          pip install agenticaiframework==$VERSION
-          \`\`\`
-          EOF
+
+          {
+            echo ""
+            echo ""
+            echo "### Install"
+            echo '```bash'
+            echo "pip install agenticaiframework==${VERSION}"
+            echo '```'
+          } >> RELEASE_NOTES.md
 
       - name: Commit & Tag
+        if: steps.guard.outputs.skip != 'true'
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          git add setup.py
-          git commit -m "chore: release v$VERSION [skip ci]" || true
-          git tag -fa "v$VERSION" -m "Release v$VERSION"
+          git add pyproject.toml agenticaiframework/__init__.py .bumpversion.cfg
+          git commit -m "chore: release v${VERSION} [skip ci]" || true
+          git tag -fa "v${VERSION}" -m "Release v${VERSION}"
 
       - name: Push
+        if: steps.guard.outputs.skip != 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUBPATTOKEN || secrets.GITHUB_TOKEN }}
         run: |
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}"
           git push origin HEAD:main || true
           git push origin --tags --force
 
       - name: Publish to PyPI
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: twine upload dist/* --verbose
+        if: steps.guard.outputs.skip != 'true'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          verbose: true
+          # Uses OIDC trusted publishing – no API token needed.
+          # Falls back to token auth if PYPI_TOKEN secret is set.
+          password: ${{ secrets.PYPI_TOKEN || '' }}
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        if: steps.guard.outputs.skip != 'true'
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.version.outputs.version }}
           name: v${{ steps.version.outputs.version }}
