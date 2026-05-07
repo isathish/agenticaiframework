@@ -241,10 +241,76 @@ class VisionClient:
         ).json()
 
 
+# ---------------------------------------------------------------------------
+# Vertex AI (Gemini + embeddings)
+# ---------------------------------------------------------------------------
+
+@dataclass
+class VertexAIClient:
+    credentials: ServiceAccountCredentials
+    project: str
+    location: str = "us-central1"
+
+    @property
+    def base_url(self) -> str:
+        return f"https://{self.location}-aiplatform.googleapis.com"
+
+    def _auth_header(self) -> Dict[str, str]:
+        token = self.credentials.access_token(
+            ["https://www.googleapis.com/auth/cloud-platform"]
+        )
+        return {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+
+    def generate_content(
+        self,
+        model: str,
+        contents: List[Dict[str, Any]],
+        *,
+        temperature: Optional[float] = None,
+        max_output_tokens: Optional[int] = None,
+        top_p: Optional[float] = None,
+    ) -> Dict[str, Any]:
+        url = (
+            f"{self.base_url}/v1/projects/{self.project}/locations/{self.location}"
+            f"/publishers/google/models/{model}:generateContent"
+        )
+        body: Dict[str, Any] = {"contents": contents}
+        gen_cfg: Dict[str, Any] = {}
+        if temperature is not None:
+            gen_cfg["temperature"] = temperature
+        if max_output_tokens is not None:
+            gen_cfg["maxOutputTokens"] = max_output_tokens
+        if top_p is not None:
+            gen_cfg["topP"] = top_p
+        if gen_cfg:
+            body["generationConfig"] = gen_cfg
+        client = _http.Client(timeout=120.0)
+        return client.post(url, json=body, headers=self._auth_header()).json()
+
+    def predict_embeddings(
+        self,
+        model: str,
+        texts: List[str],
+    ) -> List[List[float]]:
+        url = (
+            f"{self.base_url}/v1/projects/{self.project}/locations/{self.location}"
+            f"/publishers/google/models/{model}:predict"
+        )
+        body = {"instances": [{"content": t} for t in texts]}
+        client = _http.Client(timeout=120.0)
+        resp = client.post(url, json=body, headers=self._auth_header()).json()
+        out: List[List[float]] = []
+        for pred in resp.get("predictions", []):
+            emb = pred.get("embeddings", {}).get("values", [])
+            out.append(emb)
+        return out
+
+
 __all__ = [
     "ServiceAccountCredentials",
     "GCSClient",
     "SpeechClient",
     "TextToSpeechClient",
     "VisionClient",
+    "VertexAIClient",
 ]

@@ -187,41 +187,52 @@ class AzureBlobStorage(StorageAdapter):
         self.connection_string = connection_string or os.getenv("AZURE_STORAGE_CONNECTION_STRING")
         self.container_name = container_name
         self._client = None
+        self._rest_client = None
+        self._using_rest = False
     
     def _get_client(self):
         if self._client is None:
             try:
                 from azure.storage.blob import BlobServiceClient
                 self._client = BlobServiceClient.from_connection_string(self.connection_string)
+                self._using_rest = False
             except ImportError:
-                raise ImportError("azure-storage-blob is required. Install with: pip install azure-storage-blob")
+                from .._internal.clients.azure_blob_rest import (
+                    BlobServiceClient as RestClient,
+                )
+                if not self.connection_string:
+                    raise RuntimeError(
+                        "Azure Blob requires AZURE_STORAGE_CONNECTION_STRING when azure-storage-blob is unavailable"
+                    )
+                self._client = RestClient.from_connection_string(self.connection_string)
+                self._using_rest = True
         return self._client
     
     async def upload(self, path: str, content: Union[str, bytes], **kwargs) -> str:
         client = self._get_client()
+        data = content.encode() if isinstance(content, str) else content
+        if self._using_rest:
+            await asyncio.to_thread(client.create_container, self.container_name)
+            url = await asyncio.to_thread(client.upload, self.container_name, path, data)
+            return url
         container = client.get_container_client(self.container_name)
-        
-        # Ensure container exists
         try:
             await asyncio.to_thread(container.create_container)
         except Exception:
             pass  # Container may already exist
-        
         blob = container.get_blob_client(path)
-        data = content.encode() if isinstance(content, str) else content
         await asyncio.to_thread(blob.upload_blob, data, overwrite=True)
-        
         return blob.url
     
     async def download(self, path: str, **kwargs) -> Union[str, bytes]:
         client = self._get_client()
-        container = client.get_container_client(self.container_name)
-        blob = container.get_blob_client(path)
-        
-        downloader = await asyncio.to_thread(blob.download_blob)
-        content = await asyncio.to_thread(downloader.readall)
-        
-        # Try to decode as string
+        if self._using_rest:
+            content = await asyncio.to_thread(client.download, self.container_name, path)
+        else:
+            container = client.get_container_client(self.container_name)
+            blob = container.get_blob_client(path)
+            downloader = await asyncio.to_thread(blob.download_blob)
+            content = await asyncio.to_thread(downloader.readall)
         try:
             return content.decode()
         except UnicodeDecodeError:
@@ -229,19 +240,22 @@ class AzureBlobStorage(StorageAdapter):
     
     async def delete(self, path: str, **kwargs) -> bool:
         client = self._get_client()
-        container = client.get_container_client(self.container_name)
-        blob = container.get_blob_client(path)
-        
         try:
-            await asyncio.to_thread(blob.delete_blob)
+            if self._using_rest:
+                await asyncio.to_thread(client.delete, self.container_name, path)
+            else:
+                container = client.get_container_client(self.container_name)
+                blob = container.get_blob_client(path)
+                await asyncio.to_thread(blob.delete_blob)
             return True
         except Exception:
             return False
     
     async def list(self, prefix: str = "", **kwargs) -> List[str]:
         client = self._get_client()
+        if self._using_rest:
+            return await asyncio.to_thread(client.list_blobs, self.container_name, prefix)
         container = client.get_container_client(self.container_name)
-        
         blobs = await asyncio.to_thread(
             lambda: list(container.list_blobs(name_starts_with=prefix))
         )
@@ -249,9 +263,10 @@ class AzureBlobStorage(StorageAdapter):
     
     async def exists(self, path: str, **kwargs) -> bool:
         client = self._get_client()
+        if self._using_rest:
+            return await asyncio.to_thread(client.exists, self.container_name, path)
         container = client.get_container_client(self.container_name)
         blob = container.get_blob_client(path)
-        
         return await asyncio.to_thread(blob.exists)
 
 
@@ -610,25 +625,38 @@ class AWSS3Storage(StorageAdapter):
     ):
         self.bucket_name = bucket_name
         self.region = region or os.getenv("AWS_REGION", "us-east-1")
-    
+        self._rest_client = None
+
+    def _get_rest(self):
+        if self._rest_client is None:
+            from .._internal.clients.s3_rest import S3Client
+            from .._internal.clients.aws_sigv4 import AWSCredentials
+            self._rest_client = S3Client(
+                credentials=AWSCredentials.from_env(),
+                region=self.region,
+            )
+        return self._rest_client
+
     async def upload(self, path: str, content: Union[str, bytes], **kwargs) -> str:
+        data = content.encode() if isinstance(content, str) else content
         try:
             import boto3
             s3 = boto3.client("s3", region_name=self.region)
-            
-            data = content.encode() if isinstance(content, str) else content
             await asyncio.to_thread(s3.put_object, Bucket=self.bucket_name, Key=path, Body=data)
-            
-            return f"s3://{self.bucket_name}/{path}"
         except ImportError:
-            raise ImportError("boto3 is required. Install with: pip install boto3")
+            client = self._get_rest()
+            await asyncio.to_thread(client.upload, self.bucket_name, path, data)
+        return f"s3://{self.bucket_name}/{path}"
     
     async def download(self, path: str, **kwargs) -> Union[str, bytes]:
-        import boto3
-        s3 = boto3.client("s3", region_name=self.region)
-        
-        response = await asyncio.to_thread(s3.get_object, Bucket=self.bucket_name, Key=path)
-        content = response["Body"].read()
+        try:
+            import boto3
+            s3 = boto3.client("s3", region_name=self.region)
+            response = await asyncio.to_thread(s3.get_object, Bucket=self.bucket_name, Key=path)
+            content = response["Body"].read()
+        except ImportError:
+            client = self._get_rest()
+            content = await asyncio.to_thread(client.download, self.bucket_name, path)
         
         try:
             return content.decode()
@@ -636,34 +664,46 @@ class AWSS3Storage(StorageAdapter):
             return content
     
     async def delete(self, path: str, **kwargs) -> bool:
-        import boto3
-        s3 = boto3.client("s3", region_name=self.region)
-        
         try:
-            await asyncio.to_thread(s3.delete_object, Bucket=self.bucket_name, Key=path)
-            return True
-        except Exception:
-            return False
+            import boto3
+            s3 = boto3.client("s3", region_name=self.region)
+            try:
+                await asyncio.to_thread(s3.delete_object, Bucket=self.bucket_name, Key=path)
+                return True
+            except Exception:
+                return False
+        except ImportError:
+            try:
+                await asyncio.to_thread(self._get_rest().delete, self.bucket_name, path)
+                return True
+            except Exception:
+                return False
     
     async def list(self, prefix: str = "", **kwargs) -> List[str]:
-        import boto3
-        s3 = boto3.client("s3", region_name=self.region)
-        
-        response = await asyncio.to_thread(
-            s3.list_objects_v2, Bucket=self.bucket_name, Prefix=prefix
-        )
-        
-        return [obj["Key"] for obj in response.get("Contents", [])]
+        try:
+            import boto3
+            s3 = boto3.client("s3", region_name=self.region)
+            response = await asyncio.to_thread(
+                s3.list_objects_v2, Bucket=self.bucket_name, Prefix=prefix
+            )
+            return [obj["Key"] for obj in response.get("Contents", [])]
+        except ImportError:
+            return await asyncio.to_thread(self._get_rest().list_objects, self.bucket_name, prefix)
     
     async def exists(self, path: str, **kwargs) -> bool:
-        import boto3
-        s3 = boto3.client("s3", region_name=self.region)
-        
         try:
-            await asyncio.to_thread(s3.head_object, Bucket=self.bucket_name, Key=path)
-            return True
-        except Exception:
-            return False
+            import boto3
+            s3 = boto3.client("s3", region_name=self.region)
+            try:
+                await asyncio.to_thread(s3.head_object, Bucket=self.bucket_name, Key=path)
+                return True
+            except Exception:
+                return False
+        except ImportError:
+            try:
+                return await asyncio.to_thread(self._get_rest().exists, self.bucket_name, path)
+            except Exception:
+                return False
 
 
 class AWSBedrockLLM(LLMAdapter):
@@ -721,7 +761,46 @@ class AWSBedrockLLM(LLMAdapter):
             result = json.loads(response["body"].read())
             return result["content"][0]["text"]
         except ImportError:
-            raise ImportError("boto3 is required. Install with: pip install boto3")
+            return await asyncio.to_thread(
+                self._chat_rest, messages, model, temperature, max_tokens
+            )
+
+    def _chat_rest(
+        self,
+        messages: List[Dict[str, str]],
+        model: Optional[str],
+        temperature: float,
+        max_tokens: Optional[int],
+    ) -> str:
+        import json
+        from .._internal.clients.aws_sigv4 import AWSCredentials, sign_request
+        from .._internal import http as _http
+        creds = AWSCredentials.from_env()
+        model_id = model or self.default_model
+        url = (
+            f"https://bedrock-runtime.{self.region}.amazonaws.com/model/{model_id}/invoke"
+        )
+        body = json.dumps({
+            "anthropic_version": "bedrock-2023-05-31",
+            "messages": messages,
+            "max_tokens": max_tokens or 4096,
+            "temperature": temperature,
+        }).encode("utf-8")
+        headers = sign_request(
+            method="POST",
+            url=url,
+            region=self.region,
+            service="bedrock",
+            credentials=creds,
+            headers={"Content-Type": "application/json"},
+            body=body,
+        )
+        resp = _http.Client(timeout=120.0).post(url, data=body, headers=headers).raise_for_status()
+        result = resp.json()
+        # Anthropic-Bedrock response shape
+        if "content" in result and result["content"]:
+            return result["content"][0].get("text", "")
+        return result.get("completion", "")
     
     async def embed(
         self,
@@ -730,6 +809,7 @@ class AWSBedrockLLM(LLMAdapter):
         model: Optional[str] = None,
         **kwargs,
     ) -> List[List[float]]:
+        texts = [text] if isinstance(text, str) else list(text)
         try:
             import boto3
             import json
@@ -737,9 +817,7 @@ class AWSBedrockLLM(LLMAdapter):
             client = boto3.client("bedrock-runtime", region_name=self.region)
             model_id = model or "amazon.titan-embed-text-v1"
             
-            texts = [text] if isinstance(text, str) else text
             embeddings = []
-            
             for t in texts:
                 body = {"inputText": t}
                 response = await asyncio.to_thread(
@@ -749,10 +827,35 @@ class AWSBedrockLLM(LLMAdapter):
                 )
                 result = json.loads(response["body"].read())
                 embeddings.append(result["embedding"])
-            
             return embeddings
         except ImportError:
-            raise ImportError("boto3 is required. Install with: pip install boto3")
+            return await asyncio.to_thread(self._embed_rest, texts, model)
+
+    def _embed_rest(self, texts: List[str], model: Optional[str]) -> List[List[float]]:
+        import json
+        from .._internal.clients.aws_sigv4 import AWSCredentials, sign_request
+        from .._internal import http as _http
+        creds = AWSCredentials.from_env()
+        model_id = model or "amazon.titan-embed-text-v1"
+        url = (
+            f"https://bedrock-runtime.{self.region}.amazonaws.com/model/{model_id}/invoke"
+        )
+        client = _http.Client(timeout=120.0)
+        out: List[List[float]] = []
+        for t in texts:
+            body = json.dumps({"inputText": t}).encode("utf-8")
+            headers = sign_request(
+                method="POST",
+                url=url,
+                region=self.region,
+                service="bedrock",
+                credentials=creds,
+                headers={"Content-Type": "application/json"},
+                body=body,
+            )
+            resp = client.post(url, data=body, headers=headers).raise_for_status()
+            out.append(resp.json().get("embedding", []))
+        return out
 
 
 # =============================================================================
@@ -917,7 +1020,45 @@ class GCPVertexAILLM(LLMAdapter):
             
             return response.text
         except ImportError:
-            raise ImportError("google-cloud-aiplatform is required. Install with: pip install google-cloud-aiplatform")
+            return await asyncio.to_thread(
+                self._chat_rest, messages, model, temperature, max_tokens
+            )
+
+    def _chat_rest(
+        self,
+        messages: List[Dict[str, str]],
+        model: Optional[str],
+        temperature: float,
+        max_tokens: Optional[int],
+    ) -> str:
+        from .._internal.clients.gcp_rest import (
+            ServiceAccountCredentials,
+            VertexAIClient,
+        )
+
+        creds = ServiceAccountCredentials.from_env()
+        project = self.project or creds.project_id
+        if not project:
+            raise RuntimeError("Vertex AI requires a GCP project (via constructor or service account)")
+        client = VertexAIClient(credentials=creds, project=project, location=self.location)
+        # Map roles: assistant -> model, others -> user
+        contents = [
+            {
+                "role": "model" if m.get("role") == "assistant" else "user",
+                "parts": [{"text": m.get("content", "")}],
+            }
+            for m in messages
+        ]
+        resp = client.generate_content(
+            model or self.default_model,
+            contents,
+            temperature=temperature,
+            max_output_tokens=max_tokens or 4096,
+        )
+        try:
+            return resp["candidates"][0]["content"]["parts"][0]["text"]
+        except (KeyError, IndexError, TypeError) as exc:  # noqa: BLE001
+            raise RuntimeError(f"Unexpected Vertex AI response: {resp}") from exc
     
     async def embed(
         self,
@@ -939,7 +1080,21 @@ class GCPVertexAILLM(LLMAdapter):
             
             return [e.values for e in embeddings]
         except ImportError:
-            raise ImportError("google-cloud-aiplatform is required. Install with: pip install google-cloud-aiplatform")
+            texts = [text] if isinstance(text, str) else list(text)
+            return await asyncio.to_thread(self._embed_rest, texts, model)
+
+    def _embed_rest(self, texts: List[str], model: Optional[str]) -> List[List[float]]:
+        from .._internal.clients.gcp_rest import (
+            ServiceAccountCredentials,
+            VertexAIClient,
+        )
+
+        creds = ServiceAccountCredentials.from_env()
+        project = self.project or creds.project_id
+        if not project:
+            raise RuntimeError("Vertex AI requires a GCP project (via constructor or service account)")
+        client = VertexAIClient(credentials=creds, project=project, location=self.location)
+        return client.predict_embeddings(model or "textembedding-gecko@003", texts)
 
 
 # =============================================================================
