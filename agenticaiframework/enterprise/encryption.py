@@ -255,13 +255,14 @@ class AESGCMEncryptor(Encryptor):
         self._crypto = None
     
     def _get_crypto(self):
-        """Lazy import cryptography."""
+        """Lazy import cryptography (stdlib AES-GCM fallback otherwise)."""
         if self._crypto is None:
             try:
-                from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+                from cryptography.hazmat.primitives.ciphers.aead import AESGCM  # type: ignore
                 self._crypto = AESGCM
             except ImportError:
-                raise ImportError("cryptography package required for AESGCMEncryptor")
+                from .._internal.aes_gcm import AESGCM as _StdAESGCM
+                self._crypto = _StdAESGCM
         return self._crypto
     
     async def encrypt(self, plaintext: bytes, key_id: Optional[str] = None) -> EncryptedValue:
@@ -311,13 +312,14 @@ class FernetEncryptor(Encryptor):
         self._fernet = None
     
     def _get_fernet(self):
-        """Lazy import Fernet."""
+        """Lazy import Fernet (stdlib fallback otherwise)."""
         if self._fernet is None:
             try:
-                from cryptography.fernet import Fernet
+                from cryptography.fernet import Fernet  # type: ignore
                 self._fernet = Fernet
             except ImportError:
-                raise ImportError("cryptography package required for FernetEncryptor")
+                from .._internal.fernet import Fernet as _StdFernet
+                self._fernet = _StdFernet
         return self._fernet
     
     async def encrypt(self, plaintext: bytes, key_id: Optional[str] = None) -> EncryptedValue:
@@ -514,13 +516,14 @@ class EnvelopeEncryptor:
         self._crypto = None
     
     def _get_crypto(self):
-        """Lazy import cryptography."""
+        """Lazy import cryptography (stdlib AES-GCM fallback otherwise)."""
         if self._crypto is None:
             try:
-                from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+                from cryptography.hazmat.primitives.ciphers.aead import AESGCM  # type: ignore
                 self._crypto = AESGCM
             except ImportError:
-                raise ImportError("cryptography package required")
+                from .._internal.aes_gcm import AESGCM as _StdAESGCM
+                self._crypto = _StdAESGCM
         return self._crypto
     
     async def encrypt(self, plaintext: bytes) -> EnvelopeData:

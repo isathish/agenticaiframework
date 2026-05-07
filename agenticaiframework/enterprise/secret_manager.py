@@ -157,14 +157,14 @@ class Encryptor(ABC):
 
 
 class FernetEncryptor(Encryptor):
-    """Fernet encryption (requires cryptography library)."""
+    """Fernet encryption (cryptography SDK if available, stdlib fallback otherwise)."""
     
     def __init__(self, key: bytes):
         try:
-            from cryptography.fernet import Fernet
-            self._fernet = Fernet(key)
+            from cryptography.fernet import Fernet  # type: ignore
         except ImportError:
-            raise ImportError("cryptography library required for FernetEncryptor")
+            from .._internal.fernet import Fernet  # stdlib fallback
+        self._fernet = Fernet(key)
     
     def encrypt(self, plaintext: str) -> bytes:
         return self._fernet.encrypt(plaintext.encode())

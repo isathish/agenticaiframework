@@ -361,19 +361,26 @@ class CohereEmbedding(EmbeddingProvider):
     def _get_client(self):
         if not self._client:
             try:
-                import cohere
+                import cohere  # type: ignore
                 self._client = cohere.Client(self.api_key)
+                self._using_rest = False
             except ImportError:
-                raise ImportError("Cohere embeddings require: pip install cohere")
+                from .._internal.clients.cohere_rest import CohereClient
+                self._client = CohereClient(api_key=self.api_key)
+                self._using_rest = True
         return self._client
     
     def embed(self, text: str) -> List[float]:
         client = self._get_client()
+        if getattr(self, '_using_rest', False):
+            return client.embed([text], model=self.model, input_type=self.input_type)[0]
         response = client.embed(texts=[text], model=self.model, input_type=self.input_type)
         return response.embeddings[0]
     
     def embed_batch(self, texts: List[str]) -> List[List[float]]:
         client = self._get_client()
+        if getattr(self, '_using_rest', False):
+            return client.embed(list(texts), model=self.model, input_type=self.input_type)
         response = client.embed(texts=texts, model=self.model, input_type=self.input_type)
         return response.embeddings
     
@@ -739,27 +746,28 @@ class WebSearchLoader(SourceLoader):
         return chunks
     
     def _search_duckduckgo(self, query: str) -> List[KnowledgeChunk]:
-        """Search using DuckDuckGo."""
-        try:
-            from duckduckgo_search import DDGS
-        except ImportError:
-            raise ImportError("DuckDuckGo search requires: pip install duckduckgo-search")
-        
+        """Search using DuckDuckGo (SDK if installed, stdlib HTML scraper otherwise)."""
         chunks = []
+        try:
+            from duckduckgo_search import DDGS  # type: ignore
+            with DDGS() as ddgs:
+                results = list(ddgs.text(query, max_results=self.num_results))
+        except ImportError:
+            from .._internal.duckduckgo import text as _ddg_text
+            results = list(_ddg_text(query, max_results=self.num_results))
         
-        with DDGS() as ddgs:
-            for result in ddgs.text(query, max_results=self.num_results):
-                chunk = KnowledgeChunk(
-                    content=f"{result.get('title', '')}\n{result.get('body', '')}",
-                    source=result.get("href", ""),
-                    source_type=SourceType.WEB_SEARCH,
-                    metadata={
-                        "title": result.get("title"),
-                        "url": result.get("href"),
-                        "query": query,
-                    }
-                )
-                chunks.append(chunk)
+        for result in results:
+            chunk = KnowledgeChunk(
+                content=f"{result.get('title', '')}\n{result.get('body', '')}",
+                source=result.get("href", ""),
+                source_type=SourceType.WEB_SEARCH,
+                metadata={
+                    "title": result.get("title"),
+                    "url": result.get("href"),
+                    "query": query,
+                }
+            )
+            chunks.append(chunk)
         
         return chunks
 

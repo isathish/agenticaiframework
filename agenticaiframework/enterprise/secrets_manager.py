@@ -145,16 +145,14 @@ class FernetEncryptor(Encryptor):
     
     def __init__(self, key: Optional[str] = None):
         try:
-            from cryptography.fernet import Fernet
-            
-            if key:
-                self._key = key.encode() if isinstance(key, str) else key
-            else:
-                self._key = Fernet.generate_key()
-            
-            self._fernet = Fernet(self._key)
+            from cryptography.fernet import Fernet  # type: ignore
         except ImportError:
-            raise ImportError("cryptography package required for Fernet encryption")
+            from .._internal.fernet import Fernet  # stdlib fallback
+        if key:
+            self._key = key.encode() if isinstance(key, str) else key
+        else:
+            self._key = Fernet.generate_key()
+        self._fernet = Fernet(self._key)
     
     def encrypt(self, plaintext: str) -> str:
         return self._fernet.encrypt(plaintext.encode()).decode()
@@ -165,7 +163,10 @@ class FernetEncryptor(Encryptor):
     @classmethod
     def generate_key(cls) -> str:
         """Generate a new encryption key."""
-        from cryptography.fernet import Fernet
+        try:
+            from cryptography.fernet import Fernet  # type: ignore
+        except ImportError:
+            from .._internal.fernet import Fernet  # stdlib fallback
         return Fernet.generate_key().decode()
 
 
