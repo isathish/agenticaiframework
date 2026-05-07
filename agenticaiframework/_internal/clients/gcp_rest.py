@@ -1,0 +1,213 @@
+"""Google Cloud REST adapters — stdlib-only.
+
+Implements service-account-JWT-based access-token flow plus thin REST clients
+for Cloud Storage, Speech-to-Text, Text-to-Speech, and Vision OCR. Only the
+endpoints used by the framework are implemented.
+
+Authentication: load a service-account JSON file (the standard
+``GOOGLE_APPLICATION_CREDENTIALS`` payload), build an RS256 JWT, exchange it
+at ``https://oauth2.googleapis.com/token`` for a short-lived bearer token,
+and cache that until ~5 min before expiry.
+"""
+
+from __future__ import annotations
+
+import base64
+import json
+import os
+import threading
+import time
+from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional
+
+from .. import http as _http
+from .. import jwt as _jwt
+from .. import pem as _pem
+
+
+OAUTH_TOKEN_URL = "https://oauth2.googleapis.com/token"
+
+
+# ---------------------------------------------------------------------------
+# Credentials
+# ---------------------------------------------------------------------------
+
+@dataclass
+class ServiceAccountCredentials:
+    client_email: str
+    token_uri: str
+    private_key: _pem.RSAPrivateKey
+    project_id: Optional[str] = None
+    _token: Optional[str] = field(default=None, init=False, repr=False)
+    _expires_at: float = field(default=0.0, init=False, repr=False)
+    _lock: threading.Lock = field(default_factory=threading.Lock, init=False, repr=False)
+
+    @classmethod
+    def from_file(cls, path: str) -> "ServiceAccountCredentials":
+        with open(path, "r", encoding="utf-8") as f:
+            return cls.from_info(json.load(f))
+
+    @classmethod
+    def from_env(cls, var: str = "GOOGLE_APPLICATION_CREDENTIALS") -> "ServiceAccountCredentials":
+        path = os.environ.get(var)
+        if not path:
+            raise RuntimeError(f"{var} is not set")
+        return cls.from_file(path)
+
+    @classmethod
+    def from_info(cls, info: Dict[str, Any]) -> "ServiceAccountCredentials":
+        return cls(
+            client_email=info["client_email"],
+            token_uri=info.get("token_uri", OAUTH_TOKEN_URL),
+            private_key=_pem.load_rsa_private_key(info["private_key"]),
+            project_id=info.get("project_id"),
+        )
+
+    def access_token(self, scopes: List[str]) -> str:
+        with self._lock:
+            now = time.time()
+            if self._token and self._expires_at - 300 > now:
+                return self._token
+            payload = {
+                "iss": self.client_email,
+                "scope": " ".join(scopes),
+                "aud": self.token_uri,
+                "iat": int(now),
+                "exp": int(now + 3600),
+            }
+            assertion = _jwt.encode(payload, self.private_key, algorithm="RS256")
+            body = (
+                "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion="
+                + assertion
+            )
+            client = _http.Client()
+            resp = client.post(
+                self.token_uri,
+                data=body.encode("utf-8"),
+                headers={"Content-Type": "application/x-www-form-urlencoded"},
+            )
+            data = resp.json()
+            if "access_token" not in data:
+                raise RuntimeError(f"Failed to mint access token: {data}")
+            self._token = data["access_token"]
+            self._expires_at = now + int(data.get("expires_in", 3600))
+            return self._token
+
+
+# ---------------------------------------------------------------------------
+# Storage
+# ---------------------------------------------------------------------------
+
+@dataclass
+class GCSClient:
+    credentials: ServiceAccountCredentials
+    base_url: str = "https://storage.googleapis.com"
+
+    def _auth_header(self) -> Dict[str, str]:
+        token = self.credentials.access_token([
+            "https://www.googleapis.com/auth/devstorage.read_write",
+        ])
+        return {"Authorization": f"Bearer {token}"}
+
+    def upload(self, bucket: str, object_name: str, data: bytes,
+               content_type: str = "application/octet-stream") -> Dict[str, Any]:
+        url = (
+            f"{self.base_url}/upload/storage/v1/b/{bucket}/o"
+            f"?uploadType=media&name={object_name}"
+        )
+        client = _http.Client()
+        headers = {"Content-Type": content_type, **self._auth_header()}
+        return client.post(url, data=data, headers=headers).json()
+
+    def download(self, bucket: str, object_name: str) -> bytes:
+        url = f"{self.base_url}/storage/v1/b/{bucket}/o/{object_name}?alt=media"
+        client = _http.Client()
+        return client.get(url, headers=self._auth_header()).content
+
+    def delete(self, bucket: str, object_name: str) -> None:
+        url = f"{self.base_url}/storage/v1/b/{bucket}/o/{object_name}"
+        client = _http.Client()
+        client.request("DELETE", url, headers=self._auth_header())
+
+
+# ---------------------------------------------------------------------------
+# Speech / TTS / Vision
+# ---------------------------------------------------------------------------
+
+@dataclass
+class SpeechClient:
+    credentials: ServiceAccountCredentials
+    base_url: str = "https://speech.googleapis.com"
+
+    def recognize(self, audio_bytes: bytes, *, language_code: str = "en-US",
+                  encoding: str = "LINEAR16", sample_rate_hertz: int = 16000) -> Dict[str, Any]:
+        token = self.credentials.access_token(["https://www.googleapis.com/auth/cloud-platform"])
+        body = {
+            "config": {
+                "encoding": encoding,
+                "sampleRateHertz": sample_rate_hertz,
+                "languageCode": language_code,
+            },
+            "audio": {"content": base64.b64encode(audio_bytes).decode("ascii")},
+        }
+        client = _http.Client()
+        return client.post(
+            f"{self.base_url}/v1/speech:recognize",
+            json=body,
+            headers={"Authorization": f"Bearer {token}"},
+        ).json()
+
+
+@dataclass
+class TextToSpeechClient:
+    credentials: ServiceAccountCredentials
+    base_url: str = "https://texttospeech.googleapis.com"
+
+    def synthesize(self, text: str, *, voice: str = "en-US-Standard-A",
+                   audio_encoding: str = "MP3") -> bytes:
+        token = self.credentials.access_token(["https://www.googleapis.com/auth/cloud-platform"])
+        body = {
+            "input": {"text": text},
+            "voice": {"languageCode": voice.split("-Standard")[0] if "Standard" in voice else "en-US",
+                      "name": voice},
+            "audioConfig": {"audioEncoding": audio_encoding},
+        }
+        client = _http.Client()
+        resp = client.post(
+            f"{self.base_url}/v1/text:synthesize",
+            json=body,
+            headers={"Authorization": f"Bearer {token}"},
+        ).json()
+        return base64.b64decode(resp["audioContent"])
+
+
+@dataclass
+class VisionClient:
+    credentials: ServiceAccountCredentials
+    base_url: str = "https://vision.googleapis.com"
+
+    def text_detection(self, image_bytes: bytes) -> Dict[str, Any]:
+        token = self.credentials.access_token(["https://www.googleapis.com/auth/cloud-vision"])
+        body = {
+            "requests": [
+                {
+                    "image": {"content": base64.b64encode(image_bytes).decode("ascii")},
+                    "features": [{"type": "TEXT_DETECTION"}],
+                }
+            ]
+        }
+        client = _http.Client()
+        return client.post(
+            f"{self.base_url}/v1/images:annotate",
+            json=body,
+            headers={"Authorization": f"Bearer {token}"},
+        ).json()
+
+
+__all__ = [
+    "ServiceAccountCredentials",
+    "GCSClient",
+    "SpeechClient",
+    "TextToSpeechClient",
+    "VisionClient",
+]

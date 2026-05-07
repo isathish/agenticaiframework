@@ -620,9 +620,13 @@ class WebLoader(SourceLoader):
     def load(self, source: str, **kwargs) -> List[KnowledgeChunk]:
         try:
             import requests
-            from bs4 import BeautifulSoup
         except ImportError:
-            raise ImportError("Web loading requires: pip install requests beautifulsoup4")
+            from .._internal import http as _http
+            requests = _http  # type: ignore[assignment]
+        try:
+            from bs4 import BeautifulSoup  # type: ignore
+        except ImportError:
+            from .._internal.html import BeautifulSoup
         
         response = requests.get(source, timeout=30)
         soup = BeautifulSoup(response.text, "html.parser")

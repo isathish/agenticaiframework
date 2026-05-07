@@ -75,9 +75,15 @@ def python_type_to_json_schema(python_type: Type) -> Dict[str, Any]:
     if origin is dict:
         return {"type": "object"}
     
-    # Handle Pydantic models
+    # Handle BaseModel (framework's, with pydantic fallback)
     try:
-        from pydantic import BaseModel
+        from .._internal.schema import BaseModel as _AafBaseModel
+        if isinstance(python_type, type) and issubclass(python_type, _AafBaseModel):
+            return python_type.model_json_schema()
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        from pydantic import BaseModel  # type: ignore
         if isinstance(python_type, type) and issubclass(python_type, BaseModel):
             return python_type.model_json_schema()
     except ImportError:
@@ -107,12 +113,18 @@ def python_type_to_json_schema(python_type: Type) -> Dict[str, Any]:
 def generate_json_schema(model: Type[T]) -> Dict[str, Any]:
     """Generate JSON schema from a model."""
     try:
-        from pydantic import BaseModel
+        from .._internal.schema import BaseModel as _AafBaseModel
+        if isinstance(model, type) and issubclass(model, _AafBaseModel):
+            return model.model_json_schema()
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        from pydantic import BaseModel  # type: ignore
         if isinstance(model, type) and issubclass(model, BaseModel):
             return model.model_json_schema()
     except ImportError:
         pass
-    
+
     return python_type_to_json_schema(model)
 
 
@@ -339,12 +351,29 @@ Important:
     
     def _validate_and_create(self, data: Any) -> tuple[Optional[T], List[str]]:
         """Validate data and create model instance."""
-        errors = []
-        
+        errors: List[str] = []
+
+        # Prefer the framework's stdlib-only BaseModel.
         try:
-            # Try Pydantic
-            from pydantic import BaseModel, ValidationError
-            
+            from .._internal.schema import BaseModel as _AafBaseModel, ValidationError as _AafVE
+            if isinstance(self.model, type) and issubclass(self.model, _AafBaseModel):
+                try:
+                    return self.model.model_validate(data), []
+                except _AafVE as e:
+                    errors = [str(e)]
+                    if self.strict:
+                        return None, errors
+                    try:
+                        return self.model(**data), errors  # type: ignore[arg-type]
+                    except Exception:  # noqa: BLE001
+                        return None, errors
+        except Exception:  # noqa: BLE001
+            pass
+
+        # Optional pydantic compatibility.
+        try:
+            from pydantic import BaseModel, ValidationError  # type: ignore
+
             if isinstance(self.model, type) and issubclass(self.model, BaseModel):
                 try:
                     return self.model.model_validate(data), []
@@ -352,7 +381,6 @@ Important:
                     errors = [str(err) for err in e.errors()]
                     if self.strict:
                         return None, errors
-                    # Try to create anyway
                     return self.model.model_construct(**data), errors
         except ImportError:
             pass

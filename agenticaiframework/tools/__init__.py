@@ -53,6 +53,14 @@ from .mcp_compat import (
     mcp_bridge,
 )
 
+# Native MCP runtime (stdlib-only JSON-RPC server/client)
+from .mcp_runtime import (
+    MCPClient,
+    MCPServer,
+    MCPServerInfo,
+    PROTOCOL_VERSION as MCP_PROTOCOL_VERSION,
+)
+
 # File & Document Tools
 from .file_document import (
     # Core file operations
@@ -146,6 +154,12 @@ __all__ = [
     'wrap_mcp_tool',
     'convert_to_mcp',
     'mcp_bridge',
+
+    # MCP Runtime (native)
+    'MCPClient',
+    'MCPServer',
+    'MCPServerInfo',
+    'MCP_PROTOCOL_VERSION',
     
     # File & Document Tools
     'FileReadTool',

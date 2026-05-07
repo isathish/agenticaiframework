@@ -57,11 +57,14 @@ from typing import (
     Union,
 )
 
-import numpy as np
-from numpy.typing import NDArray
+from .._internal import array as _aaf_array
 
 
 T = TypeVar('T')
+
+# NDArray alias removed: we use plain list[float] for vectors. The name is
+# preserved for type-hint compatibility with existing call sites.
+NDArray = List[float]  # type: ignore[misc]
 
 
 logger = logging.getLogger(__name__)
@@ -269,26 +272,19 @@ class FlatIndex(VectorIndex):
     ) -> float:
         """Compute similarity between vectors."""
         if self._metric == DistanceMetric.COSINE:
-            norm_a = np.linalg.norm(a)
-            norm_b = np.linalg.norm(b)
-            
-            if norm_a == 0 or norm_b == 0:
-                return 0.0
-            
-            return float(np.dot(a, b) / (norm_a * norm_b))
-        
-        elif self._metric == DistanceMetric.DOT_PRODUCT:
-            return float(np.dot(a, b))
-        
-        elif self._metric == DistanceMetric.EUCLIDEAN:
-            # Convert distance to similarity
-            distance = float(np.linalg.norm(a - b))
+            return float(_aaf_array.cosine(a, b))
+
+        if self._metric == DistanceMetric.DOT_PRODUCT:
+            return float(_aaf_array.dot(a, b))
+
+        if self._metric == DistanceMetric.EUCLIDEAN:
+            distance = float(_aaf_array.euclidean(a, b))
             return 1.0 / (1.0 + distance)
-        
-        elif self._metric == DistanceMetric.MANHATTAN:
-            distance = float(np.sum(np.abs(a - b)))
+
+        if self._metric == DistanceMetric.MANHATTAN:
+            distance = float(sum(abs(float(x) - float(y)) for x, y in zip(a, b)))
             return 1.0 / (1.0 + distance)
-        
+
         return 0.0
     
     async def delete(self, id: str) -> bool:
@@ -471,10 +467,15 @@ class VectorCollection:
         return self._index.count()
     
     def _normalize_vector(self, vector: Vector) -> NDArray:
-        """Normalize vector to numpy array."""
-        if isinstance(vector, np.ndarray):
-            return vector.astype(np.float32)
-        return np.array(vector, dtype=np.float32)
+        """Normalize vector to a plain ``list[float]``.
+
+        The framework no longer requires numpy. If a numpy array is supplied
+        (legacy callers) it is converted to a list lazily without importing
+        numpy at module load time.
+        """
+        if hasattr(vector, "tolist") and callable(vector.tolist):
+            return [float(x) for x in vector.tolist()]
+        return [float(x) for x in vector]
     
     def get_stats(self) -> CollectionStats:
         """Get collection statistics."""

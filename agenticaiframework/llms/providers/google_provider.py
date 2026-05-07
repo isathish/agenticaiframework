@@ -1,36 +1,28 @@
-"""
-Google Gemini Provider Adapter.
+"""Google Gemini Provider Adapter — stdlib-only implementation.
 
-Provides integration with Google's Gemini API including:
-- Gemini 2.0, 1.5 models
-- Function calling
-- Streaming
+Replaces the ``google.generativeai`` PyPI client with the framework's own
+REST client (``agenticaiframework._internal.clients.gemini_rest``).
 """
 
-import os
+from __future__ import annotations
+
+import json as _json
 import logging
+import os
 from typing import Any, Dict, Iterator, List, Optional
 
+from ..._internal.clients.gemini_rest import GeminiClient
+from ..._internal.tokenizer import count_tokens as _count_tokens
 from .base import BaseLLMProvider, LLMMessage, LLMResponse, ProviderConfig
 
 logger = logging.getLogger(__name__)
 
 
 class GoogleProvider(BaseLLMProvider):
-    """
-    Google Gemini API provider adapter.
-    
-    Auto-configures from environment:
-    - GOOGLE_API_KEY or GEMINI_API_KEY
-    
-    Example:
-        >>> provider = GoogleProvider.from_env()
-        >>> response = provider.generate("Hello, world!")
-        >>> print(response.content)
-    """
-    
+    """Google Gemini provider using stdlib-only HTTP."""
+
     DEFAULT_MODEL = "gemini-2.0-flash"
-    
+
     SUPPORTED_MODELS = [
         "gemini-2.0-flash",
         "gemini-2.0-flash-lite",
@@ -38,15 +30,14 @@ class GoogleProvider(BaseLLMProvider):
         "gemini-1.5-flash",
         "gemini-1.5-flash-8b",
     ]
-    
+
     def __init__(self, config: Optional[ProviderConfig] = None):
         super().__init__(config)
         if self.config.default_model is None:
             self.config.default_model = self.DEFAULT_MODEL
-    
+
     @classmethod
-    def from_env(cls, model: Optional[str] = None) -> 'GoogleProvider':
-        """Create provider from environment variables."""
+    def from_env(cls, model: Optional[str] = None) -> "GoogleProvider":
         api_key = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
         config = ProviderConfig(
             api_key=api_key,
@@ -54,40 +45,95 @@ class GoogleProvider(BaseLLMProvider):
             timeout=float(os.getenv("GEMINI_TIMEOUT", "60")),
         )
         return cls(config)
-    
+
     @property
     def provider_name(self) -> str:
         return "google"
-    
+
     @property
     def supported_models(self) -> List[str]:
         return self.SUPPORTED_MODELS
-    
+
     def _initialize_client(self) -> None:
-        """Initialize Google Generative AI client."""
-        try:
-            import google.generativeai as genai
-            
-            genai.configure(api_key=self.config.api_key)
-            self._genai = genai
-            self._client = genai.GenerativeModel(self.config.default_model)
-            logger.info("Google Gemini client initialized")
-        except ImportError:
-            raise ImportError(
-                "Google Generative AI package not installed. "
-                "Install with: pip install google-generativeai"
+        if not self.config.api_key:
+            raise RuntimeError(
+                "GOOGLE_API_KEY / GEMINI_API_KEY is not configured."
             )
-        except Exception as e:
-            logger.error("Failed to initialize Google client: %s", e)
-            raise
-    
-    def _get_model(self, model: Optional[str] = None):
-        """Get or create model instance."""
-        model_name = model or self.config.default_model
-        if model and model != self.config.default_model:
-            return self._genai.GenerativeModel(model_name)
-        return self._client
-    
+        self._client = GeminiClient(
+            api_key=self.config.api_key,
+            timeout=self.config.timeout,
+            max_retries=self.config.max_retries,
+        )
+        logger.info("Google Gemini REST client initialized")
+
+    # -- helpers --------------------------------------------------------
+
+    @staticmethod
+    def _parse_response(raw: Dict[str, Any], model: str, provider: str) -> LLMResponse:
+        content = ""
+        tool_calls: Optional[List[Dict[str, Any]]] = None
+        for cand in raw.get("candidates") or []:
+            cont = cand.get("content") or {}
+            for part in cont.get("parts") or []:
+                if "text" in part:
+                    content += part.get("text") or ""
+                elif "functionCall" in part:
+                    tool_calls = tool_calls or []
+                    fc = part["functionCall"]
+                    tool_calls.append(
+                        {
+                            "id": f"call_{len(tool_calls)}",
+                            "type": "function",
+                            "function": {
+                                "name": fc.get("name", ""),
+                                "arguments": _json.dumps(fc.get("args") or {}),
+                            },
+                        }
+                    )
+        usage_meta = raw.get("usageMetadata") or {}
+        usage = {
+            "prompt_tokens": int(usage_meta.get("promptTokenCount", 0)),
+            "completion_tokens": int(usage_meta.get("candidatesTokenCount", 0)),
+            "total_tokens": int(usage_meta.get("totalTokenCount", 0)),
+        }
+        return LLMResponse(
+            content=content,
+            model=model,
+            provider=provider,
+            finish_reason=(raw.get("candidates") or [{}])[0].get("finishReason", "STOP"),
+            tool_calls=tool_calls,
+            usage=usage,
+            raw_response=raw,
+        )
+
+    @staticmethod
+    def _to_gemini_contents(messages: List[LLMMessage]) -> tuple[List[Dict[str, Any]], Optional[Dict[str, Any]]]:
+        contents: List[Dict[str, Any]] = []
+        system: Optional[Dict[str, Any]] = None
+        for m in messages:
+            if m.role == "system":
+                system = {"parts": [{"text": m.content}]}
+                continue
+            role = "user" if m.role == "user" else "model"
+            contents.append({"role": role, "parts": [{"text": m.content}]})
+        return contents, system
+
+    @staticmethod
+    def _to_gemini_tools(tools: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        decls = []
+        for tool in tools:
+            func = tool.get("function", tool)
+            decls.append(
+                {
+                    "name": func["name"],
+                    "description": func.get("description", ""),
+                    "parameters": func.get("parameters", {"type": "object", "properties": {}}),
+                }
+            )
+        return [{"functionDeclarations": decls}] if decls else []
+
+    # -- generation -----------------------------------------------------
+
     def generate(
         self,
         prompt: str,
@@ -96,55 +142,25 @@ class GoogleProvider(BaseLLMProvider):
         temperature: float = 0.7,
         max_tokens: Optional[int] = None,
         stop: Optional[List[str]] = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> LLMResponse:
-        """Generate text using Gemini API."""
         self._ensure_initialized()
-        
-        client = self._get_model(model)
-        
-        generation_config = {
-            "temperature": temperature,
-        }
+        gen_cfg: Dict[str, Any] = {"temperature": temperature}
         if max_tokens:
-            generation_config["max_output_tokens"] = max_tokens
+            gen_cfg["maxOutputTokens"] = max_tokens
         if stop:
-            generation_config["stop_sequences"] = stop
-        
-        try:
-            response = client.generate_content(
-                prompt,
-                generation_config=generation_config,
-            )
-            
-            # Extract text from response
-            content = ""
-            if response.text:
-                content = response.text
-            elif response.parts:
-                content = "".join(part.text for part in response.parts if hasattr(part, 'text'))
-            
-            # Get usage if available
-            usage = {}
-            if hasattr(response, 'usage_metadata') and response.usage_metadata:
-                usage = {
-                    "prompt_tokens": response.usage_metadata.prompt_token_count,
-                    "completion_tokens": response.usage_metadata.candidates_token_count,
-                    "total_tokens": response.usage_metadata.total_token_count,
-                }
-            
-            return LLMResponse(
-                content=content,
-                model=model or self.config.default_model,
-                provider=self.provider_name,
-                finish_reason="stop",
-                usage=usage,
-                raw_response=response,
-            )
-        except Exception as e:
-            logger.error("Gemini generation failed: %s", e)
-            raise
-    
+            gen_cfg["stopSequences"] = stop
+        system = kwargs.pop("system_prompt", None)
+        sys_inst = {"parts": [{"text": system}]} if system else None
+        used_model = model or self.config.default_model
+        raw = self._client.generate_content(
+            model=used_model,
+            contents=[{"role": "user", "parts": [{"text": prompt}]}],
+            system_instruction=sys_inst,
+            generation_config=gen_cfg,
+        )
+        return self._parse_response(raw, used_model, self.provider_name)
+
     def generate_chat(
         self,
         messages: List[LLMMessage],
@@ -152,71 +168,22 @@ class GoogleProvider(BaseLLMProvider):
         model: Optional[str] = None,
         temperature: float = 0.7,
         max_tokens: Optional[int] = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> LLMResponse:
-        """Generate from chat messages."""
         self._ensure_initialized()
-        
-        client = self._get_model(model)
-        
-        # Convert messages to Gemini format
-        gemini_history = []
-        system_instruction = None
-        
-        for m in messages[:-1]:  # All but last
-            if m.role == "system":
-                system_instruction = m.content
-            else:
-                role = "user" if m.role == "user" else "model"
-                gemini_history.append({
-                    "role": role,
-                    "parts": [{"text": m.content}],
-                })
-        
-        # Get the last message as the prompt
-        last_message = messages[-1] if messages else None
-        prompt = last_message.content if last_message else ""
-        
-        generation_config = {"temperature": temperature}
+        contents, sys_inst = self._to_gemini_contents(messages)
+        gen_cfg: Dict[str, Any] = {"temperature": temperature}
         if max_tokens:
-            generation_config["max_output_tokens"] = max_tokens
-        
-        try:
-            # Create chat if there's history
-            if gemini_history:
-                chat = client.start_chat(history=gemini_history)
-                response = chat.send_message(
-                    prompt,
-                    generation_config=generation_config,
-                )
-            else:
-                response = client.generate_content(
-                    prompt,
-                    generation_config=generation_config,
-                )
-            
-            content = response.text if response.text else ""
-            
-            usage = {}
-            if hasattr(response, 'usage_metadata') and response.usage_metadata:
-                usage = {
-                    "prompt_tokens": response.usage_metadata.prompt_token_count,
-                    "completion_tokens": response.usage_metadata.candidates_token_count,
-                    "total_tokens": response.usage_metadata.total_token_count,
-                }
-            
-            return LLMResponse(
-                content=content,
-                model=model or self.config.default_model,
-                provider=self.provider_name,
-                finish_reason="stop",
-                usage=usage,
-                raw_response=response,
-            )
-        except Exception as e:
-            logger.error("Gemini chat generation failed: %s", e)
-            raise
-    
+            gen_cfg["maxOutputTokens"] = max_tokens
+        used_model = model or self.config.default_model
+        raw = self._client.generate_content(
+            model=used_model,
+            contents=contents,
+            system_instruction=sys_inst,
+            generation_config=gen_cfg,
+        )
+        return self._parse_response(raw, used_model, self.provider_name)
+
     def generate_with_tools(
         self,
         prompt: str,
@@ -224,91 +191,40 @@ class GoogleProvider(BaseLLMProvider):
         *,
         model: Optional[str] = None,
         temperature: float = 0.7,
-        **kwargs,
+        **kwargs: Any,
     ) -> LLMResponse:
-        """Generate with function calling."""
         self._ensure_initialized()
-        
-        # Convert OpenAI-style tools to Gemini format
-        gemini_tools = []
-        for tool in tools:
-            func = tool.get("function", tool)
-            gemini_tools.append({
-                "name": func["name"],
-                "description": func.get("description", ""),
-                "parameters": func.get("parameters", {"type": "object", "properties": {}}),
-            })
-        
-        try:
-            # Create model with tools
-            client = self._genai.GenerativeModel(
-                model or self.config.default_model,
-                tools=gemini_tools if gemini_tools else None,
-            )
-            
-            response = client.generate_content(
-                prompt,
-                generation_config={"temperature": temperature},
-            )
-            
-            content = ""
-            tool_calls = None
-            
-            if response.parts:
-                for part in response.parts:
-                    if hasattr(part, 'text') and part.text:
-                        content += part.text
-                    if hasattr(part, 'function_call') and part.function_call:
-                        if tool_calls is None:
-                            tool_calls = []
-                        import json
-                        tool_calls.append({
-                            "id": f"call_{len(tool_calls)}",
-                            "type": "function",
-                            "function": {
-                                "name": part.function_call.name,
-                                "arguments": json.dumps(dict(part.function_call.args)),
-                            }
-                        })
-            
-            return LLMResponse(
-                content=content,
-                model=model or self.config.default_model,
-                provider=self.provider_name,
-                finish_reason="stop",
-                tool_calls=tool_calls,
-                raw_response=response,
-            )
-        except Exception as e:
-            logger.error("Gemini tool generation failed: %s", e)
-            raise
-    
+        used_model = model or self.config.default_model
+        raw = self._client.generate_content(
+            model=used_model,
+            contents=[{"role": "user", "parts": [{"text": prompt}]}],
+            generation_config={"temperature": temperature},
+            tools=self._to_gemini_tools(tools) or None,
+        )
+        return self._parse_response(raw, used_model, self.provider_name)
+
     def stream(
         self,
         prompt: str,
         *,
         model: Optional[str] = None,
         temperature: float = 0.7,
-        **kwargs,
+        **kwargs: Any,
     ) -> Iterator[str]:
-        """Stream tokens as they are generated."""
         self._ensure_initialized()
-        
-        client = self._get_model(model)
-        
-        try:
-            response = client.generate_content(
-                prompt,
-                generation_config={"temperature": temperature},
-                stream=True,
-            )
-            
-            for chunk in response:
-                if chunk.text:
-                    yield chunk.text
-        except Exception as e:
-            logger.error("Gemini streaming failed: %s", e)
-            raise
+        for raw in self._client.generate_content(
+            model=model or self.config.default_model,
+            contents=[{"role": "user", "parts": [{"text": prompt}]}],
+            generation_config={"temperature": temperature},
+            stream=True,
+        ):
+            for cand in raw.get("candidates") or []:
+                for part in (cand.get("content") or {}).get("parts") or []:
+                    if "text" in part and part["text"]:
+                        yield part["text"]
+
+    def count_tokens(self, text: str, model: Optional[str] = None) -> int:
+        return _count_tokens(text, model or (self.config.default_model or ""))
 
 
-__all__ = ['GoogleProvider']
+__all__ = ["GoogleProvider"]

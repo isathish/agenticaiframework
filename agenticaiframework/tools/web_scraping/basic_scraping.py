@@ -68,9 +68,9 @@ class ScrapeWebsiteTool(AsyncBaseTool):
             raise ImportError("Web scraping requires: pip install aiohttp")
         
         try:
-            from bs4 import BeautifulSoup
+            from bs4 import BeautifulSoup  # type: ignore
         except ImportError:
-            raise ImportError("Web scraping requires: pip install beautifulsoup4")
+            from ..._internal.html import BeautifulSoup
         
         request_headers = {
             'User-Agent': self.user_agent,
@@ -194,9 +194,9 @@ class ScrapeElementTool(BaseTool):
             raise ImportError("Requires: pip install requests")
         
         try:
-            from bs4 import BeautifulSoup
+            from bs4 import BeautifulSoup  # type: ignore
         except ImportError:
-            raise ImportError("Requires: pip install beautifulsoup4")
+            from ..._internal.html import BeautifulSoup
         
         response = requests.get(
             url,

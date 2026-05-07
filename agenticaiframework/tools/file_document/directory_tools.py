@@ -154,29 +154,34 @@ class DirectoryRAGSearchTool(BaseTool):
     
     def _extract_pdf(self, path: Path) -> List[Dict]:
         """Extract chunks from PDF."""
+        pages_text: List[str] = []
         try:
             import PyPDF2
         except ImportError:
             try:
-                import pypdf as PyPDF2
+                import pypdf as PyPDF2  # type: ignore
             except ImportError:
-                logger.warning("PDF support requires: pip install PyPDF2")
-                return []
-        
+                PyPDF2 = None  # type: ignore[assignment]
+
+        if PyPDF2 is not None:
+            with open(path, 'rb') as f:
+                reader = PyPDF2.PdfReader(f)
+                pages_text = [(p.extract_text() or "") for p in reader.pages]
+        else:
+            from ..._internal.pdf import PdfReader as _AafPdfReader
+            reader = _AafPdfReader(path=str(path))
+            pages_text = [p.text for p in reader.pages]
+
         chunks = []
-        
-        with open(path, 'rb') as f:
-            reader = PyPDF2.PdfReader(f)
-            for i, page in enumerate(reader.pages):
-                text = page.extract_text()
-                if text:
-                    page_chunks = self._chunk_text(text)
-                    for chunk in page_chunks:
-                        chunk['source'] = str(path)
-                        chunk['page'] = i + 1
-                        chunk['type'] = 'pdf'
-                        chunks.append(chunk)
-        
+        for i, text in enumerate(pages_text):
+            if text:
+                page_chunks = self._chunk_text(text)
+                for chunk in page_chunks:
+                    chunk['source'] = str(path)
+                    chunk['page'] = i + 1
+                    chunk['type'] = 'pdf'
+                    chunks.append(chunk)
+
         return chunks
     
     def _extract_docx(self, path: Path) -> List[Dict]:

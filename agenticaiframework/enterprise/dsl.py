@@ -654,12 +654,9 @@ class WorkflowParser:
     
     def parse_yaml(self, yaml_str: str) -> WorkflowDefinition:
         """Parse YAML workflow definition."""
-        try:
-            import yaml
-            data = yaml.safe_load(yaml_str)
-            return self._parse_dict(data)
-        except ImportError:
-            raise RuntimeError("PyYAML not installed. Install with: pip install pyyaml")
+        from .._internal import yaml as _yaml
+        data = _yaml.safe_load(yaml_str)
+        return self._parse_dict(data)
     
     def parse_json(self, json_str: str) -> WorkflowDefinition:
         """Parse JSON workflow definition."""

@@ -90,62 +90,23 @@ class TokenCounter(ABC):
 
 
 class TiktokenCounter(TokenCounter):
-    """Token counter using tiktoken library."""
-    
-    def __init__(self):
-        self._encoders: Dict[str, Any] = {}
-    
-    def _get_encoder(self, model: str):
-        """Get encoder for model."""
-        if model not in self._encoders:
-            try:
-                import tiktoken
-                
-                # Map model to encoding
-                if "gpt-4" in model or "gpt-3.5" in model:
-                    encoding_name = "cl100k_base"
-                elif "o1" in model:
-                    encoding_name = "o200k_base"
-                else:
-                    encoding_name = "cl100k_base"
-                
-                self._encoders[model] = tiktoken.get_encoding(encoding_name)
-            except ImportError:
-                # Fallback: rough estimate
-                return None
-        
-        return self._encoders.get(model)
-    
+    """Token counter backed by the framework's stdlib-only tokenizer.
+
+    Name preserved for backwards compatibility — there is no actual ``tiktoken``
+    dependency anymore. Estimates are conservative (rounded up) so context
+    overruns never go undetected.
+    """
+
+    def __init__(self) -> None:
+        from .._internal import tokenizer as _tok  # local import keeps module load light
+
+        self._tokenizer = _tok
+
     def count(self, text: str, model: str = "gpt-4o") -> int:
-        """Count tokens in text."""
-        encoder = self._get_encoder(model)
-        
-        if encoder:
-            return len(encoder.encode(text))
-        else:
-            # Fallback: rough estimate (~4 chars per token)
-            return len(text) // 4
-    
+        return self._tokenizer.count_tokens(text or "", model)
+
     def count_messages(self, messages: List[Dict], model: str = "gpt-4o") -> int:
-        """Count tokens in messages."""
-        total = 0
-        
-        for message in messages:
-            # Message overhead
-            total += 4  # <|start|>role\n, \n<|end|>
-            
-            if "content" in message:
-                total += self.count(message["content"], model)
-            
-            if "role" in message:
-                total += 1
-            
-            if "name" in message:
-                total += self.count(message["name"], model) + 1
-        
-        total += 2  # <|start|>assistant
-        
-        return total
+        return self._tokenizer.count_message_tokens(messages, model)
 
 
 class ApproximateCounter(TokenCounter):
@@ -171,12 +132,8 @@ class ApproximateCounter(TokenCounter):
 
 
 def get_token_counter() -> TokenCounter:
-    """Get the best available token counter."""
-    try:
-        import tiktoken
-        return TiktokenCounter()
-    except ImportError:
-        return ApproximateCounter()
+    """Return the framework's standard token counter (stdlib-only)."""
+    return TiktokenCounter()
 
 
 # =============================================================================

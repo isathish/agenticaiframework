@@ -65,7 +65,26 @@ class PDFTextWritingTool(BaseTool):
             from reportlab.lib.styles import getSampleStyleSheet
             from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
         except ImportError:
-            raise ImportError("PDF writing requires: pip install reportlab")
+            # Stdlib-only fallback using framework's own minimal PDF writer.
+            from ..._internal.pdf import PdfWriter as _AafPdfWriter
+
+            path = Path(output_path)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            writer = _AafPdfWriter()
+            body = (f"{title}\n\n" if title else "") + content
+            paragraphs = body.split("\n\n")
+            for para in paragraphs:
+                if para.strip():
+                    writer.add_page(para, font_size=font_size)
+            writer.save(str(path), font_size=font_size)
+            return {
+                'output_path': str(path.absolute()),
+                'file_name': path.name,
+                'page_size': page_size,
+                'title': title,
+                'paragraphs': len(paragraphs),
+                'backend': 'aaf-internal',
+            }
         
         path = Path(output_path)
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -218,19 +237,20 @@ class PDFRAGSearchTool(BaseTool):
             try:
                 import pypdf as PyPDF2
             except ImportError:
-                raise ImportError(
-                    "PDF extraction requires: pip install PyPDF2 or pip install pypdf"
-                )
-        
+                # Fall back to the framework's stdlib-only reader.
+                from ..._internal.pdf import PdfReader as _AafPdfReader
+                reader = _AafPdfReader(path=str(path))
+                return {i + 1: page.text for i, page in enumerate(reader.pages) if page.text}
+
         text_by_page = {}
-        
+
         with open(path, 'rb') as f:
             reader = PyPDF2.PdfReader(f)
             for i, page in enumerate(reader.pages):
                 text = page.extract_text()
                 if text:
                     text_by_page[i + 1] = text
-        
+
         return text_by_page
     
     def _chunk_text(self, text_by_page: Dict[int, str]) -> List[Dict]:

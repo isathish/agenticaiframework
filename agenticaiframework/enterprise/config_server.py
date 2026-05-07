@@ -175,11 +175,8 @@ class FileConfigSource(ConfigSource):
         
         # Detect format
         if self._path.suffix in ('.yaml', '.yml'):
-            try:
-                import yaml
-                return yaml.safe_load(content) or {}
-            except ImportError:
-                raise ConfigParseError("PyYAML required for YAML config files")
+            from .._internal import yaml as _yaml
+            return _yaml.safe_load(content) or {}
         
         elif self._path.suffix == '.json':
             return json.loads(content)

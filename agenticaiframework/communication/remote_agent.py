@@ -579,7 +579,6 @@ class RemoteAgentServer:
         try:
             from fastapi import FastAPI
             from fastapi.responses import StreamingResponse
-            from pydantic import BaseModel
         except ImportError:
             raise ImportError("FastAPI required: pip install fastapi uvicorn")
         

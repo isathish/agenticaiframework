@@ -751,11 +751,8 @@ class APIDocumentation:
     
     def to_yaml(self) -> str:
         """Export as YAML."""
-        try:
-            import yaml
-            return yaml.dump(self.to_dict(), default_flow_style=False)
-        except ImportError:
-            raise APIDocsError("PyYAML required for YAML export")
+        from .._internal import yaml as _yaml
+        return _yaml.dump(self.to_dict())
     
     def get_endpoints(self) -> List[Endpoint]:
         """Get all endpoints."""

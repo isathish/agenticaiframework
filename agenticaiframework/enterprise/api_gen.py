@@ -212,11 +212,8 @@ class OpenAPISpec:
         return json.dumps(self.to_dict(), indent=indent)
     
     def to_yaml(self) -> str:
-        try:
-            import yaml
-            return yaml.dump(self.to_dict(), default_flow_style=False)
-        except ImportError:
-            raise RuntimeError("PyYAML not installed")
+        from .._internal import yaml as _yaml
+        return _yaml.dump(self.to_dict())
 
 
 # =============================================================================
@@ -272,9 +269,15 @@ class SchemaConverter:
                 enum=[e.value for e in python_type],
             )
         
-        # Handle Pydantic models
+        # Handle BaseModel (framework's stdlib-only schema, with pydantic fallback)
         try:
-            from pydantic import BaseModel
+            from .._internal.schema import BaseModel as _AafBaseModel
+            if isinstance(python_type, type) and issubclass(python_type, _AafBaseModel):
+                return self._from_pydantic(python_type)
+        except Exception:  # noqa: BLE001
+            pass
+        try:
+            from pydantic import BaseModel  # type: ignore
             if isinstance(python_type, type) and issubclass(python_type, BaseModel):
                 return self._from_pydantic(python_type)
         except ImportError:

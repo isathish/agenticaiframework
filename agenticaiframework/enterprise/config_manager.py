@@ -295,16 +295,10 @@ class FileConfigLoader(ConfigLoader):
         if self.format_type == ConfigFormat.JSON:
             data = json.loads(content)
         elif self.format_type == ConfigFormat.YAML:
-            try:
-                import yaml
-                data = yaml.safe_load(content)
-            except ImportError:
-                # Simple YAML-like parser
+            from .._internal import yaml as _yaml
+            data = _yaml.safe_load(content)
+            if data is None:
                 data = {}
-                for line in content.split("\n"):
-                    if ":" in line and not line.strip().startswith("#"):
-                        key, value = line.split(":", 1)
-                        data[key.strip()] = value.strip()
         elif self.format_type == ConfigFormat.ENV:
             data = {}
             for line in content.split("\n"):
