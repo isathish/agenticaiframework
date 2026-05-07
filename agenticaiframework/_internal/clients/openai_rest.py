@@ -169,14 +169,20 @@ class OpenAIClient:
         n: int = 1,
         size: str = "1024x1024",
         response_format: str = "url",
+        quality: Optional[str] = None,
+        style: Optional[str] = None,
     ) -> Dict[str, Any]:
-        payload = {
+        payload: Dict[str, Any] = {
             "model": model,
             "prompt": prompt,
             "n": n,
             "size": size,
             "response_format": response_format,
         }
+        if quality:
+            payload["quality"] = quality
+        if style:
+            payload["style"] = style
         resp = self._client.post("/v1/images/generations", json=payload).raise_for_status()
         return resp.json()
 

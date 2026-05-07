@@ -65,32 +65,45 @@ class DALLETool(AsyncBaseTool):
             raise ValueError("OpenAI API key required")
         
         try:
-            import openai
+            import openai  # type: ignore
+            client = openai.OpenAI(api_key=self.api_key)
+            response = client.images.generate(
+                model=self.model,
+                prompt=prompt,
+                size=size,
+                quality=quality,
+                style=style,
+                n=n,
+                response_format=response_format,
+            )
+            data_items = [
+                {"revised_prompt": getattr(d, "revised_prompt", None), "url": getattr(d, "url", None), "b64_json": getattr(d, "b64_json", None)}
+                for d in response.data
+            ]
         except ImportError:
-            raise ImportError("DALL-E requires: pip install openai")
-        
-        client = openai.OpenAI(api_key=self.api_key)
-        
-        response = client.images.generate(
-            model=self.model,
-            prompt=prompt,
-            size=size,
-            quality=quality,
-            style=style,
-            n=n,
-            response_format=response_format,
-        )
+            from ..._internal.clients.openai_rest import OpenAIClient
+            client = OpenAIClient(api_key=self.api_key)
+            resp = client.images_generate(
+                model=self.model,
+                prompt=prompt,
+                size=size,
+                quality=quality,
+                style=style,
+                n=n,
+                response_format=response_format,
+            )
+            data_items = resp.get("data", [])
         
         images = []
-        for i, image in enumerate(response.data):
+        for i, image in enumerate(data_items):
             img_data = {
-                'revised_prompt': image.revised_prompt,
+                'revised_prompt': image.get('revised_prompt'),
             }
             
             if response_format == 'url':
-                img_data['url'] = image.url
+                img_data['url'] = image.get('url')
             else:
-                img_data['b64_json'] = image.b64_json
+                img_data['b64_json'] = image.get('b64_json')
                 
                 # Save if path provided
                 if save_path:
@@ -103,7 +116,7 @@ class DALLETool(AsyncBaseTool):
                         f.write(base64.b64decode(image.b64_json))
                     img_data['saved_path'] = str(path)
             
-            images.append(img_data)
+            images.append({k: v for k, v in img_data.items() if v is not None})
         
         return {
             'prompt': prompt,
@@ -191,13 +204,6 @@ class VisionTool(BaseTool):
         if not self.api_key:
             raise ValueError("OpenAI API key required")
         
-        try:
-            import openai
-        except ImportError:
-            raise ImportError("Vision requires: pip install openai")
-        
-        client = openai.OpenAI(api_key=self.api_key)
-        
         # Prepare image content
         images = image if isinstance(image, list) else [image]
         image_content = []
@@ -210,21 +216,37 @@ class VisionTool(BaseTool):
         content = [{"type": "text", "text": prompt}]
         content.extend(image_content)
         
-        response = client.chat.completions.create(
-            model=self.model,
-            messages=[{"role": "user", "content": content}],
-            max_tokens=max_tokens,
-        )
+        messages = [{"role": "user", "content": content}]
+        try:
+            import openai  # type: ignore
+            client = openai.OpenAI(api_key=self.api_key)
+            response = client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                max_tokens=max_tokens,
+            )
+            analysis = response.choices[0].message.content
+            usage = {
+                'prompt_tokens': response.usage.prompt_tokens,
+                'completion_tokens': response.usage.completion_tokens,
+            }
+        except ImportError:
+            from ..._internal.clients.openai_rest import OpenAIClient
+            client = OpenAIClient(api_key=self.api_key)
+            resp = client.chat_completions(model=self.model, messages=messages, max_tokens=max_tokens)
+            analysis = resp["choices"][0]["message"]["content"]
+            u = resp.get("usage", {})
+            usage = {
+                'prompt_tokens': u.get('prompt_tokens', 0),
+                'completion_tokens': u.get('completion_tokens', 0),
+            }
         
         return {
             'prompt': prompt,
             'model': self.model,
             'status': 'success',
-            'analysis': response.choices[0].message.content,
-            'usage': {
-                'prompt_tokens': response.usage.prompt_tokens,
-                'completion_tokens': response.usage.completion_tokens,
-            },
+            'analysis': analysis,
+            'usage': usage,
         }
     
     def _prepare_image(self, image: str, detail: str) -> Dict:

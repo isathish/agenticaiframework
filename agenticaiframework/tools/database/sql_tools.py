@@ -401,11 +401,6 @@ class NL2SQLTool(BaseTool):
         if not self.llm_api_key:
             raise ValueError("LLM API key required")
         
-        try:
-            import openai
-        except ImportError:
-            raise ImportError("NL2SQL requires: pip install openai")
-        
         # Get schema if not provided
         if not schema and self.db_tool:
             schema = self._get_schema()
@@ -421,17 +416,24 @@ Question: {question}
 
 Return only the SQL query, nothing else."""
         
-        client = openai.OpenAI(api_key=self.llm_api_key)
-        response = client.chat.completions.create(
-            model=model,
-            messages=[
-                {"role": "system", "content": "You are a SQL expert. Generate only valid SQL."},
-                {"role": "user", "content": prompt},
-            ],
-            temperature=0,
-        )
-        
-        sql = response.choices[0].message.content.strip()
+        messages = [
+            {"role": "system", "content": "You are a SQL expert. Generate only valid SQL."},
+            {"role": "user", "content": prompt},
+        ]
+        try:
+            import openai  # type: ignore
+            client = openai.OpenAI(api_key=self.llm_api_key)
+            response = client.chat.completions.create(
+                model=model,
+                messages=messages,
+                temperature=0,
+            )
+            sql = response.choices[0].message.content.strip()
+        except ImportError:
+            from ..._internal.clients.openai_rest import OpenAIClient
+            client = OpenAIClient(api_key=self.llm_api_key)
+            resp = client.chat_completions(model=model, messages=messages, temperature=0)
+            sql = resp["choices"][0]["message"]["content"].strip()
         
         # Clean up SQL
         if sql.startswith('```'):

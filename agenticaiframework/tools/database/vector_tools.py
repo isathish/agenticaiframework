@@ -37,16 +37,18 @@ class QdrantVectorSearchTool(BaseTool):
         self._client = None
     
     def _get_client(self):
-        """Get Qdrant client."""
+        """Get Qdrant client (official SDK if installed, REST fallback otherwise)."""
         if self._client:
             return self._client
         
         try:
-            from qdrant_client import QdrantClient
+            from qdrant_client import QdrantClient  # type: ignore
+            self._client = QdrantClient(url=self.url, api_key=self.api_key)
+            self._using_rest = False
         except ImportError:
-            raise ImportError("Qdrant requires: pip install qdrant-client")
-        
-        self._client = QdrantClient(url=self.url, api_key=self.api_key)
+            from ..._internal.clients.qdrant_rest import QdrantClient as RestQdrant
+            self._client = RestQdrant(url=self.url, api_key=self.api_key)
+            self._using_rest = True
         return self._client
     
     def _execute(
@@ -72,6 +74,29 @@ class QdrantVectorSearchTool(BaseTool):
         """
         client = self._get_client()
         collection_name = collection or self.collection_name
+        
+        if getattr(self, "_using_rest", False):
+            from ..._internal.clients.qdrant_rest import build_filter_from_dict
+            qfilter = build_filter_from_dict(filters) if filters else None
+            hits = client.search(
+                collection=collection_name,
+                vector=query_vector,
+                limit=limit,
+                filter=qfilter,
+                with_payload=with_payload,
+            )
+            return {
+                'collection': collection_name,
+                'results': [
+                    {
+                        'id': hit.id,
+                        'score': hit.score,
+                        'payload': hit.payload if with_payload else None,
+                    }
+                    for hit in hits
+                ],
+                'total': len(hits),
+            }
         
         search_params = {
             'collection_name': collection_name,
@@ -122,6 +147,14 @@ class QdrantVectorSearchTool(BaseTool):
         """
         client = self._get_client()
         collection_name = collection or self.collection_name
+        
+        if getattr(self, "_using_rest", False):
+            client.upsert(collection=collection_name, points=vectors)
+            return {
+                'status': 'success',
+                'collection': collection_name,
+                'points_upserted': len(vectors),
+            }
         
         from qdrant_client.models import PointStruct
         
