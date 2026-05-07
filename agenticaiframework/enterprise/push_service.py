@@ -208,22 +208,40 @@ class FCMProvider(PushProvider):
         device: Device,
         notification: Notification,
     ) -> DeliveryResult:
-        """Send via FCM."""
+        """Send via FCM legacy HTTP API (https://fcm.googleapis.com/fcm/send)."""
         try:
-            # Would use firebase-admin in real implementation
-            logger.info(
-                f"Sending FCM notification {notification.id} "
-                f"to device {device.id}"
+            from .._internal import http as _http
+
+            payload = {
+                "to": device.token,
+                "notification": {
+                    "title": notification.title,
+                    "body": notification.body,
+                },
+                "data": notification.data or {},
+            }
+            client = _http.Client()
+            resp = client.post(
+                "https://fcm.googleapis.com/fcm/send",
+                json=payload,
+                headers={
+                    "Authorization": f"key={self._api_key}",
+                    "Content-Type": "application/json",
+                },
             )
-            
+            success = 200 <= resp.status < 300
+            logger.info(
+                "FCM send notif=%s device=%s status=%s",
+                notification.id, device.id, resp.status,
+            )
             return DeliveryResult(
                 notification_id=notification.id,
                 device_id=device.id,
-                success=True,
-                status=DeliveryStatus.SENT,
+                success=success,
+                status=DeliveryStatus.SENT if success else DeliveryStatus.FAILED,
                 provider_id=f"fcm-{uuid.uuid4().hex[:16]}",
+                error=None if success else resp.text(),
             )
-            
         except Exception as e:
             return DeliveryResult(
                 notification_id=notification.id,
@@ -271,22 +289,53 @@ class APNSProvider(PushProvider):
         device: Device,
         notification: Notification,
     ) -> DeliveryResult:
-        """Send via APNS."""
+        """Send via APNs HTTP/2 endpoint (HTTP/1.1-compatible) using a JWT."""
         try:
-            # Would use httpx with JWT in real implementation
-            logger.info(
-                f"Sending APNS notification {notification.id} "
-                f"to device {device.id}"
+            from .._internal import http as _http, jwt as _jwt
+            import time as _time
+
+            host = "api.sandbox.push.apple.com" if self._use_sandbox else "api.push.apple.com"
+            url = f"https://{host}/3/device/{device.token}"
+
+            # Build provider authentication JWT (ES256 not supported here; require
+            # caller to pass the key as PEM containing an RSA key for RS256).
+            with open(self._key_file, "r", encoding="utf-8") as f:
+                key_pem = f.read()
+            token = _jwt.encode(
+                {"iss": self._team_id, "iat": int(_time.time())},
+                key_pem,
+                algorithm="RS256",
+                headers={"kid": self._key_id},
             )
-            
+            payload = {
+                "aps": {
+                    "alert": {"title": notification.title, "body": notification.body},
+                },
+            }
+            if notification.data:
+                payload.update(notification.data)
+            client = _http.Client()
+            resp = client.post(
+                url,
+                json=payload,
+                headers={
+                    "authorization": f"bearer {token}",
+                    "apns-topic": self._bundle_id,
+                },
+            )
+            success = 200 <= resp.status < 300
+            logger.info(
+                "APNS send notif=%s device=%s status=%s",
+                notification.id, device.id, resp.status,
+            )
             return DeliveryResult(
                 notification_id=notification.id,
                 device_id=device.id,
-                success=True,
-                status=DeliveryStatus.SENT,
+                success=success,
+                status=DeliveryStatus.SENT if success else DeliveryStatus.FAILED,
                 provider_id=f"apns-{uuid.uuid4().hex[:16]}",
+                error=None if success else resp.text(),
             )
-            
         except Exception as e:
             return DeliveryResult(
                 notification_id=notification.id,

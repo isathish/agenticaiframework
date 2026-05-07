@@ -325,20 +325,116 @@ class ChartSection(Section):
     
     def render_html(self) -> str:
         title_html = f"<h2>{self.title}</h2>" if self.title else ""
-        chart_id = f"chart-{self.id}"
-        
+        svg = self._render_svg()
         return f"""
             <div class="section section-chart">
                 {title_html}
-                <div id="{chart_id}" style="width: {self.width}px; height: {self.height}px;">
-                    <canvas></canvas>
+                <div style="width: {self.width}px; height: {self.height}px;">
+                    {svg}
                 </div>
-                <script>
-                    // Chart placeholder - integrate with Chart.js or similar
-                    console.log('Chart data:', {json.dumps(self.data)});
-                </script>
             </div>
         """
+
+    # -- inline SVG charting (no external libs) -----------------------
+
+    def _render_svg(self) -> str:
+        """Render a minimal SVG bar/line/pie chart from ``self.data``.
+
+        ``self.data`` is expected to look like ``{"labels": [...], "values": [...]}``
+        for bar/line, or ``{"slices": [{"label": str, "value": float}, ...]}`` for
+        pie. Falls back to an empty SVG if shape is unrecognised.
+        """
+        w, h = self.width, self.height
+        kind = (self.chart_type or "bar").lower()
+
+        if kind == "pie":
+            slices = self.data.get("slices") or []
+            return self._render_pie(slices, w, h)
+
+        labels = self.data.get("labels") or []
+        values = self.data.get("values") or []
+        if not values:
+            return f'<svg width="{w}" height="{h}" xmlns="http://www.w3.org/2000/svg"></svg>'
+
+        if kind == "line":
+            return self._render_line(labels, values, w, h)
+        return self._render_bar(labels, values, w, h)
+
+    @staticmethod
+    def _palette(n: int):
+        base = ["#4e79a7", "#f28e2b", "#e15759", "#76b7b2", "#59a14f",
+                "#edc949", "#af7aa1", "#ff9da7", "#9c755f", "#bab0ab"]
+        return [base[i % len(base)] for i in range(n)]
+
+    def _render_bar(self, labels, values, w, h) -> str:
+        pad = 30
+        max_v = max(values) or 1
+        n = len(values)
+        bar_w = (w - 2 * pad) / max(n, 1) * 0.8
+        gap = (w - 2 * pad) / max(n, 1) * 0.2
+        colors = self._palette(n)
+        parts = [f'<svg width="{w}" height="{h}" xmlns="http://www.w3.org/2000/svg">']
+        parts.append(f'<rect width="{w}" height="{h}" fill="white"/>')
+        for i, v in enumerate(values):
+            bh = (h - 2 * pad) * (v / max_v)
+            x = pad + i * (bar_w + gap) + gap / 2
+            y = h - pad - bh
+            parts.append(
+                f'<rect x="{x:.1f}" y="{y:.1f}" width="{bar_w:.1f}" '
+                f'height="{bh:.1f}" fill="{colors[i]}"/>'
+            )
+            label = (labels[i] if i < len(labels) else "")
+            parts.append(
+                f'<text x="{x + bar_w/2:.1f}" y="{h - pad + 14}" '
+                f'font-size="10" text-anchor="middle">{label}</text>'
+            )
+        parts.append("</svg>")
+        return "".join(parts)
+
+    def _render_line(self, labels, values, w, h) -> str:
+        pad = 30
+        max_v = max(values) or 1
+        n = len(values)
+        if n < 2:
+            return self._render_bar(labels, values, w, h)
+        step = (w - 2 * pad) / (n - 1)
+        points = []
+        for i, v in enumerate(values):
+            x = pad + i * step
+            y = h - pad - (h - 2 * pad) * (v / max_v)
+            points.append(f"{x:.1f},{y:.1f}")
+        path = " ".join(points)
+        parts = [
+            f'<svg width="{w}" height="{h}" xmlns="http://www.w3.org/2000/svg">',
+            f'<rect width="{w}" height="{h}" fill="white"/>',
+            f'<polyline fill="none" stroke="#4e79a7" stroke-width="2" points="{path}"/>',
+        ]
+        for p in points:
+            xs, ys = p.split(",")
+            parts.append(f'<circle cx="{xs}" cy="{ys}" r="3" fill="#4e79a7"/>')
+        parts.append("</svg>")
+        return "".join(parts)
+
+    def _render_pie(self, slices, w, h) -> str:
+        import math as _m
+        cx, cy = w / 2, h / 2
+        r = min(w, h) / 2 - 20
+        total = sum(s.get("value", 0) for s in slices) or 1
+        colors = self._palette(len(slices))
+        parts = [f'<svg width="{w}" height="{h}" xmlns="http://www.w3.org/2000/svg">',
+                 f'<rect width="{w}" height="{h}" fill="white"/>']
+        a0 = -_m.pi / 2
+        for i, s in enumerate(slices):
+            frac = s.get("value", 0) / total
+            a1 = a0 + frac * 2 * _m.pi
+            x0, y0 = cx + r * _m.cos(a0), cy + r * _m.sin(a0)
+            x1, y1 = cx + r * _m.cos(a1), cy + r * _m.sin(a1)
+            large = 1 if frac > 0.5 else 0
+            d = f"M {cx:.1f} {cy:.1f} L {x0:.1f} {y0:.1f} A {r:.1f} {r:.1f} 0 {large} 1 {x1:.1f} {y1:.1f} Z"
+            parts.append(f'<path d="{d}" fill="{colors[i]}" stroke="white" stroke-width="1"/>')
+            a0 = a1
+        parts.append("</svg>")
+        return "".join(parts)
     
     def render_text(self) -> str:
         lines = []

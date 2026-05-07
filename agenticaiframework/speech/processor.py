@@ -631,11 +631,11 @@ class GoogleSTT(STTProvider):
         language: Optional[str] = None,
         **kwargs,
     ) -> STTResult:
-        """Transcribe using Google Cloud Speech."""
+        """Transcribe using Google Cloud Speech (SDK if installed; REST fallback)."""
         try:
-            from google.cloud import speech
+            from google.cloud import speech  # type: ignore
         except ImportError:
-            raise ImportError("Google STT requires: pip install google-cloud-speech")
+            return self._transcribe_via_rest(audio, language)
         
         start_time = time.time()
         
@@ -686,6 +686,40 @@ class GoogleSTT(STTProvider):
             words=words,
             provider="google",
             processing_time_ms=processing_time,
+        )
+
+    def _transcribe_via_rest(self, audio, language):
+        """Stdlib-only fallback using the framework's GCP REST client."""
+        from .._internal.clients.gcp_rest import (
+            ServiceAccountCredentials,
+            SpeechClient as _RestSpeechClient,
+        )
+
+        if isinstance(audio, str):
+            with open(audio, "rb") as f:
+                audio_data = f.read()
+        elif isinstance(audio, bytes):
+            audio_data = audio
+        else:
+            audio_data = audio.read()
+
+        creds = ServiceAccountCredentials.from_env()
+        resp = _RestSpeechClient(credentials=creds).recognize(
+            audio_data, language_code=language or self.language
+        )
+        text = ""
+        confidence = 0.0
+        for r in resp.get("results", []):
+            alts = r.get("alternatives") or []
+            if alts:
+                text += alts[0].get("transcript", "") + " "
+                confidence = alts[0].get("confidence", confidence)
+        return STTResult(
+            text=text.strip(),
+            confidence=confidence,
+            language=language or self.language,
+            words=[],
+            provider="google-rest",
         )
     
     def transcribe_stream(

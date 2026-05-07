@@ -529,15 +529,21 @@ class RedisRateLimiter(RateLimiter):
         self._redis = None
     
     async def _get_redis(self):
-        """Get Redis connection lazily."""
+        """Get Redis connection lazily (redis-py if installed, stdlib otherwise)."""
         if self._redis is None:
             try:
-                import redis.asyncio as redis
+                import redis.asyncio as redis  # type: ignore
                 self._redis = redis.from_url(self.redis_url)
             except ImportError:
-                raise ImportError(
-                    "redis package required for RedisRateLimiter. "
-                    "Install with: pip install redis"
+                from urllib.parse import urlsplit
+                from .._internal.redis_resp import AsyncRedisClient
+
+                parts = urlsplit(self.redis_url)
+                self._redis = AsyncRedisClient(
+                    host=parts.hostname or "127.0.0.1",
+                    port=parts.port or 6379,
+                    password=parts.password,
+                    db=int((parts.path or "/0").lstrip("/") or "0"),
                 )
         return self._redis
     

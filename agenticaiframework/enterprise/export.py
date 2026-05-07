@@ -780,7 +780,7 @@ class ReportBuilder:
         chart_type: str,
         data: Any,
     ) -> "ReportBuilder":
-        """Add a chart section (placeholder for visualization)."""
+        """Add a chart section. ``data`` follows the ``ChartSection`` shape."""
         self._sections.append({
             "name": name,
             "content": data,
@@ -838,11 +838,13 @@ class ReportBuilder:
         
         for section in self._sections:
             parts.append(f'<h2>{section["name"]}</h2>')
-            
+
             if section["type"] == "table":
                 parts.append(self._table_to_html(section["content"]))
             elif section["type"] == "text":
                 parts.append(f'<p>{section["content"]}</p>')
+            elif section["type"] == "chart":
+                parts.append(self._chart_to_svg(section.get("chart_type", "bar"), section["content"]))
         
         parts.extend(['</body></html>'])
         return '\n'.join(parts)
@@ -869,6 +871,13 @@ class ReportBuilder:
         
         return '\n'.join(parts)
     
+    def _chart_to_svg(self, chart_type: str, data: Any) -> str:
+        """Render a small inline SVG chart (bar/line/pie) without external deps."""
+        from .report_builder import ChartSection as _ChartSection
+
+        section = _ChartSection(title="", chart_type=chart_type, data=data or {})
+        return section._render_svg()
+
     def _table_to_html(self, data: List[Dict]) -> str:
         """Convert table data to HTML."""
         if not data:

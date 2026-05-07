@@ -461,21 +461,38 @@ class RedisHealthCheck(HealthCheck):
         start = time.time()
         
         try:
-            import redis.asyncio as redis
-            
-            client = redis.from_url(self.url)
-            await asyncio.wait_for(client.ping(), timeout=self._timeout)
-            info = await client.info("server")
-            await client.close()
-            
+            try:
+                import redis.asyncio as redis  # type: ignore
+                client = redis.from_url(self.url)
+                await asyncio.wait_for(client.ping(), timeout=self._timeout)
+                info = await client.info("server")
+                await client.close()
+            except ImportError:
+                from urllib.parse import urlsplit
+                from .._internal.redis_resp import AsyncRedisClient
+
+                parts = urlsplit(self.url)
+                client = AsyncRedisClient(
+                    host=parts.hostname or "127.0.0.1",
+                    port=parts.port or 6379,
+                    password=parts.password,
+                    db=int((parts.path or "/0").lstrip("/") or "0"),
+                )
+                await asyncio.wait_for(client.ping(), timeout=self._timeout)
+                info = {}
+                try:
+                    await client.close()
+                except Exception:  # noqa: BLE001
+                    pass
+
             latency_ms = (time.time() - start) * 1000
             return CheckResult(
                 name=self._name,
                 status=HealthStatus.HEALTHY,
                 latency_ms=latency_ms,
                 details={
-                    "redis_version": info.get("redis_version"),
-                    "connected_clients": info.get("connected_clients"),
+                    "redis_version": info.get("redis_version") if isinstance(info, dict) else None,
+                    "connected_clients": info.get("connected_clients") if isinstance(info, dict) else None,
                 },
             )
         

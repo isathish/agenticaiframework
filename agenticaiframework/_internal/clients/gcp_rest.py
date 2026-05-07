@@ -129,6 +129,37 @@ class GCSClient:
         client = _http.Client()
         client.request("DELETE", url, headers=self._auth_header())
 
+    def list_objects(self, bucket: str, prefix: str = "") -> List[str]:
+        from urllib.parse import urlencode
+
+        url = f"{self.base_url}/storage/v1/b/{bucket}/o"
+        if prefix:
+            url += "?" + urlencode({"prefix": prefix})
+        client = _http.Client()
+        names: List[str] = []
+        page_token: Optional[str] = None
+        while True:
+            req_url = url
+            if page_token:
+                sep = "&" if "?" in req_url else "?"
+                req_url = f"{req_url}{sep}pageToken={page_token}"
+            resp = client.get(req_url, headers=self._auth_header()).json()
+            for item in resp.get("items", []) or []:
+                names.append(item.get("name", ""))
+            page_token = resp.get("nextPageToken")
+            if not page_token:
+                break
+        return [n for n in names if n]
+
+    def exists(self, bucket: str, object_name: str) -> bool:
+        url = f"{self.base_url}/storage/v1/b/{bucket}/o/{object_name}"
+        client = _http.Client()
+        try:
+            resp = client.get(url, headers=self._auth_header())
+            return 200 <= resp.status < 300
+        except Exception:
+            return False
+
 
 # ---------------------------------------------------------------------------
 # Speech / TTS / Vision

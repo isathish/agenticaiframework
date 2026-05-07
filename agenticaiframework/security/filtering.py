@@ -112,13 +112,18 @@ class ContentFilter:
 
 
 class ProfanityFilter(ContentFilter):
-    """Specialized filter for profanity and offensive content."""
-    
-    # Basic list - in production, use a comprehensive library
+    """Specialized filter for profanity and offensive content.
+
+    Ships a small embedded English wordlist (intentionally minimal — applications
+    that need a comprehensive list should ``add_blocked_words(...)`` their own).
+    """
+
+    # Compact, deliberately small starter list. Extend via ``add_blocked_words``.
     DEFAULT_BLOCKED_WORDS = [
-        # This is a placeholder - actual implementation would use a proper profanity library
+        "fuck", "shit", "bitch", "asshole", "bastard", "dick", "piss",
+        "crap", "damn", "cunt", "fag", "slut", "whore", "nigger", "retard",
     ]
-    
+
     def __init__(self, use_defaults: bool = True):
         super().__init__()
         if use_defaults:

@@ -201,29 +201,27 @@ class OCRTool(BaseTool):
     def _ocr_google(
         self, path: Path, language: str, preprocess: bool
     ) -> Dict[str, Any]:
-        """Use Google Cloud Vision."""
+        """Use Google Cloud Vision (SDK if available, REST fallback otherwise)."""
         try:
-            from google.cloud import vision
+            from google.cloud import vision  # type: ignore
         except ImportError:
-            raise ImportError(
-                "Google OCR requires: pip install google-cloud-vision"
-            )
-        
+            return self._ocr_google_rest(path)
+
         client = vision.ImageAnnotatorClient()
-        
+
         with open(path, 'rb') as f:
             content = f.read()
-        
+
         image = vision.Image(content=content)
         response = client.text_detection(image=image)
-        
+
         texts = response.text_annotations
-        
+
         if not texts:
             return {'text': '', 'confidence': 0.0, 'blocks': []}
-        
+
         full_text = texts[0].description
-        
+
         blocks = []
         for text in texts[1:]:
             vertices = text.bounding_poly.vertices
@@ -237,13 +235,43 @@ class OCRTool(BaseTool):
                     'height': vertices[2].y - vertices[0].y,
                 },
             })
-        
         return {
             'text': full_text,
             'confidence': 0.9,
             'blocks': blocks,
         }
-    
+
+    def _ocr_google_rest(self, path: Path) -> Dict[str, Any]:
+        """Stdlib-only Google Vision OCR using a service-account JWT."""
+        from ..._internal.clients.gcp_rest import (
+            ServiceAccountCredentials,
+            VisionClient,
+        )
+
+        creds = ServiceAccountCredentials.from_env()
+        with open(path, 'rb') as f:
+            image_bytes = f.read()
+        resp = VisionClient(credentials=creds).text_detection(image_bytes)
+        responses = resp.get("responses") or [{}]
+        annotations = responses[0].get("textAnnotations") or []
+        if not annotations:
+            return {'text': '', 'confidence': 0.0, 'blocks': []}
+        full_text = annotations[0].get("description", "")
+        blocks = []
+        for ann in annotations[1:]:
+            vs = ann.get("boundingPoly", {}).get("vertices") or []
+            if len(vs) >= 3:
+                bbox = {
+                    'x': vs[0].get('x', 0),
+                    'y': vs[0].get('y', 0),
+                    'width': vs[1].get('x', 0) - vs[0].get('x', 0),
+                    'height': vs[2].get('y', 0) - vs[0].get('y', 0),
+                }
+            else:
+                bbox = {'x': 0, 'y': 0, 'width': 0, 'height': 0}
+            blocks.append({'text': ann.get("description", ""), 'confidence': 0.9, 'bbox': bbox})
+        return {'text': full_text, 'confidence': 0.9, 'blocks': blocks}
+
     def _ocr_aws(
         self, path: Path, language: str, preprocess: bool
     ) -> Dict[str, Any]:

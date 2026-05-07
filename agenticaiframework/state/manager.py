@@ -22,6 +22,36 @@ logger = logging.getLogger(__name__)
 T = TypeVar('T')
 
 
+class _RedisRespAdapter:
+    """Adapt the framework's stdlib RESP client to redis-py's surface used here."""
+
+    def __init__(self, client) -> None:
+        self._c = client
+
+    def ping(self):
+        return self._c.ping()
+
+    def get(self, key: str):
+        return self._c.get(key)
+
+    def set(self, key: str, value):
+        return self._c.set(key, value)
+
+    def setex(self, key: str, ttl_seconds: int, value):
+        return self._c.set(key, value, ex=int(ttl_seconds))
+
+    def delete(self, *keys: str) -> int:
+        if not keys:
+            return 0
+        return self._c.delete(*keys)
+
+    def exists(self, key: str) -> int:
+        return self._c.exists(key)
+
+    def keys(self, pattern: str = "*"):
+        return self._c.keys(pattern)
+
+
 class StateType(Enum):
     """Types of state that can be managed."""
     AGENT = "agent"
@@ -284,16 +314,33 @@ class RedisBackend(StateBackend):
         self._connect()
     
     def _connect(self):
-        """Connect to Redis."""
+        """Connect to Redis (real ``redis-py`` if installed, stdlib client otherwise)."""
+        url = self.config.redis_url or os.getenv("REDIS_URL", "redis://localhost:6379")
         try:
-            import redis
-            url = self.config.redis_url or os.getenv("REDIS_URL", "redis://localhost:6379")
+            import redis  # type: ignore
             self._client = redis.from_url(url)
             self._client.ping()
+            return
         except ImportError:
-            raise ImportError("Redis backend requires: pip install redis")
+            pass
         except Exception as e:
-            logger.warning(f"Redis connection failed: {e}")
+            logger.warning(f"Redis (redis-py) connection failed: {e}")
+
+        # Stdlib fallback — parse the URL into host/port/password/db.
+        from urllib.parse import urlsplit
+        from .._internal.redis_resp import RedisClient
+
+        parts = urlsplit(url)
+        host = parts.hostname or "127.0.0.1"
+        port = parts.port or 6379
+        password = parts.password
+        db = int((parts.path or "/0").lstrip("/") or "0")
+        try:
+            client = RedisClient(host=host, port=port, password=password, db=db)
+            client.ping()
+            self._client = _RedisRespAdapter(client)
+        except Exception as e:  # noqa: BLE001
+            logger.warning(f"Redis (stdlib) connection failed: {e}")
             self._client = None
     
     def _serialize(self, entry: StateEntry) -> str:

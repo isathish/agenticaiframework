@@ -518,7 +518,7 @@ class AzureRedisCache(CacheAdapter):
     def _get_client(self):
         if self._client is None:
             try:
-                import redis
+                import redis  # type: ignore
                 self._client = redis.Redis(
                     host=self.host,
                     port=self.port,
@@ -526,7 +526,12 @@ class AzureRedisCache(CacheAdapter):
                     ssl=self.ssl,
                 )
             except ImportError:
-                raise ImportError("redis is required. Install with: pip install redis")
+                from .._internal.redis_resp import RedisClient
+                self._client = RedisClient(
+                    host=self.host or "127.0.0.1",
+                    port=self.port,
+                    password=self.password,
+                )
         return self._client
     
     async def get(self, key: str, **kwargs) -> Optional[Any]:
@@ -740,66 +745,94 @@ class GCPCloudStorage(StorageAdapter):
     ):
         self.bucket_name = bucket_name
         self.project = project or os.getenv("GOOGLE_CLOUD_PROJECT")
-    
+        self._rest_client = None
+
+    def _get_rest(self):
+        if self._rest_client is None:
+            from .._internal.clients.gcp_rest import (
+                ServiceAccountCredentials,
+                GCSClient,
+            )
+            self._rest_client = GCSClient(credentials=ServiceAccountCredentials.from_env())
+        return self._rest_client
+
     async def upload(self, path: str, content: Union[str, bytes], **kwargs) -> str:
         try:
-            from google.cloud import storage
-            
+            from google.cloud import storage  # type: ignore
+
             client = storage.Client(project=self.project)
             bucket = client.bucket(self.bucket_name)
             blob = bucket.blob(path)
-            
+
             data = content.encode() if isinstance(content, str) else content
             await asyncio.to_thread(blob.upload_from_string, data)
-            
+
             return f"gs://{self.bucket_name}/{path}"
         except ImportError:
-            raise ImportError("google-cloud-storage is required. Install with: pip install google-cloud-storage")
-    
+            data = content.encode() if isinstance(content, str) else content
+            await asyncio.to_thread(self._get_rest().upload, self.bucket_name, path, data)
+            return f"gs://{self.bucket_name}/{path}"
+
     async def download(self, path: str, **kwargs) -> Union[str, bytes]:
-        from google.cloud import storage
-        
-        client = storage.Client(project=self.project)
-        bucket = client.bucket(self.bucket_name)
-        blob = bucket.blob(path)
-        
-        content = await asyncio.to_thread(blob.download_as_bytes)
-        
+        try:
+            from google.cloud import storage  # type: ignore
+
+            client = storage.Client(project=self.project)
+            bucket = client.bucket(self.bucket_name)
+            blob = bucket.blob(path)
+
+            content = await asyncio.to_thread(blob.download_as_bytes)
+        except ImportError:
+            content = await asyncio.to_thread(self._get_rest().download, self.bucket_name, path)
+
         try:
             return content.decode()
         except UnicodeDecodeError:
             return content
-    
+
     async def delete(self, path: str, **kwargs) -> bool:
-        from google.cloud import storage
-        
-        client = storage.Client(project=self.project)
-        bucket = client.bucket(self.bucket_name)
-        blob = bucket.blob(path)
-        
         try:
-            await asyncio.to_thread(blob.delete)
-            return True
-        except Exception:
-            return False
-    
+            from google.cloud import storage  # type: ignore
+
+            client = storage.Client(project=self.project)
+            bucket = client.bucket(self.bucket_name)
+            blob = bucket.blob(path)
+
+            try:
+                await asyncio.to_thread(blob.delete)
+                return True
+            except Exception:
+                return False
+        except ImportError:
+            try:
+                await asyncio.to_thread(self._get_rest().delete, self.bucket_name, path)
+                return True
+            except Exception:
+                return False
+
     async def list(self, prefix: str = "", **kwargs) -> List[str]:
-        from google.cloud import storage
-        
-        client = storage.Client(project=self.project)
-        bucket = client.bucket(self.bucket_name)
-        
-        blobs = await asyncio.to_thread(lambda: list(bucket.list_blobs(prefix=prefix)))
-        return [blob.name for blob in blobs]
-    
+        try:
+            from google.cloud import storage  # type: ignore
+
+            client = storage.Client(project=self.project)
+            bucket = client.bucket(self.bucket_name)
+
+            blobs = await asyncio.to_thread(lambda: list(bucket.list_blobs(prefix=prefix)))
+            return [blob.name for blob in blobs]
+        except ImportError:
+            return await asyncio.to_thread(self._get_rest().list_objects, self.bucket_name, prefix)
+
     async def exists(self, path: str, **kwargs) -> bool:
-        from google.cloud import storage
-        
-        client = storage.Client(project=self.project)
-        bucket = client.bucket(self.bucket_name)
-        blob = bucket.blob(path)
-        
-        return await asyncio.to_thread(blob.exists)
+        try:
+            from google.cloud import storage  # type: ignore
+
+            client = storage.Client(project=self.project)
+            bucket = client.bucket(self.bucket_name)
+            blob = bucket.blob(path)
+
+            return await asyncio.to_thread(blob.exists)
+        except ImportError:
+            return await asyncio.to_thread(self._get_rest().exists, self.bucket_name, path)
 
 
 class GCPVertexAILLM(LLMAdapter):

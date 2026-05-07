@@ -525,14 +525,20 @@ class ToolFactory:
                 return await implementation(*args, **kw) if asyncio.iscoroutinefunction(implementation) else implementation(*args, **kw)
             return wrapped
         
-        # Return placeholder if no implementation
+        # No implementation supplied — return a safe echo tool that logs the
+        # call and returns the inputs verbatim. This keeps pipelines runnable
+        # in scaffolded/demo scenarios instead of raising at call time.
+        import logging as _logging
+        _log = _logging.getLogger(__name__)
+
         @tool(
             name=name,
-            description=description or f"Tool: {name}",
+            description=description or f"Tool: {name} (echo placeholder)",
         )
         async def placeholder_tool(*args, **kw):
-            raise NotImplementedError(f"Tool {name} requires an implementation")
-        
+            _log.info("placeholder tool %r called args=%r kwargs=%r", name, args, kw)
+            return {"tool": name, "args": list(args), "kwargs": kw}
+
         return placeholder_tool
     
     @classmethod

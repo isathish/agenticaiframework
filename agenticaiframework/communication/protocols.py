@@ -571,13 +571,12 @@ class MQTTProtocol(CommunicationProtocol):
         self._subscriptions: List[str] = []
     
     def connect(self) -> bool:
-        """Connect to MQTT broker."""
+        """Connect to MQTT broker. Uses paho-mqtt when present, stdlib client otherwise."""
         try:
-            import paho.mqtt.client as mqtt
+            import paho.mqtt.client as mqtt  # type: ignore
         except ImportError:
-            logger.error("MQTT protocol requires: pip install paho-mqtt")
-            return False
-        
+            return self._connect_stdlib()
+
         try:
             self._client = mqtt.Client(client_id=self.client_id)
             
@@ -601,6 +600,38 @@ class MQTTProtocol(CommunicationProtocol):
             
         except Exception as e:
             logger.error(f"MQTT connection error: {e}")
+            return False
+
+    def _connect_stdlib(self) -> bool:
+        """Stdlib-only MQTT 3.1.1 fallback."""
+        try:
+            from .._internal.mqtt import MQTTClient as _MQTTClient
+
+            client = _MQTTClient(
+                host=self.broker,
+                port=self.port,
+                client_id=self.client_id,
+                username=self.username,
+                password=self.password,
+            )
+            client.connect()
+            client.loop_start()
+
+            def _on_msg(topic: str, payload: bytes) -> None:
+                try:
+                    data = json.loads(payload.decode("utf-8", errors="replace"))
+                except Exception:  # noqa: BLE001
+                    data = {"raw": payload.decode("utf-8", errors="replace")}
+                self._message_queue.put((topic, data))
+
+            for sub in self._subscriptions:
+                client.subscribe(sub, _on_msg)
+
+            self._client = client
+            self.is_connected = True
+            return True
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"MQTT stdlib connection error: {e}")
             return False
     
     def disconnect(self) -> bool:
