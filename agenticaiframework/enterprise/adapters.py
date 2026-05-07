@@ -412,8 +412,16 @@ class AzureCosmosVectorDB(VectorDBAdapter):
                     id=self.container_name,
                     partition_key=PartitionKey(path="/id"),
                 )
+                self._using_rest = False
             except ImportError:
-                raise ImportError("azure-cosmos is required. Install with: pip install azure-cosmos")
+                from .._internal.clients.cosmos_rest import CosmosClient as RestCosmos
+                if not self.connection_string:
+                    raise RuntimeError("Cosmos requires COSMOS_CONNECTION_STRING when azure-cosmos is unavailable")
+                rest = RestCosmos.from_connection_string(self.connection_string)
+                rest.create_database_if_not_exists(self.database_name)
+                rest.create_container_if_not_exists(self.database_name, self.container_name, "/id")
+                self._client = rest
+                self._using_rest = True
         return self._client
     
     async def upsert(
@@ -432,7 +440,15 @@ class AzureCosmosVectorDB(VectorDBAdapter):
             "timestamp": datetime.utcnow().isoformat(),
         }
         
-        await asyncio.to_thread(container.upsert_item, item)
+        if getattr(self, "_using_rest", False):
+            await asyncio.to_thread(
+                container.upsert_item,
+                self.database_name,
+                self.container_name,
+                item,
+            )
+        else:
+            await asyncio.to_thread(container.upsert_item, item)
         return True
     
     async def search(
@@ -447,9 +463,18 @@ class AzureCosmosVectorDB(VectorDBAdapter):
         
         # Basic implementation - for production use Cosmos DB vector search
         query = "SELECT * FROM c"
-        items = list(await asyncio.to_thread(
-            lambda: container.query_items(query=query, enable_cross_partition_query=True)
-        ))
+        if getattr(self, "_using_rest", False):
+            items = list(await asyncio.to_thread(
+                container.query_items,
+                self.database_name,
+                self.container_name,
+                query,
+                enable_cross_partition_query=True,
+            ))
+        else:
+            items = list(await asyncio.to_thread(
+                lambda: container.query_items(query=query, enable_cross_partition_query=True)
+            ))
         
         # Calculate cosine similarity
         def cosine_similarity(a, b):
@@ -505,7 +530,9 @@ class AzureServiceBusQueue(QueueAdapter):
                     await asyncio.to_thread(sender.send_messages, msg)
                     return msg.message_id or "sent"
         except ImportError:
-            raise ImportError("azure-servicebus is required. Install with: pip install azure-servicebus")
+            from .._internal.clients.azure_servicebus_rest import ServiceBusClient as RestSB
+            rest = RestSB.from_connection_string(self.connection_string or "")
+            return await asyncio.to_thread(rest.send, self.queue_name, message)
     
     async def receive(self, max_messages: int = 1, **kwargs) -> List[Any]:
         try:
@@ -531,7 +558,9 @@ class AzureServiceBusQueue(QueueAdapter):
                     
                     return results
         except ImportError:
-            raise ImportError("azure-servicebus is required. Install with: pip install azure-servicebus")
+            from .._internal.clients.azure_servicebus_rest import ServiceBusClient as RestSB
+            rest = RestSB.from_connection_string(self.connection_string or "")
+            return await asyncio.to_thread(rest.receive, self.queue_name, max_messages=max_messages)
     
     async def acknowledge(self, message_id: str, **kwargs) -> bool:
         # In Service Bus, messages are completed when received with auto-complete
