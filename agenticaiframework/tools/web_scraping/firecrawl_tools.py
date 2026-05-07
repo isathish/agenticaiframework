@@ -59,11 +59,8 @@ class FirecrawlCrawlWebsiteTool(AsyncBaseTool):
         if not self.api_key:
             raise ValueError("Firecrawl API key required")
         
-        try:
-            import aiohttp
-        except ImportError:
-            raise ImportError("Requires: pip install aiohttp")
-        
+        from ..._internal import http as _http
+
         headers = {
             'Authorization': f'Bearer {self.api_key}',
             'Content-Type': 'application/json',
@@ -81,66 +78,66 @@ class FirecrawlCrawlWebsiteTool(AsyncBaseTool):
             },
         }
         
-        async with aiohttp.ClientSession() as session:
-            # Start crawl
-            async with session.post(
-                f'{self.base_url}/crawl',
+        client = _http.AsyncClient()
+        # Start crawl
+        response = await client.post(
+            f'{self.base_url}/crawl',
+            headers=headers,
+            json=payload,
+        )
+        start_data = response.json()
+        
+        if not wait_for_results:
+            return {
+                'url': url,
+                'status': 'started',
+                'job_id': start_data.get('jobId'),
+            }
+        
+        job_id = start_data.get('jobId')
+        
+        if not job_id:
+            return {
+                'url': url,
+                'status': 'error',
+                'error': 'No job ID returned',
+            }
+        
+        # Poll for results
+        import asyncio
+        elapsed = 0
+        poll_interval = 5
+        
+        while elapsed < timeout:
+            status_response = await client.get(
+                f'{self.base_url}/crawl/status/{job_id}',
                 headers=headers,
-                json=payload,
-            ) as response:
-                start_data = await response.json()
+            )
+            status_data = status_response.json()
             
-            if not wait_for_results:
+            if status_data.get('status') == 'completed':
                 return {
                     'url': url,
-                    'status': 'started',
-                    'job_id': start_data.get('jobId'),
+                    'status': 'success',
+                    'pages': status_data.get('data', []),
+                    'total_pages': len(status_data.get('data', [])),
                 }
             
-            job_id = start_data.get('jobId')
-            
-            if not job_id:
+            if status_data.get('status') == 'failed':
                 return {
                     'url': url,
                     'status': 'error',
-                    'error': 'No job ID returned',
+                    'error': status_data.get('error'),
                 }
             
-            # Poll for results
-            import asyncio
-            elapsed = 0
-            poll_interval = 5
-            
-            while elapsed < timeout:
-                async with session.get(
-                    f'{self.base_url}/crawl/status/{job_id}',
-                    headers=headers,
-                ) as status_response:
-                    status_data = await status_response.json()
-                
-                if status_data.get('status') == 'completed':
-                    return {
-                        'url': url,
-                        'status': 'success',
-                        'pages': status_data.get('data', []),
-                        'total_pages': len(status_data.get('data', [])),
-                    }
-                
-                if status_data.get('status') == 'failed':
-                    return {
-                        'url': url,
-                        'status': 'error',
-                        'error': status_data.get('error'),
-                    }
-                
-                await asyncio.sleep(poll_interval)
-                elapsed += poll_interval
-            
-            return {
-                'url': url,
-                'status': 'timeout',
-                'job_id': job_id,
-            }
+            await asyncio.sleep(poll_interval)
+            elapsed += poll_interval
+        
+        return {
+            'url': url,
+            'status': 'timeout',
+            'job_id': job_id,
+        }
     
     def _execute(self, **kwargs) -> Any:
         import asyncio
@@ -196,11 +193,8 @@ class FirecrawlScrapeWebsiteTool(AsyncBaseTool):
         if not self.api_key:
             raise ValueError("Firecrawl API key required")
         
-        try:
-            import aiohttp
-        except ImportError:
-            raise ImportError("Requires: pip install aiohttp")
-        
+        from ..._internal import http as _http
+
         headers = {
             'Authorization': f'Bearer {self.api_key}',
             'Content-Type': 'application/json',
@@ -227,13 +221,13 @@ class FirecrawlScrapeWebsiteTool(AsyncBaseTool):
         if wait_for:
             payload['pageOptions']['waitFor'] = wait_for
         
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
-                f'{self.base_url}/scrape',
-                headers=headers,
-                json=payload,
-            ) as response:
-                data = await response.json()
+        client = _http.AsyncClient()
+        response = await client.post(
+            f'{self.base_url}/scrape',
+            headers=headers,
+            json=payload,
+        )
+        data = response.json()
         
         if response.status != 200:
             return {

@@ -94,11 +94,11 @@ class DOCXRAGSearchTool(BaseRAGSearchTool):
         }
     
     def _index_documents(self, docx_paths: List[str]):
-        """Index DOCX documents."""
+        """Index DOCX documents (python-docx if installed, stdlib otherwise)."""
         try:
-            from docx import Document
+            from docx import Document  # type: ignore
         except ImportError:
-            raise ImportError("DOCX support requires: pip install python-docx")
+            from ..._internal.docx import Document  # stdlib fallback
         
         self._chunks = []
         

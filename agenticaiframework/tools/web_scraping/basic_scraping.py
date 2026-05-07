@@ -62,11 +62,8 @@ class ScrapeWebsiteTool(AsyncBaseTool):
         Returns:
             Dict with scraped content
         """
-        try:
-            import aiohttp
-        except ImportError:
-            raise ImportError("Web scraping requires: pip install aiohttp")
-        
+        from ..._internal import http as _http
+
         try:
             from bs4 import BeautifulSoup  # type: ignore
         except ImportError:
@@ -77,15 +74,11 @@ class ScrapeWebsiteTool(AsyncBaseTool):
             **(headers or {}),
         }
         
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                url,
-                headers=request_headers,
-                timeout=aiohttp.ClientTimeout(total=timeout),
-            ) as response:
-                response.raise_for_status()
-                html = await response.text()
-                content_type = response.headers.get('Content-Type', '')
+        client = _http.AsyncClient(timeout=timeout)
+        response = await client.get(url, headers=request_headers)
+        response.raise_for_status()
+        html = response.text
+        content_type = response.headers.get('content-type', '')
         
         soup = BeautifulSoup(html, 'html.parser')
         
@@ -188,20 +181,17 @@ class ScrapeElementTool(BaseTool):
         Returns:
             Dict with extracted elements
         """
-        try:
-            import requests
-        except ImportError:
-            raise ImportError("Requires: pip install requests")
-        
+        from ..._internal import http as _http
+
         try:
             from bs4 import BeautifulSoup  # type: ignore
         except ImportError:
             from ..._internal.html import BeautifulSoup
         
-        response = requests.get(
+        client = _http.Client(timeout=timeout)
+        response = client.get(
             url,
             headers={'User-Agent': self.user_agent},
-            timeout=timeout,
         )
         response.raise_for_status()
         

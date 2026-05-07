@@ -274,14 +274,23 @@ class AzureOpenAILLM(LLMAdapter):
     def _get_client(self):
         if self._client is None:
             try:
-                from openai import AzureOpenAI
+                from openai import AzureOpenAI  # type: ignore
                 self._client = AzureOpenAI(
                     api_key=self.api_key,
                     azure_endpoint=self.endpoint,
                     api_version=self.api_version,
                 )
+                self._azure_rest = False
             except ImportError:
-                raise ImportError("openai is required. Install with: pip install openai")
+                from .._internal.clients.openai_rest import OpenAIClient
+                base = (self.endpoint or "").rstrip("/") + f"/openai/deployments/{self.default_model}"
+                self._client = OpenAIClient(
+                    api_key=self.api_key or "",
+                    base_url=base,
+                    extra_headers={"api-key": self.api_key or ""},
+                )
+                self._azure_query = f"?api-version={self.api_version}"
+                self._azure_rest = True
         return self._client
     
     async def generate(
@@ -326,8 +335,15 @@ class AzureOpenAILLM(LLMAdapter):
         
         response = await asyncio.to_thread(
             lambda: client.chat.completions.create(**params)
+        ) if not getattr(self, "_azure_rest", False) else await asyncio.to_thread(
+            lambda: client._client.post(  # noqa: SLF001
+                f"/chat/completions{getattr(self, '_azure_query', '')}",
+                json=params,
+            ).raise_for_status().json()
         )
-        
+
+        if getattr(self, "_azure_rest", False):
+            return response["choices"][0]["message"]["content"]
         return response.choices[0].message.content
     
     async def embed(
@@ -342,10 +358,18 @@ class AzureOpenAILLM(LLMAdapter):
         texts = [text] if isinstance(text, str) else text
         embed_model = model or "text-embedding-ada-002"
         
+        if getattr(self, "_azure_rest", False):
+            response = await asyncio.to_thread(
+                lambda: client._client.post(  # noqa: SLF001
+                    f"/embeddings{getattr(self, '_azure_query', '')}",
+                    json={"input": texts, "model": embed_model},
+                ).raise_for_status().json()
+            )
+            return [item["embedding"] for item in response["data"]]
+
         response = await asyncio.to_thread(
             lambda: client.embeddings.create(input=texts, model=embed_model)
         )
-        
         return [item.embedding for item in response.data]
 
 

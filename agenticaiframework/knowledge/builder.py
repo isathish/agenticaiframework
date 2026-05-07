@@ -215,21 +215,29 @@ class OpenAIEmbedding(EmbeddingProvider):
     def _get_client(self):
         if not self._client:
             try:
-                from openai import OpenAI
+                from openai import OpenAI  # type: ignore
                 self._client = OpenAI(api_key=self.api_key)
             except ImportError:
-                raise ImportError("OpenAI embeddings require: pip install openai")
+                from .._internal.clients.openai_rest import OpenAIClient
+                self._client = OpenAIClient(api_key=self.api_key)
         return self._client
     
     def embed(self, text: str) -> List[float]:
         client = self._get_client()
-        response = client.embeddings.create(input=text, model=self.model)
-        return response.data[0].embedding
+        if hasattr(client, "embeddings") and hasattr(client.embeddings, "create"):
+            response = client.embeddings.create(input=text, model=self.model)
+            return response.data[0].embedding
+        # _internal client
+        resp = client.embeddings(model=self.model, input=text)
+        return resp["data"][0]["embedding"]
     
     def embed_batch(self, texts: List[str]) -> List[List[float]]:
         client = self._get_client()
-        response = client.embeddings.create(input=texts, model=self.model)
-        return [item.embedding for item in response.data]
+        if hasattr(client, "embeddings") and hasattr(client.embeddings, "create"):
+            response = client.embeddings.create(input=texts, model=self.model)
+            return [item.embedding for item in response.data]
+        resp = client.embeddings(model=self.model, input=texts)
+        return [item["embedding"] for item in resp["data"]]
     
     @property
     def dimension(self) -> int:
@@ -255,25 +263,46 @@ class AzureOpenAIEmbedding(EmbeddingProvider):
     def _get_client(self):
         if not self._client:
             try:
-                from openai import AzureOpenAI
+                from openai import AzureOpenAI  # type: ignore
                 self._client = AzureOpenAI(
                     api_key=self.api_key,
                     api_version=self.api_version,
                     azure_endpoint=self.endpoint,
                 )
             except ImportError:
-                raise ImportError("Azure OpenAI requires: pip install openai")
+                from .._internal.clients.openai_rest import OpenAIClient
+                # Azure deployment URLs differ; use Azure-specific path layout.
+                base = (self.endpoint or "").rstrip("/") + f"/openai/deployments/{self.deployment}"
+                self._client = OpenAIClient(
+                    api_key=self.api_key or "",
+                    base_url=base,
+                    extra_headers={"api-key": self.api_key or ""},
+                )
+                self._azure_query = f"?api-version={self.api_version}"
         return self._client
     
     def embed(self, text: str) -> List[float]:
         client = self._get_client()
-        response = client.embeddings.create(input=text, model=self.deployment)
-        return response.data[0].embedding
+        if hasattr(client, "embeddings") and hasattr(client.embeddings, "create"):
+            response = client.embeddings.create(input=text, model=self.deployment)
+            return response.data[0].embedding
+        # _internal client: use raw HTTP for Azure deployment URL
+        resp = client._client.post(
+            f"/embeddings{getattr(self, '_azure_query', '')}",
+            json={"input": text, "model": self.deployment},
+        ).raise_for_status().json()
+        return resp["data"][0]["embedding"]
     
     def embed_batch(self, texts: List[str]) -> List[List[float]]:
         client = self._get_client()
-        response = client.embeddings.create(input=texts, model=self.deployment)
-        return [item.embedding for item in response.data]
+        if hasattr(client, "embeddings") and hasattr(client.embeddings, "create"):
+            response = client.embeddings.create(input=texts, model=self.deployment)
+            return [item.embedding for item in response.data]
+        resp = client._client.post(
+            f"/embeddings{getattr(self, '_azure_query', '')}",
+            json={"input": texts, "model": self.deployment},
+        ).raise_for_status().json()
+        return [item["embedding"] for item in resp["data"]]
     
     @property
     def dimension(self) -> int:
@@ -450,12 +479,12 @@ class PDFLoader(SourceLoader):
     
     def load(self, source: str, **kwargs) -> List[KnowledgeChunk]:
         try:
-            import pypdf
+            import pypdf  # type: ignore
         except ImportError:
             try:
-                import PyPDF2 as pypdf
+                import PyPDF2 as pypdf  # type: ignore
             except ImportError:
-                raise ImportError("PDF loading requires: pip install pypdf")
+                from .._internal import pdf as pypdf  # stdlib fallback
         
         chunks = []
         
@@ -487,9 +516,9 @@ class DocxLoader(SourceLoader):
     
     def load(self, source: str, **kwargs) -> List[KnowledgeChunk]:
         try:
-            from docx import Document
+            from docx import Document  # type: ignore
         except ImportError:
-            raise ImportError("DOCX loading requires: pip install python-docx")
+            from .._internal.docx import Document  # stdlib fallback
         
         doc = Document(source)
         content = "\n".join([para.text for para in doc.paragraphs if para.text])
@@ -569,33 +598,33 @@ class ImageLoader(SourceLoader):
         source: str,
         prompt: str = "Extract all text and describe the content of this image.",
     ) -> List[KnowledgeChunk]:
-        """Extract content using OpenAI Vision."""
-        try:
-            from openai import OpenAI
-            import base64
-        except ImportError:
-            raise ImportError("OpenAI Vision requires: pip install openai")
-        
+        """Extract content using OpenAI Vision (SDK if installed, REST fallback)."""
+        import base64
+
         with open(source, "rb") as f:
             b64_image = base64.b64encode(f.read()).decode()
-        
-        client = OpenAI(api_key=self.api_key or os.getenv("OPENAI_API_KEY"))
-        
-        response = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[{
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": prompt},
-                    {
-                        "type": "image_url",
-                        "image_url": {"url": f"data:image/jpeg;base64,{b64_image}"}
-                    }
-                ]
-            }]
-        )
-        
-        content = response.choices[0].message.content
+
+        messages = [{
+            "role": "user",
+            "content": [
+                {"type": "text", "text": prompt},
+                {
+                    "type": "image_url",
+                    "image_url": {"url": f"data:image/jpeg;base64,{b64_image}"}
+                }
+            ]
+        }]
+
+        try:
+            from openai import OpenAI  # type: ignore
+            client = OpenAI(api_key=self.api_key or os.getenv("OPENAI_API_KEY"))
+            response = client.chat.completions.create(model="gpt-4o", messages=messages)
+            content = response.choices[0].message.content
+        except ImportError:
+            from .._internal.clients.openai_rest import OpenAIClient
+            client = OpenAIClient(api_key=self.api_key or os.getenv("OPENAI_API_KEY", ""))
+            resp = client.chat_completions(model="gpt-4o", messages=messages)
+            content = resp["choices"][0]["message"]["content"]
         
         return [KnowledgeChunk(
             content=content,
@@ -681,14 +710,11 @@ class WebSearchLoader(SourceLoader):
     
     def _search_serper(self, query: str) -> List[KnowledgeChunk]:
         """Search using Serper API."""
-        try:
-            import requests
-        except ImportError:
-            raise ImportError("Web search requires: pip install requests")
-        
+        from .._internal import http as _http
+
         api_key = self.api_key or os.getenv("SERPER_API_KEY")
-        
-        response = requests.post(
+        client = _http.Client()
+        response = client.post(
             "https://google.serper.dev/search",
             headers={"X-API-KEY": api_key, "Content-Type": "application/json"},
             json={"q": query, "num": self.num_results}
@@ -753,19 +779,15 @@ class APILoader(SourceLoader):
         json_path: Optional[str] = None,
         **kwargs,
     ) -> List[KnowledgeChunk]:
-        try:
-            import requests
-        except ImportError:
-            raise ImportError("API loading requires: pip install requests")
-        
+        from .._internal import http as _http
+
         url = source.replace("api:", "").strip()
-        
-        response = requests.request(
+        client = _http.Client(timeout=30)
+        response = client.request(
             method=method,
             url=url,
             headers=headers or {},
             json=data,
-            timeout=30,
         )
         
         try:
@@ -786,7 +808,7 @@ class APILoader(SourceLoader):
             source=url,
             source_type=SourceType.API,
             metadata={
-                "status_code": response.status_code,
+                "status_code": response.status,
                 "method": method,
             }
         )]

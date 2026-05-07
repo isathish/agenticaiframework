@@ -44,11 +44,8 @@ class BrowserbaseWebLoaderTool(AsyncBaseTool):
         if not self.api_key:
             raise ValueError("Browserbase API key required")
         
-        try:
-            import aiohttp
-        except ImportError:
-            raise ImportError("Requires: pip install aiohttp")
-        
+        from ..._internal import http as _http
+
         headers = {
             'Authorization': f'Bearer {self.api_key}',
             'Content-Type': 'application/json',
@@ -64,13 +61,13 @@ class BrowserbaseWebLoaderTool(AsyncBaseTool):
         if self.project_id:
             payload['projectId'] = self.project_id
         
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
-                'https://api.browserbase.com/v1/pages',
-                headers=headers,
-                json=payload,
-            ) as response:
-                data = await response.json()
+        client = _http.AsyncClient()
+        response = await client.post(
+            'https://api.browserbase.com/v1/pages',
+            headers=headers,
+            json=payload,
+        )
+        data = response.json()
         
         return {
             'url': url,
@@ -117,11 +114,8 @@ class HyperbrowserLoadTool(AsyncBaseTool):
         if not self.api_key:
             raise ValueError("Hyperbrowser API key required")
         
-        try:
-            import aiohttp
-        except ImportError:
-            raise ImportError("Requires: pip install aiohttp")
-        
+        from ..._internal import http as _http
+
         headers = {
             'X-API-Key': self.api_key,
             'Content-Type': 'application/json',
@@ -134,13 +128,13 @@ class HyperbrowserLoadTool(AsyncBaseTool):
             'extractMetadata': extract_metadata,
         }
         
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
-                'https://api.hyperbrowser.ai/v1/load',
-                headers=headers,
-                json=payload,
-            ) as response:
-                data = await response.json()
+        client = _http.AsyncClient()
+        response = await client.post(
+            'https://api.hyperbrowser.ai/v1/load',
+            headers=headers,
+            json=payload,
+        )
+        data = response.json()
         
         return {
             'url': url,

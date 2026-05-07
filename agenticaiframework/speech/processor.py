@@ -188,11 +188,8 @@ class OpenAISTT(STTProvider):
         **kwargs,
     ) -> STTResult:
         """Transcribe audio using OpenAI Whisper."""
-        try:
-            import httpx
-        except ImportError:
-            raise ImportError("OpenAI STT requires: pip install httpx")
-        
+        from .._internal import http as _http
+
         start_time = time.time()
         
         # Prepare audio file
@@ -208,7 +205,7 @@ class OpenAISTT(STTProvider):
             filename = getattr(audio, "name", "audio.mp3")
         
         # Make request
-        files = {"file": (filename, audio_data)}
+        files = {"file": (filename, audio_data, "application/octet-stream")}
         data = {"model": self.model}
         
         if language:
@@ -221,15 +218,13 @@ class OpenAISTT(STTProvider):
             data["prompt"] = kwargs["prompt"]
         
         headers = {"Authorization": f"Bearer {self.api_key}"}
-        
-        with httpx.Client(timeout=60.0) as client:
-            response = client.post(
-                f"{self.base_url}/audio/transcriptions",
-                headers=headers,
-                files=files,
-                data=data,
-            )
-            response.raise_for_status()
+        client = _http.Client(timeout=60.0)
+        response = client.post(
+            f"{self.base_url}/audio/transcriptions",
+            headers=headers,
+            files=files,
+            data=data,
+        ).raise_for_status()
         
         result = response.json()
         
@@ -302,11 +297,8 @@ class OpenAITTS(TTSProvider):
         **kwargs,
     ) -> TTSResult:
         """Synthesize speech from text."""
-        try:
-            import httpx
-        except ImportError:
-            raise ImportError("OpenAI TTS requires: pip install httpx")
-        
+        from .._internal import http as _http
+
         start_time = time.time()
         
         voice = voice or VoiceConfig()
@@ -324,14 +316,12 @@ class OpenAITTS(TTSProvider):
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
         }
-        
-        with httpx.Client(timeout=60.0) as client:
-            response = client.post(
-                f"{self.base_url}/audio/speech",
-                headers=headers,
-                json=data,
-            )
-            response.raise_for_status()
+        client = _http.Client(timeout=60.0)
+        response = client.post(
+            f"{self.base_url}/audio/speech",
+            headers=headers,
+            json=data,
+        ).raise_for_status()
         
         audio_data = response.content
         processing_time = int((time.time() - start_time) * 1000)
@@ -357,11 +347,8 @@ class OpenAITTS(TTSProvider):
         **kwargs,
     ) -> Generator[bytes, None, None]:
         """Stream audio synthesis."""
-        try:
-            import httpx
-        except ImportError:
-            raise ImportError("OpenAI TTS requires: pip install httpx")
-        
+        from .._internal import http as _http
+
         voice = voice or VoiceConfig()
         voice_id = voice.voice_id if voice.voice_id in self.VOICES else "alloy"
         
@@ -377,17 +364,16 @@ class OpenAITTS(TTSProvider):
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
         }
-        
-        with httpx.Client(timeout=60.0) as client:
-            with client.stream(
-                "POST",
-                f"{self.base_url}/audio/speech",
-                headers=headers,
-                json=data,
-            ) as response:
-                response.raise_for_status()
-                for chunk in response.iter_bytes():
-                    yield chunk
+        client = _http.Client(timeout=60.0)
+        with client.stream(
+            "POST",
+            f"{self.base_url}/audio/speech",
+            headers=headers,
+            json=data,
+        ) as response:
+            response.raise_for_status()
+            for chunk in response.iter_bytes():
+                yield chunk
     
     def list_voices(self) -> List[Dict[str, Any]]:
         """List available voices."""
@@ -431,11 +417,8 @@ class AzureSTT(STTProvider):
         **kwargs,
     ) -> STTResult:
         """Transcribe audio using Azure Speech Services."""
-        try:
-            import httpx
-        except ImportError:
-            raise ImportError("Azure STT requires: pip install httpx")
-        
+        from .._internal import http as _http
+
         start_time = time.time()
         
         # Prepare audio
@@ -460,9 +443,8 @@ class AzureSTT(STTProvider):
             f"?language={lang}"
         )
         
-        with httpx.Client(timeout=60.0) as client:
-            response = client.post(url, headers=headers, content=audio_data)
-            response.raise_for_status()
+        client = _http.Client(timeout=60.0)
+        response = client.post(url, headers=headers, data=audio_data).raise_for_status()
         
         result = response.json()
         processing_time = int((time.time() - start_time) * 1000)
@@ -528,11 +510,8 @@ class AzureTTS(TTSProvider):
         **kwargs,
     ) -> TTSResult:
         """Synthesize speech using Azure."""
-        try:
-            import httpx
-        except ImportError:
-            raise ImportError("Azure TTS requires: pip install httpx")
-        
+        from .._internal import http as _http
+
         start_time = time.time()
         
         voice_config = voice or VoiceConfig()
@@ -557,9 +536,8 @@ class AzureTTS(TTSProvider):
         
         url = f"{self.endpoint}/cognitiveservices/v1"
         
-        with httpx.Client(timeout=60.0) as client:
-            response = client.post(url, headers=headers, content=ssml)
-            response.raise_for_status()
+        client = _http.Client(timeout=60.0)
+        response = client.post(url, headers=headers, data=ssml.encode("utf-8")).raise_for_status()
         
         audio_data = response.content
         processing_time = int((time.time() - start_time) * 1000)
@@ -783,11 +761,11 @@ class GoogleTTS(TTSProvider):
         voice: Optional[VoiceConfig] = None,
         **kwargs,
     ) -> TTSResult:
-        """Synthesize using Google Cloud TTS."""
+        """Synthesize using Google Cloud TTS (SDK if installed, REST fallback)."""
         try:
-            from google.cloud import texttospeech
+            from google.cloud import texttospeech  # type: ignore
         except ImportError:
-            raise ImportError("Google TTS requires: pip install google-cloud-texttospeech")
+            return self._synthesize_via_rest(text, voice)
         
         start_time = time.time()
         
@@ -822,7 +800,27 @@ class GoogleTTS(TTSProvider):
             provider="google",
             processing_time_ms=processing_time,
         )
-    
+
+    def _synthesize_via_rest(self, text: str, voice: Optional[VoiceConfig]) -> "TTSResult":
+        """Stdlib fallback using the framework's GCP REST client."""
+        from .._internal.clients.gcp_rest import (
+            ServiceAccountCredentials,
+            TextToSpeechClient as _RestTtsClient,
+        )
+
+        voice_config = voice or VoiceConfig()
+        creds = ServiceAccountCredentials.from_env()
+        audio_bytes = _RestTtsClient(credentials=creds).synthesize(
+            text=text,
+            language_code=voice_config.language,
+            voice_name=voice_config.voice_id or self.default_voice,
+        )
+        return TTSResult(
+            audio_data=audio_bytes,
+            format=AudioFormat.MP3,
+            provider="google-rest",
+        )
+
     def synthesize_stream(
         self,
         text: str,
@@ -882,11 +880,8 @@ class ElevenLabsTTS(TTSProvider):
         **kwargs,
     ) -> TTSResult:
         """Synthesize speech using ElevenLabs."""
-        try:
-            import httpx
-        except ImportError:
-            raise ImportError("ElevenLabs TTS requires: pip install httpx")
-        
+        from .._internal import http as _http
+
         start_time = time.time()
         
         voice_config = voice or VoiceConfig()
@@ -908,9 +903,8 @@ class ElevenLabsTTS(TTSProvider):
         
         url = f"{self.base_url}/text-to-speech/{voice_id}"
         
-        with httpx.Client(timeout=60.0) as client:
-            response = client.post(url, headers=headers, json=data)
-            response.raise_for_status()
+        client = _http.Client(timeout=60.0)
+        response = client.post(url, headers=headers, json=data).raise_for_status()
         
         audio_data = response.content
         processing_time = int((time.time() - start_time) * 1000)
@@ -929,11 +923,8 @@ class ElevenLabsTTS(TTSProvider):
         **kwargs,
     ) -> Generator[bytes, None, None]:
         """Stream audio synthesis."""
-        try:
-            import httpx
-        except ImportError:
-            raise ImportError("ElevenLabs TTS requires: pip install httpx")
-        
+        from .._internal import http as _http
+
         voice_config = voice or VoiceConfig()
         voice_id = voice_config.voice_id or "21m00Tcm4TlvDq8ikWAM"
         
@@ -953,25 +944,21 @@ class ElevenLabsTTS(TTSProvider):
         
         url = f"{self.base_url}/text-to-speech/{voice_id}/stream"
         
-        with httpx.Client(timeout=60.0) as client:
-            with client.stream("POST", url, headers=headers, json=data) as response:
-                response.raise_for_status()
-                for chunk in response.iter_bytes():
-                    yield chunk
+        client = _http.Client(timeout=60.0)
+        with client.stream("POST", url, headers=headers, json=data) as response:
+            response.raise_for_status()
+            for chunk in response.iter_bytes():
+                yield chunk
     
     def list_voices(self) -> List[Dict[str, Any]]:
         """List available ElevenLabs voices."""
-        try:
-            import httpx
-        except ImportError:
-            return []
-        
+        from .._internal import http as _http
+
         headers = {"xi-api-key": self.api_key}
         
         try:
-            with httpx.Client(timeout=30.0) as client:
-                response = client.get(f"{self.base_url}/voices", headers=headers)
-                response.raise_for_status()
+            client = _http.Client(timeout=30.0)
+            response = client.get(f"{self.base_url}/voices", headers=headers).raise_for_status()
             
             data = response.json()
             return [

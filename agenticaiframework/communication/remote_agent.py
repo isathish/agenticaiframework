@@ -575,12 +575,19 @@ class RemoteAgentServer:
         return app
     
     def create_fastapi_app(self):
-        """Create FastAPI app for HTTP server."""
+        """Create a FastAPI app (FastAPI installation required for now).
+
+        For zero-dependency HTTP serving, use ``create_stdlib_app()`` which
+        builds an :class:`agenticaiframework._internal.http_server.App`.
+        """
         try:
             from fastapi import FastAPI
             from fastapi.responses import StreamingResponse
         except ImportError:
-            raise ImportError("FastAPI required: pip install fastapi uvicorn")
+            raise ImportError(
+                "FastAPI required for create_fastapi_app(); "
+                "use create_stdlib_app() for stdlib-only serving"
+            )
         
         app = FastAPI(title=f"Agent: {self.agent_id}")
         
@@ -610,6 +617,42 @@ class RemoteAgentServer:
             
             return StreamingResponse(generate(), media_type="text/event-stream")
         
+        return app
+    
+    def create_stdlib_app(self):
+        """Create a zero-dependency stdlib HTTP app (no FastAPI/Flask)."""
+        from .._internal.http_server import App, Response, StreamingResponse
+
+        app = App()
+
+        @app.get("/health")
+        def _health(req):
+            return Response.json({"status": "healthy", "agent_id": self.agent_id})
+
+        @app.post("/agent")
+        def _agent_endpoint(req):
+            return Response.json(self.handle_message(req.json()))
+
+        @app.post("/agent/stream")
+        def _agent_stream(req):
+            message = req.json()
+
+            def generate():
+                agent_msg = AgentMessage.from_dict(message)
+                content = agent_msg.content
+                prompt = content.get("prompt") if isinstance(content, dict) else str(content)
+
+                if hasattr(self.agent, "stream"):
+                    for chunk in self.agent.stream(prompt):
+                        yield f"data: {json.dumps({'chunk': chunk})}\n\n".encode("utf-8")
+                else:
+                    result = self._handle_query(agent_msg)
+                    yield f"data: {json.dumps(result)}\n\n".encode("utf-8")
+
+                yield f"data: {json.dumps({'type': 'stream_end'})}\n\n".encode("utf-8")
+
+            return StreamingResponse(generate(), content_type="text/event-stream")
+
         return app
     
     def create_mqtt_handler(

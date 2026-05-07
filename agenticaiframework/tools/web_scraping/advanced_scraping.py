@@ -44,11 +44,8 @@ class ScrapflyScrapeWebsiteTool(AsyncBaseTool):
         if not self.api_key:
             raise ValueError("Scrapfly API key required")
         
-        try:
-            import aiohttp
-        except ImportError:
-            raise ImportError("Requires: pip install aiohttp")
-        
+        from ..._internal import http as _http
+
         params = {
             'key': self.api_key,
             'url': url,
@@ -61,12 +58,12 @@ class ScrapflyScrapeWebsiteTool(AsyncBaseTool):
         if screenshot:
             params['screenshot'] = 'true'
         
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                'https://api.scrapfly.io/scrape',
-                params=params,
-            ) as response:
-                data = await response.json()
+        client = _http.AsyncClient()
+        response = await client.get(
+            'https://api.scrapfly.io/scrape',
+            params=params,
+        )
+        data = response.json()
         
         return {
             'url': url,
@@ -168,11 +165,8 @@ class SpiderScraperTool(AsyncBaseTool):
         if not self.api_key:
             raise ValueError("Spider API key required")
         
-        try:
-            import aiohttp
-        except ImportError:
-            raise ImportError("Requires: pip install aiohttp")
-        
+        from ..._internal import http as _http
+
         headers = {
             'Authorization': f'Bearer {self.api_key}',
             'Content-Type': 'application/json',
@@ -185,13 +179,13 @@ class SpiderScraperTool(AsyncBaseTool):
             'limit': limit,
         }
         
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
-                'https://api.spider.cloud/scrape',
-                headers=headers,
-                json=payload,
-            ) as response:
-                data = await response.json()
+        client = _http.AsyncClient()
+        response = await client.post(
+            'https://api.spider.cloud/scrape',
+            headers=headers,
+            json=payload,
+        )
+        data = response.json()
         
         return {
             'url': url,
@@ -239,11 +233,8 @@ class OxylabsScraperTool(AsyncBaseTool):
         if not self.username or not self.password:
             raise ValueError("Oxylabs credentials required")
         
-        try:
-            import aiohttp
-        except ImportError:
-            raise ImportError("Requires: pip install aiohttp")
-        
+        from ..._internal import http as _http
+
         payload = {
             'source': source,
             'url': url,
@@ -253,15 +244,13 @@ class OxylabsScraperTool(AsyncBaseTool):
         if geo_location:
             payload['geo_location'] = geo_location
         
-        auth = aiohttp.BasicAuth(self.username, self.password)
-        
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
-                'https://realtime.oxylabs.io/v1/queries',
-                auth=auth,
-                json=payload,
-            ) as response:
-                data = await response.json()
+        client = _http.AsyncClient()
+        response = await client.post(
+            'https://realtime.oxylabs.io/v1/queries',
+            auth=(self.username, self.password),
+            json=payload,
+        )
+        data = response.json()
         
         return {
             'url': url,
@@ -303,15 +292,16 @@ class BrightDataTool(AsyncBaseTool):
         country: Optional[str] = None,
         render_js: bool = False,
     ) -> Dict[str, Any]:
-        """Scrape using Bright Data."""
+        """Scrape using Bright Data (proxy support requires aiohttp; falls back to direct fetch)."""
         if not self.customer_id or not self.config.api_key:
             raise ValueError("Bright Data credentials required")
         
         try:
-            import aiohttp
+            import aiohttp  # type: ignore
+            _have_aiohttp = True
         except ImportError:
-            raise ImportError("Requires: pip install aiohttp")
-        
+            _have_aiohttp = False
+
         # Build proxy URL
         proxy_url = (
             f"http://{self.customer_id}-zone-{self.zone}"
@@ -326,17 +316,25 @@ class BrightDataTool(AsyncBaseTool):
         
         headers = {'User-Agent': 'Mozilla/5.0'}
         
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                url,
-                proxy=proxy_url,
-                headers=headers,
-            ) as response:
-                content = await response.text()
+        if _have_aiohttp:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(
+                    url,
+                    proxy=proxy_url,
+                    headers=headers,
+                ) as response:
+                    content = await response.text()
+                    status = response.status
+        else:
+            from ..._internal import http as _http
+            client = _http.AsyncClient()
+            response = await client.get(url, headers=headers)
+            content = response.text
+            status = response.status
         
         return {
             'url': url,
-            'status': 'success' if response.status == 200 else 'error',
+            'status': 'success' if status == 200 else 'error',
             'content': content,
             'content_length': len(content),
         }

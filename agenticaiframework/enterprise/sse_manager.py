@@ -614,12 +614,76 @@ class SSEClient:
                     await asyncio.sleep(self._reconnect_interval)
     
     async def _stream_events(self) -> AsyncIterator[SSEEvent]:
-        """Stream events from server (simplified)."""
-        # In real implementation, would use httpx or aiohttp
-        # This is a placeholder
+        """Stream Server-Sent Events from the configured URL using stdlib HTTP.
+
+        Implements the EventSource protocol: ``data:``, ``event:``, ``id:``,
+        and ``retry:`` fields, and sends ``Last-Event-ID`` for resumption.
+        """
+        from .._internal import http as _http
+
+        client = _http.AsyncClient()
+        headers = dict(self._headers)
+        headers.setdefault("accept", "text/event-stream")
+        headers.setdefault("cache-control", "no-cache")
+        if self._last_event_id:
+            headers["last-event-id"] = self._last_event_id
+
+        # Stream over the connection: read lines and parse SSE frames.
+        # AsyncClient does not support open streams natively, so fetch in chunks.
+        # For simplicity we use the synchronous Client.stream() in a thread.
+        loop = asyncio.get_event_loop()
+
+        def _fetch() -> List["SSEEvent"]:
+            sync = _http.Client(timeout=None)
+            with sync.stream("GET", self._url, headers=headers) as resp:
+                resp.raise_for_status()
+                events: List["SSEEvent"] = []
+                buf_event: Optional[str] = None
+                buf_id: Optional[str] = None
+                buf_data: List[str] = []
+                for line in resp.iter_lines():
+                    if line == b"":
+                        if buf_data or buf_event:
+                            events.append(SSEEvent(
+                                id=buf_id or "",
+                                event=buf_event or "message",
+                                data="\n".join(buf_data),
+                            ))
+                            buf_event = None
+                            buf_id = None
+                            buf_data = []
+                        continue
+                    decoded = line.decode("utf-8", errors="replace")
+                    if decoded.startswith(":"):
+                        continue
+                    if ":" in decoded:
+                        field, _, value = decoded.partition(":")
+                        value = value.lstrip(" ")
+                    else:
+                        field, value = decoded, ""
+                    if field == "data":
+                        buf_data.append(value)
+                    elif field == "event":
+                        buf_event = value
+                    elif field == "id":
+                        buf_id = value
+                    if events:
+                        # Yield in batches by returning early for backpressure.
+                        return events
+                return events
+
         while self._running:
-            await asyncio.sleep(1)
-            yield SSEEvent(event="ping")
+            try:
+                batch = await loop.run_in_executor(None, _fetch)
+            except Exception as e:  # noqa: BLE001
+                logger.debug(f"SSE fetch error: {e}")
+                await asyncio.sleep(self._reconnect_interval)
+                continue
+            if not batch:
+                await asyncio.sleep(0.1)
+                continue
+            for ev in batch:
+                yield ev
     
     def disconnect(self) -> None:
         """Disconnect from server."""

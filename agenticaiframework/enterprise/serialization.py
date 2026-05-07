@@ -352,13 +352,14 @@ class MessagePackSerializer(Serializer[Any]):
         self._msgpack = None
     
     def _get_msgpack(self):
-        """Lazy import msgpack."""
+        """Lazy import msgpack (third-party first, stdlib fallback)."""
         if self._msgpack is None:
             try:
-                import msgpack
+                import msgpack  # type: ignore
                 self._msgpack = msgpack
             except ImportError:
-                raise ImportError("msgpack package required for MessagePackSerializer")
+                from .._internal import msgpack as _stdlib_msgpack
+                self._msgpack = _stdlib_msgpack
         return self._msgpack
     
     @property

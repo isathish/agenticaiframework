@@ -195,12 +195,18 @@ class TextToSpeechClient:
     base_url: str = "https://texttospeech.googleapis.com"
 
     def synthesize(self, text: str, *, voice: str = "en-US-Standard-A",
-                   audio_encoding: str = "MP3") -> bytes:
+                   audio_encoding: str = "MP3",
+                   language_code: Optional[str] = None,
+                   voice_name: Optional[str] = None) -> bytes:
         token = self.credentials.access_token(["https://www.googleapis.com/auth/cloud-platform"])
+        chosen_voice = voice_name or voice
+        chosen_lang = (
+            language_code
+            or (chosen_voice.split("-Standard")[0] if "Standard" in chosen_voice else "-".join(chosen_voice.split("-")[:2]))
+        )
         body = {
             "input": {"text": text},
-            "voice": {"languageCode": voice.split("-Standard")[0] if "Standard" in voice else "en-US",
-                      "name": voice},
+            "voice": {"languageCode": chosen_lang, "name": chosen_voice},
             "audioConfig": {"audioEncoding": audio_encoding},
         }
         client = _http.Client()

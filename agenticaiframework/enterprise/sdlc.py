@@ -326,14 +326,25 @@ class SDLCPipeline:
         if self._llm_client is None:
             if self.config.provider == "azure":
                 try:
-                    from openai import AzureOpenAI
+                    from openai import AzureOpenAI  # type: ignore
                     self._llm_client = AzureOpenAI(
                         api_key=os.getenv("AZURE_OPENAI_API_KEY"),
                         azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
                         api_version="2024-02-01",
                     )
+                    self._azure_rest = False
                 except ImportError:
-                    raise ImportError("openai is required. Install with: pip install openai")
+                    from .._internal.clients.openai_rest import OpenAIClient
+                    endpoint = os.getenv("AZURE_OPENAI_ENDPOINT", "").rstrip("/")
+                    base = f"{endpoint}/openai/deployments/{self.config.model}"
+                    api_key = os.getenv("AZURE_OPENAI_API_KEY", "")
+                    self._llm_client = OpenAIClient(
+                        api_key=api_key,
+                        base_url=base,
+                        extra_headers={"api-key": api_key},
+                    )
+                    self._azure_query = "?api-version=2024-02-01"
+                    self._azure_rest = True
             else:
                 # Fallback to adapters
                 from .adapters import get_adapter
@@ -363,8 +374,15 @@ class SDLCPipeline:
             
             response = await asyncio.to_thread(
                 lambda: client.chat.completions.create(**params)
+            ) if not getattr(self, "_azure_rest", False) else await asyncio.to_thread(
+                lambda: client._client.post(  # noqa: SLF001
+                    f"/chat/completions{getattr(self, '_azure_query', '')}",
+                    json=params,
+                ).raise_for_status().json()
             )
-            
+
+            if getattr(self, "_azure_rest", False):
+                return response["choices"][0]["message"]["content"]
             return response.choices[0].message.content
         elif self._adapter:
             return await self._adapter.llm.generate(prompt)

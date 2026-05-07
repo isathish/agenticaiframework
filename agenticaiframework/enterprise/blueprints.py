@@ -65,14 +65,25 @@ class BlueprintAgent:
         if self._client is None:
             if self.provider == "azure":
                 try:
-                    from openai import AzureOpenAI
+                    from openai import AzureOpenAI  # type: ignore
                     self._client = AzureOpenAI(
                         api_key=os.getenv("AZURE_OPENAI_API_KEY"),
                         azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
                         api_version="2024-02-01",
                     )
+                    self._azure_rest = False
                 except ImportError:
-                    raise ImportError("openai is required. Install with: pip install openai")
+                    from .._internal.clients.openai_rest import OpenAIClient
+                    endpoint = os.getenv("AZURE_OPENAI_ENDPOINT", "").rstrip("/")
+                    base = f"{endpoint}/openai/deployments/{self.model}"
+                    api_key = os.getenv("AZURE_OPENAI_API_KEY", "")
+                    self._client = OpenAIClient(
+                        api_key=api_key,
+                        base_url=base,
+                        extra_headers={"api-key": api_key},
+                    )
+                    self._azure_query = "?api-version=2024-02-01"
+                    self._azure_rest = True
         return self._client
     
     async def _call_llm(self, prompt: str, system: Optional[str] = None) -> str:
@@ -102,8 +113,15 @@ class BlueprintAgent:
         
         response = await asyncio.to_thread(
             lambda: client.chat.completions.create(**params)
+        ) if not getattr(self, "_azure_rest", False) else await asyncio.to_thread(
+            lambda: client._client.post(  # noqa: SLF001
+                f"/chat/completions{getattr(self, '_azure_query', '')}",
+                json=params,
+            ).raise_for_status().json()
         )
-        
+
+        if getattr(self, "_azure_rest", False):
+            return response["choices"][0]["message"]["content"]
         return response.choices[0].message.content
     
     async def invoke(self, prompt: str) -> str:

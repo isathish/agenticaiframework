@@ -501,6 +501,14 @@ class StreamingResponse:
                 return
             yield line.rstrip(b"\r\n")
 
+    def iter_bytes(self, chunk_size: int = 8192) -> Iterator[bytes]:
+        """Yield raw response bytes as they arrive."""
+        while True:
+            chunk = self._raw.read(chunk_size)
+            if not chunk:
+                return
+            yield chunk
+
     def iter_sse(self) -> Iterator[SSEEvent]:
         return iter_sse(self.iter_lines())
 
