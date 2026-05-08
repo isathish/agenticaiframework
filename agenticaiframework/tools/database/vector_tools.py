@@ -203,20 +203,21 @@ class WeaviateVectorSearchTool(BaseTool):
         self._client = None
     
     def _get_client(self):
-        """Get Weaviate client."""
+        """Get Weaviate client (SDK with stdlib REST fallback)."""
         if self._client:
             return self._client
         
         try:
             import weaviate
+            auth_config = None
+            if self.api_key:
+                auth_config = weaviate.AuthApiKey(api_key=self.api_key)
+            self._client = weaviate.Client(url=self.url, auth_client_secret=auth_config)
+            self._using_rest = False
         except ImportError:
-            raise ImportError("Weaviate requires: pip install weaviate-client")
-        
-        auth_config = None
-        if self.api_key:
-            auth_config = weaviate.AuthApiKey(api_key=self.api_key)
-        
-        self._client = weaviate.Client(url=self.url, auth_client_secret=auth_config)
+            from ..._internal.clients.weaviate_rest import WeaviateClient as _RestWv
+            self._client = _RestWv(url=self.url, api_key=self.api_key)
+            self._using_rest = True
         return self._client
     
     def _execute(
@@ -247,6 +248,27 @@ class WeaviateVectorSearchTool(BaseTool):
         client = self._get_client()
         class_nm = class_name or self.class_name
         props = properties or ['content', 'title']
+        
+        if getattr(self, '_using_rest', False):
+            if search_type == 'vector' and query_vector:
+                hits = client.near_vector(class_nm, query_vector, props, limit=limit, where=filters)
+            elif search_type == 'keyword' and query:
+                hits = client.bm25(class_nm, query, props, limit=limit, where=filters)
+            else:
+                hits = client.hybrid(class_nm, query or '', props, limit=limit, where=filters)
+            return {
+                'class': class_nm,
+                'search_type': search_type,
+                'results': [
+                    {
+                        'properties': {k: v for k, v in obj.items() if k != '_additional'},
+                        'id': (obj.get('_additional') or {}).get('id'),
+                        'score': (obj.get('_additional') or {}).get('score') or (obj.get('_additional') or {}).get('distance'),
+                    }
+                    for obj in hits
+                ],
+                'total': len(hits),
+            }
         
         query_builder = client.query.get(class_nm, props)
         
@@ -329,19 +351,34 @@ class MongoDBVectorSearchTool(BaseTool):
         self._client = None
     
     def _get_client(self):
-        """Get MongoDB client."""
+        """Get MongoDB client (pymongo with Atlas Data API REST fallback)."""
         if self._client:
             return self._client
         
         try:
             from pymongo import MongoClient
+            if not self.connection_string:
+                raise ValueError("MongoDB connection string required")
+            self._client = MongoClient(self.connection_string)
+            self._using_rest = False
         except ImportError:
-            raise ImportError("MongoDB requires: pip install pymongo")
-        
-        if not self.connection_string:
-            raise ValueError("MongoDB connection string required")
-        
-        self._client = MongoClient(self.connection_string)
+            import os
+            from ..._internal.clients.mongo_data_api import MongoDataAPIClient
+            endpoint = os.environ.get("MONGO_DATA_API_ENDPOINT")
+            api_key = os.environ.get("MONGO_DATA_API_KEY")
+            data_source = os.environ.get("MONGO_DATA_SOURCE", "Cluster0")
+            if not endpoint or not api_key:
+                raise ImportError(
+                    "MongoDB needs ``pymongo`` or env MONGO_DATA_API_ENDPOINT + "
+                    "MONGO_DATA_API_KEY for Atlas Data API fallback"
+                )
+            self._client = MongoDataAPIClient(
+                endpoint=endpoint,
+                api_key=api_key,
+                data_source=data_source,
+                database=self.database_name,
+            )
+            self._using_rest = True
         return self._client
     
     def _execute(
@@ -433,8 +470,19 @@ class MongoDBVectorSearchTool(BaseTool):
             Dict with insert status
         """
         client = self._get_client()
-        db = client[database or self.database_name]
-        coll = db[collection or self.collection_name]
+        db_name = database or self.database_name
+        coll_name = collection or self.collection_name
+        
+        if getattr(self, '_using_rest', False):
+            ids = client.insert_many(coll_name, documents)
+            return {
+                'status': 'success',
+                'inserted_count': len(ids),
+                'ids': [str(_id) for _id in ids],
+            }
+        
+        db = client[db_name]
+        coll = db[coll_name]
         
         result = coll.insert_many(documents)
         
@@ -446,7 +494,7 @@ class MongoDBVectorSearchTool(BaseTool):
     
     def close(self):
         """Close MongoDB connection."""
-        if self._client:
+        if self._client and not getattr(self, '_using_rest', False):
             self._client.close()
             self._client = None
 

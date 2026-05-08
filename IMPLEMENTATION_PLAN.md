@@ -400,7 +400,7 @@ and leaves the framework in a working state.
 | 6 � Vector math (numpy removal) | done | `_internal/array.py` � removed last hard `import numpy` from `enterprise/vector_database.py` |
 | 7 � HTML parser + vector store | done | `_internal/html.py` wired into `tools/web_scraping/basic_scraping.py` and `knowledge/builder.py`; `_internal/vector_store.py` (memory/jsonl/sqlite) added |
 | 8 � Redis + MQTT | done | `_internal/redis_resp.py` (sync + async RESP2), `_internal/mqtt.py` (MQTT 3.1.1 QoS 0) |
-| 9 - HTTP server / WS | done | `_internal/http_server.py` (router, middleware, SSE) + `_internal/ws.py` (RFC 6455 client + server upgrade) |
+| 9 - HTTP server / WS | done | `_internal/http_server.py` (m, middleware, SSE) + `_internal/ws.py` (RFC 6455 client + server upgrade) |
 | 10 - PDF | done | `_internal/pdf.py` reader+writer; wired into `tools/file_document/{pdf_tools,directory_tools}.py` as fallback |
 | 11 - MCP runtime | done | `tools/mcp_runtime.py` (stdio JSON-RPC server + client) exported via `tools/__init__.py` |
 | 12 - GCP REST adapters | done | `_internal/{pem,jwt}.py` + `_internal/clients/gcp_rest.py` (Storage / Speech / TTS / Vision via service-account JWT) |
@@ -427,3 +427,62 @@ The package's `pyproject.toml` already declares `dependencies = []` so a
 fresh `pip install agenticaiframework` pulls in nothing else; the framework
 now actually runs in that mode end-to-end (LLM calls, tools, MCP, vector
 storage, YAML/JSON config, HTML scraping, Redis state).
+
+---
+
+## 10. Deep-sweep rounds (post-Phase 14)
+
+These rounds were executed after the original 14 phases to eliminate the
+remaining ``raise ImportError`` paths and to upgrade decorator stubs to
+production-grade implementations.
+
+| Round | Commit | Highlights |
+|---|---|---|
+| R1 | `b87b7ac` | Real SSE streaming everywhere, msgpack + docx parsers, all scrapers on stdlib HTTP. |
+| R2 | `99557a1` | Qdrant REST, OpenAI DALL-E / Vision, NL2SQL helpers. |
+| R3 | `70e4a9c` | AWS SigV4 + S3 + Bedrock, Azure Blob (Shared Key), Vertex AI (Gemini + embeddings). |
+| R4 | `c3ae8fa` | Pure-Python AES-128/192/256 (CBC + GCM), Fernet, Cohere REST, DuckDuckGo HTML. |
+| R5 | `a8efa3c` | PostgreSQL v3 wire (cleartext / MD5 / SCRAM-SHA-256), Azure Service Bus REST (SAS), Cosmos DB REST (master key). |
+| R6 | *next push* | MySQL/SingleStore wire (`mysql_native_password` + `caching_sha2_password`), Weaviate REST, MongoDB Atlas Data API REST, Snowflake SQL REST (RSA JWT), real `@validate` / `@authorize` decorators with schema- and role/permission-enforcement, RSA signing extensions in `_internal/pem.py`. |
+
+### `_internal/clients/*` map
+
+| Module | Replaces | Auth |
+|---|---|---|
+| `openai_rest.py` | `openai` | Bearer |
+| `anthropic_rest.py` | `anthropic` | x-api-key |
+| `gemini_rest.py` | `google-generativeai` | API key |
+| `gcp_rest.py` | `google-cloud-*` | RSA service-account JWT |
+| `cohere_rest.py` | `cohere` | Bearer |
+| `qdrant_rest.py` | `qdrant-client` | API key |
+| `aws_sigv4.py` + `s3_rest.py` | `boto3` (s3, bedrock) | SigV4 |
+| `azure_blob_rest.py` | `azure-storage-blob` | Shared Key |
+| `azure_servicebus_rest.py` | `azure-servicebus` | SAS |
+| `cosmos_rest.py` | `azure-cosmos` | Master key (HMAC-SHA256) |
+| `postgres_wire.py` | `psycopg2` | cleartext / MD5 / SCRAM-SHA-256 |
+| `mysql_wire.py` | `mysql-connector-python` (also SingleStore) | `mysql_native_password`, `caching_sha2_password` |
+| `mongo_data_api.py` | `pymongo` (Atlas) | API key / Bearer |
+| `weaviate_rest.py` | `weaviate-client` | API key / OIDC |
+| `snowflake_rest.py` | `snowflake-connector-python` | RSA JWT (key-pair) |
+
+### Decorator surface
+
+All decorators in `agenticaiframework.enterprise` are now fully
+implemented (no longer placeholder pass-throughs):
+
+| Decorator | Behavior |
+|---|---|
+| `@agent` | wraps a class with invoke/metrics/retry, optional tracing/cache/memory |
+| `@workflow`, `@step` | step orchestration with ordering + retry |
+| `@tool` | registers a callable with metadata in the global registry |
+| `@guardrail` | attaches one or more guardrail validators |
+| `@pipeline` | ETL-style multi-stage pipeline |
+| `@retry` | exponential backoff + jitter |
+| `@timeout` | enforces wall-clock limit |
+| `@trace` | OpenTelemetry span (no-op when OTel not installed) |
+| `@cache` | LRU + TTL |
+| `@validate` | input/output JSON-Schema or BaseModel validation via `_internal.schema` (raises `ValidationError`) |
+| `@authorize` | role / permission enforcement with pluggable auth-context provider (raises `AuthorizationError`) |
+
+Companion compliance decorators in `agenticaiframework.compliance.decorators`:
+`@audit_action`, `@enforce_policy`, `@mask_output`.

@@ -42,6 +42,9 @@ from .decorators import (
     cache,
     validate,
     authorize,
+    ValidationError,
+    AuthorizationError,
+    set_auth_context_provider,
 )
 
 # Factories

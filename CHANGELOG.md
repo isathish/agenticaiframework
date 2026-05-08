@@ -29,6 +29,99 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [unreleased]
+
+### Added — Stdlib-only deep sweep (rounds R1–R6)
+
+Everything below ships with **zero PyPI runtime dependencies** — each module
+falls back to a pure-stdlib implementation when its optional 3rd-party SDK
+is missing.
+
+#### `_internal/clients/` REST + wire-protocol clients
+
+- **PostgreSQL v3 wire** (`postgres_wire.py`): cleartext, MD5,
+  SCRAM-SHA-256 auth; simple + extended query; DB-API 2.0 cursor;
+  SSL upgrade. Replaces `psycopg2`.
+- **MySQL/SingleStore wire** (`mysql_wire.py`): handshake v10,
+  `mysql_native_password` and `caching_sha2_password` fast-path,
+  COM_QUERY text-protocol result-set parsing, DB-API 2.0 shim.
+  Replaces `mysql-connector-python`.
+- **Snowflake SQL REST v2** (`snowflake_rest.py`): RSA key-pair JWT
+  signing (RS256), async statement polling, DB-API 2.0 shim.
+  Replaces `snowflake-connector-python`.
+- **MongoDB Atlas Data API** (`mongo_data_api.py`): find / insert /
+  update / delete / aggregate / `$vectorSearch`. Replaces `pymongo`
+  for Atlas deployments.
+- **Weaviate REST** (`weaviate_rest.py`): schema CRUD, GraphQL queries,
+  near-vector / BM25 / hybrid search. Replaces `weaviate-client`.
+- **Azure Service Bus REST** (`azure_servicebus_rest.py`): SAS token
+  auth, send / receive / complete. Replaces `azure-servicebus`.
+- **Azure Cosmos DB REST** (`cosmos_rest.py`): master-key HMAC auth,
+  database / container / item CRUD, paginated queries.
+  Replaces `azure-cosmos`.
+- **AWS S3 + Bedrock + SigV4** (`aws_sigv4.py`, `s3_rest.py`):
+  full SigV4 request signing, S3 GET/PUT/list, Bedrock InvokeModel.
+  Replaces `boto3` for these surfaces.
+- **Azure Blob Storage** (`azure_blob_rest.py`): Shared Key auth,
+  upload / download / list / delete blobs.
+  Replaces `azure-storage-blob`.
+- **Vertex AI** (extension to `gcp_rest.py`): Gemini generateContent,
+  embeddings via service-account JWT.
+- **Qdrant REST** (`qdrant_rest.py`): collections, upsert, search,
+  scroll. Replaces `qdrant-client`.
+- **Cohere REST** (`cohere_rest.py`): embed, rerank, generate.
+- **DuckDuckGo HTML scraper** (`duckduckgo.py`): no-API search via
+  the public HTML endpoint with redirect unwrapping.
+
+#### `_internal/` cryptography & utilities
+
+- **AES-128/192/256 (FIPS-197)** in CBC mode with PKCS#7 padding
+  (`aes.py`).
+- **AES-GCM** (`aes_gcm.py`) — CTR + GHASH over GF(2^128) with
+  constant-time tag verification (NIST SP 800-38D).
+- **Fernet** (`fernet.py`) — full spec compliance: URL-safe key,
+  IV, AES-CBC ciphertext, HMAC-SHA256 tag, TTL + clock-skew checks,
+  `MultiFernet` rotation.
+- **PEM / RSA extensions** (`pem.py`) — added `RSAPrivateKey.sign()`
+  (RSASSA-PKCS1-v1_5 with SHA-256/384/512) and `public_key_der()`
+  (DER SubjectPublicKeyInfo) for JWT signing flows.
+- **MsgPack** (`msgpack.py`) and **DOCX** (`docx.py`) parsers.
+
+#### Decorators (`agenticaiframework.enterprise.decorators`)
+
+- `@validate(input_schema=…, output_schema=…)` — real JSON-Schema or
+  `BaseModel` validation via `_internal.schema`; raises new
+  `ValidationError` on schema mismatch.
+- `@authorize(roles=…, permissions=…)` — real role / permission check
+  with pluggable auth-context provider
+  (`set_auth_context_provider(...)`); raises new `AuthorizationError`.
+  Falls back to `auth_context` kwarg or `AGENTIC_AUTH_*` env vars.
+- New exports: `ValidationError`, `AuthorizationError`,
+  `set_auth_context_provider`.
+
+#### Documentation
+
+- Extended `IMPLEMENTATION_PLAN.md` § 10 with the deep-sweep round
+  matrix and the full `_internal/clients/*` map.
+- This `CHANGELOG.md` entry.
+
+### Changed
+
+- `tools/database/sql_tools.py::PostgresRAGSearchTool`,
+  `MySQLRAGSearchTool` — `_get_connection()` now falls back to
+  `_internal/clients/postgres_wire` and `mysql_wire` respectively.
+- `tools/database/snowflake_tools.py::SnowflakeSearchTool`,
+  `SingleStoreSearchTool` — fall back to `snowflake_rest` and
+  `mysql_wire`.
+- `tools/database/vector_tools.py::WeaviateVectorSearchTool`,
+  `MongoDBVectorSearchTool` — fall back to `weaviate_rest` and
+  `mongo_data_api`; runtime branches on a `_using_rest` flag so the
+  same caller code path drives both SDK and REST modes.
+- `enterprise/adapters.py::AzureServiceBusQueue`,
+  `AzureCosmosVectorDB` — fall back to
+  `azure_servicebus_rest` / `cosmos_rest`.
+
+<!-- insertion marker -->
 ## [v2.0.0](https://github.com/isathish/agenticaiframework/releases/tag/v2.0.0) - 2026-01-20
 
 <small>[Compare with v1.2.16](https://github.com/isathish/agenticaiframework/compare/v1.2.16...v2.0.0)</small>

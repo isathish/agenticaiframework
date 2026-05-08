@@ -43,26 +43,40 @@ class SnowflakeSearchTool(BaseTool):
         self._connection = None
     
     def _get_connection(self):
-        """Get Snowflake connection."""
+        """Get Snowflake connection (binary connector with REST/JWT fallback)."""
         if self._connection:
             return self._connection
         
         try:
             import snowflake.connector
+            if not all([self.account, self.user, self.password]):
+                raise ValueError("Snowflake credentials required")
+            self._connection = snowflake.connector.connect(
+                account=self.account,
+                user=self.user,
+                password=self.password,
+                warehouse=self.warehouse,
+                database=self.database,
+                schema=self.schema,
+            )
         except ImportError:
-            raise ImportError("Snowflake requires: pip install snowflake-connector-python")
-        
-        if not all([self.account, self.user, self.password]):
-            raise ValueError("Snowflake credentials required")
-        
-        self._connection = snowflake.connector.connect(
-            account=self.account,
-            user=self.user,
-            password=self.password,
-            warehouse=self.warehouse,
-            database=self.database,
-            schema=self.schema,
-        )
+            from ..._internal.clients.snowflake_rest import connect as sf_connect
+            import os
+            private_key_pem = os.environ.get("SNOWFLAKE_PRIVATE_KEY_PEM")
+            if not (self.account and self.user and (private_key_pem or self.password)):
+                raise ValueError(
+                    "Snowflake REST fallback requires account+user and either "
+                    "SNOWFLAKE_PRIVATE_KEY_PEM (JWT) or password."
+                )
+            self._connection = sf_connect(
+                account=self.account,
+                user=self.user,
+                password=self.password,
+                private_key_pem=private_key_pem,
+                warehouse=self.warehouse,
+                database=self.database,
+                schema=self.schema,
+            )
         return self._connection
     
     def _execute(
@@ -228,22 +242,28 @@ class SingleStoreSearchTool(BaseTool):
         self._connection = None
     
     def _get_connection(self):
-        """Get SingleStore connection (MySQL compatible)."""
+        """Get SingleStore connection (MySQL connector with stdlib wire fallback)."""
         if self._connection:
             return self._connection
         
         try:
             import mysql.connector
+            self._connection = mysql.connector.connect(
+                host=self.host,
+                port=self.port,
+                user=self.user,
+                password=self.password,
+                database=self.database,
+            )
         except ImportError:
-            raise ImportError("SingleStore requires: pip install mysql-connector-python")
-        
-        self._connection = mysql.connector.connect(
-            host=self.host,
-            port=self.port,
-            user=self.user,
-            password=self.password,
-            database=self.database,
-        )
+            from ..._internal.clients.mysql_wire import connect as mysql_connect
+            self._connection = mysql_connect(
+                host=self.host,
+                port=int(self.port),
+                user=self.user,
+                password=self.password,
+                database=self.database,
+            )
         return self._connection
     
     def _execute(

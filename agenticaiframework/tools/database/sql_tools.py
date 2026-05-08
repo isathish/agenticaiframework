@@ -83,22 +83,28 @@ class MySQLRAGSearchTool(BaseSQLTool):
         self.password = password or self.config.api_key or ''
     
     def _get_connection(self):
-        """Get MySQL connection."""
+        """Get MySQL connection (mysql.connector with stdlib wire-protocol fallback)."""
         if self._connection:
             return self._connection
         
         try:
             import mysql.connector
+            self._connection = mysql.connector.connect(
+                host=self.host,
+                port=self.port,
+                database=self.database,
+                user=self.user,
+                password=self.password,
+            )
         except ImportError:
-            raise ImportError("MySQL support requires: pip install mysql-connector-python")
-        
-        self._connection = mysql.connector.connect(
-            host=self.host,
-            port=self.port,
-            database=self.database,
-            user=self.user,
-            password=self.password,
-        )
+            from ..._internal.clients.mysql_wire import connect as mysql_connect
+            self._connection = mysql_connect(
+                host=self.host,
+                port=int(self.port),
+                database=self.database,
+                user=self.user,
+                password=self.password,
+            )
         return self._connection
     
     def _execute(

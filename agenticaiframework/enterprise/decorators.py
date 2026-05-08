@@ -798,60 +798,258 @@ def cache(ttl: int = 300, key_func: Optional[Callable] = None) -> Callable[[F], 
     return decorator
 
 
+class ValidationError(ValueError):
+    """Raised when @validate input/output schema check fails."""
+
+    def __init__(self, kind: str, errors: List[str]):
+        self.kind = kind  # "input" | "output"
+        self.errors = errors
+        super().__init__(f"{kind} validation failed: " + "; ".join(errors))
+
+
+class AuthorizationError(PermissionError):
+    """Raised when @authorize denies execution."""
+
+
+# Default authorization context - applications swap this out by calling
+# `set_auth_context_provider(callable)` from agenticaiframework.enterprise.
+_AUTH_CTX_PROVIDER: Optional[Callable[[], Dict[str, Any]]] = None
+
+
+def set_auth_context_provider(provider: Optional[Callable[[], Dict[str, Any]]]) -> None:
+    """
+    Register a callable that returns the current request's auth context.
+
+    The callable should return a dict with optional keys:
+        - "roles":       List[str]  - principal's roles
+        - "permissions": List[str]  - granted permissions
+        - "principal":   str        - user/service identifier
+        - "tenant":      str        - multi-tenant identifier
+
+    If unset (default), @authorize falls back to checking kwargs["auth_context"]
+    or environment variables (AGENTIC_AUTH_ROLES / AGENTIC_AUTH_PERMISSIONS).
+    """
+    global _AUTH_CTX_PROVIDER
+    _AUTH_CTX_PROVIDER = provider
+
+
+def _get_auth_context(kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    """Resolve the current auth context from provider, kwargs, or env."""
+    import os
+
+    if _AUTH_CTX_PROVIDER is not None:
+        try:
+            ctx = _AUTH_CTX_PROVIDER()
+            if isinstance(ctx, dict):
+                return ctx
+        except Exception as exc:  # pragma: no cover - defensive
+            logger.warning("auth_context_provider raised: %s", exc)
+
+    if "auth_context" in kwargs and isinstance(kwargs["auth_context"], dict):
+        return kwargs["auth_context"]
+
+    return {
+        "roles": [r for r in os.environ.get("AGENTIC_AUTH_ROLES", "").split(",") if r],
+        "permissions": [p for p in os.environ.get("AGENTIC_AUTH_PERMISSIONS", "").split(",") if p],
+        "principal": os.environ.get("AGENTIC_AUTH_PRINCIPAL", ""),
+    }
+
+
+def _resolve_schema(schema: Any) -> Optional[Dict[str, Any]]:
+    """
+    Accept either a JSON-Schema-shaped dict, a stdlib BaseModel subclass,
+    a pydantic BaseModel subclass, or None.
+
+    Returns a normalized JSON-Schema-shaped dict (or None for no validation).
+    """
+    if schema is None:
+        return None
+    if isinstance(schema, dict):
+        return schema
+    # stdlib pydantic-shape (agenticaiframework._internal.schema.BaseModel)
+    try:
+        from .._internal.schema import BaseModel as _StdBM  # type: ignore
+
+        if isinstance(schema, type) and issubclass(schema, _StdBM):
+            # Use class itself for parse_obj-based validation
+            return {"__model__": schema}
+    except Exception:
+        pass
+    # real pydantic
+    try:
+        import pydantic  # type: ignore
+
+        if isinstance(schema, type) and issubclass(schema, pydantic.BaseModel):
+            return {"__model__": schema}
+    except Exception:
+        pass
+    raise TypeError(f"Unsupported schema type for @validate: {type(schema).__name__}")
+
+
+def _run_schema_check(value: Any, normalized_schema: Dict[str, Any]) -> List[str]:
+    """Validate value against a normalized schema. Returns list of error strings."""
+    if "__model__" in normalized_schema:
+        model = normalized_schema["__model__"]
+        try:
+            if isinstance(value, model):
+                return []
+            if isinstance(value, dict):
+                model.parse_obj(value) if hasattr(model, "parse_obj") else model(**value)
+                return []
+            return [f"value is not an instance of {model.__name__} and not a dict"]
+        except Exception as exc:
+            return [str(exc)]
+    # JSON-Schema-shaped dict path
+    try:
+        from .._internal.schema import validate as _stdlib_validate  # type: ignore
+
+        return _stdlib_validate(value, normalized_schema)
+    except ImportError:
+        return []  # validation silently skipped if internal schema unavailable
+
+
 def validate(
-    input_schema: Optional[Dict] = None,
-    output_schema: Optional[Dict] = None,
+    input_schema: Optional[Any] = None,
+    output_schema: Optional[Any] = None,
+    *,
+    raise_on_error: bool = True,
 ) -> Callable[[F], F]:
     """
-    Add input/output validation to a function.
+    Add input/output validation to a function using JSON-Schema or BaseModel.
+
+    Args:
+        input_schema:  dict (JSON-Schema-shape) or BaseModel subclass; validates
+                       all positional+keyword arguments coerced to a dict.
+        output_schema: dict or BaseModel subclass; validates the return value.
+        raise_on_error: when True (default), raises `ValidationError` on
+                       validation failures; otherwise logs and returns the result.
+
+    Both sync and async target functions are supported.
     """
+    norm_in = _resolve_schema(input_schema)
+    norm_out = _resolve_schema(output_schema)
+
     def decorator(func: F) -> F:
+        sig = inspect.signature(func)
+
+        def _bind_to_dict(args: tuple, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+            try:
+                bound = sig.bind_partial(*args, **kwargs)
+                bound.apply_defaults()
+                # Drop "self"/"cls" if present so schema reflects user-facing fields
+                payload = dict(bound.arguments)
+                payload.pop("self", None)
+                payload.pop("cls", None)
+                return payload
+            except TypeError:
+                return {"args": list(args), "kwargs": dict(kwargs)}
+
+        def _check(value: Any, schema: Dict[str, Any], kind: str) -> None:
+            errors = _run_schema_check(value, schema)
+            if errors:
+                if raise_on_error:
+                    raise ValidationError(kind, errors)
+                logger.warning("validate(%s) errors: %s", kind, errors)
+
         @functools.wraps(func)
-        async def wrapper(*args, **kwargs):
-            # Validate input (simplified)
-            if input_schema:
-                # Would use jsonschema or pydantic in production
-                pass
-            
-            if asyncio.iscoroutinefunction(func):
-                result = await func(*args, **kwargs)
-            else:
-                result = func(*args, **kwargs)
-            
-            # Validate output (simplified)
-            if output_schema:
-                pass
-            
+        async def async_wrapper(*args, **kwargs):
+            if norm_in is not None:
+                _check(_bind_to_dict(args, kwargs), norm_in, "input")
+            result = await func(*args, **kwargs)
+            if norm_out is not None:
+                _check(result, norm_out, "output")
             return result
-        
-        return wrapper
-    
+
+        @functools.wraps(func)
+        def sync_wrapper(*args, **kwargs):
+            if norm_in is not None:
+                _check(_bind_to_dict(args, kwargs), norm_in, "input")
+            result = func(*args, **kwargs)
+            if norm_out is not None:
+                _check(result, norm_out, "output")
+            return result
+
+        wrapper = async_wrapper if asyncio.iscoroutinefunction(func) else sync_wrapper
+        wrapper._validation_config = {  # type: ignore[attr-defined]
+            "input_schema": input_schema,
+            "output_schema": output_schema,
+            "raise_on_error": raise_on_error,
+        }
+        return wrapper  # type: ignore[return-value]
+
     return decorator
 
 
 def authorize(
     roles: Optional[List[str]] = None,
     permissions: Optional[List[str]] = None,
+    *,
+    require_all_roles: bool = False,
+    require_all_permissions: bool = True,
+    deny_message: str = "Not authorized",
 ) -> Callable[[F], F]:
     """
-    Add authorization check to a function.
+    Enforce role/permission-based access control on a function.
+
+    Resolution order for the auth context:
+      1. provider registered via `set_auth_context_provider()`
+      2. `auth_context` keyword argument passed to the wrapped function
+      3. environment vars `AGENTIC_AUTH_ROLES` / `AGENTIC_AUTH_PERMISSIONS`
+
+    Args:
+        roles:       required role names; principal must hold any of these
+                     (or all of them if `require_all_roles=True`).
+        permissions: required permission names; principal must hold all
+                     (or any if `require_all_permissions=False`).
+
+    Raises `AuthorizationError` (subclass of PermissionError) on denial.
     """
+    required_roles = list(roles or [])
+    required_perms = list(permissions or [])
+
+    def _check_auth(kwargs: Dict[str, Any]) -> None:
+        ctx = _get_auth_context(kwargs)
+        principal_roles = list(ctx.get("roles") or [])
+        principal_perms = list(ctx.get("permissions") or [])
+
+        if required_roles:
+            holds = [r for r in required_roles if r in principal_roles]
+            ok = (len(holds) == len(required_roles)) if require_all_roles else bool(holds)
+            if not ok:
+                raise AuthorizationError(
+                    f"{deny_message}: missing required role(s) {required_roles} "
+                    f"(have: {principal_roles})"
+                )
+
+        if required_perms:
+            holds = [p for p in required_perms if p in principal_perms]
+            ok = (len(holds) == len(required_perms)) if require_all_permissions else bool(holds)
+            if not ok:
+                raise AuthorizationError(
+                    f"{deny_message}: missing required permission(s) {required_perms} "
+                    f"(have: {principal_perms})"
+                )
+
     def decorator(func: F) -> F:
         @functools.wraps(func)
-        async def wrapper(*args, **kwargs):
-            # In production, would check actual auth context
-            # For now, just pass through
-            if asyncio.iscoroutinefunction(func):
-                return await func(*args, **kwargs)
-            else:
-                return func(*args, **kwargs)
-        
-        wrapper._auth_config = {
-            "roles": roles or [],
-            "permissions": permissions or [],
+        async def async_wrapper(*args, **kwargs):
+            _check_auth(kwargs)
+            return await func(*args, **kwargs)
+
+        @functools.wraps(func)
+        def sync_wrapper(*args, **kwargs):
+            _check_auth(kwargs)
+            return func(*args, **kwargs)
+
+        wrapper = async_wrapper if asyncio.iscoroutinefunction(func) else sync_wrapper
+        wrapper._auth_config = {  # type: ignore[attr-defined]
+            "roles": required_roles,
+            "permissions": required_perms,
+            "require_all_roles": require_all_roles,
+            "require_all_permissions": require_all_permissions,
         }
-        return wrapper
-    
+        return wrapper  # type: ignore[return-value]
+
     return decorator
 
 
