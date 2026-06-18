@@ -174,7 +174,7 @@ class LLMManager:
             return manager
         
         # Set active model
-        if auto_select:
+        if auto_select: # TODO doesnt it need to be always true?
             if preferred_provider and preferred_provider in registered:
                 manager.set_active_model(preferred_provider)
             else:

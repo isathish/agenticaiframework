@@ -9,8 +9,8 @@ import logging
 from datetime import datetime
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from ..context import ContextManager, ContextType
-from ..exceptions import AgentExecutionError  # noqa: F401
+from agenticaiframework.context.manager import ContextManager, ContextType
+from agenticaiframework.exceptions import AgentExecutionError  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -79,7 +79,7 @@ class Agent:
         self.version = "2.0.0"
         
         # Context management
-        self.context_manager = ContextManager(max_tokens=max_context_tokens)
+        self.context_manager = ContextManager(max_tokens=max_context_tokens) # TODO can be customized further.
         
         # Performance tracking
         self.performance_metrics = {
@@ -414,6 +414,7 @@ class Agent:
         Returns:
             Task result or None on error
         """
+        # TODO how are tokens still being used without LLM calls?
         start_time = time.time()
         self.performance_metrics['total_tasks'] += 1
         self.security_context['access_count'] += 1
@@ -799,7 +800,7 @@ class Agent:
         on_step: Optional[Callable[['AgentStep'], None]] = None,
         on_thought: Optional[Callable[['AgentThought'], None]] = None,
         **kwargs,
-    ):
+    ): #TODO Not really streaming yet
         """
         Streaming invoke - yields steps as they happen.
         
@@ -1347,8 +1348,8 @@ class Agent:
         tool_name = getattr(tool, 'name', type(tool).__name__)
         
         # Register tool if not already registered
-        if not tool_registry.get(tool_name):
-            tool_registry.register(tool)
+        if not tool_registry.get_tool_class(tool_name):
+            tool_registry.register(type(tool))
         
         # Bind to this agent
         agent_tool_manager.bind_tools(self, [tool_name])
