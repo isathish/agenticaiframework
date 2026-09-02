@@ -452,6 +452,13 @@ class PrivacyStore(ABC):
     @abstractmethod
     async def get_pending_requests(self) -> List[DataSubjectRequest]:
         pass
+    
+    async def get_request(self, request_id: str) -> Optional[DataSubjectRequest]:
+        """Look up a request by id (default scans pending requests)."""
+        for request in await self.get_pending_requests():
+            if request.id == request_id:
+                return request
+        return None
 
 
 class InMemoryPrivacyStore(PrivacyStore):
@@ -477,6 +484,9 @@ class InMemoryPrivacyStore(PrivacyStore):
     
     async def save_request(self, request: DataSubjectRequest) -> None:
         self._requests[request.id] = request
+    
+    async def get_request(self, request_id: str) -> Optional[DataSubjectRequest]:
+        return self._requests.get(request_id)
     
     async def get_pending_requests(self) -> List[DataSubjectRequest]:
         return [
@@ -729,15 +739,32 @@ class DataPrivacyManager:
         self,
         request_id: str,
         result: Dict[str, Any],
-    ) -> None:
-        """Complete a data subject request."""
-        # In real implementation, fetch and update request
+        status: str = "completed",
+    ) -> DataSubjectRequest:
+        """Mark a data subject request as completed (or ``rejected``) and persist the outcome."""
+        request = await self._store.get_request(request_id)
+        if request is None:
+            raise PrivacyError(f"Data subject request not found: {request_id}")
+        if request.status in ("completed", "rejected"):
+            raise PrivacyError(f"Data subject request {request_id} already {request.status}")
+        
+        request.status = status
+        request.result = dict(result)
+        request.completed_at = datetime.utcnow()
+        if request.deadline and request.completed_at > request.deadline:
+            request.result.setdefault("sla_breached", True)
+        await self._store.save_request(request)
+        
         await self._emit_event("data_subject_request_completed", {
             "request_id": request_id,
+            "subject_id": request.subject_id,
+            "type": request.request_type,
+            "status": status,
             "result": result,
         })
         
-        logger.info(f"Data subject request completed: {request_id}")
+        logger.info(f"Data subject request {status}: {request_id}")
+        return request
     
     async def get_pending_requests(self) -> List[DataSubjectRequest]:
         """Get pending data subject requests."""

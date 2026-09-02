@@ -179,7 +179,11 @@ class MiddlewarePipeline:
         return None
     
     def wrap(self, handler: Callable) -> Callable:
-        """Wrap a handler with the middleware pipeline."""
+        """Wrap a handler with the middleware pipeline.
+
+        A middleware's ``process_error`` may set ``request.context["retry"] = True``
+        to have the handler invoked again (used by :class:`RetryMiddleware`).
+        """
         @functools.wraps(handler)
         async def wrapper(*args, **kwargs) -> Response:
             # Create request
@@ -189,36 +193,31 @@ class MiddlewarePipeline:
             )
             
             start_time = time.time()
+            request = await self.process_request(request)
             
-            try:
-                # Process request
-                request = await self.process_request(request)
-                
-                # Call handler
-                result = await handler(*args, **kwargs)
-                
-                # Create response
-                response = Response(
-                    request_id=request.id,
-                    data=result,
-                    success=True,
-                    duration_ms=(time.time() - start_time) * 1000,
-                )
-                
-                # Process response
-                response = await self.process_response(request, response)
-                
-                return response
-                
-            except Exception as e:
-                # Try to handle error
-                error_response = await self.process_error(request, e)
-                
-                if error_response:
-                    return error_response
-                
-                # Re-raise if not handled
-                raise
+            while True:
+                try:
+                    result = await handler(*args, **kwargs)
+                    if asyncio.iscoroutine(result):
+                        result = await result
+                    
+                    response = Response(
+                        request_id=request.id,
+                        data=result,
+                        success=True,
+                        duration_ms=(time.time() - start_time) * 1000,
+                    )
+                    return await self.process_response(request, response)
+                    
+                except Exception as e:
+                    request.context.pop("retry", None)
+                    error_response = await self.process_error(request, e)
+                    
+                    if error_response:
+                        return error_response
+                    if request.context.pop("retry", False):
+                        continue
+                    raise
         
         return wrapper
 
@@ -501,8 +500,8 @@ class RetryMiddleware(Middleware):
             request.context["retry_count"] = retry_count + 1
             await asyncio.sleep(delay)
             
-            # Signal that request should be retried
-            # In a real implementation, this would re-invoke the handler
+            # Ask the pipeline to re-invoke the handler.
+            request.context["retry"] = True
             return None
         
         return None

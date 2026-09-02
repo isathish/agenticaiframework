@@ -706,9 +706,23 @@ def requires_authorization(permission: str) -> Callable:
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         async def wrapper(self, *args, context: Optional[ServiceContext] = None, **kwargs):
-            # In real implementation, check authorization
-            if context and not context.user_id:
+            if context is None or not context.user_id:
                 raise AuthorizationError(f"Authorization required: {permission}")
+            
+            # Permission sources, in order: an authorizer on the service, then the
+            # context itself (``permissions`` / ``roles`` in metadata).
+            authorizer = getattr(self, "authorizer", None) or getattr(self, "_authorizer", None)
+            if authorizer is not None:
+                check = getattr(authorizer, "has_permission", None) or getattr(authorizer, "is_allowed", None) or authorizer
+                allowed = check(context.user_id, permission) if callable(check) else False
+                if asyncio.iscoroutine(allowed):
+                    allowed = await allowed
+            else:
+                granted = set(context.metadata.get("permissions", []) or [])
+                granted |= set(getattr(context, "permissions", []) or [])
+                allowed = _permission_granted(permission, granted)
+            if not allowed:
+                raise AuthorizationError(f"User {context.user_id} lacks permission: {permission}")
             
             if asyncio.iscoroutinefunction(func):
                 return await func(self, *args, context=context, **kwargs)
@@ -717,6 +731,17 @@ def requires_authorization(permission: str) -> Callable:
         return wrapper
     
     return decorator
+
+
+def _permission_granted(required: str, granted: set) -> bool:
+    """``orders:create`` is satisfied by itself, ``orders:*`` or ``*``."""
+    if required in granted or "*" in granted:
+        return True
+    parts = required.split(":")
+    for i in range(len(parts) - 1, 0, -1):
+        if ":".join(parts[:i]) + ":*" in granted:
+            return True
+    return False
 
 
 # Factory functions

@@ -261,6 +261,10 @@ class SessionStore(ABC):
     async def delete_by_user(self, user_id: str) -> int:
         """Delete user sessions."""
         pass
+    
+    async def list_all(self) -> List[Session]:
+        """Enumerate sessions (used by expiry sweeps). Stores should override."""
+        return []
 
 
 class InMemorySessionStore(SessionStore):
@@ -320,6 +324,9 @@ class InMemorySessionStore(SessionStore):
                     self._by_token.pop(session.refresh_token, None)
                 count += 1
         return count
+    
+    async def list_all(self) -> List[Session]:
+        return list(self._sessions.values())
 
 
 # Session manager
@@ -540,10 +547,17 @@ class SessionManager:
         return await self._store.delete(session_id)
     
     async def cleanup_expired(self) -> int:
-        """Cleanup expired sessions."""
+        """Delete every expired session the store can enumerate."""
         count = 0
-        # In a real implementation, iterate all sessions
-        # This is simplified for the in-memory store
+        lister = getattr(self._store, "list_all", None)
+        sessions = await lister() if lister else []
+        for session in list(sessions):
+            if session.is_expired:
+                if await self._store.delete(session.id):
+                    count += 1
+                    await self._fire_hook("session_expired", session)
+        if count:
+            self._stats.expired_sessions = getattr(self._stats, "expired_sessions", 0) + count
         return count
     
     # Token pair generation
