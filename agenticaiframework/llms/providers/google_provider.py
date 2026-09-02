@@ -203,6 +203,64 @@ class GoogleProvider(BaseLLMProvider):
         )
         return self._parse_response(raw, used_model, self.provider_name)
 
+    def generate_chat_with_tools(
+        self,
+        messages: List[LLMMessage],
+        tools: List[Dict[str, Any]],
+        *,
+        model: Optional[str] = None,
+        temperature: float = 0.7,
+        max_tokens: Optional[int] = None,
+        **kwargs: Any,
+    ) -> LLMResponse:
+        self._ensure_initialized()
+        contents: List[Dict[str, Any]] = []
+        sys_inst: Optional[Dict[str, Any]] = None
+        call_names: Dict[str, str] = {}
+        for m in messages:
+            if m.role == "system":
+                sys_inst = {"parts": [{"text": m.content}]}
+            elif m.role == "assistant" and m.tool_calls:
+                parts: List[Dict[str, Any]] = []
+                if m.content:
+                    parts.append({"text": m.content})
+                for call in m.tool_calls:
+                    fn = call.get("function", {})
+                    try:
+                        args = _json.loads(fn.get("arguments") or "{}")
+                    except ValueError:
+                        args = {"input": fn.get("arguments")}
+                    call_names[str(call.get("id"))] = fn.get("name", "")
+                    parts.append({"functionCall": {"name": fn.get("name"), "args": args}})
+                contents.append({"role": "model", "parts": parts})
+            elif m.role == "tool":
+                name = m.name or call_names.get(str(m.tool_call_id), "tool")
+                try:
+                    response_obj = _json.loads(m.content)
+                    if not isinstance(response_obj, dict):
+                        response_obj = {"result": response_obj}
+                except ValueError:
+                    response_obj = {"result": m.content}
+                part = {"functionResponse": {"name": name, "response": response_obj}}
+                if contents and contents[-1]["role"] == "user" and "functionResponse" in contents[-1]["parts"][0]:
+                    contents[-1]["parts"].append(part)
+                else:
+                    contents.append({"role": "user", "parts": [part]})
+            else:
+                contents.append({"role": "user" if m.role == "user" else "model", "parts": [{"text": m.content}]})
+        gen_cfg: Dict[str, Any] = {"temperature": temperature}
+        if max_tokens:
+            gen_cfg["maxOutputTokens"] = max_tokens
+        used_model = model or self.config.default_model
+        raw = self._client.generate_content(
+            model=used_model,
+            contents=contents,
+            system_instruction=sys_inst,
+            generation_config=gen_cfg,
+            tools=self._to_gemini_tools(tools) or None,
+        )
+        return self._parse_response(raw, used_model, self.provider_name)
+
     def stream(
         self,
         prompt: str,

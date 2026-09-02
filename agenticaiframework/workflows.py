@@ -38,6 +38,9 @@ class SequentialWorkflow:
     def __init__(self, manager: AgentManager):
         self.manager = manager
 
+    def _get_agent(self, agent_key: str):
+        return _resolve_agent(self.manager, agent_key)
+
     def execute_sequential(
         self,
         data: Any,
@@ -47,7 +50,7 @@ class SequentialWorkflow:
         """Execute a workflow sequentially through a chain of agents."""
         result = data
         for agent_key in agent_chain:
-            agent = _resolve_agent(self.manager, agent_key)
+            agent = self._get_agent(agent_key)
             result = agent.execute_task(task_callable, result)
         return result
 
@@ -59,6 +62,9 @@ class ParallelWorkflow:
 
     def __init__(self, manager: AgentManager):
         self.manager = manager
+
+    def _get_agent(self, agent_key: str):
+        return _resolve_agent(self.manager, agent_key)
 
     async def execute_parallel(
         self,

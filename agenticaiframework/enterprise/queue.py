@@ -477,11 +477,15 @@ class JobScheduler:
         schedule: str,
     ) -> Job:
         """Add a scheduled job."""
+        from agenticaiframework._internal.cron import Cron
+
+        cron = Cron(schedule)  # validates the expression eagerly
         job = Job(
             id=str(uuid.uuid4()),
             name=name,
             handler=handler,
             schedule=schedule,
+            next_run=cron.next_after(datetime.now()),
         )
         self._jobs[name] = job
         return job
@@ -507,39 +511,44 @@ class JobScheduler:
         """Main scheduler loop."""
         while self._running:
             try:
-                for job in self._jobs.values():
+                for job in list(self._jobs.values()):
                     if job.enabled and self._should_run(job):
                         await self._run_job(job)
                 
-                await asyncio.sleep(60)  # Check every minute
+                # Sleep until the earliest next_run (capped) so schedules with
+                # second-level precision are honoured.
+                now = datetime.now()
+                upcoming = [j.next_run for j in self._jobs.values() if j.enabled and j.next_run]
+                delay = min((nr - now).total_seconds() for nr in upcoming) if upcoming else 60.0
+                await asyncio.sleep(min(max(delay, 0.05), 60.0))
                 
             except asyncio.CancelledError:
                 break
             except Exception as e:
                 logger.error(f"Scheduler error: {e}")
+                await asyncio.sleep(1)
     
     def _should_run(self, job: Job) -> bool:
-        """Check if job should run based on cron schedule."""
-        # Simplified: just check if interval has passed
-        # In production, use a proper cron parser
-        if job.last_run is None:
-            return True
-        
-        # Parse simple interval from schedule (e.g., "*/5" = every 5 minutes)
-        if job.schedule.startswith("*/"):
+        """Check if job should run based on its cron schedule."""
+        from agenticaiframework._internal.cron import Cron, CronError
+
+        now = datetime.now()
+        if job.next_run is None:
             try:
-                interval = int(job.schedule[2:].split()[0])
-                elapsed = (datetime.now() - job.last_run).total_seconds()
-                return elapsed >= interval * 60
-            except (ValueError, IndexError):
-                pass
-        
-        return False
+                job.next_run = Cron(job.schedule).next_after(job.last_run or now, inclusive=job.last_run is None)
+            except CronError as e:
+                logger.error(f"Job {job.name} has invalid schedule {job.schedule!r}: {e}")
+                job.enabled = False
+                return False
+        return job.next_run <= now
     
     async def _run_job(self, job: Job) -> None:
         """Execute a job."""
+        from agenticaiframework._internal.cron import Cron
+
+        job.last_run = datetime.now()
+        job.next_run = Cron(job.schedule).next_after(job.last_run)
         try:
-            job.last_run = datetime.now()
             await job.handler()
             job.run_count += 1
             logger.info(f"Job {job.name} completed")

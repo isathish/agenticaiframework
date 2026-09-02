@@ -184,23 +184,16 @@ class HttpHealthChecker(HealthChecker):
     
     async def check(self, instance: ServiceInstance) -> bool:
         """Check HTTP health endpoint."""
-        try:
-            # Simulate HTTP health check
-            import aiohttp
-            
-            async with aiohttp.ClientSession() as session:
-                async with session.get(
-                    instance.health_url,
-                    timeout=aiohttp.ClientTimeout(total=self._timeout)
-                ) as response:
-                    return response.status == 200
-        except ImportError:
-            # Fallback without aiohttp
-            await asyncio.sleep(0.1)
-            return instance.status == ServiceStatus.UP
-        except Exception as e:
-            logger.debug(f"Health check failed for {instance.id}: {e}")
-            return False
+        from agenticaiframework._internal.healthcheck import http_probe
+
+        probe = await http_probe(
+            instance.health_url,
+            timeout=self._timeout,
+            expected_status=range(200, 300),
+        )
+        if not probe.ok:
+            logger.debug(f"Health check failed for {instance.id}: {probe.message}")
+        return probe.ok
 
 
 class TcpHealthChecker(HealthChecker):

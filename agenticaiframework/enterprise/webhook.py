@@ -63,7 +63,11 @@ class SignatureError(WebhookError):
 
 class DeliveryError(WebhookError):
     """Webhook delivery failed."""
-    pass
+    
+    def __init__(self, message: str, status_code: Optional[int] = None, body: str = ""):
+        super().__init__(message)
+        self.status_code = status_code
+        self.body = body
 
 
 class WebhookStatus(str, Enum):
@@ -284,7 +288,12 @@ class HTTPWebhookDelivery(WebhookDelivery):
                 
             except Exception as e:
                 last_error = str(e)
+                status_code = getattr(e, "status_code", status_code)
                 logger.warning(f"Webhook delivery attempt {attempt} failed: {e}")
+                
+                # 4xx (other than 408/429) will not succeed on retry.
+                if status_code and 400 <= status_code < 500 and status_code not in (408, 429):
+                    break
                 
                 if attempt < webhook.retry_count:
                     # Exponential backoff
@@ -306,31 +315,49 @@ class HTTPWebhookDelivery(WebhookDelivery):
         event: str,
         payload: Dict[str, Any],
     ) -> Dict[str, Any]:
-        """Send HTTP request (mock implementation)."""
-        # Build request
+        """POST the signed event envelope to the webhook URL.
+
+        Raises on network errors or non-2xx responses so :meth:`deliver` can
+        apply its retry/backoff policy.
+        """
+        from agenticaiframework._internal.http import AsyncClient
+
         body = json.dumps({
             "event": event,
             "data": payload,
             "timestamp": datetime.now().isoformat(),
             "webhook_id": webhook.id,
-        })
+        }, default=str)
         
-        # Generate signature
         signature = self._signer.generate(body.encode(), webhook.secret)
         
         headers = {
             "Content-Type": "application/json",
+            "X-Webhook-Event": event,
+            "X-Webhook-Id": webhook.id,
+            "X-Webhook-Delivery": str(uuid.uuid4()),
             self._signer.header_name: signature,
             **webhook.headers,
         }
         
-        # In production, use aiohttp or httpx
-        # For now, simulate successful delivery
-        logger.info(f"Delivered webhook to {webhook.url}: {event}")
+        client = AsyncClient(timeout=float(webhook.timeout_seconds or 30))
+        response = await client.post(
+            webhook.url,
+            data=body.encode(),
+            headers=headers,
+            timeout=float(webhook.timeout_seconds or 30),
+        )
+        if not (200 <= response.status < 300):
+            raise DeliveryError(
+                f"Webhook {webhook.id} -> {webhook.url} returned HTTP {response.status}",
+                status_code=response.status,
+                body=response.text[:500],
+            )
         
+        logger.info(f"Delivered webhook to {webhook.url}: {event} (HTTP {response.status})")
         return {
-            "status_code": 200,
-            "body": "OK",
+            "status_code": response.status,
+            "body": response.text[:500],
         }
 
 

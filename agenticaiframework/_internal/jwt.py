@@ -1,8 +1,8 @@
 """Tiny JWT (JSON Web Token) signer/verifier — stdlib-only.
 
-Supports HS256 / HS384 / HS512 (HMAC) and RS256 / RS384 / RS512 (RSA via
-:mod:`agenticaiframework._internal.pem` — uses Python's built-in big-int
-modular exponentiation; signing a 2048-bit key takes O(50 ms)).
+Supports HS256 / HS384 / HS512 (HMAC), RS256 / RS384 / RS512 (RSA via
+:mod:`agenticaiframework._internal.pem`) and ES256 (P-256 ECDSA via
+:mod:`agenticaiframework._internal.ec`).
 
 Public API::
 
@@ -24,6 +24,7 @@ from . import pem as _pem
 _HASHES = {
     "HS256": hashlib.sha256, "HS384": hashlib.sha384, "HS512": hashlib.sha512,
     "RS256": hashlib.sha256, "RS384": hashlib.sha384, "RS512": hashlib.sha512,
+    "ES256": hashlib.sha256,
 }
 
 _DIGEST_INFO_PREFIX = {
@@ -71,7 +72,7 @@ class JWTError(Exception):
     pass
 
 
-def encode(payload: Dict[str, Any], key: Union[str, bytes, _pem.RSAPrivateKey], *,
+def encode(payload: Dict[str, Any], key: Any, *,
            algorithm: str = "HS256", headers: Optional[Dict[str, Any]] = None) -> str:
     if algorithm not in _HASHES:
         raise JWTError(f"Unsupported algorithm: {algorithm}")
@@ -88,6 +89,9 @@ def encode(payload: Dict[str, Any], key: Union[str, bytes, _pem.RSAPrivateKey], 
         else:
             key_bytes = key  # type: ignore[assignment]
         sig = hmac.new(key_bytes, signing_input, _HASHES[algorithm]).digest()
+    elif algorithm == "ES256":
+        from . import ec as _ec
+        sig = _ec.ecdsa_sign(_ec.load_private_key(key), signing_input)
     else:
         if isinstance(key, (str, bytes)):
             rsa_key = _pem.load_rsa_private_key(key)
@@ -98,7 +102,7 @@ def encode(payload: Dict[str, Any], key: Union[str, bytes, _pem.RSAPrivateKey], 
     return head_b64 + "." + body_b64 + "." + _b64url_encode(sig)
 
 
-def decode(token: str, key: Union[str, bytes, _pem.RSAPrivateKey], *,
+def decode(token: str, key: Any, *,
            algorithms: Iterable[str] = ("HS256",), verify_exp: bool = True) -> Dict[str, Any]:
     parts = token.split(".")
     if len(parts) != 3:
@@ -117,10 +121,39 @@ def decode(token: str, key: Union[str, bytes, _pem.RSAPrivateKey], *,
         expected = hmac.new(key_bytes, signing_input, _HASHES[alg]).digest()
         if not hmac.compare_digest(expected, sig):
             raise JWTError("Signature verification failed")
+    elif alg == "ES256":
+        from . import ec as _ec
+        if isinstance(key, _ec.ECPrivateKey):
+            pub = key.public_key()
+        elif isinstance(key, dict):
+            if key.get("kty") != "EC":
+                raise JWTError("JWK kty must be EC for ES256")
+            def _b64(v: str) -> int:
+                return int.from_bytes(_b64url_decode(v), "big")
+            pub = _ec.ECPublicKey(_b64(key["x"]), _b64(key["y"]))
+        else:
+            try:
+                pub = _ec.load_public_key(key)
+            except Exception:
+                try:
+                    pub = _ec.load_private_key(key).public_key()
+                except Exception as exc:
+                    raise JWTError(f"Invalid EC key: {exc}") from exc
+        if not _ec.ecdsa_verify(pub, signing_input, sig):
+            raise JWTError("Signature verification failed")
     else:
-        # Verify-only RSA path is not commonly needed by the framework — we
-        # currently support sign-only for cloud auth. Reject explicitly.
-        raise JWTError("RSA verify not implemented")
+        hash_name = {"RS256": "SHA-256", "RS384": "SHA-384", "RS512": "SHA-512"}[alg]
+        if isinstance(key, _pem.RSAPublicKey):
+            pub = key
+        elif isinstance(key, _pem.RSAPrivateKey):
+            pub = key.public_key()
+        else:
+            try:
+                pub = _pem.load_rsa_public_key(key)
+            except Exception as exc:  # pragma: no cover - malformed key material
+                raise JWTError(f"Invalid RSA public key: {exc}") from exc
+        if not pub.verify(sig, signing_input, hash_name):
+            raise JWTError("Signature verification failed")
 
     if verify_exp and "exp" in payload and payload["exp"] < time.time():
         raise JWTError("Token expired")

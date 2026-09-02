@@ -32,10 +32,46 @@ _HASHERS = {
 
 
 @dataclass
+class RSAPublicKey:
+    n: int
+    e: int
+
+    @property
+    def key_size(self) -> int:
+        return (self.n.bit_length() + 7) // 8
+
+    def verify(self, signature: bytes, data: bytes, hash_algo: str = "SHA-256") -> bool:
+        """Verify an RSASSA-PKCS1-v1_5 signature over ``data``."""
+        if hash_algo not in _DIGEST_INFO_PREFIX:
+            raise ValueError(f"Unsupported hash algorithm: {hash_algo}")
+        k = self.key_size
+        if len(signature) != k:
+            return False
+        s = int.from_bytes(signature, "big")
+        if s >= self.n:
+            return False
+        em = pow(s, self.e, self.n).to_bytes(k, "big")
+        digest = _HASHERS[hash_algo](data).digest()
+        t_block = _DIGEST_INFO_PREFIX[hash_algo] + digest
+        ps_len = k - len(t_block) - 3
+        if ps_len < 8:
+            return False
+        expected = b"\x00\x01" + (b"\xff" * ps_len) + b"\x00" + t_block
+        # constant-time compare
+        result = 0
+        for a, b in zip(em, expected):
+            result |= a ^ b
+        return result == 0 and len(em) == len(expected)
+
+
+@dataclass
 class RSAPrivateKey:
     n: int
     e: int
     d: int
+
+    def public_key(self) -> "RSAPublicKey":
+        return RSAPublicKey(n=self.n, e=self.e)
 
     # ---- helpers used by callers (Snowflake REST, JWT signing, etc.) ----
     @property
@@ -204,4 +240,245 @@ def _parse_pkcs8_der(der: bytes) -> RSAPrivateKey:
     return _parse_pkcs1_der(key_octets)
 
 
-__all__ = ["RSAPrivateKey", "load_rsa_private_key", "parse_pem"]
+# ---------------------------------------------------------------------------
+# Public keys
+# ---------------------------------------------------------------------------
+
+def _parse_rsa_public_pkcs1_der(der: bytes) -> RSAPublicKey:
+    """RSAPublicKey ::= SEQUENCE { modulus INTEGER, publicExponent INTEGER }"""
+    tag, body, _ = _read_tlv(der, 0)
+    if tag != 0x30:
+        raise ValueError("Expected SEQUENCE")
+    n, idx = _read_int(body, 0)
+    e, _ = _read_int(body, idx)
+    return RSAPublicKey(n=n, e=e)
+
+
+def _parse_spki_der(der: bytes) -> RSAPublicKey:
+    """SubjectPublicKeyInfo ::= SEQUENCE { AlgorithmIdentifier, BIT STRING }"""
+    tag, body, _ = _read_tlv(der, 0)
+    if tag != 0x30:
+        raise ValueError("Expected SEQUENCE")
+    _alg_tag, _alg, idx = _read_tlv(body, 0)
+    bs_tag, bit_string, _ = _read_tlv(body, idx)
+    if bs_tag != 0x03:
+        raise ValueError("Expected BIT STRING")
+    # first byte of BIT STRING = number of unused bits (0 for RSA)
+    return _parse_rsa_public_pkcs1_der(bit_string[1:])
+
+
+def _parse_x509_cert_der(der: bytes) -> RSAPublicKey:
+    """Extract the RSA public key from a DER X.509 certificate."""
+    tag, cert, _ = _read_tlv(der, 0)
+    if tag != 0x30:
+        raise ValueError("Expected SEQUENCE")
+    tbs_tag, tbs, _ = _read_tlv(cert, 0)
+    if tbs_tag != 0x30:
+        raise ValueError("Expected tbsCertificate SEQUENCE")
+    idx = 0
+    # optional explicit [0] version
+    if tbs[idx] == 0xA0:
+        _t, _v, idx = _read_tlv(tbs, idx)
+    _serial, idx = _read_int(tbs, idx)
+    _sig_alg_tag, _sig_alg, idx = _read_tlv(tbs, idx)      # signature AlgorithmIdentifier
+    _issuer_tag, _issuer, idx = _read_tlv(tbs, idx)        # issuer Name
+    _validity_tag, _validity, idx = _read_tlv(tbs, idx)    # validity
+    _subject_tag, _subject, idx = _read_tlv(tbs, idx)      # subject Name
+    spki_tag, spki_body, _ = _read_tlv(tbs, idx)
+    if spki_tag != 0x30:
+        raise ValueError("Expected SubjectPublicKeyInfo")
+    return _parse_spki_der(_der_seq(spki_body))
+
+
+def load_rsa_public_key(text_or_bytes) -> RSAPublicKey:
+    """Load an RSA public key from PEM (``PUBLIC KEY`` / ``RSA PUBLIC KEY`` /
+    ``CERTIFICATE``), raw DER, or a JWK ``dict`` with ``n``/``e`` members."""
+    if isinstance(text_or_bytes, dict):
+        jwk = text_or_bytes
+        if jwk.get("kty", "RSA") != "RSA":
+            raise ValueError("JWK kty must be RSA")
+        def _b64url(v: str) -> int:
+            return int.from_bytes(base64.urlsafe_b64decode(v + "=" * (-len(v) % 4)), "big")
+        return RSAPublicKey(n=_b64url(jwk["n"]), e=_b64url(jwk["e"]))
+    if isinstance(text_or_bytes, bytes):
+        try:
+            text = text_or_bytes.decode("ascii")
+        except UnicodeDecodeError:
+            try:
+                return _parse_spki_der(text_or_bytes)
+            except ValueError:
+                return _parse_rsa_public_pkcs1_der(text_or_bytes)
+    else:
+        text = text_or_bytes
+    blocks = parse_pem(text)
+    label, der = blocks[0]
+    if "RSA PUBLIC KEY" in label:
+        return _parse_rsa_public_pkcs1_der(der)
+    if "PUBLIC KEY" in label:
+        return _parse_spki_der(der)
+    if "CERTIFICATE" in label:
+        return _parse_x509_cert_der(der)
+    if "PRIVATE KEY" in label:
+        return load_rsa_private_key(text).public_key()
+    raise ValueError(f"Unsupported PEM label: {label}")
+
+
+# ---------------------------------------------------------------------------
+# PEM serialisation
+# ---------------------------------------------------------------------------
+
+def _to_pem(label: str, der: bytes) -> str:
+    body = base64.b64encode(der).decode("ascii")
+    lines = [body[i:i + 64] for i in range(0, len(body), 64)]
+    return f"-----BEGIN {label}-----\n" + "\n".join(lines) + f"\n-----END {label}-----\n"
+
+
+def public_key_to_pem(key: RSAPublicKey) -> str:
+    """Serialise as ``-----BEGIN PUBLIC KEY-----`` (SubjectPublicKeyInfo)."""
+    rsa_pubkey = _der_seq(_der_int(key.n) + _der_int(key.e))
+    algorithm_id = _der_seq(_der_oid("1.2.840.113549.1.1.1") + b"\x05\x00")
+    spki = _der_seq(algorithm_id + _der_tlv(0x03, b"\x00" + rsa_pubkey))
+    return _to_pem("PUBLIC KEY", spki)
+
+
+def private_key_to_pem(key: RSAPrivateKey, *, p: int = 0, q: int = 0) -> str:
+    """Serialise as PKCS#1 ``-----BEGIN RSA PRIVATE KEY-----``.
+
+    When ``p``/``q`` are supplied the CRT parameters are emitted so the key is
+    loadable by OpenSSL; otherwise they are written as zero (still loadable by
+    :func:`load_rsa_private_key`)."""
+    n, e, d = key.n, key.e, key.d
+    if p and q:
+        dp = d % (p - 1)
+        dq = d % (q - 1)
+        qinv = pow(q, -1, p)
+    else:
+        dp = dq = qinv = 0
+    body = b"".join(_der_int(v) for v in (0, n, e, d, p, q, dp, dq, qinv))
+    return _to_pem("RSA PRIVATE KEY", _der_seq(body))
+
+
+# ---------------------------------------------------------------------------
+# Key generation (Miller-Rabin) + RSAES-OAEP
+# ---------------------------------------------------------------------------
+
+_SMALL_PRIMES = [p for p in range(3, 2000, 2) if all(p % q for q in range(3, int(p ** 0.5) + 1, 2))]
+
+
+def _is_probable_prime(n: int, rounds: int = 32) -> bool:
+    import secrets as _secrets
+    if n < 2:
+        return False
+    for sp in _SMALL_PRIMES:
+        if n % sp == 0:
+            return n == sp
+    d, r = n - 1, 0
+    while d % 2 == 0:
+        d //= 2
+        r += 1
+    for _ in range(rounds):
+        a = _secrets.randbelow(n - 3) + 2
+        x = pow(a, d, n)
+        if x in (1, n - 1):
+            continue
+        for _ in range(r - 1):
+            x = pow(x, 2, n)
+            if x == n - 1:
+                break
+        else:
+            return False
+    return True
+
+
+def _random_prime(bits: int) -> int:
+    import secrets as _secrets
+    while True:
+        cand = _secrets.randbits(bits) | (1 << (bits - 1)) | 1
+        if _is_probable_prime(cand):
+            return cand
+
+
+def generate_rsa_key(bits: int = 2048, e: int = 65537) -> Tuple[RSAPrivateKey, int, int]:
+    """Generate an RSA key pair. Returns ``(private_key, p, q)``."""
+    if bits < 512:
+        raise ValueError("RSA key size must be >= 512 bits")
+    half = bits // 2
+    while True:
+        p = _random_prime(half)
+        q = _random_prime(bits - half)
+        if p == q:
+            continue
+        n = p * q
+        if n.bit_length() != bits:
+            continue
+        phi = (p - 1) * (q - 1)
+        if phi % e == 0:
+            continue
+        d = pow(e, -1, phi)
+        return RSAPrivateKey(n=n, e=e, d=d), p, q
+
+
+def _mgf1(seed: bytes, length: int, hasher) -> bytes:
+    out = b""
+    counter = 0
+    while len(out) < length:
+        out += hasher(seed + counter.to_bytes(4, "big")).digest()
+        counter += 1
+    return out[:length]
+
+
+def _xor(a: bytes, b: bytes) -> bytes:
+    return bytes(x ^ y for x, y in zip(a, b))
+
+
+def rsa_oaep_encrypt(pub: RSAPublicKey, message: bytes, *, label: bytes = b"",
+                     hash_algo: str = "SHA-256") -> bytes:
+    """RSAES-OAEP encryption (RFC 8017 §7.1.1)."""
+    import secrets as _secrets
+    hasher = _HASHERS[hash_algo]
+    h_len = hasher().digest_size
+    k = pub.key_size
+    if len(message) > k - 2 * h_len - 2:
+        raise ValueError("message too long for RSA-OAEP with this key size")
+    l_hash = hasher(label).digest()
+    ps = b"\x00" * (k - len(message) - 2 * h_len - 2)
+    db = l_hash + ps + b"\x01" + message
+    seed = _secrets.token_bytes(h_len)
+    db_mask = _mgf1(seed, k - h_len - 1, hasher)
+    masked_db = _xor(db, db_mask)
+    seed_mask = _mgf1(masked_db, h_len, hasher)
+    masked_seed = _xor(seed, seed_mask)
+    em = b"\x00" + masked_seed + masked_db
+    c = pow(int.from_bytes(em, "big"), pub.e, pub.n)
+    return c.to_bytes(k, "big")
+
+
+def rsa_oaep_decrypt(priv: RSAPrivateKey, ciphertext: bytes, *, label: bytes = b"",
+                     hash_algo: str = "SHA-256") -> bytes:
+    """RSAES-OAEP decryption (RFC 8017 §7.1.2)."""
+    hasher = _HASHERS[hash_algo]
+    h_len = hasher().digest_size
+    k = priv.key_size
+    if len(ciphertext) != k or k < 2 * h_len + 2:
+        raise ValueError("decryption error")
+    c = int.from_bytes(ciphertext, "big")
+    if c >= priv.n:
+        raise ValueError("decryption error")
+    em = pow(c, priv.d, priv.n).to_bytes(k, "big")
+    y, masked_seed, masked_db = em[0], em[1:1 + h_len], em[1 + h_len:]
+    seed = _xor(masked_seed, _mgf1(masked_db, h_len, hasher))
+    db = _xor(masked_db, _mgf1(seed, k - h_len - 1, hasher))
+    l_hash = hasher(label).digest()
+    l_hash_prime, rest = db[:h_len], db[h_len:]
+    idx = rest.find(b"\x01")
+    valid = (y == 0) and (l_hash_prime == l_hash) and idx != -1 and all(b == 0 for b in rest[:idx])
+    if not valid:
+        raise ValueError("decryption error")
+    return rest[idx + 1:]
+
+
+__all__ = [
+    "RSAPrivateKey", "RSAPublicKey", "load_rsa_private_key", "load_rsa_public_key",
+    "parse_pem", "public_key_to_pem", "private_key_to_pem", "generate_rsa_key",
+    "rsa_oaep_encrypt", "rsa_oaep_decrypt",
+]

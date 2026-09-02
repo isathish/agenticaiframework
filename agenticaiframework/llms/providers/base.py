@@ -186,6 +186,43 @@ class BaseLLMProvider(ABC):
         return self.generate(prompt, model=model, temperature=temperature, 
                            max_tokens=max_tokens, **kwargs)
     
+    def generate_chat_with_tools(
+        self,
+        messages: List[LLMMessage],
+        tools: List[Dict[str, Any]],
+        *,
+        model: Optional[str] = None,
+        temperature: float = 0.7,
+        **kwargs,
+    ) -> LLMResponse:
+        """
+        Multi-turn tool calling: ``messages`` may contain ``assistant`` turns
+        with ``tool_calls`` and ``tool`` turns carrying ``tool_call_id``.
+
+        Default implementation flattens the transcript into a single prompt
+        and delegates to :meth:`generate_with_tools`. Providers with native
+        chat + tools APIs override this.
+        """
+        system = next((m.content for m in messages if m.role == "system"), None)
+        lines = []
+        for m in messages:
+            if m.role == "system":
+                continue
+            if m.role == "assistant" and m.tool_calls:
+                calls = ", ".join(
+                    f"{c.get('function', {}).get('name')}({c.get('function', {}).get('arguments')})"
+                    for c in m.tool_calls
+                )
+                lines.append(f"assistant: [called {calls}] {m.content}".rstrip())
+            elif m.role == "tool":
+                lines.append(f"tool({m.name or m.tool_call_id}): {m.content}")
+            else:
+                lines.append(f"{m.role}: {m.content}")
+        prompt = "\n".join(lines)
+        if system is not None:
+            kwargs.setdefault("system_prompt", system)
+        return self.generate_with_tools(prompt, tools, model=model, temperature=temperature, **kwargs)
+    
     def stream(
         self,
         prompt: str,

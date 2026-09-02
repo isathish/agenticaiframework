@@ -16,7 +16,7 @@ import os
 import time
 import hashlib
 import logging
-from typing import Dict, Any, Callable, Optional, List, TYPE_CHECKING
+from typing import Dict, Any, Callable, Iterator, Optional, List, Tuple, Union, TYPE_CHECKING
 from collections import defaultdict
 
 from .circuit_breaker import CircuitBreaker
@@ -24,6 +24,7 @@ from ..exceptions import CircuitBreakerOpenError
 
 if TYPE_CHECKING:
     from .providers import BaseLLMProvider
+    from .providers.base import LLMMessage, LLMResponse
 
 logger = logging.getLogger(__name__)
 
@@ -229,6 +230,87 @@ class LLMManager:
         if hasattr(self, '_providers'):
             return self._providers.get(name)
         return None
+    
+    def get_active_provider(self) -> Optional['BaseLLMProvider']:
+        """Provider adapter behind the active model, if it was registered via ``register_provider``."""
+        if self.active_model is None:
+            return None
+        return self.get_provider(self.active_model)
+    
+    def supports_native_tools(self) -> bool:
+        """True when the active model can do structured (function) tool calling."""
+        return self.get_active_provider() is not None
+    
+    def _provider_chain(self) -> List[Tuple[str, 'BaseLLMProvider']]:
+        names = [self.active_model] + self.fallback_chain if self.active_model else list(self.fallback_chain)
+        out = []
+        for name in dict.fromkeys(names):
+            provider = self.get_provider(name) if name else None
+            if provider is not None:
+                out.append((name, provider))
+        return out
+    
+    def _call_provider(self, method: str, *args, **kwargs) -> Optional['LLMResponse']:
+        """Invoke ``method`` on providers in the fallback chain, honouring circuit breakers."""
+        self.metrics['total_requests'] += 1
+        for name, provider in self._provider_chain():
+            fn = getattr(provider, method, None)
+            if fn is None:
+                continue
+            breaker = self.circuit_breakers[name]
+            stats = self.model_stats[name]
+            stats['requests'] += 1
+            start = time.time()
+            try:
+                response = breaker.call(fn, *args, **kwargs)
+            except CircuitBreakerOpenError:
+                stats['failures'] += 1
+                self._log(f"Circuit breaker OPEN for model '{name}'")
+                continue
+            except Exception as e:  # noqa: BLE001 - try next provider in chain
+                stats['failures'] += 1
+                self._log(f"Provider '{name}'.{method} failed: {e}")
+                continue
+            latency = time.time() - start
+            stats['successes'] += 1
+            stats['total_latency'] += latency
+            stats['avg_latency'] = stats['total_latency'] / stats['successes']
+            usage = getattr(response, 'usage', None) or {}
+            self.metrics['total_tokens'] += int(usage.get('total_tokens', 0) or 0)
+            self.metrics['successful_requests'] += 1
+            return response
+        self.metrics['failed_requests'] += 1
+        return None
+    
+    def generate_chat(self, messages: List['LLMMessage'], **kwargs) -> Optional['LLMResponse']:
+        """Chat-format generation through the active provider (with fallback)."""
+        return self._call_provider('generate_chat', messages, **kwargs)
+    
+    def generate_with_tools(
+        self,
+        messages: Union[str, List['LLMMessage']],
+        tools: List[Dict[str, Any]],
+        **kwargs,
+    ) -> Optional['LLMResponse']:
+        """
+        Structured tool calling. ``messages`` may be a plain prompt or a full
+        transcript (including prior ``assistant`` tool_calls and ``tool`` results).
+        Returns ``None`` if no provider adapter is registered.
+        """
+        if isinstance(messages, str):
+            from .providers.base import LLMMessage
+            messages = [LLMMessage(role='user', content=messages)]
+        return self._call_provider('generate_chat_with_tools', messages, tools, **kwargs)
+    
+    def stream(self, prompt: str, **kwargs) -> Iterator[str]:
+        """Token stream from the active provider; falls back to one-shot ``generate``."""
+        provider = self.get_active_provider()
+        if provider is not None:
+            yield from provider.stream(prompt, **kwargs)
+            return
+        result = self.generate(prompt, use_cache=False, **kwargs)
+        if result is not None:
+            yield result
 
     def generate(self, 
                 prompt: str, 

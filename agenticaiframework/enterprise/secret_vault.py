@@ -195,23 +195,29 @@ class Encryptor(ABC):
 
 
 class AESEncryptor(Encryptor):
-    """AES encryption (simplified mock)."""
+    """AES-256-GCM encryptor (stdlib-only implementation)."""
     
     def __init__(self, key: Optional[bytes] = None):
-        self._key = key or secrets.token_bytes(32)
+        key = key or secrets.token_bytes(32)
+        if len(key) not in (16, 24, 32):
+            key = hashlib.sha256(key).digest()
+        self._key = key
     
     def encrypt(self, plaintext: str) -> str:
-        """Mock encryption - base64 encode."""
-        # In production, use proper AES encryption
-        encoded = base64.b64encode(plaintext.encode()).decode()
-        return f"enc:{encoded}"
+        from agenticaiframework._internal import aes_gcm as _aes_gcm
+        nonce = secrets.token_bytes(12)
+        blob = _aes_gcm.encrypt(self._key, nonce, plaintext.encode())
+        return "enc:" + base64.b64encode(nonce + blob).decode()
     
     def decrypt(self, ciphertext: str) -> str:
-        """Mock decryption - base64 decode."""
-        if ciphertext.startswith("enc:"):
-            encoded = ciphertext[4:]
-            return base64.b64decode(encoded).decode()
-        return ciphertext
+        from agenticaiframework._internal import aes_gcm as _aes_gcm
+        if not ciphertext.startswith("enc:"):
+            return ciphertext
+        raw = base64.b64decode(ciphertext[4:])
+        try:
+            return _aes_gcm.decrypt(self._key, raw[:12], raw[12:]).decode()
+        except _aes_gcm.InvalidTag as exc:
+            raise ValueError("Secret decryption failed: authentication tag mismatch") from exc
 
 
 class NoEncryptor(Encryptor):

@@ -260,17 +260,34 @@ class HealthChecker(ABC):
 
 
 class DefaultHealthChecker(HealthChecker):
-    """Default health checker implementation."""
+    """Probes the environment endpoint (HTTP or TCP) when one is known;
+    falls back to the replica readiness count for endpoint-less environments."""
     
     async def check(
         self,
         environment: Environment,
         config: HealthCheckConfig,
     ) -> bool:
-        """Simulate health check."""
-        # In real implementation, perform actual health check
-        # For now, assume healthy if we have ready replicas
-        return environment.ready_replicas > 0
+        from urllib.parse import urlsplit
+
+        from agenticaiframework._internal.healthcheck import http_probe, tcp_probe
+
+        if not environment.endpoint or environment.metadata.get("mock"):
+            return environment.ready_replicas > 0
+        
+        endpoint = environment.endpoint
+        if "://" not in endpoint:
+            endpoint = f"http://{endpoint}"
+        parsed = urlsplit(endpoint)
+        host = parsed.hostname or ""
+        port = parsed.port or config.port
+        
+        if config.check_type == HealthCheckType.TCP:
+            probe = await tcp_probe(host, port, timeout=config.timeout_seconds)
+        else:
+            url = f"{parsed.scheme}://{host}:{port}{config.path if config.path.startswith('/') else '/' + config.path}"
+            probe = await http_probe(url, timeout=config.timeout_seconds)
+        return probe.ok and environment.ready_replicas > 0
 
 
 class InfrastructureProvider(ABC):
@@ -329,6 +346,7 @@ class MockInfrastructureProvider(InfrastructureProvider):
             ready_replicas=config.replicas,  # Simulate ready
             state=DeploymentState.DEPLOYED,
             endpoint=f"http://{config.color.value}.example.com",
+            metadata={"mock": True, **config.metadata},
         )
         self._environments[env.environment_id] = env
         return env

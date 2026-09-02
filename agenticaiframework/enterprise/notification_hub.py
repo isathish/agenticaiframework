@@ -215,6 +215,8 @@ class EmailChannel(NotificationChannel):
         password: Optional[str] = None,
         from_address: str = "noreply@example.com",
         from_name: str = "Notification Service",
+        use_tls: bool = True,
+        timeout: float = 30.0,
     ):
         self._smtp_host = smtp_host
         self._smtp_port = smtp_port
@@ -222,6 +224,8 @@ class EmailChannel(NotificationChannel):
         self._password = password
         self._from_address = from_address
         self._from_name = from_name
+        self._use_tls = use_tls
+        self._timeout = timeout
     
     @property
     def channel_type(self) -> ChannelType:
@@ -232,7 +236,7 @@ class EmailChannel(NotificationChannel):
         recipient: Recipient,
         payload: NotificationPayload,
     ) -> DeliveryResult:
-        """Send email notification."""
+        """Send email notification over SMTP."""
         if not recipient.email:
             return DeliveryResult(
                 notification_id=payload.id,
@@ -241,14 +245,52 @@ class EmailChannel(NotificationChannel):
                 error="No email address",
             )
         
-        # Mock sending - in production, use aiosmtplib
+        from email.mime.multipart import MIMEMultipart
+        from email.mime.text import MIMEText
+        from email.utils import formataddr, formatdate, make_msgid
+
+        from agenticaiframework._internal import smtp as _smtp
+
+        if payload.html_body:
+            msg = MIMEMultipart("alternative")
+            msg.attach(MIMEText(payload.body or "", "plain"))
+            msg.attach(MIMEText(payload.html_body, "html"))
+        else:
+            msg = MIMEText(payload.body or "", "plain")
+        msg["From"] = formataddr((self._from_name, self._from_address))
+        msg["To"] = recipient.email
+        msg["Subject"] = payload.subject or "(no subject)"
+        msg["Date"] = formatdate(localtime=True)
+        msg["Message-ID"] = make_msgid()
+        msg["X-Notification-Id"] = payload.id
+        
         logger.info(f"Sending email to {recipient.email}: {payload.subject}")
+        try:
+            await _smtp.send_message(
+                msg,
+                host=self._smtp_host,
+                port=self._smtp_port,
+                username=self._username or "",
+                password=self._password or "",
+                use_tls=self._use_tls,
+                timeout=self._timeout,
+                from_addr=self._from_address,
+                to_addrs=[recipient.email],
+            )
+        except Exception as e:  # noqa: BLE001 - surface provider failure in result
+            logger.warning(f"Email delivery to {recipient.email} failed: {e}")
+            return DeliveryResult(
+                notification_id=payload.id,
+                channel=ChannelType.EMAIL,
+                status=NotificationStatus.FAILED,
+                error=str(e),
+            )
         
         return DeliveryResult(
             notification_id=payload.id,
             channel=ChannelType.EMAIL,
             status=NotificationStatus.SENT,
-            provider_id=str(uuid.uuid4()),
+            provider_id=msg["Message-ID"],
             delivered_at=datetime.utcnow(),
         )
     
@@ -257,7 +299,11 @@ class EmailChannel(NotificationChannel):
 
 
 class SMSChannel(NotificationChannel):
-    """SMS notification channel."""
+    """SMS notification channel.
+
+    ``provider="twilio"`` sends through the Twilio REST API; ``api_key`` must be
+    ``"<ACCOUNT_SID>:<AUTH_TOKEN>"``. ``provider="mock"`` records the send only.
+    """
     
     def __init__(
         self,
@@ -268,6 +314,7 @@ class SMSChannel(NotificationChannel):
         self._provider = provider
         self._api_key = api_key
         self._from_number = from_number
+        self.sent: List[Dict[str, Any]] = []
     
     @property
     def channel_type(self) -> ChannelType:
@@ -287,9 +334,46 @@ class SMSChannel(NotificationChannel):
                 error="No phone number",
             )
         
-        # Mock sending
-        logger.info(f"Sending SMS to {recipient.phone}: {payload.body[:50]}")
+        body = payload.body or payload.subject
+        logger.info(f"Sending SMS to {recipient.phone}: {body[:50]}")
         
+        if self._provider == "twilio":
+            from agenticaiframework._internal.clients.twilio_rest import TwilioClient, TwilioError
+
+            if not self._api_key or ":" not in self._api_key:
+                return DeliveryResult(
+                    notification_id=payload.id, channel=ChannelType.SMS,
+                    status=NotificationStatus.FAILED,
+                    error="Twilio api_key must be 'ACCOUNT_SID:AUTH_TOKEN'",
+                )
+            sid, token = self._api_key.split(":", 1)
+            try:
+                result = await TwilioClient(sid, token).send_message_async(
+                    to=recipient.phone, from_=self._from_number, body=body,
+                )
+            except TwilioError as e:
+                return DeliveryResult(
+                    notification_id=payload.id, channel=ChannelType.SMS,
+                    status=NotificationStatus.FAILED, error=str(e),
+                    metadata={"code": e.code, "http_status": e.status},
+                )
+            return DeliveryResult(
+                notification_id=payload.id,
+                channel=ChannelType.SMS,
+                status=NotificationStatus.SENT,
+                provider_id=result.get("sid"),
+                delivered_at=datetime.utcnow(),
+                metadata={"twilio_status": result.get("status")},
+            )
+        
+        if self._provider != "mock":
+            return DeliveryResult(
+                notification_id=payload.id, channel=ChannelType.SMS,
+                status=NotificationStatus.FAILED,
+                error=f"Unsupported SMS provider: {self._provider}",
+            )
+        
+        self.sent.append({"to": recipient.phone, "body": body, "id": payload.id})
         return DeliveryResult(
             notification_id=payload.id,
             channel=ChannelType.SMS,
@@ -303,7 +387,12 @@ class SMSChannel(NotificationChannel):
 
 
 class PushChannel(NotificationChannel):
-    """Push notification channel."""
+    """Push notification channel.
+
+    ``provider="fcm"`` delivers through Firebase Cloud Messaging (``api_key`` =
+    service-account JSON string or path; project id read from it). Any other
+    provider records the send locally.
+    """
     
     def __init__(
         self,
@@ -312,6 +401,7 @@ class PushChannel(NotificationChannel):
     ):
         self._provider = provider
         self._api_key = api_key
+        self.sent: List[Dict[str, Any]] = []
     
     @property
     def channel_type(self) -> ChannelType:
@@ -331,9 +421,40 @@ class PushChannel(NotificationChannel):
                 error="No device tokens",
             )
         
-        # Mock sending
         logger.info(f"Sending push to {len(recipient.device_tokens)} devices")
         
+        if self._provider in ("fcm", "apns", "webpush"):
+            from agenticaiframework.enterprise import push_service as _ps
+
+            if self._provider == "fcm":
+                provider: _ps.PushProvider = _ps.FCMProvider(service_account=self._api_key or None)
+            elif self._provider == "apns":
+                cfg = json.loads(self._api_key) if self._api_key and self._api_key.strip().startswith("{") else {}
+                provider = _ps.APNSProvider(**cfg)
+            else:
+                cfg = json.loads(self._api_key) if self._api_key and self._api_key.strip().startswith("{") else {"vapid_private_key": self._api_key or ""}
+                provider = _ps.WebPushProvider(**cfg)
+            notification = _ps.Notification(
+                title=payload.subject, body=payload.body,
+                data={str(k): str(v) for k, v in payload.data.items()},
+            )
+            devices = [_ps.Device(user_id=recipient.id, token=t, platform=provider.platform) for t in recipient.device_tokens]
+            results = await provider.send_batch(devices, notification)
+            delivered = sum(1 for r in results if r.success)
+            failed = [r.error for r in results if not r.success]
+            ok = delivered > 0
+            return DeliveryResult(
+                notification_id=payload.id,
+                channel=ChannelType.PUSH,
+                status=NotificationStatus.SENT if ok else NotificationStatus.FAILED,
+                provider_id=str(uuid.uuid4()) if ok else None,
+                error=None if ok else "; ".join(str(f) for f in failed)[:500],
+                delivered_at=datetime.utcnow() if ok else None,
+                metadata={"devices": len(recipient.device_tokens), "delivered": delivered},
+            )
+        
+        self.sent.append({"tokens": list(recipient.device_tokens), "id": payload.id,
+                          "title": payload.subject, "body": payload.body})
         return DeliveryResult(
             notification_id=payload.id,
             channel=ChannelType.PUSH,
@@ -348,15 +469,17 @@ class PushChannel(NotificationChannel):
 
 
 class SlackChannel(NotificationChannel):
-    """Slack notification channel."""
+    """Slack notification channel (incoming webhook or ``chat.postMessage``)."""
     
     def __init__(
         self,
         bot_token: Optional[str] = None,
         webhook_url: Optional[str] = None,
+        default_channel: Optional[str] = None,
     ):
         self._bot_token = bot_token
         self._webhook_url = webhook_url
+        self._default_channel = default_channel
     
     @property
     def channel_type(self) -> ChannelType:
@@ -368,14 +491,44 @@ class SlackChannel(NotificationChannel):
         payload: NotificationPayload,
     ) -> DeliveryResult:
         """Send Slack notification."""
-        # Mock sending
+        from agenticaiframework._internal.http import AsyncClient
+
+        text = f"*{payload.subject}*\n{payload.body}" if payload.subject else payload.body
         logger.info(f"Sending Slack message: {payload.body[:50]}")
+        client = AsyncClient(timeout=15.0)
+        try:
+            webhook_url = recipient.webhook_url if recipient.webhook_url and "hooks.slack.com" in recipient.webhook_url else self._webhook_url
+            if self._bot_token:
+                channel = recipient.slack_user_id or self._default_channel
+                if not channel:
+                    raise ValueError("Slack channel/user id required when using bot token")
+                resp = await client.post(
+                    "https://slack.com/api/chat.postMessage",
+                    json={"channel": channel, "text": text},
+                    headers={"Authorization": f"Bearer {self._bot_token}"},
+                )
+                data = resp.json() if resp.content else {}
+                if not resp.ok or not data.get("ok"):
+                    raise RuntimeError(data.get("error") or f"HTTP {resp.status}")
+                provider_id = data.get("ts")
+            elif webhook_url:
+                resp = await client.post(webhook_url, json={"text": text})
+                if not resp.ok:
+                    raise RuntimeError(f"HTTP {resp.status}: {resp.text[:200]}")
+                provider_id = str(uuid.uuid4())
+            else:
+                raise ValueError("SlackChannel requires bot_token or webhook_url")
+        except Exception as e:  # noqa: BLE001
+            return DeliveryResult(
+                notification_id=payload.id, channel=ChannelType.SLACK,
+                status=NotificationStatus.FAILED, error=str(e),
+            )
         
         return DeliveryResult(
             notification_id=payload.id,
             channel=ChannelType.SLACK,
             status=NotificationStatus.SENT,
-            provider_id=str(uuid.uuid4()),
+            provider_id=provider_id,
             delivered_at=datetime.utcnow(),
         )
 

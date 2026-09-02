@@ -598,46 +598,102 @@ class GraphQLManager:
         variables: Optional[Dict[str, Any]] = None,
         operation_name: Optional[str] = None,
         context: Optional[Dict[str, Any]] = None,
+        root_value: Any = None,
     ) -> ExecutionResult:
         """Execute GraphQL query."""
+        from agenticaiframework._internal import graphql as _gql
+
         try:
-            # Parse query (simplified)
-            parsed = self._parse_query(query)
-            
-            # Execute
-            data = await self._execute_operation(
-                parsed,
+            document = self._parse_query(query)
+        except _gql.GraphQLSyntaxError as e:
+            return ExecutionResult(errors=[ValidationError(str(e))])
+        
+        try:
+            data, exec_errors = await self._execute_operation(
+                document,
                 variables or {},
                 operation_name,
                 context or {},
+                root_value,
             )
-            
-            return ExecutionResult(data=data)
-            
+        except _gql.GraphQLExecutionError as e:
+            return ExecutionResult(errors=[ExecutionError(str(e), path=list(e.path) or None)])
         except GraphQLError as e:
             return ExecutionResult(errors=[e])
         except Exception as e:
-            return ExecutionResult(
-                errors=[GraphQLError(str(e))]
-            )
+            return ExecutionResult(errors=[GraphQLError(str(e))])
+        
+        errors = [ExecutionError(str(e), path=list(e.path) or None) for e in exec_errors]
+        return ExecutionResult(data=data, errors=errors)
     
-    def _parse_query(self, query: str) -> Dict[str, Any]:
-        """Parse GraphQL query (simplified)."""
-        # This is a simplified parser for demo
-        # Real implementation would use proper GraphQL parser
-        return {"query": query, "type": "query"}
+    def _parse_query(self, query: str):
+        """Parse a GraphQL document into an AST."""
+        from agenticaiframework._internal import graphql as _gql
+
+        return _gql.parse(query)
     
     async def _execute_operation(
         self,
-        parsed: Dict[str, Any],
+        document: Any,
         variables: Dict[str, Any],
         operation_name: Optional[str],
         context: Dict[str, Any],
-    ) -> Dict[str, Any]:
-        """Execute parsed operation."""
-        # Simplified execution
-        # Real implementation would traverse AST
-        return {}
+        root_value: Any = None,
+    ) -> Tuple[Optional[Dict[str, Any]], List[Any]]:
+        """Walk the AST, dispatching to registered resolvers and middleware."""
+        from agenticaiframework._internal import graphql as _gql
+
+        schema = self._schema
+        
+        def field_type(parent_type: str, field_name: str) -> Optional[str]:
+            type_def = schema.get_type(parent_type)
+            if type_def and field_name in type_def.fields:
+                return type_def.fields[field_name].type
+            return None
+        
+        def type_of_value(value: Any, declared: Optional[str]) -> Optional[str]:
+            # Concrete type for interfaces/unions: prefer explicit __typename,
+            # then the Python class name if it is a registered type.
+            if isinstance(value, dict) and value.get("__typename"):
+                return value["__typename"]
+            explicit = getattr(value, "__typename__", None)
+            if explicit:
+                return explicit
+            cls_name = type(value).__name__
+            if schema.get_type(cls_name) is not None:
+                return cls_name
+            return declared
+        
+        async def _adapt(mw: Middleware, next_fn, parent, info, **kwargs):
+            resolver_info = ResolverInfo(
+                field_name=info.field_name,
+                parent_type=info.parent_type,
+                return_type=info.return_type or "",
+                path=[str(p) for p in info.path],
+                context=info.context,
+                variables=info.variables,
+                operation_name=info.operation_name,
+            )
+            
+            async def _next(parent_, _info, **kw):
+                return await next_fn(parent_, info, **kw)
+            
+            return await mw.resolve(_next, parent, resolver_info, **kwargs)
+        
+        middlewares = [functools.partial(_adapt, mw) for mw in self._middlewares]
+        executor = _gql.Executor(
+            resolver_lookup=schema.get_resolver,
+            field_type_lookup=field_type,
+            type_of_value=type_of_value,
+            middlewares=middlewares,
+        )
+        return await executor.execute(
+            document,
+            variables=variables,
+            operation_name=operation_name,
+            context=context,
+            root_value=root_value,
+        )
     
     def _python_type_to_graphql(self, python_type: Any) -> str:
         """Convert Python type to GraphQL type."""

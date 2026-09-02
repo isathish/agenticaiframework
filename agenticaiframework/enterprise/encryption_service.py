@@ -52,6 +52,10 @@ from typing import (
     Union,
 )
 
+from agenticaiframework._internal import aes as _aes
+from agenticaiframework._internal import aes_gcm as _aes_gcm
+from agenticaiframework._internal import pem as _pem
+
 T = TypeVar('T')
 
 
@@ -275,13 +279,13 @@ class EncryptionService:
             key_size: Key size in bits
             
         Returns:
-            Key pair (mock implementation)
+            Key pair (PEM-encoded public / private keys)
         """
-        # Mock RSA key generation
-        # In production, use cryptography library
+        # Prime generation is CPU-bound; keep the event loop responsive.
+        priv, p, q = await asyncio.to_thread(_pem.generate_rsa_key, key_size)
         return KeyPair(
-            public_key=secrets.token_bytes(256),
-            private_key=secrets.token_bytes(key_size // 8),
+            public_key=_pem.public_key_to_pem(priv.public_key()).encode(),
+            private_key=_pem.private_key_to_pem(priv, p=p, q=q).encode(),
             key_size=key_size,
         )
     
@@ -353,18 +357,17 @@ class EncryptionService:
         key_bytes, resolved_key_id = await self._resolve_key(key, key_id)
         
         algorithm = algorithm or self._default_algorithm
+        key_bytes = self._fit_key(key_bytes, algorithm)
         
-        # Generate IV
-        iv = secrets.token_bytes(16)
-        
-        # Mock encryption (XOR with key for demo)
-        # In production, use cryptography library
-        ciphertext = self._mock_encrypt(data, key_bytes, iv)
-        
-        # Generate auth tag for GCM
-        tag = b""
         if "gcm" in algorithm.value:
-            tag = hmac.new(key_bytes, ciphertext, hashlib.sha256).digest()[:16]
+            iv = secrets.token_bytes(12)
+            ct_and_tag = _aes_gcm.encrypt(key_bytes, iv, data)
+            ciphertext, tag = ct_and_tag[:-16], ct_and_tag[-16:]
+        else:
+            iv = secrets.token_bytes(16)
+            ciphertext = _aes.encrypt_cbc(key_bytes, iv, data)
+            # Encrypt-then-MAC so CBC ciphertexts are tamper-evident too.
+            tag = hmac.new(key_bytes, iv + ciphertext, hashlib.sha256).digest()[:16]
         
         return EncryptedData(
             ciphertext=ciphertext,
@@ -396,39 +399,36 @@ class EncryptionService:
             key,
             key_id or encrypted.key_id,
         )
+        try:
+            algorithm = Algorithm(encrypted.algorithm)
+        except ValueError:
+            raise DecryptionError(f"Unsupported algorithm: {encrypted.algorithm}")
+        key_bytes = self._fit_key(key_bytes, algorithm)
         
-        # Verify auth tag for GCM
-        if "gcm" in encrypted.algorithm and encrypted.tag:
-            expected_tag = hmac.new(
-                key_bytes, encrypted.ciphertext, hashlib.sha256
-            ).digest()[:16]
-            
-            if not hmac.compare_digest(encrypted.tag, expected_tag):
+        if "gcm" in algorithm.value:
+            try:
+                return _aes_gcm.decrypt(key_bytes, encrypted.iv, encrypted.ciphertext + encrypted.tag)
+            except _aes_gcm.InvalidTag:
                 raise DecryptionError("Authentication failed")
         
-        # Mock decryption
-        return self._mock_decrypt(encrypted.ciphertext, key_bytes, encrypted.iv)
+        if encrypted.tag:
+            expected_tag = hmac.new(
+                key_bytes, encrypted.iv + encrypted.ciphertext, hashlib.sha256
+            ).digest()[:16]
+            if not hmac.compare_digest(encrypted.tag, expected_tag):
+                raise DecryptionError("Authentication failed")
+        try:
+            return _aes.decrypt_cbc(key_bytes, encrypted.iv, encrypted.ciphertext)
+        except ValueError as exc:
+            raise DecryptionError(str(exc))
     
-    def _mock_encrypt(
-        self,
-        data: bytes,
-        key: bytes,
-        iv: bytes,
-    ) -> bytes:
-        """Mock encryption (XOR for demo)."""
-        # Simple XOR for demonstration
-        # In production, use proper AES implementation
-        extended_key = (key + iv) * (len(data) // len(key + iv) + 1)
-        return bytes(a ^ b for a, b in zip(data, extended_key))
-    
-    def _mock_decrypt(
-        self,
-        data: bytes,
-        key: bytes,
-        iv: bytes,
-    ) -> bytes:
-        """Mock decryption (XOR is symmetric)."""
-        return self._mock_encrypt(data, key, iv)
+    @staticmethod
+    def _fit_key(key: bytes, algorithm: Algorithm) -> bytes:
+        """Coerce arbitrary key material to the exact AES key length."""
+        size = 16 if "128" in algorithm.value else 32
+        if len(key) == size:
+            return key
+        return hashlib.sha256(key).digest()[:size]
     
     async def _resolve_key(
         self,
@@ -473,8 +473,19 @@ class EncryptionService:
         if isinstance(data, str):
             data = data.encode()
         
-        # Mock RSA encryption
-        return self._mock_encrypt(data, public_key[:32], public_key[32:48])
+        try:
+            pub = _pem.load_rsa_public_key(public_key)
+        except ValueError as exc:
+            raise EncryptionError(f"Invalid RSA public key: {exc}")
+        # Hybrid scheme for payloads larger than the OAEP limit: wrap a random
+        # AES-256-GCM key with RSA-OAEP and prefix it to the GCM ciphertext.
+        max_direct = pub.key_size - 2 * 32 - 2
+        if len(data) <= max_direct:
+            return b"\x00" + _pem.rsa_oaep_encrypt(pub, data)
+        cek = secrets.token_bytes(32)
+        nonce = secrets.token_bytes(12)
+        wrapped = _pem.rsa_oaep_encrypt(pub, cek)
+        return b"\x01" + wrapped + nonce + _aes_gcm.encrypt(cek, nonce, data)
     
     async def rsa_decrypt(
         self,
@@ -491,8 +502,24 @@ class EncryptionService:
         Returns:
             Decrypted data
         """
-        # Mock RSA decryption
-        return self._mock_decrypt(data, private_key[:32], private_key[32:48])
+        try:
+            priv = _pem.load_rsa_private_key(private_key)
+        except ValueError as exc:
+            raise DecryptionError(f"Invalid RSA private key: {exc}")
+        if not data:
+            raise DecryptionError("Empty ciphertext")
+        mode, body = data[0], data[1:]
+        try:
+            if mode == 0:
+                return _pem.rsa_oaep_decrypt(priv, body)
+            if mode == 1:
+                k = priv.key_size
+                cek = _pem.rsa_oaep_decrypt(priv, body[:k])
+                nonce = body[k:k + 12]
+                return _aes_gcm.decrypt(cek, nonce, body[k + 12:])
+        except (ValueError, _aes_gcm.InvalidTag) as exc:
+            raise DecryptionError(f"RSA decryption failed: {exc}")
+        raise DecryptionError("Unknown RSA envelope format")
     
     # Hashing
     async def hash(

@@ -242,12 +242,21 @@ class HTTPHealthChecker(HealthChecker):
         self.timeout = timeout
     
     async def check(self, target: DeploymentTarget) -> HealthCheckStatus:
-        try:
-            # Simulated HTTP health check
-            await asyncio.sleep(0.01)
-            return HealthCheckStatus.HEALTHY
-        except Exception:
-            return HealthCheckStatus.UNHEALTHY
+        from agenticaiframework._internal.healthcheck import http_probe, tcp_probe
+
+        if not target.host:
+            return HealthCheckStatus.UNKNOWN
+        scheme = target.metadata.get("scheme", "http")
+        if target.health_endpoint:
+            endpoint = target.health_endpoint
+            url = endpoint if endpoint.startswith(("http://", "https://")) else (
+                f"{scheme}://{target.host}:{target.port}{endpoint}" if target.port
+                else f"{scheme}://{target.host}{endpoint}"
+            )
+            probe = await http_probe(url, timeout=self.timeout)
+        else:
+            probe = await tcp_probe(target.host, target.port, timeout=self.timeout)
+        return HealthCheckStatus.HEALTHY if probe.ok else HealthCheckStatus.UNHEALTHY
 
 
 # Deployment strategies

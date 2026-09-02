@@ -215,18 +215,27 @@ class HTTPHealthChecker(HealthChecker):
         config: HealthCheckConfig,
     ) -> HealthCheckResult:
         """Check health via HTTP."""
-        # Mock implementation
-        start = time.perf_counter()
-        
-        # Simulate health check
-        await asyncio.sleep(0.01)
-        
-        latency = (time.perf_counter() - start) * 1000
+        from agenticaiframework._internal.healthcheck import http_probe
+
+        path = config.path if config.path.startswith("/") else f"/{config.path}"
+        probe = await http_probe(
+            f"{instance.uri}{path}",
+            timeout=config.timeout.total_seconds(),
+        )
+        if probe.ok:
+            status = HealthStatus.HEALTHY
+        elif probe.status_code is not None and 500 <= probe.status_code < 600:
+            status = HealthStatus.UNHEALTHY
+        elif probe.status_code is not None:
+            status = HealthStatus.DEGRADED
+        else:
+            status = HealthStatus.UNHEALTHY
         
         return HealthCheckResult(
-            status=HealthStatus.HEALTHY,
-            latency_ms=latency,
-            message="OK",
+            status=status,
+            latency_ms=probe.latency_ms,
+            message=probe.message,
+            details=probe.details,
         )
 
 

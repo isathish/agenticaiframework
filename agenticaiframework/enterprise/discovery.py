@@ -401,16 +401,17 @@ class HealthChecker:
             )
         
         try:
-            # Simulate HTTP health check
-            # In real implementation, use aiohttp or httpx
-            await asyncio.sleep(0.01)  # Simulate network call
-            
-            latency_ms = (time.time() - start) * 1000
+            from agenticaiframework._internal.healthcheck import http_probe
+
+            path = instance.health_check_path
+            url = path if path.startswith(("http://", "https://")) else f"{instance.endpoint}{path}"
+            probe = await http_probe(url, timeout=self._timeout)
             
             return HealthCheckResult(
-                healthy=True,
-                message="OK",
-                latency_ms=latency_ms,
+                healthy=probe.ok,
+                message=probe.message,
+                latency_ms=probe.latency_ms,
+                details=probe.details,
             )
         
         except asyncio.TimeoutError:

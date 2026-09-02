@@ -762,7 +762,6 @@ class Agent:
             ...     print(f"{step.step_type}: {step.name}")
         """
         from .types import AgentInput, AgentOutput
-        from .runner import AgentRunner
         
         agent_input = AgentInput(
             prompt=prompt,
@@ -776,18 +775,7 @@ class Agent:
             stop_on_tool_error=stop_on_tool_error,
         )
         
-        runner = AgentRunner(
-            agent=self,
-            llm_manager=self.config.get('llm') or self.config.get('llm_manager'),
-            knowledge=self.config.get('knowledge'),
-            guardrail_manager=self.config.get('guardrail_manager'),
-            guardrail_pipeline=self.config.get('guardrail_pipeline'),
-            policy_manager=self.config.get('policy_manager'),
-            monitor=self.config.get('monitor'),
-            tracer=self.config.get('tracer'),
-        )
-        
-        return runner.run(agent_input)
+        return self._make_runner().run(agent_input)
 
     def stream(
         self,
@@ -819,24 +807,71 @@ class Agent:
             >>> for step in agent.stream("Analyze data"):
             ...     print(f"{step.step_type}: {step.name}")
         """
-        # For now, run invoke and yield steps
-        # Future: implement true streaming with async generators
-        output = self.invoke(
-            prompt,
+        from .types import AgentInput
+        from .runner import AgentRunner
+        
+        agent_input = AgentInput(
+            prompt=prompt,
             system_prompt=system_prompt,
             context=context,
             tools=tools,
             **kwargs,
         )
-        
-        for step in output.steps:
+        runner = self._make_runner(on_thought=on_thought)
+        self._last_output = None
+        for step in runner.iter_run(agent_input):
             if on_step:
                 on_step(step)
             yield step
+        self._last_output = runner.output
+    
+    @property
+    def last_output(self) -> Optional['AgentOutput']:
+        """Structured result of the most recent ``stream()`` run."""
+        return getattr(self, '_last_output', None)
+    
+    async def ainvoke(self, prompt: str, **kwargs) -> 'AgentOutput':
+        """Async variant of :meth:`invoke` (runs the loop in a worker thread)."""
+        import asyncio
+        return await asyncio.to_thread(self.invoke, prompt, **kwargs)
+    
+    async def astream(self, prompt: str, **kwargs):
+        """Async generator variant of :meth:`stream`."""
+        import asyncio
+        import queue as _queue
         
-        for thought in output.thoughts:
-            if on_thought:
-                on_thought(thought)
+        q: "_queue.Queue" = _queue.Queue()
+        sentinel = object()
+        
+        def _producer():
+            try:
+                for step in self.stream(prompt, **kwargs):
+                    q.put(step)
+            finally:
+                q.put(sentinel)
+        
+        task = asyncio.get_running_loop().run_in_executor(None, _producer)
+        while True:
+            item = await asyncio.to_thread(q.get)
+            if item is sentinel:
+                break
+            yield item
+        await task
+    
+    def _make_runner(self, **overrides) -> 'AgentRunner':
+        from .runner import AgentRunner
+        return AgentRunner(
+            agent=self,
+            llm_manager=self.config.get('llm') or self.config.get('llm_manager'),
+            knowledge=self.config.get('knowledge'),
+            guardrail_manager=self.config.get('guardrail_manager'),
+            guardrail_pipeline=self.config.get('guardrail_pipeline'),
+            policy_manager=self.config.get('policy_manager'),
+            monitor=self.config.get('monitor'),
+            tracer=self.config.get('tracer'),
+            use_native_tools=self.config.get('use_native_tools'),
+            **overrides,
+        )
 
     def get_performance_metrics(self) -> Dict[str, Any]:
         """Get agent performance metrics."""

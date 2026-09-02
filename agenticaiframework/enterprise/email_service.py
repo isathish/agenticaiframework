@@ -42,6 +42,7 @@ import uuid
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime
+from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -240,6 +241,7 @@ class SMTPProvider(EmailProvider):
                 for att in email.attachments:
                     part = MIMEBase(*att.content_type.split("/", 1))
                     part.set_payload(att.content)
+                    encoders.encode_base64(part)
                     part.add_header(
                         "Content-Disposition",
                         f"{'inline' if att.inline else 'attachment'}; "
@@ -266,18 +268,32 @@ class SMTPProvider(EmailProvider):
             for key, value in email.headers.items():
                 msg[key] = value
             
-            # Send via SMTP (simplified - would use aiosmtplib in real impl)
-            logger.info(f"Sending email {email.id} via SMTP to {self._host}")
+            from agenticaiframework._internal import smtp as _smtp
+
+            recipients = [a.email for a in (*email.to, *email.cc, *email.bcc)]
+            if not recipients:
+                raise ValueError("Email has no recipients")
             
-            # In real implementation, would use aiosmtplib
-            # async with aiosmtplib.SMTP(...) as smtp:
-            #     await smtp.send_message(msg)
+            logger.info(f"Sending email {email.id} via SMTP {self._host}:{self._port}")
+            refused = await _smtp.send_message(
+                msg,
+                host=self._host,
+                port=self._port,
+                username=self._username,
+                password=self._password,
+                use_tls=self._use_tls,
+                timeout=self._timeout,
+                from_addr=email.from_addr.email if email.from_addr else None,
+                to_addrs=recipients,
+            )
+            if refused and len(refused) == len(recipients):
+                raise RuntimeError(f"All recipients refused: {refused}")
             
             return DeliveryResult(
                 email_id=email.id,
                 success=True,
                 status=EmailStatus.SENT,
-                provider_id=email.id,
+                provider_id=msg["Message-ID"],
             )
             
         except Exception as e:

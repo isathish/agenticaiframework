@@ -219,29 +219,66 @@ class TwilioProvider(SMSProvider):
         account_sid: str,
         auth_token: str,
         from_number: str,
+        messaging_service_sid: Optional[str] = None,
+        status_callback: Optional[str] = None,
     ):
+        from agenticaiframework._internal.clients.twilio_rest import TwilioClient
+
         self._account_sid = account_sid
         self._auth_token = auth_token
         self._from_number = PhoneNumber.parse(from_number)
+        self._messaging_service_sid = messaging_service_sid
+        self._status_callback = status_callback
+        self._client = TwilioClient(account_sid, auth_token)
+        self._sid_by_message: Dict[str, str] = {}
+    
+    _STATUS_MAP = {
+        "accepted": MessageStatus.QUEUED,
+        "scheduled": MessageStatus.QUEUED,
+        "queued": MessageStatus.QUEUED,
+        "sending": MessageStatus.SENT,
+        "sent": MessageStatus.SENT,
+        "delivered": MessageStatus.DELIVERED,
+        "read": MessageStatus.DELIVERED,
+        "undelivered": MessageStatus.UNDELIVERED,
+        "failed": MessageStatus.FAILED,
+        "canceled": MessageStatus.FAILED,
+    }
     
     async def send(self, message: SMSMessage) -> DeliveryResult:
-        """Send SMS via Twilio."""
+        """Send SMS via the Twilio Messages API."""
+        from agenticaiframework._internal.clients.twilio_rest import TwilioError
+
         try:
-            # In real implementation, would use twilio-python
-            # client = Client(self._account_sid, self._auth_token)
-            # result = client.messages.create(...)
-            
-            logger.info(
-                f"Sending SMS {message.id} to {message.to} via Twilio"
+            logger.info(f"Sending SMS {message.id} to {message.to} via Twilio")
+            from_number = str(message.from_number or self._from_number)
+            result = await self._client.send_message_async(
+                to=message.to.e164 if hasattr(message.to, "e164") else str(message.to),
+                from_=None if self._messaging_service_sid else from_number,
+                body=message.body,
+                media_urls=message.media_urls or None,
+                messaging_service_sid=self._messaging_service_sid,
+                status_callback=self._status_callback,
             )
-            
+            sid = result.get("sid", "")
+            self._sid_by_message[message.id] = sid
+            price = result.get("price")
             return DeliveryResult(
                 message_id=message.id,
                 success=True,
-                status=MessageStatus.QUEUED,
-                provider_id=f"SM{uuid.uuid4().hex[:32]}",
+                status=self._STATUS_MAP.get(result.get("status", "queued"), MessageStatus.QUEUED),
+                provider_id=sid,
+                price=abs(float(price)) if price not in (None, "") else 0.0,
+                currency=result.get("price_unit") or "USD",
             )
-            
+        except TwilioError as e:
+            return DeliveryResult(
+                message_id=message.id,
+                success=False,
+                status=MessageStatus.FAILED,
+                error=str(e),
+                error_code=str(e.code) if e.code is not None else None,
+            )
         except Exception as e:
             return DeliveryResult(
                 message_id=message.id,
@@ -251,9 +288,14 @@ class TwilioProvider(SMSProvider):
             )
     
     async def check_status(self, message_id: str) -> MessageStatus:
-        """Check message status via Twilio."""
-        # Would fetch from Twilio API
-        return MessageStatus.DELIVERED
+        """Fetch message status from Twilio (accepts our id or a Twilio SID)."""
+        sid = self._sid_by_message.get(message_id, message_id)
+        try:
+            result = await self._client.get_message_async(sid)
+        except Exception as e:  # noqa: BLE001
+            logger.warning(f"Twilio status lookup failed for {sid}: {e}")
+            return MessageStatus.PENDING
+        return self._STATUS_MAP.get(result.get("status", ""), MessageStatus.PENDING)
     
     def get_config(self) -> ProviderConfig:
         return ProviderConfig(

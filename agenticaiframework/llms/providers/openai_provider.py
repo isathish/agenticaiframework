@@ -187,6 +187,33 @@ class OpenAIProvider(BaseLLMProvider):
         )
         return self._build_response(self.provider_name, raw)
 
+    def generate_chat_with_tools(
+        self,
+        messages: List[LLMMessage],
+        tools: List[Dict[str, Any]],
+        *,
+        model: Optional[str] = None,
+        temperature: float = 0.7,
+        tool_choice: str = "auto",
+        max_tokens: Optional[int] = None,
+        **kwargs: Any,
+    ) -> LLMResponse:
+        self._ensure_initialized()
+        openai_tools = [
+            t if "type" in t else {"type": "function", "function": t}
+            for t in tools
+        ]
+        raw = self._client.chat_completions(
+            model=model or self.config.default_model,
+            messages=[m.to_dict() for m in messages],
+            temperature=temperature,
+            max_tokens=max_tokens,
+            tools=openai_tools or None,
+            tool_choice=tool_choice if openai_tools else None,
+            extra=self._common_kwargs(kwargs),
+        )
+        return self._build_response(self.provider_name, raw)
+
     def stream(
         self,
         prompt: str,

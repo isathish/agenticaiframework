@@ -205,6 +205,54 @@ class AnthropicProvider(BaseLLMProvider):
         )
         return self._parse_response(raw, self.provider_name)
 
+    def generate_chat_with_tools(
+        self,
+        messages: List[LLMMessage],
+        tools: List[Dict[str, Any]],
+        *,
+        model: Optional[str] = None,
+        temperature: float = 0.7,
+        max_tokens: Optional[int] = 4096,
+        **kwargs: Any,
+    ) -> LLMResponse:
+        self._ensure_initialized()
+        system: Optional[str] = None
+        anth_messages: List[Dict[str, Any]] = []
+        for m in messages:
+            if m.role == "system":
+                system = m.content
+            elif m.role == "assistant" and m.tool_calls:
+                blocks: List[Dict[str, Any]] = []
+                if m.content:
+                    blocks.append({"type": "text", "text": m.content})
+                for call in m.tool_calls:
+                    fn = call.get("function", {})
+                    try:
+                        args = _json.loads(fn.get("arguments") or "{}")
+                    except ValueError:
+                        args = {"input": fn.get("arguments")}
+                    blocks.append({"type": "tool_use", "id": call.get("id"), "name": fn.get("name"), "input": args})
+                anth_messages.append({"role": "assistant", "content": blocks})
+            elif m.role == "tool":
+                block = {"type": "tool_result", "tool_use_id": m.tool_call_id, "content": m.content}
+                # Anthropic requires consecutive tool_results in one user turn.
+                if anth_messages and anth_messages[-1]["role"] == "user" and isinstance(anth_messages[-1]["content"], list) \
+                        and anth_messages[-1]["content"] and anth_messages[-1]["content"][0].get("type") == "tool_result":
+                    anth_messages[-1]["content"].append(block)
+                else:
+                    anth_messages.append({"role": "user", "content": [block]})
+            else:
+                anth_messages.append({"role": m.role, "content": m.content})
+        raw = self._client.messages(
+            model=model or self.config.default_model,
+            messages=anth_messages,
+            max_tokens=max_tokens or 4096,
+            system=system,
+            temperature=temperature,
+            tools=self._to_anthropic_tools(tools) or None,
+        )
+        return self._parse_response(raw, self.provider_name)
+
     def stream(
         self,
         prompt: str,

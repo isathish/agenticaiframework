@@ -138,39 +138,58 @@ class WebhookManager:
             'results': results
         }
     
-    def send_webhook(self, event_type: str, payload: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """Send webhook to all registered endpoints for event type."""
+    def send_webhook(self, event_type: str, payload: Dict[str, Any],
+                     timeout: float = 10.0) -> List[Dict[str, Any]]:
+        """POST the event to every registered endpoint subscribed to ``event_type``."""
+        from agenticaiframework._internal.http import Client
+
         results = []
+        client = Client(timeout=timeout)
         
-        for webhook_id, webhook in self.outgoing_webhooks.items():
+        for webhook_id, webhook in list(self.outgoing_webhooks.items()):
             if event_type not in webhook['events'] and '*' not in webhook['events']:
                 continue
             
-            # Prepare payload
             body = {
                 'event': event_type,
                 'timestamp': time.time(),
                 'payload': payload
             }
+            raw = json.dumps(body, default=str).encode()
             
-            # Sign if secret
+            headers = {'Content-Type': 'application/json',
+                       'X-Webhook-Event': event_type,
+                       'X-Webhook-Id': webhook_id,
+                       **webhook['headers']}
             signature = None
             if webhook.get('secret'):
-                signature = hmac.new(
-                    webhook['secret'].encode(),
-                    json.dumps(body).encode(),
-                    hashlib.sha256
-                ).hexdigest()
+                signature = hmac.new(webhook['secret'].encode(), raw, hashlib.sha256).hexdigest()
+                headers['X-Webhook-Signature'] = f"sha256={signature}"
             
-            # Simulate sending
-            webhook['total_sent'] += 1
-            webhook['last_status'] = 200  # Simulated
+            status_code = None
+            error = None
+            try:
+                resp = client.post(webhook['url'], data=raw, headers=headers)
+                status_code = resp.status
+                if not resp.ok:
+                    error = f"HTTP {resp.status}: {resp.text[:200]}"
+            except Exception as e:  # noqa: BLE001 - report per-endpoint failures
+                error = str(e)
+                logger.warning("Webhook %s -> %s failed: %s", webhook['name'], webhook['url'], e)
+            
+            with self._lock:
+                webhook['total_sent'] += 1
+                webhook['last_status'] = status_code if status_code is not None else 'error'
+                webhook['last_error'] = error
+                webhook['last_sent_at'] = time.time()
             
             results.append({
                 'webhook_id': webhook_id,
                 'name': webhook['name'],
                 'url': webhook['url'],
-                'status': 200,
+                'status': status_code,
+                'success': error is None,
+                'error': error,
                 'signature': f"sha256={signature}" if signature else None
             })
         

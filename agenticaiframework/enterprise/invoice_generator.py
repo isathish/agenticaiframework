@@ -666,10 +666,15 @@ class InvoiceService:
         store: Optional[InvoiceStore] = None,
         pdf_generator: Optional[PDFGenerator] = None,
         template: Optional[InvoiceTemplate] = None,
+        email_provider: Optional[Any] = None,
+        from_email: Optional[str] = None,
     ):
         self.store = store or InMemoryInvoiceStore()
         self.pdf_generator = pdf_generator or SimplePDFGenerator()
         self.template = template or InvoiceTemplate()
+        # Any ``agenticaiframework.enterprise.email_service.EmailProvider``.
+        self.email_provider = email_provider
+        self.from_email = from_email
         self._stats = InvoiceStats()
     
     async def create(
@@ -792,15 +797,55 @@ class InvoiceService:
         invoice_id: str,
         email: str,
         message: str = "",
+        attach_pdf: bool = True,
     ) -> bool:
-        """Send invoice (stub - integrate with email service)."""
+        """Email the invoice to ``email`` via the configured email provider.
+
+        Without an ``email_provider`` the invoice is only marked as SENT.
+        """
         invoice = await self.get(invoice_id)
         if not invoice:
             return False
         
+        if self.email_provider is not None:
+            from agenticaiframework.enterprise.email_service import (
+                Attachment, Email, EmailAddress,
+            )
+
+            amount = f"{invoice.total / 100:,.2f} {invoice.currency}"
+            due = invoice.due_date.strftime("%Y-%m-%d") if invoice.due_date else "on receipt"
+            company = self.template.company_name or ""
+            body = message or (
+                f"Hello,\n\nPlease find attached invoice {invoice.number} for {amount}, "
+                f"due {due}.\n\nThank you,\n{company}".strip()
+            )
+            attachments = []
+            if attach_pdf:
+                pdf = await self.pdf_generator.generate(invoice, self.template)
+                attachments.append(Attachment(
+                    filename=f"{invoice.number}.pdf",
+                    content=pdf,
+                    content_type="application/pdf",
+                ))
+            mail = Email(
+                from_addr=EmailAddress(self.from_email, company) if self.from_email else None,
+                to=[EmailAddress(email, invoice.customer.name if invoice.customer else "")],
+                subject=f"Invoice {invoice.number} from {company}".strip(),
+                body_plain=body,
+                attachments=attachments,
+                tags=["invoice"],
+                metadata={"invoice_id": invoice.id, "invoice_number": invoice.number},
+            )
+            result = await self.email_provider.send(mail)
+            if not result.success:
+                logger.error(f"Failed to email invoice {invoice.number} to {email}: {result.error}")
+                return False
+        
         if invoice.status == InvoiceStatus.DRAFT:
             invoice.status = InvoiceStatus.SENT
-            await self.store.save(invoice)
+        invoice.metadata["sent_to"] = email
+        invoice.metadata["sent_at"] = datetime.utcnow().isoformat()
+        await self.store.save(invoice)
         
         logger.info(f"Invoice {invoice.number} sent to {email}")
         return True
