@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agenticaiframework"
-version = "3.0.9"
+version = "3.0.10"
 description = "AgenticAI - Enterprise-grade Python SDK with advanced orchestration, monitoring, and production-ready AI agent capabilities."
 readme = "README.md"
 license = {text = "MIT"}
