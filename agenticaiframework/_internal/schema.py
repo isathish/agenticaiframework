@@ -172,9 +172,9 @@ class _BaseModelMeta(type):
     def __new__(mcs, name: str, bases: Tuple[type, ...], ns: Dict[str, Any]):
         cls = super().__new__(mcs, name, bases, ns)
         # Convert into a dataclass once (skip the abstract base itself).
-        if name == "BaseModel" or any(b for b in bases if isinstance(b, _BaseModelMeta) and not is_dataclass(b)):
+        if name == "BaseModel" and ns.get("__module__") == __name__:
             return cls
-        if not is_dataclass(cls):
+        if not is_dataclass(cls) or "__annotations__" in ns:
             cls = dataclass(cls)  # type: ignore[assignment]
         return cls
 

@@ -557,9 +557,24 @@ class TestIntegrationsExtendedCoverage:
         
         github = GitHubIntegration(config)
         
-        # Connect (simulated)
+        # Stub the HTTP layer so the test never leaves the machine.
+        calls = []
+        
+        def fake_request(method, url, **kwargs):
+            calls.append((method, url, kwargs))
+            if url.endswith("/user"):
+                return {"login": "tester"}
+            if url.endswith("/issues"):
+                body = kwargs.get("json", {})
+                return {"number": 42, "title": body["title"], "body": body["body"],
+                        "html_url": "https://github.com/testorg/testrepo/issues/42"}
+            return {}
+        
+        github._request = fake_request
+        
         connected = github.connect()
         assert connected is True
+        assert calls[0][0] == "GET" and calls[0][1].endswith("/user")
         
         # Create issue
         issue = github.create_issue(
@@ -571,6 +586,7 @@ class TestIntegrationsExtendedCoverage:
         
         assert issue["title"] == "Test Issue"
         assert "html_url" in issue
+        assert calls[-1][0] == "POST" and calls[-1][1].endswith("/repos/testorg/testrepo/issues")
 
 
 # =============================================================================

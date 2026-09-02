@@ -52,6 +52,9 @@ class AgentRunner:
 
     THOUGHT_PATTERN = re.compile(r"Thought:\s*(.+?)(?=\n\s*(?:Action|Observation|Final Answer)\s*:|$)", re.DOTALL | re.IGNORECASE)
     ACTION_HEAD_PATTERN = re.compile(r"Action:\s*([A-Za-z_][\w.\-]*)\s*", re.IGNORECASE)
+    # Legacy single-line form ``Action: name[input]`` (kept for callers that used it directly;
+    # :meth:`parse_action` handles nested brackets and the other syntaxes).
+    ACTION_PATTERN = re.compile(r"Action:\s*([A-Za-z_][\w.\-]*)\s*\[(.*)\]", re.DOTALL | re.IGNORECASE)
     ACTION_INPUT_PATTERN = re.compile(r"Action\s*Input:\s*(.+?)(?=\n\s*(?:Observation|Thought|Final Answer)\s*:|$)", re.DOTALL | re.IGNORECASE)
     FINAL_ANSWER_PATTERN = re.compile(r"Final Answer:\s*(.+)", re.DOTALL | re.IGNORECASE)
     JSON_TOOL_PATTERN = re.compile(r"```(?:json)?\s*(\{.*?\})\s*```", re.DOTALL)

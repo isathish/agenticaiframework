@@ -206,7 +206,7 @@ class TestAgentRunnerPatterns:
         assert "I need to search" in match.group(1)
     
     def test_action_pattern(self):
-        """Test ACTION_PATTERN regex."""
+        """Test ACTION_PATTERN regex and the richer parse_action helper."""
         from agenticaiframework.core.runner import AgentRunner
         
         text = "Action: search[find information about Python]"
@@ -215,6 +215,13 @@ class TestAgentRunnerPatterns:
         assert match is not None
         assert match.group(1) == "search"
         assert "find information" in match.group(2)
+        
+        name, args = AgentRunner.parse_action(text)
+        assert name == "search"
+        assert args == {"input": "find information about Python"}
+        assert AgentRunner.parse_action('Action: calc[{"expr": "[1,2][0]"}]') == ("calc", {"expr": "[1,2][0]"})
+        assert AgentRunner.parse_action("Action: lookup\nAction Input: {\"id\": 7}") == ("lookup", {"id": 7})
+        assert AgentRunner.parse_action("Final Answer: done") is None
     
     def test_final_answer_pattern(self):
         """Test FINAL_ANSWER_PATTERN regex."""

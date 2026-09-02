@@ -197,10 +197,16 @@ class STDIOProtocol(CommunicationProtocol):
         while self._running and self._process and self._process.stdout:
             try:
                 line = self._process.stdout.readline()
-                if line:
-                    message = json.loads(line.strip())
-                    self._message_queue.put(message)
-                    self._notify_handlers(message)
+                if not line:
+                    # EOF: child closed stdout / exited. Spinning here would burn CPU.
+                    break
+                if isinstance(line, bytes):
+                    line = line.decode("utf-8", errors="replace")
+                if not line.strip():
+                    continue
+                message = json.loads(line.strip())
+                self._message_queue.put(message)
+                self._notify_handlers(message)
             except json.JSONDecodeError:
                 pass
             except Exception as e:

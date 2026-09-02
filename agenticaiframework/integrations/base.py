@@ -39,18 +39,23 @@ class BaseIntegration(ABC):
         headers = {}
         
         if self.config.auth_type == "api_key":
-            key_header = self.config.settings.get('api_key_header', 'Authorization')
-            key_prefix = self.config.settings.get('api_key_prefix', 'Bearer')
-            headers[key_header] = f"{key_prefix} {self.config.credentials.get('api_key', '')}"
+            api_key = self.config.credentials.get('api_key', '')
+            if api_key:
+                key_header = self.config.settings.get('api_key_header', 'Authorization')
+                key_prefix = self.config.settings.get('api_key_prefix', 'Bearer')
+                headers[key_header] = f"{key_prefix} {api_key}".strip()
         
         elif self.config.auth_type == "basic":
-            credentials = base64.b64encode(
-                f"{self.config.credentials.get('username', '')}:{self.config.credentials.get('password', '')}".encode()
-            ).decode()
-            headers['Authorization'] = f"Basic {credentials}"
+            username = self.config.credentials.get('username', '')
+            password = self.config.credentials.get('password', '')
+            if username or password:
+                credentials = base64.b64encode(f"{username}:{password}".encode()).decode()
+                headers['Authorization'] = f"Basic {credentials}"
         
         elif self.config.auth_type == "oauth":
-            headers['Authorization'] = f"Bearer {self.config.credentials.get('access_token', '')}"
+            token = self.config.credentials.get('access_token', '')
+            if token:
+                headers['Authorization'] = f"Bearer {token}"
         
         return headers
     
