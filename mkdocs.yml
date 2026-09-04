@@ -1,6 +1,6 @@
 site_name: AgenticAI Framework
-site_description: Enterprise-grade Python SDK for building intelligent agentic AI applications with advanced orchestration, monitoring, and multi-agent collaboration
-site_author: AgenticAI Framework Contributors
+site_description: Zero-dependency Python SDK for building AI agents - multi-agent orchestration, tool calling, MCP, RAG, memory, guardrails, evaluation and tracing for OpenAI, Anthropic, Gemini and local LLMs
+site_author: Sathishkumar Nagarajan
 site_url: https://isathish.github.io/agenticaiframework/
 repo_url: https://github.com/isathish/agenticaiframework
 repo_name: isathish/agenticaiframework
@@ -13,6 +13,7 @@ copyright: >
 # Theme Configuration
 theme:
   name: material
+  custom_dir: docs/overrides
   language: en
   icon:
     repo: fontawesome/brands/github
@@ -185,54 +186,54 @@ plugins:
 
 # Navigation Structure
 nav:
-- 🏠 Home:
-  - Welcome: index.md
-  - What's New: changelog.md
-- 🚀 Getting Started:
+- Home:
+  - Overview: index.md
+  - Changelog: changelog.md
+- Getting Started:
   - Quick Start Guide: quick-start.md
   - Installation & Setup: USAGE.md
-  - ✨ Feature Overview: features.md
-  - ⚖️ Framework Comparison: comparison.md
+  - Feature Overview: features.md
+  - Framework Comparison: comparison.md
   - Configuration Guide: CONFIGURATION.md
   - Architecture Overview: architecture.md
-  - 🎨 Architecture Diagrams: diagrams.md
-- 📦 Core Modules:
-  - 🤖 Agents: agents.md
-  - ✅ Tasks: tasks.md
-  - 🔄 Processes: processes.md
-  - 🧠 LLMs: llms.md
-  - 💾 Memory: memory.md
-  - 📊 State Management: state.md
-  - 📚 Knowledge: knowledge.md
-  - 💬 Communication: communication.md
-  - 🎤 Speech Processing: speech.md
-  - 🛠️ Tools: tools.md
-  - 🔧 MCP Tools: mcp_tools.md
-  - 📝 Prompts: prompts.md
-  - 🧠 Context Engineering: context.md
-- 🎭 Orchestration & Teams:
-  - 🎭 Multi-Agent Orchestration: orchestration.md
-  - 🌐 Hub: hub.md
-- 📈 Monitoring & Evaluation:
-  - 📊 Monitoring: monitoring.md
-  - 📈 12-Tier Evaluation: evaluation.md
-  - 📡 Tracing: tracing.md
-- 🔒 Security & Compliance:
-  - 🛡️ Guardrails: guardrails.md
-  - 🏛️ Compliance: compliance.md
-  - 🏗️ Infrastructure: infrastructure.md
-- 🏢 Enterprise:
-  - 🏢 Enterprise Features: enterprise.md
-- 📖 Examples & Tutorials:
-  - 📋 Overview: EXAMPLES.md
-  - 🎯 Basic Examples:
+  - Architecture Diagrams: diagrams.md
+- Core Modules:
+  - Agents: agents.md
+  - Tasks: tasks.md
+  - Processes: processes.md
+  - LLMs: llms.md
+  - Memory: memory.md
+  - State Management: state.md
+  - Knowledge: knowledge.md
+  - Communication: communication.md
+  - Speech Processing: speech.md
+  - Tools: tools.md
+  - MCP Tools: mcp_tools.md
+  - Prompts: prompts.md
+  - Context Engineering: context.md
+- Orchestration & Teams:
+  - Multi-Agent Orchestration: orchestration.md
+  - Hub: hub.md
+- Monitoring & Evaluation:
+  - Monitoring: monitoring.md
+  - 12-Tier Evaluation: evaluation.md
+  - Tracing: tracing.md
+- Security & Compliance:
+  - Guardrails: guardrails.md
+  - Compliance: compliance.md
+  - Infrastructure: infrastructure.md
+- Enterprise:
+  - Enterprise Features: enterprise.md
+- Examples & Tutorials:
+  - Overview: EXAMPLES.md
+  - Basic Examples:
     - Agents: examples/agents_example.md
     - Tasks: examples/tasks_example.md
     - Memory: examples/memory_example.md
     - LLMs: examples/llms_example.md
     - Guardrails: examples/guardrails_example.md
     - Prompts: examples/prompts_example.md
-  - 🔧 Manager Classes:
+  - Manager Classes:
     - Agent Manager: examples/agent_manager_example.md
     - Task Manager: examples/task_manager_example.md
     - Memory Manager: examples/memory_manager_example.md
@@ -242,7 +243,7 @@ nav:
     - MCP Tools Manager: examples/mcp_tools_manager_example.md
     - Monitoring System: examples/monitoring_system_example.md
     - Configuration Manager: examples/configuration_manager_example.md
-  - 🚀 Advanced Examples:
+  - Advanced Examples:
     - Communication: examples/communication_example.md
     - Knowledge Retrieval: examples/knowledge_retrieval.md
     - Code Generation Pipeline: examples/code_generation_pipeline.md
@@ -253,26 +254,26 @@ nav:
     - Process Advanced: examples/process_advanced_example.md
     - Evaluation: examples/evaluation_example.md
     - Hub: examples/hub_example.md
-  - 🎨 Complete Workflows:
+  - Complete Workflows:
     - Full Examples Index: examples/full_examples_index.md
     - MCP Tools: examples/mcp_tools_example.md
     - Monitoring: examples/monitoring_example.md
-- 🎓 Advanced Topics:
-  - 💡 Best Practices: best-practices.md
-  - ⚡ Performance Optimization: performance.md
-  - 🔒 Security & Privacy: security.md
-  - 🚢 Deployment Guide: deployment.md
-  - 🔌 Integration Patterns: integration.md
-- 📚 Reference:
-  - 📖 API Reference: API_REFERENCE.md
-  - ⚙️ Configuration Reference: configuration-reference.md
-  - 💻 CLI Reference: cli-reference.md
-  - 🔧 Extending Framework: EXTENDING.md
-- 🆘 Help & Support:
-  - 🐛 Troubleshooting: TROUBLESHOOTING.md
-  - ❓ FAQ: faq.md
-  - 🤝 Contributing: contributing.md
-- 🧪 Development:
+- Advanced Topics:
+  - Best Practices: best-practices.md
+  - Performance Optimization: performance.md
+  - Security & Privacy: security.md
+  - Deployment Guide: deployment.md
+  - Integration Patterns: integration.md
+- Reference:
+  - API Reference: API_REFERENCE.md
+  - Configuration Reference: configuration-reference.md
+  - CLI Reference: cli-reference.md
+  - Extending Framework: EXTENDING.md
+- Help & Support:
+  - Troubleshooting: TROUBLESHOOTING.md
+  - FAQ: faq.md
+  - Contributing: contributing.md
+- Development:
   - Testing Guide: TESTING.md
 
 # Extra CSS and JavaScript
@@ -280,7 +281,6 @@ extra_css:
 - stylesheets/extra.css
 
 extra_javascript:
-- https://polyfill.io/v3/polyfill.min.js?features=es6
 - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
 # Extra
@@ -295,12 +295,11 @@ extra:
   - icon: fontawesome/solid/book
     link: https://isathish.github.io/agenticaiframework/
     name: Documentation
-  - icon: fontawesome/brands/twitter
-    link: https://twitter.com/agenticai
-    name: Twitter
-  - icon: fontawesome/brands/discord
-    link: https://discord.gg/agenticai
-    name: Discord Community
+  keywords: >-
+    agentic ai, ai agents, python agent framework, multi-agent orchestration,
+    llm orchestration, tool calling, function calling, model context protocol, mcp,
+    rag, retrieval augmented generation, agent memory, guardrails, llm evaluation,
+    llm tracing, openai, anthropic, claude, gemini, ollama, zero dependency python sdk
   version:
     provider: mike
     default: latest
@@ -323,7 +322,7 @@ extra:
         name: This page was helpful
         data: 1
         note: >-
-          Thanks for your feedback! 🎉
+          Thanks for your feedback.
       - icon: material/emoticon-sad-outline
         name: This page could be improved
         data: 0

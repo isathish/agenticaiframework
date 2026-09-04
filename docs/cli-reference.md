@@ -20,7 +20,7 @@ tags:
 </div>
 
 !!! success "Enterprise CLI"
-    Part of **237 enterprise modules** with comprehensive CLI tools. See [Enterprise Documentation](enterprise.md).
+    Part of **237 enterprise modules**, which include the CLI tools. See [Enterprise Documentation](enterprise.md).
 
 ---
 

@@ -18,7 +18,7 @@ tags:
 
 **Connect to external systems and services**
 
-Comprehensive integration guide for APIs, databases, and message queues across **400+ modules**
+Integration guide for APIs, databases, and message queues across **400+ modules**
 
 </div>
 

@@ -224,7 +224,7 @@ logger.info(f"Detected topics: {result.detected_topics}")
 
 ### ContentSafetyGuardrail
 
-Comprehensive content safety checking:
+Content safety checking for toxicity, PII, and prompt injection:
 
 ```python
 import logging
@@ -334,7 +334,7 @@ logger.info(f"Tool allowed: {result.is_valid}")
 
 ## Guardrail Pipeline
 
-Chain multiple guardrails for comprehensive validation:
+Chain multiple guardrails to validate in sequence:
 
 ```python
 import logging

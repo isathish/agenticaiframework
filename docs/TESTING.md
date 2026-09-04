@@ -1,6 +1,6 @@
 ---
 title: Testing
-description: Comprehensive testing strategies, pytest configurations, and coverage best practices for AI agent applications
+description: Testing strategies, pytest configuration, and coverage practices for AI agent applications
 tags:
   - testing
   - quality
@@ -12,7 +12,7 @@ tags:
 
 <div class="annotate" markdown>
 
-**Comprehensive testing strategies and best practices**
+**Testing strategies and practices**
 
 Build reliable AI agent applications with **400+ modules** and **66% test coverage**
 
@@ -31,7 +31,7 @@ Build reliable AI agent applications with **400+ modules** and **66% test covera
 
 <div class="grid" markdown>
 
-:material-check-all:{ .lg } **Comprehensive Coverage**
+:material-check-all:{ .lg } **Test Coverage**
 : All core modules tested with unit and integration tests
 
 :material-speedometer:{ .lg } **Fast Execution**
@@ -291,7 +291,7 @@ class TestRateLimiter:
 
 class TestSecurityManager:
     def test_comprehensive_validation(self):
-        """Test comprehensive security validation"""
+        """Test security validation"""
         security = SecurityManager()
 
         # Test safe input
@@ -372,7 +372,7 @@ class TestPrompts:
     def test_prompt_render(self):
         """Test basic prompt rendering"""
         prompt = Prompt(
-            template="Hello {name}, welcome to {platform}!",
+            template="Hello {name}, you are using {platform}!",
             metadata={}
         )
 

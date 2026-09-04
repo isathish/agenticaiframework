@@ -4,6 +4,7 @@ Agent Communication Channel and Message Types.
 
 import uuid
 import json
+import threading
 from dataclasses import dataclass, field
 from typing import Any, Callable, Dict, List, Optional
 from enum import Enum
@@ -110,6 +111,12 @@ class AgentChannel:
     - Request/response patterns
     - Message handlers
     
+    Channels register themselves in a process-wide registry keyed by
+    ``agent_id``. ``send()`` delivers to the recipient channel's inbox when
+    the recipient is registered in the same process; otherwise the message is
+    left in the sender's own inbox. An optional ``router`` callable replaces
+    in-process delivery, e.g. to hand messages to an external broker.
+    
     Example:
         >>> channel = AgentChannel(agent_id="my-agent")
         >>> 
@@ -122,12 +129,54 @@ class AgentChannel:
         >>> response = channel.send("other-agent", "Hello", wait_response=True)
     """
     
-    def __init__(self, agent_id: str):
+    # Process-wide registries shared by all channels.
+    _registry: Dict[str, "AgentChannel"] = {}
+    _topics: Dict[str, List[str]] = {}  # topic -> [agent_ids]
+    _lock = threading.RLock()
+    
+    def __init__(
+        self,
+        agent_id: str,
+        router: Optional[Callable[[AgentMessage], None]] = None,
+    ):
         self.agent_id = agent_id
+        self._router = router
         self._inbox: Queue = Queue()
         self._handlers: Dict[MessageType, List[Callable]] = {}
         self._pending_responses: Dict[str, Queue] = {}
-        self._subscribers: Dict[str, List[str]] = {}  # topic -> [agent_ids]
+        self._closed = False
+        with AgentChannel._lock:
+            AgentChannel._registry[agent_id] = self
+    
+    @property
+    def _subscribers(self) -> Dict[str, List[str]]:
+        """Shared topic -> subscriber map (kept for backwards compatibility)."""
+        return AgentChannel._topics
+    
+    @classmethod
+    def get_channel(cls, agent_id: str) -> Optional["AgentChannel"]:
+        """Look up a registered channel by agent ID."""
+        with cls._lock:
+            return cls._registry.get(agent_id)
+    
+    def unregister(self) -> None:
+        """Remove this channel from the registry and all topic subscriptions."""
+        with AgentChannel._lock:
+            if AgentChannel._registry.get(self.agent_id) is self:
+                del AgentChannel._registry[self.agent_id]
+            for topic in list(AgentChannel._topics):
+                self._remove_subscription(topic)
+        self._closed = True
+    
+    def close(self) -> None:
+        """Alias for :meth:`unregister`."""
+        self.unregister()
+    
+    def __enter__(self) -> "AgentChannel":
+        return self
+    
+    def __exit__(self, *exc: Any) -> None:
+        self.close()
     
     def on_message(self, msg_type: MessageType) -> Callable:
         """Decorator to register message handler."""
@@ -180,7 +229,6 @@ class AgentChannel:
             # Create response queue
             self._pending_responses[message.id] = Queue()
         
-        # Route message (in a real system, this would go through a router)
         self._route_message(message)
         
         if wait_response:
@@ -208,7 +256,8 @@ class AgentChannel:
         context: Optional[Dict] = None,
     ) -> None:
         """Broadcast message to all subscribers of a topic."""
-        subscribers = self._subscribers.get(topic, [])
+        with AgentChannel._lock:
+            subscribers = list(AgentChannel._topics.get(topic, []))
         
         for subscriber in subscribers:
             message = AgentMessage(
@@ -223,17 +272,37 @@ class AgentChannel:
     
     def subscribe(self, topic: str) -> None:
         """Subscribe to a topic."""
-        if topic not in self._subscribers:
-            self._subscribers[topic] = []
-        if self.agent_id not in self._subscribers[topic]:
-            self._subscribers[topic].append(self.agent_id)
+        with AgentChannel._lock:
+            subscribers = AgentChannel._topics.setdefault(topic, [])
+            if self.agent_id not in subscribers:
+                subscribers.append(self.agent_id)
     
     def unsubscribe(self, topic: str) -> None:
         """Unsubscribe from a topic."""
-        if topic in self._subscribers:
-            self._subscribers[topic] = [
-                s for s in self._subscribers[topic] if s != self.agent_id
-            ]
+        with AgentChannel._lock:
+            self._remove_subscription(topic)
+    
+    def _remove_subscription(self, topic: str) -> None:
+        """Drop this agent from a topic; caller must hold the lock."""
+        subscribers = AgentChannel._topics.get(topic)
+        if subscribers is None:
+            return
+        if self.agent_id in subscribers:
+            subscribers.remove(self.agent_id)
+        if not subscribers:
+            del AgentChannel._topics[topic]
+    
+    def reply(
+        self,
+        message: AgentMessage,
+        content: Any,
+        msg_type: MessageType = MessageType.RESPONSE,
+    ) -> AgentMessage:
+        """Send a reply to ``message`` back to its sender."""
+        response = message.create_reply(content, msg_type=msg_type)
+        response.sender = self.agent_id
+        self._route_message(response)
+        return response
     
     def process_message(self, message: AgentMessage) -> Optional[Any]:
         """Process an incoming message through handlers."""
@@ -256,10 +325,29 @@ class AgentChannel:
         return results[0] if len(results) == 1 else results
     
     def _route_message(self, message: AgentMessage) -> None:
-        """Route message to appropriate destination."""
-        # In a simple implementation, just put in inbox
-        # In a real system, this would route through a message broker
-        self._inbox.put(message)
+        """
+        Deliver a message.
+        
+        Uses the injected ``router`` when present. Otherwise the message goes
+        to the registered recipient channel's inbox; if the recipient is this
+        agent or is not registered, it is placed in this channel's own inbox.
+        """
+        if self._router is not None:
+            self._router(message)
+            return
+        
+        target: Optional[AgentChannel] = None
+        if message.recipient and message.recipient != self.agent_id:
+            target = AgentChannel.get_channel(message.recipient)
+        
+        if target is None:
+            self._inbox.put(message)
+            return
+        
+        if message.reply_to and message.reply_to in target._pending_responses:
+            target._pending_responses[message.reply_to].put(message)
+        else:
+            target._inbox.put(message)
 
 
 __all__ = [

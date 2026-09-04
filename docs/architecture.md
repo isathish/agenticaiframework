@@ -1,6 +1,6 @@
 ---
 title: Architecture
-description: Comprehensive architectural overview of AgenticAI Framework's 5-layer design and 400+ modules
+description: Architectural overview of AgenticAI Framework's 5-layer design and 400+ modules
 tags:
   - architecture
   - design
@@ -12,7 +12,7 @@ tags:
 
 <div class="annotate" markdown>
 
-**Comprehensive architectural overview**
+**Architectural overview**
 
 Understand the design and structure of **400+ modules** and **237 enterprise features**
 
@@ -87,7 +87,7 @@ Understand the design and structure of **400+ modules** and **237 enterprise fea
 
 !!! success "237 Enterprise Modules"
 
-    The framework includes a comprehensive enterprise layer with modules organized into 14 categories:
+    The framework includes an enterprise layer with modules organized into 14 categories:
 
 | Category | Modules | Key Components |
 |----------|---------|----------------|

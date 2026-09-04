@@ -14,12 +14,12 @@ tags:
 
 **Join our community of contributors**
 
-Help us build the most comprehensive AI agent framework with **400+ modules**
+Help us build an AI agent framework with **400+ modules**
 
 </div>
 
 !!! success "Framework Statistics"
-    - **400+ Total Modules** - Comprehensive coverage
+    - **400+ Total Modules** - Agents, memory, tools, orchestration, evaluation and enterprise packages
     - **237 Enterprise Modules** - Production-ready
     - **1036+ Tests** - 66% coverage
     - **14 Enterprise Categories** - Full enterprise support

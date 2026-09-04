@@ -5,11 +5,11 @@ description: Full-featured speech-to-text and text-to-speech capabilities for vo
 
 # Speech Processing
 
-AgenticAI Framework provides comprehensive speech processing capabilities including speech-to-text (STT), text-to-speech (TTS), and voice interaction management.
+AgenticAI Framework provides speech-to-text (STT), text-to-speech (TTS), and voice interaction management.
 
 !!! success "Part of 400+ Modules"
 
-    Speech processing is one component of the comprehensive framework with 237 enterprise modules.
+    Speech processing is one component of the framework's 237 enterprise modules.
 
 ---
 
@@ -312,7 +312,7 @@ english_voices = tts.list_voices(language="en")
 ssml = """
 <speak>
   <prosody rate="slow" pitch="+2st">
-    Welcome to the AgenticAI Framework.
+    This is the AgenticAI Framework.
   </prosody>
   <break time="500ms"/>
   <emphasis level="strong">This is important!</emphasis>

@@ -19,7 +19,7 @@ Resolve problems quickly with **400+ modules** and **237 enterprise features**
 </div>
 
 !!! success "Enterprise Support"
-    Part of **237 enterprise modules** with comprehensive debugging tools. See [Enterprise Documentation](enterprise.md).
+    Part of **237 enterprise modules**, which include debugging tools. See [Enterprise Documentation](enterprise.md).
 
 ---
 

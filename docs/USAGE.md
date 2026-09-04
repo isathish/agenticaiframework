@@ -1,6 +1,6 @@
 ---
 title: Usage Guide
-description: Comprehensive usage guide for AgenticAI Framework v2.0
+description: Usage guide for AgenticAI Framework v2.0
 tags:
   - usage
   - guide

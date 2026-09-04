@@ -27,7 +27,7 @@ tags:
 
 ## Overview
 
-This comprehensive guide covers deploying AgenticAI Framework applications across various environments, from local development to production-scale cloud deployments.
+This guide covers deploying AgenticAI Framework applications across environments, from local development to production cloud deployments.
 
 ## Deployment Options
 

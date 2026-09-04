@@ -195,13 +195,14 @@ class WebSocketClient(ABC):
 
 
 class MockWebSocketClient(WebSocketClient):
-    """Mock WebSocket client for testing."""
+    """In-memory WebSocket client for tests and local use (no network transport)."""
     
     def __init__(self, client_id: Optional[str] = None):
         self._id = client_id or str(uuid.uuid4())
         self._state = ConnectionState.OPEN
         self._info = ClientInfo(id=self._id, state=self._state)
         self._message_queue: asyncio.Queue = asyncio.Queue()
+        self._control_queue: asyncio.Queue = asyncio.Queue()
         self._sent_messages: List[WebSocketMessage] = []
     
     @property
@@ -249,11 +250,23 @@ class MockWebSocketClient(WebSocketClient):
         self._info.state = ConnectionState.CLOSED
     
     async def ping(self) -> float:
-        """Send ping."""
-        return 1.0  # Mock 1ms latency
+        """Round-trip a ping frame through the in-memory control queue; returns elapsed ms."""
+        if self._state == ConnectionState.CLOSED:
+            raise ConnectionError(f"Client {self._id} is closed")
+        loop = asyncio.get_running_loop()
+        ping_id = uuid.uuid4().hex
+        start = time.perf_counter()
+        # Echo the pong on the next loop iteration so the wait is a real round trip.
+        loop.call_soon(self._control_queue.put_nowait, {"type": "pong", "id": ping_id})
+        while True:
+            pong = await self._control_queue.get()
+            if pong.get("id") == ping_id:
+                break
+        self._info.last_activity = datetime.now()
+        return (time.perf_counter() - start) * 1000.0
     
     def _receive_message(self, message: WebSocketMessage) -> None:
-        """Simulate receiving a message."""
+        """Deliver an inbound message to this client's receive queue."""
         self._message_queue.put_nowait(message)
         self._info.messages_received += 1
         self._info.last_activity = datetime.now()

@@ -1,6 +1,6 @@
 ---
 title: Enterprise Features
-description: Comprehensive guide to AgenticAI Framework's 237 enterprise-grade modules
+description: Guide to AgenticAI Framework's 237 enterprise-grade modules
 tags:
   - enterprise
   - production
@@ -22,7 +22,7 @@ Build mission-critical AI applications with enterprise capabilities
 
 ## Enterprise Module Overview
 
-!!! success "Comprehensive Enterprise Layer"
+!!! success "Enterprise Layer"
 
     AgenticAI Framework includes 237 enterprise-grade modules organized into 14 categories, providing everything needed for production AI deployments.
 
@@ -45,7 +45,7 @@ Build mission-critical AI applications with enterprise capabilities
 
 ## API Management (15 Modules)
 
-Comprehensive API management capabilities for building and managing AI-powered APIs.
+API management modules for building and operating AI-powered APIs.
 
 | Module | Description |
 |--------|-------------|
@@ -86,7 +86,7 @@ versioning = APIVersioning(
 
 ## Security & Compliance (18 Modules)
 
-Enterprise-grade security with comprehensive compliance features.
+Security and compliance modules.
 
 | Module | Description |
 |--------|-------------|
@@ -104,7 +104,7 @@ Enterprise-grade security with comprehensive compliance features.
 | `policy_engine` | Policy definition and enforcement |
 | `pii_detector` | PII detection and classification |
 | `data_masker` | Data masking and anonymization |
-| `audit_logger` | Comprehensive audit logging |
+| `audit_logger` | Audit logging |
 | `compliance_checker` | Regulatory compliance validation |
 | `threat_detector` | Threat detection and prevention |
 | `security_scanner` | Security vulnerability scanning |
@@ -297,7 +297,7 @@ Production infrastructure components for reliable deployments.
 
 ## DevOps & Deployment (15 Modules)
 
-Comprehensive deployment and operations tooling.
+Deployment and operations tooling.
 
 | Module | Description |
 |--------|-------------|

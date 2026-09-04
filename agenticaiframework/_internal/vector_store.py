@@ -13,6 +13,7 @@ from __future__ import annotations
 import json
 import os
 import sqlite3
+from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 
@@ -26,28 +27,28 @@ class VectorEntry:
     metadata: Dict[str, Any] = field(default_factory=dict)
 
 
-class _BaseStore:
+class _BaseStore(ABC):
     metric: str = "cosine"
 
-    def upsert(self, entry: VectorEntry) -> None:
-        raise NotImplementedError
+    @abstractmethod
+    def upsert(self, entry: VectorEntry) -> None: ...
 
-    def delete(self, id_: str) -> bool:
-        raise NotImplementedError
+    @abstractmethod
+    def delete(self, id_: str) -> bool: ...
 
-    def get(self, id_: str) -> Optional[VectorEntry]:
-        raise NotImplementedError
+    @abstractmethod
+    def get(self, id_: str) -> Optional[VectorEntry]: ...
 
+    @abstractmethod
     def search(
         self,
         query: Sequence[float],
         top_k: int = 10,
         filter_fn: Optional[Callable[[Dict[str, Any]], bool]] = None,
-    ) -> List[Tuple[VectorEntry, float]]:
-        raise NotImplementedError
+    ) -> List[Tuple[VectorEntry, float]]: ...
 
-    def count(self) -> int:
-        raise NotImplementedError
+    @abstractmethod
+    def count(self) -> int: ...
 
     # -- common ranking ----------------------------------------------
 

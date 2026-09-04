@@ -6,7 +6,7 @@ description: Production-ready state management with 7 specialized managers for a
 # State Management
 
 <div class="hero-section">
-<h2 class="hero-title">Comprehensive State Management</h2>
+<h2 class="hero-title">State Management</h2>
 <p class="hero-subtitle">Production-ready state management with persistence, recovery, and real-time tracking for agents, workflows, and orchestration</p>
 </div>
 

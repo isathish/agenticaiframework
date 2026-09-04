@@ -1,6 +1,6 @@
 ---
 title: Memory Management
-description: Comprehensive guide to AgenticAI Framework's 7 specialized memory managers
+description: Guide to AgenticAI Framework's 7 specialized memory managers
 ---
 
 # Memory Management
@@ -219,7 +219,7 @@ agent_memory.store_context(
     task_type="research",
     context={
         "topic": "AI safety",
-        "depth": "comprehensive",
+        "depth": "detailed",
         "sources_used": ["arxiv", "google_scholar"]
     }
 )
@@ -462,7 +462,7 @@ logger.info(f"Agreement: {consensus.agreement_level}")
 
 ## KnowledgeMemoryManager
 
-The **KnowledgeMemoryManager** provides a powerful knowledge base with document storage, chunking, and RAG capabilities.
+The **KnowledgeMemoryManager** provides a knowledge base with document storage, chunking, and RAG capabilities.
 
 ### Basic Usage
 
@@ -734,7 +734,7 @@ speech_memory.store_transcript(
     session_id="meeting_001",
     speaker="speaker_1",
     speaker_label="Alice",
-    text="Let's discuss the project timeline.",
+    text="We should discuss the project timeline.",
     timestamp="2024-01-15T14:00:00Z"
 )
 

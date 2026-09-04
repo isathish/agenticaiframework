@@ -89,8 +89,17 @@ class ValueObject(ABC):
     
     def copy_with(self, **changes: Any) -> "ValueObject":
         """Create a copy with changes."""
-        # Must be implemented by subclasses
-        raise NotImplementedError
+        for name in changes:
+            if not hasattr(self, name):
+                raise ValidationError(f"{type(self).__name__} has no attribute {name!r}")
+        clone = copy.copy(self)
+        for name, value in changes.items():
+            # Bypass any __setattr__ guard so immutable subclasses can still be copied.
+            object.__setattr__(clone, name, value)
+        post_init = getattr(clone, "__post_init__", None)
+        if callable(post_init):
+            post_init()
+        return clone
 
 
 @dataclass(frozen=True)

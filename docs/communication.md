@@ -84,7 +84,7 @@ AgenticAI Framework supports **6 communication protocols** for connecting agents
 
 ## HTTP Protocol
 
-The HTTP client provides robust REST API communication with connection pooling, retry logic, and authentication support.
+The HTTP client provides REST API communication with connection pooling, retry logic, and authentication support.
 
 ### Basic Usage
 

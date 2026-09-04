@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+  {% set page_title = page.meta.title if page and page.meta and page.meta.title else (page.title if page else config.site_name) %}
+  {% set page_desc = page.meta.description if page and page.meta and page.meta.description else config.site_description %}
+  {% set page_url = page.canonical_url if page and page.canonical_url else config.site_url %}
+  <meta name="keywords" content="{{ page.meta.keywords if page and page.meta and page.meta.keywords else config.extra.keywords }}">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{ config.site_name }}">
+  <meta property="og:title" content="{{ page_title }} - {{ config.site_name }}">
+  <meta property="og:description" content="{{ page_desc }}">
+  <meta property="og:url" content="{{ page_url }}">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="{{ page_title }} - {{ config.site_name }}">
+  <meta name="twitter:description" content="{{ page_desc }}">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    "name": "{{ config.site_name }}",
+    "description": {{ config.site_description | tojson }},
+    "url": "{{ config.site_url }}",
+    "codeRepository": "{{ config.repo_url }}",
+    "programmingLanguage": "Python",
+    "runtimePlatform": "Python 3.10+",
+    "license": "https://opensource.org/licenses/MIT",
+    "author": {"@type": "Person", "name": "{{ config.site_author }}"},
+    "keywords": {{ config.extra.keywords | tojson }}
+  }
+  </script>
+{% endblock %}

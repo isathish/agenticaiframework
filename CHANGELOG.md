@@ -128,7 +128,7 @@ is missing.
 
 ### Added
 
-- **Enterprise Layer with 237 Modules** - Comprehensive enterprise-grade capabilities
+- **Enterprise Layer with 237 Modules** - API management, security, compliance, ML/AI infrastructure and DevOps tooling
   - API Management (15 modules): Gateway, Versioning, Lifecycle, Analytics
   - Security & Compliance (18 modules): Encryption, Auth, RBAC, PII Detection
   - Data Processing (16 modules): Pipeline, ETL, Lineage, Quality
@@ -146,7 +146,7 @@ is missing.
 
 ### Changed
 
-- Updated README with comprehensive enterprise module documentation
+- Updated README with documentation for every enterprise module category
 - Updated architecture diagram to include enterprise layer
 - Updated framework comparison table with accurate metrics
 - Expanded from 50+ modules to 400+ total modules
@@ -157,7 +157,7 @@ is missing.
 
 ### Added
 
-- Add comprehensive tests for high-impact modules and state management ([ca775a7](https://github.com/isathish/agenticaiframework/commit/ca775a71c039baf4efb9e0c3ebb61db5dc4a1fda) by isathish).
+- Add tests for high-impact modules and state management ([ca775a7](https://github.com/isathish/agenticaiframework/commit/ca775a71c039baf4efb9e0c3ebb61db5dc4a1fda) by isathish).
 
 ## [v1.2.15](https://github.com/isathish/agenticaiframework/releases/tag/v1.2.15) - 2026-01-19
 
@@ -165,7 +165,7 @@ is missing.
 
 ### Added
 
-- Add comprehensive unit tests for speech processor and tools modules to achieve 90% coverage ([1989c1d](https://github.com/isathish/agenticaiframework/commit/1989c1de7f9c9f9bc3763ebf55d56f467048fe00) by isathish).
+- Add unit tests for speech processor and tools modules to achieve 90% coverage ([1989c1d](https://github.com/isathish/agenticaiframework/commit/1989c1de7f9c9f9bc3763ebf55d56f467048fe00) by isathish).
 - Add Tool and Workflow State Management Modules ([9f49115](https://github.com/isathish/agenticaiframework/commit/9f49115ea38f41174fd1cc15de01e6eeaaaeb5b9) by sathish).
 - Add Speech Module with STT and TTS Providers ([c417a76](https://github.com/isathish/agenticaiframework/commit/c417a7693c3d620701749871990339729dd278c6) by sathish).
 - Add Knowledge Retriever and Vector Database Tools ([b10a89a](https://github.com/isathish/agenticaiframework/commit/b10a89a30c4d2eda5e21adf067eb488560c9df0c) by sathish).
@@ -200,7 +200,7 @@ is missing.
 
 ### Added
 
-- Add comprehensive unit tests for prompts and tools framework ([a1b0ca2](https://github.com/isathish/agenticaiframework/commit/a1b0ca213b54de4c25ec61821569460544fdfed4) by isathish).
+- Add unit tests for prompts and tools framework ([a1b0ca2](https://github.com/isathish/agenticaiframework/commit/a1b0ca213b54de4c25ec61821569460544fdfed4) by isathish).
 
 ## [v1.2.7](https://github.com/isathish/agenticaiframework/releases/tag/v1.2.7) - 2026-01-09
 
@@ -242,7 +242,7 @@ is missing.
 
 - Add communication module and configuration reference documentation ([909f652](https://github.com/isathish/agenticaiframework/commit/909f65240af2560c89b4922406291fca6613d477) by isathish).
 - Add integration and performance optimization documentation ([7c4d4b1](https://github.com/isathish/agenticaiframework/commit/7c4d4b15199b97b4c9012ad9e2684a9e00bf251a) by isathish).
-- Add comprehensive tests for all evaluation types in the Agentic AI framework ([da4e97e](https://github.com/isathish/agenticaiframework/commit/da4e97eaf6eed3b4a8262a6cc054f716b4bf27bf) by isathish).
+- Add tests for all evaluation types in the Agentic AI framework ([da4e97e](https://github.com/isathish/agenticaiframework/commit/da4e97eaf6eed3b4a8262a6cc054f716b4bf27bf) by isathish).
 
 ### Fixed
 
@@ -254,7 +254,7 @@ is missing.
 
 ### Added
 
-- Add comprehensive evaluation tests for AgenticAI Framework ([b899825](https://github.com/isathish/agenticaiframework/commit/b8998251aa6d78ae01ead97b36c0c2ffd71a2519) by isathish).
+- Add evaluation tests for AgenticAI Framework ([b899825](https://github.com/isathish/agenticaiframework/commit/b8998251aa6d78ae01ead97b36c0c2ffd71a2519) by isathish).
 
 ## [v1.0.41](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.41) - 2025-12-28
 
@@ -302,11 +302,11 @@ is missing.
 
 ### Added
 
-- Add comprehensive test suites for reliability, memory management, prompts, and security features ([eb6bdc9](https://github.com/isathish/agenticaiframework/commit/eb6bdc91a79136915efa96481f3eaae710111dfa) by isathish).
+- Add test suites for reliability, memory management, prompts, and security features ([eb6bdc9](https://github.com/isathish/agenticaiframework/commit/eb6bdc91a79136915efa96481f3eaae710111dfa) by isathish).
 
 ### Removed
 
-- Remove obsolete test suites for LLM reliability, memory management, prompt and guardrail features, and security functionalities to streamline the testing framework. ([3c445d6](https://github.com/isathish/agenticaiframework/commit/3c445d61d61e2797c9bf348ccd632f4cc330b8fa) by isathish).
+- Remove obsolete test suites for LLM reliability, memory management, prompt and guardrail features, and security functionalities. ([3c445d6](https://github.com/isathish/agenticaiframework/commit/3c445d61d61e2797c9bf348ccd632f4cc330b8fa) by isathish).
 
 ## [v1.0.31](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.31) - 2025-10-11
 
@@ -370,7 +370,7 @@ is missing.
 
 ### Added
 
-- Add comprehensive runnable examples and update docs structure ([ad0fdd8](https://github.com/isathish/agenticaiframework/commit/ad0fdd8eed7326a94803f6c7d81f9093a17f694d) by isathish).
+- Add runnable examples and update docs structure ([ad0fdd8](https://github.com/isathish/agenticaiframework/commit/ad0fdd8eed7326a94803f6c7d81f9093a17f694d) by isathish).
 
 ## [v1.0.21](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.21) - 2025-08-27
 
@@ -378,7 +378,7 @@ is missing.
 
 ### Added
 
-- Add comprehensive module documentation and update mkdocs config ([f7dd834](https://github.com/isathish/agenticaiframework/commit/f7dd834cda984e24eb930839958172cb8b8a6149) by isathish).
+- Add per-module documentation and update mkdocs config ([f7dd834](https://github.com/isathish/agenticaiframework/commit/f7dd834cda984e24eb930839958172cb8b8a6149) by isathish).
 
 ## [v1.0.20](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.20) - 2025-08-27
 
@@ -475,7 +475,7 @@ is missing.
 ### Added
 
 - Add .gitignore for .DS_Store and fix workflow environment config ([ae890f7](https://github.com/isathish/agenticaiframework/commit/ae890f72d15a21c547a65bb472446e86be86bbb6) by isathish).
-- Add comprehensive documentation for API, usage, and extension ([9430bdf](https://github.com/isathish/agenticaiframework/commit/9430bdf8a113fe3d8538c02c0c86be90475ffbdf) by isathish).
+- Add documentation for API, usage, and extension ([9430bdf](https://github.com/isathish/agenticaiframework/commit/9430bdf8a113fe3d8538c02c0c86be90475ffbdf) by isathish).
 
 ## [v1.0.3](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.3) - 2025-08-24
 
@@ -483,7 +483,7 @@ is missing.
 
 ### Added
 
-- Add comprehensive tests for MCP tools, memory, and monitoring ([0d6d6d8](https://github.com/isathish/agenticaiframework/commit/0d6d6d8bc37d9af69252b5d415af6afa24040559) by isathish).
+- Add tests for MCP tools, memory, and monitoring ([0d6d6d8](https://github.com/isathish/agenticaiframework/commit/0d6d6d8bc37d9af69252b5d415af6afa24040559) by isathish).
 
 ## [v1.0.2](https://github.com/isathish/agenticaiframework/releases/tag/v1.0.2) - 2025-08-24
 

@@ -19,7 +19,7 @@ Find solutions and learn best practices for **400+ modules** and **237 enterpris
 </div>
 
 !!! success "Enterprise Framework"
-    Part of the most comprehensive AI agent framework. See [Enterprise Documentation](enterprise.md) for advanced features.
+    Part of an AI agent framework with 400+ modules. See [Enterprise Documentation](enterprise.md) for advanced features.
 
 ---
 
@@ -57,7 +57,7 @@ Find solutions and learn best practices for **400+ modules** and **237 enterpris
 
 ### What is AgenticAI Framework?
 
-AgenticAI Framework is an enterprise-grade Python SDK with **400+ modules** for building intelligent agentic applications. It provides a comprehensive toolkit including **237 enterprise modules** for creating, managing, and orchestrating AI agents with advanced features like memory management, multi-agent collaboration, guardrails, and 12-tier evaluation systems.
+AgenticAI Framework is an enterprise-grade Python SDK with **400+ modules** for building intelligent agentic applications. It includes **237 enterprise modules** for creating, managing, and orchestrating AI agents with advanced features like memory management, multi-agent collaboration, guardrails, and 12-tier evaluation systems.
 
 ### Who should use AgenticAI Framework?
 
@@ -562,7 +562,7 @@ Currently open-source. Enterprise support coming soon:
 
 - Single responsibility per agent
 - Clear role definition
-- Comprehensive error handling
+- Typed exceptions and error handling
 - Appropriate timeout values
 - Don't create too many agents
 - Avoid circular dependencies

@@ -35,8 +35,11 @@ from __future__ import annotations
 
 import asyncio
 import functools
+import hashlib
 import logging
 import math
+import os
+import re
 import uuid
 from abc import ABC, abstractmethod
 from collections import defaultdict
@@ -58,6 +61,7 @@ from typing import (
 )
 
 from .._internal import array as _aaf_array
+from .._internal import http as _http
 
 
 T = TypeVar('T')
@@ -655,31 +659,129 @@ class VectorDatabase:
 
 
 # Embedding utilities
+_TOKEN_RE = re.compile(r"\w+|[^\w\s]", re.UNICODE)
+
+
 class EmbeddingService:
     """
     Embedding generation service.
+
+    Resolution order for each call:
+
+    1. ``provider`` - any object exposing ``async embed(text)`` (and optionally
+       ``async embed_batch(texts)``), e.g. an :class:`Embedder` from
+       ``enterprise.embeddings``.
+    2. OpenAI-compatible ``/v1/embeddings`` API when ``api_key`` (or the
+       ``OPENAI_API_KEY`` environment variable) is set.
+    3. Local feature-hashing embedding: tokens are hashed into ``dimensions``
+       signed buckets and the vector is L2-normalized. Deterministic, offline,
+       and dimension-agnostic; suitable for lexical similarity, not semantics.
     """
     
     def __init__(
         self,
         model: str = "text-embedding-ada-002",
         dimensions: int = 1536,
+        provider: Optional[Any] = None,
+        api_key: Optional[str] = None,
+        base_url: Optional[str] = None,
+        timeout: float = 60.0,
+        api_key_env: str = "OPENAI_API_KEY",
     ):
         self._model = model
         self._dimensions = dimensions
-    
+        self._provider = provider
+        self._api_key = api_key or os.environ.get(api_key_env) or None
+        self._base_url = (base_url or os.environ.get("OPENAI_BASE_URL") or "https://api.openai.com").rstrip("/")
+        self._timeout = timeout
+        self._http: Optional[_http.AsyncClient] = None
+
+    @property
+    def model(self) -> str:
+        return self._model
+
+    @property
+    def dimensions(self) -> int:
+        return self._dimensions
+
+    @property
+    def backend(self) -> str:
+        """Which backend ``embed`` will use: ``provider``, ``api`` or ``local``."""
+        if self._provider is not None:
+            return "provider"
+        if self._api_key:
+            return "api"
+        return "local"
+
+    # -- API backend --------------------------------------------------------
+
+    def _client(self) -> _http.AsyncClient:
+        if self._http is None:
+            self._http = _http.AsyncClient(
+                base_url=self._base_url,
+                headers={"authorization": f"Bearer {self._api_key}"},
+                timeout=self._timeout,
+            )
+        return self._http
+
+    async def _embed_api(self, texts: List[str]) -> List[NDArray]:
+        payload: Dict[str, Any] = {"model": self._model, "input": texts, "encoding_format": "float"}
+        # Only the text-embedding-3 family accepts a dimensions override.
+        if "embedding-3" in self._model:
+            payload["dimensions"] = self._dimensions
+        resp = await self._client().post("/v1/embeddings", json=payload)
+        if not resp.ok:
+            raise VectorError(f"Embedding API error HTTP {resp.status}: {resp.text[:200]}")
+        body = resp.json()
+        data = body.get("data") if isinstance(body, dict) else None
+        if not isinstance(data, list) or len(data) != len(texts):
+            raise VectorError("Embedding API returned malformed response")
+        ordered = sorted(data, key=lambda item: item.get("index", 0))
+        vectors = [[float(x) for x in item["embedding"]] for item in ordered]
+        for vec in vectors:
+            if len(vec) != self._dimensions:
+                raise DimensionMismatchError(
+                    f"Model {self._model} returned {len(vec)} dimensions, expected {self._dimensions}"
+                )
+        return vectors
+
+    # -- Local backend -------------------------------------------------------
+
+    def _embed_local(self, text: str) -> NDArray:
+        dims = self._dimensions
+        vec = [0.0] * dims
+        for token in _TOKEN_RE.findall(text.lower()):
+            digest = hashlib.blake2b(token.encode("utf-8"), digest_size=8).digest()
+            value = int.from_bytes(digest, "big")
+            bucket = (value >> 1) % dims
+            vec[bucket] += 1.0 if value & 1 else -1.0
+        norm = math.sqrt(sum(x * x for x in vec))
+        if norm:
+            vec = [x / norm for x in vec]
+        return vec
+
+    # -- Public API ---------------------------------------------------------
+
     async def embed(self, text: str) -> NDArray:
-        """
-        Generate embedding for text.
-        Mock implementation.
-        """
-        # Generate random vector for demo
-        np.random.seed(hash(text) % (2**32))
-        return np.random.randn(self._dimensions).astype(np.float32)
+        """Generate embedding for text."""
+        if self._provider is not None:
+            return [float(x) for x in await self._provider.embed(text)]
+        if self._api_key:
+            return (await self._embed_api([text]))[0]
+        return self._embed_local(text)
     
     async def embed_batch(self, texts: List[str]) -> List[NDArray]:
         """Generate embeddings for batch of texts."""
-        return [await self.embed(text) for text in texts]
+        if not texts:
+            return []
+        if self._provider is not None:
+            batch = getattr(self._provider, "embed_batch", None)
+            if callable(batch):
+                return [[float(x) for x in v] for v in await batch(list(texts))]
+            return [await self.embed(text) for text in texts]
+        if self._api_key:
+            return await self._embed_api(list(texts))
+        return [self._embed_local(text) for text in texts]
 
 
 # Decorators
@@ -753,9 +855,18 @@ def create_collection_config(
 def create_embedding_service(
     model: str = "text-embedding-ada-002",
     dimensions: int = 1536,
+    provider: Optional[Any] = None,
+    api_key: Optional[str] = None,
+    base_url: Optional[str] = None,
 ) -> EmbeddingService:
     """Create embedding service."""
-    return EmbeddingService(model=model, dimensions=dimensions)
+    return EmbeddingService(
+        model=model,
+        dimensions=dimensions,
+        provider=provider,
+        api_key=api_key,
+        base_url=base_url,
+    )
 
 
 __all__ = [

@@ -1,6 +1,6 @@
 ---
 title: Tasks
-description: Comprehensive task orchestration and workflow management for AI agents
+description: Task orchestration and workflow management for AI agents
 tags:
   - tasks
   - core-modules
@@ -12,7 +12,7 @@ tags:
 
 <div class="annotate" markdown>
 
-**Comprehensive task orchestration and workflow management**
+**Task orchestration and workflow management**
 
 Define, schedule, and execute work units with precision across **400+ modules**
 
@@ -81,7 +81,7 @@ Define, schedule, and execute work units with precision across **400+ modules**
 : Implement retries, fallbacks, and error recovery strategies
 
 :material-workflow:{ .lg } **Workflow Orchestration**
-: Coordinate complex multi-step processes seamlessly
+: Coordinate multi-step processes
 
 </div>
 
@@ -89,7 +89,7 @@ Define, schedule, and execute work units with precision across **400+ modules**
 
 ### :material-checkbox-outline: Task Class
 
-The `Task` class represents a single unit of work with comprehensive metadata and execution capabilities.
+The `Task` class represents a single unit of work with metadata, dependencies, and execution state.
 
 !!! info "Constructor"
 
@@ -1093,7 +1093,7 @@ class MetricsTask(Task):
             raise e
 
     def get_performance_stats(self):
-        """Get comprehensive performance statistics"""
+        """Get performance statistics"""
         if self.metrics["execution_count"] == 0:
             return {"status": "no_executions"}
 
@@ -1349,7 +1349,7 @@ class RobustTask(Task):
         self.error_handlers[error_type] = handler
 
     def execute_with_error_handling(self):
-        """Execute task with comprehensive error handling"""
+        """Execute task with error handling"""
         try:
             return self.execute()
 
@@ -1492,7 +1492,7 @@ class DebugTask(Task):
         self.debug_info = []
 
     def debug_execute(self):
-        """Execute task with comprehensive debugging"""
+        """Execute task with debugging"""
         if not self.debug_mode:
             return self.execute()
 
@@ -1533,7 +1533,7 @@ class DebugTask(Task):
             raise e
 
     def get_debug_report(self):
-        """Get comprehensive debug report"""
+        """Get debug report"""
         return {
             "task_name": self.name,
             "debug_info": self.debug_info,
@@ -1542,4 +1542,4 @@ class DebugTask(Task):
         }
 ```
 
-This comprehensive Tasks module documentation provides everything needed to effectively use tasks within the AgenticAI Framework, from basic concepts to advanced patterns and troubleshooting techniques.
+This page covers the Tasks module from basic concepts to advanced patterns and troubleshooting.

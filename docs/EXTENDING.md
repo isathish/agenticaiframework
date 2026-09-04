@@ -185,7 +185,7 @@ class WebSocketCommunication:
 
 ## Testing Extensions
 
-Write comprehensive tests for new features:
+Write unit tests for new features:
 
 ```python
 import pytest

@@ -17,7 +17,7 @@ This example demonstrates a complete code generation and evaluation pipeline usi
 
 ## Overview
 
-This pipeline combines LLMs, guardrails, monitoring, and evaluation to create a robust code generation system.
+This pipeline combines LLMs, guardrails, monitoring, and evaluation into a code generation system.
 
 ## Code
 

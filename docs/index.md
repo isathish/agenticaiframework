@@ -14,7 +14,7 @@ hide:
 </style>
 
 <div class="hero-section">
-  <h1> AgenticAI Framework</h1>
+  <h1>AgenticAI Framework</h1>
   <p class="hero-subtitle">The Enterprise-Grade Python Framework for Building Production AI Agent Systems</p>
 
   <div class="hero-badges">
@@ -109,7 +109,7 @@ hide:
 
     ---
 
-    Comprehensive testing framework for model quality, security, cost, and business metrics.
+    Testing framework for model quality, security, cost, and business metrics.
 
     [:octicons-arrow-right-24: Evaluation System](evaluation.md)
 
@@ -351,7 +351,7 @@ for a in manager.list_agents():
 
 ## 12-Tier Evaluation System
 
-Comprehensive evaluation framework for production AI systems:
+Evaluation framework for production AI systems:
 
 | Tier | Category | Evaluates |
 |------|----------|-----------|

@@ -1,6 +1,6 @@
 ---
 title: Prompts
-description: Comprehensive prompt management with security, versioning, and template rendering for LLMs
+description: Prompt management with security, versioning, and template rendering for LLMs
 tags:
   - prompts
   - templates
@@ -13,7 +13,7 @@ tags:
 
 <div class="annotate" markdown>
 
-**Comprehensive prompt management with security and versioning**
+**Prompt management with security and versioning**
 
 Create, manage, and render safe prompts for LLMs across **400+ modules**
 
@@ -62,7 +62,7 @@ Create, manage, and render safe prompts for LLMs across **400+ modules**
 
 !!! abstract "What is the Prompts Module?"
 
-    The Prompts module provides comprehensive prompt management with security features, version control, and safe rendering for Large Language Models (LLMs).
+    The Prompts module provides prompt management with security checks, version control, and safe rendering for Large Language Models (LLMs).
 
 <div class="grid" markdown>
 

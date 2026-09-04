@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 from agenticaiframework.mcp_tools import MCPToolManager, MCPTool
 
 def greet_tool(name: str) -> str:
-    return f"Hello, {name}! Welcome to MCP Tools."
+    return f"Hello, {name}! This is MCP Tools."
 
 if __name__ == "__main__":
     mcp_manager = MCPToolManager()
@@ -87,7 +87,7 @@ No user input is required; the script uses hardcoded values for demonstration pu
 [YYYY-MM-DD HH:MM:SS] [MCPToolManager] Registered MCP tool 'greet' with ID <UUID>
 Available Tools: ['greet']
 [YYYY-MM-DD HH:MM:SS] [MCPToolManager] Executing MCP tool 'greet'
-Tool Execution Result: Hello, Alice! Welcome to MCP Tools.
+Tool Execution Result: Hello, Alice! This is MCP Tools.
 ```
 
 ## How to Run

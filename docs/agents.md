@@ -37,7 +37,7 @@ Agents are the core building blocks of AgenticAI Framework. They are autonomous 
 
     ---
 
-    Equip agents with powerful tools
+    Equip agents with built-in and custom tools
 
     [:octicons-arrow-right-24: Add Tools](#agent-tools)
 

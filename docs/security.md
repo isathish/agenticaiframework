@@ -10,7 +10,7 @@ tags:
 
 # Security
 
-AgenticAI Framework provides **comprehensive security features** for AI agents, including prompt injection detection, input validation, rate limiting, content filtering, and audit logging.
+AgenticAI Framework provides security features for AI agents: prompt injection detection, input validation, rate limiting, content filtering, and audit logging.
 
 !!! success "Enterprise Security"
     Part of **400+ modules** with **18 security & compliance modules** providing enterprise-grade protection. See [Enterprise Documentation](enterprise.md).
@@ -65,7 +65,7 @@ The Security module protects your AI applications from:
 - **Invalid Inputs**: Validates and sanitizes user inputs
 - **Abuse**: Rate limits requests to prevent system overload
 - **Harmful Content**: Filters inappropriate or dangerous content
-- **Security Events**: Comprehensive audit logging for compliance
+- **Security Events**: Audit logging for compliance
 
 ## Core Components
 
@@ -434,7 +434,7 @@ if stats['false_positive_rate'] > 0.1:
 
 ### 4. Log Everything Important
 
-Ensure comprehensive audit logging:
+Log all security events to the audit log:
 
 ```python
 # Log all security events

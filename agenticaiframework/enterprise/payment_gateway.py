@@ -329,7 +329,7 @@ class MockPaymentProvider(PaymentProvider):
         """Charge (mock)."""
         import random
         
-        # Simulate failure
+        # Injected failure for tests
         if self.should_fail or random.random() < self.failure_rate:
             return ChargeResult(
                 success=False,

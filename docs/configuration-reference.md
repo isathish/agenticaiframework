@@ -19,7 +19,7 @@ tags:
 </div>
 
 !!! success "Enterprise Configuration"
-    Part of **237 enterprise modules** with comprehensive configuration options. See [Enterprise Documentation](enterprise.md).
+    Part of **237 enterprise modules**, each with its own configuration options. See [Enterprise Documentation](enterprise.md).
 
 ---
 

@@ -329,7 +329,7 @@ class InfrastructureProvider(ABC):
 
 
 class MockInfrastructureProvider(InfrastructureProvider):
-    """Mock infrastructure provider for testing."""
+    """In-memory infrastructure provider test double."""
     
     def __init__(self):
         self._environments: Dict[str, Environment] = {}
@@ -343,7 +343,7 @@ class MockInfrastructureProvider(InfrastructureProvider):
             color=config.color,
             version=config.version,
             replicas=config.replicas,
-            ready_replicas=config.replicas,  # Simulate ready
+            ready_replicas=config.replicas,  # In-memory test double: replicas are ready immediately
             state=DeploymentState.DEPLOYED,
             endpoint=f"http://{config.color.value}.example.com",
             metadata={"mock": True, **config.metadata},

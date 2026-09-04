@@ -69,7 +69,7 @@ From microseconds to enterprise scale with **400+ optimized modules**
 
 ## Overview
 
-This guide provides comprehensive strategies for optimizing the performance of your AgenticAI Framework applications. Learn how to maximize throughput, minimize latency, and efficiently scale your agent-based systems.
+This guide covers strategies for optimizing the performance of AgenticAI Framework applications: increasing throughput, reducing latency, and scaling agent-based systems.
 
 ## Performance Metrics
 
@@ -268,7 +268,7 @@ class CachedLLMManager(LLMManager):
 ```python
 # Inefficient - verbose prompt
 inefficient_prompt = """
-Please analyze the following data and provide a comprehensive report 
+Please analyze the following data and provide a detailed report 
 including all details, explanations, and recommendations. Be thorough
 and include examples for every point you make.
 
@@ -301,7 +301,7 @@ def select_optimal_model(task_complexity: str) -> str:
     model_strategy = {
         "simple": "gpt-3.5-turbo", # Fast, cheap
         "moderate": "gpt-4-turbo", # Balanced
-        "complex": "gpt-4", # Powerful
+        "complex": "gpt-4", # Highest quality
         "reasoning": "o1-preview" # Specialized
     }
 

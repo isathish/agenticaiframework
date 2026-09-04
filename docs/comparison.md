@@ -19,7 +19,7 @@ Make an informed decision with **400+ modules** vs competitors
 </div>
 
 !!! success "Enterprise-Grade Framework"
-    AgenticAI Framework offers **237 enterprise modules** in **14 categories** - the most comprehensive AI agent solution. See [Enterprise Documentation](enterprise.md).
+    AgenticAI Framework offers **237 enterprise modules** in **14 categories**. See [Enterprise Documentation](enterprise.md).
 
 ---
 
@@ -37,7 +37,7 @@ Make an informed decision with **400+ modules** vs competitors
      Built-in guardrails and safety 
      Production-ready monitoring 
      MCP Tools integration 
-     Comprehensive memory systems 
+     7 memory managers 
 
     [:octicons-arrow-right-24: Get Started](quick-start.md)
 
@@ -158,7 +158,7 @@ graph TB
 
 !!! success "Perfect Fit"
 
-    - **400+ modules** with comprehensive coverage
+    - **400+ modules** covering agents, memory, tools, orchestration and evaluation
     - **237 enterprise modules** across 14 categories
     - **Multiple agents** coordinating together
     - **Production-grade safety** with 18 security modules
@@ -187,7 +187,7 @@ graph TB
 
     - **Academic/research** projects
     - **Conversational agents** with back-and-forth dialogue
-    - **Experimental features** and cutting-edge research
+    - **Experimental features** and research prototypes
     - **Microsoft ecosystem** integration
     - **Code generation** as primary use case
 

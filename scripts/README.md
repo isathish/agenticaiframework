@@ -8,7 +8,7 @@ This directory contains scripts and workflows for automatically generating AI-po
 
 1. **`.github/workflows/release-notes.yml`**
    - Automated workflow triggered on git tags
-   - Generates comprehensive release notes using AI
+   - Generates release notes using AI
    - Supports OpenAI GPT-4 for enhancement
    - Creates or updates GitHub releases
 

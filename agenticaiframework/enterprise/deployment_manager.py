@@ -389,9 +389,33 @@ class CanaryDeployment(DeploymentStrategyImpl):
         self,
         health_checker: HealthChecker,
         canary_percentage: int = 10,
+        monitor_duration: float = 0.0,
+        monitor_interval: float = 1.0,
     ):
         self.health_checker = health_checker
         self.canary_percentage = canary_percentage
+        self.monitor_duration = max(0.0, monitor_duration)
+        self.monitor_interval = max(0.01, monitor_interval)
+    
+    async def _monitor_canary(self, canary_targets: List[DeploymentTarget]) -> bool:
+        """Re-check canary targets for ``monitor_duration``; False on first unhealthy result."""
+        if self.monitor_duration <= 0:
+            return True
+        loop = asyncio.get_running_loop()
+        deadline = loop.time() + self.monitor_duration
+        while True:
+            remaining = deadline - loop.time()
+            if remaining <= 0:
+                return True
+            await asyncio.sleep(min(self.monitor_interval, remaining))
+            for target in canary_targets:
+                status = await self.health_checker.check(target)
+                target.status = status
+                if status != HealthCheckStatus.HEALTHY:
+                    logger.warning(
+                        "Canary target %s became %s during monitoring", target.id, status.value
+                    )
+                    return False
     
     async def deploy(
         self,
@@ -423,8 +447,8 @@ class CanaryDeployment(DeploymentStrategyImpl):
         if on_progress:
             on_progress(30)
         
-        # Monitor canary (simulated)
-        await asyncio.sleep(0.1)
+        if not await self._monitor_canary(canary_targets):
+            return False
         
         if on_progress:
             on_progress(50)

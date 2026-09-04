@@ -40,6 +40,9 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    get_args,
+    get_origin,
+    get_type_hints,
 )
 
 T = TypeVar('T')
@@ -145,8 +148,30 @@ class EventHandler(ABC, Generic[E]):
     
     @property
     def event_type(self) -> Type[E]:
-        """Get the event type this handler handles."""
-        raise NotImplementedError
+        """
+        Event type this handler handles.
+
+        Resolved from the ``EventHandler[SomeEvent]`` generic parameter, or
+        from the ``event`` annotation of :meth:`handle`. Override for handlers
+        that cannot express their type either way.
+        """
+        for klass in type(self).__mro__:
+            for base in getattr(klass, "__orig_bases__", ()):
+                if get_origin(base) is EventHandler:
+                    args = get_args(base)
+                    if args and isinstance(args[0], type):
+                        return args[0]
+        try:
+            hints = get_type_hints(self.handle)
+        except Exception:
+            hints = {}
+        annotated = hints.get("event")
+        if isinstance(annotated, type):
+            return annotated
+        raise NotImplementedError(
+            f"{type(self).__name__} must subclass EventHandler[EventType], "
+            "annotate handle(event: EventType), or override event_type"
+        )
 
 
 class Subscription:

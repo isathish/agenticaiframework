@@ -43,10 +43,10 @@ print(f"Agent {agent.name} is {agent.status}")
 
 ## Features
 
-- **380+ Total Modules** - Comprehensive framework coverage
+- **380+ Total Modules** - Agents, memory, tools, orchestration, evaluation and enterprise packages
 - **237 Enterprise Modules** - Production-ready enterprise capabilities
 - **35+ Built-in Tools** - File, web, database, AI/ML tools
-- **12-Tier Evaluation** - Comprehensive quality assessment
+- **12-Tier Evaluation** - Model quality, security, cost, compliance and business metrics
 - **14 Enterprise Categories** - API, Security, ML/AI, DDD, and more
 - **Enterprise Security** - Guardrails, PII protection, audit logging
 - **Multi-Agent Orchestration** - Coordinate agent teams

@@ -1,6 +1,6 @@
 ---
 title: Evaluation
-description: 12-tier comprehensive evaluation system with 100+ metrics for AI agent quality assessment
+description: 12-tier evaluation system with 100+ metrics for AI agent quality assessment
 tags:
   - evaluation
   - metrics
@@ -12,7 +12,7 @@ tags:
 
 <div class="annotate" markdown>
 
-**12-Tier Comprehensive Evaluation**
+**12-Tier Evaluation**
 
 Industry-leading evaluation with **100+ metrics** across **400+ modules**
 
@@ -45,7 +45,7 @@ Industry-leading evaluation with **100+ metrics** across **400+ modules**
 <div class="stat-label">Online Monitoring</div>
 </div>
 <div class="stat-item">
-<div class="stat-number">Comprehensive</div>
+<div class="stat-number">12 Tiers</div>
 <div class="stat-label">Offline Analysis</div>
 </div>
 </div>
@@ -54,7 +54,7 @@ Industry-leading evaluation with **100+ metrics** across **400+ modules**
 
 ## Overview
 
-The Agentic AI Framework provides a **comprehensive 12-tier evaluation system** that covers every aspect of AI agent performance—from basic model quality to enterprise compliance and cost optimization.
+The Agentic AI Framework provides a **12-tier evaluation system** covering AI agent performance from model quality to enterprise compliance and cost.
 
 ```python
 from agenticaiframework.evaluation import (
@@ -73,7 +73,7 @@ from agenticaiframework.evaluation import (
     WorkflowAnalytics
 )
 
-# Initialize comprehensive evaluation
+# Initialize evaluation
 evaluation_manager = EvaluationManager(
     enable_all_tiers=True,
     real_time_monitoring=True,
@@ -152,7 +152,7 @@ evaluation_manager = EvaluationManager(
 
 ## Tier 1: Model Quality Evaluation
 
-Comprehensive assessment of LLM response quality, accuracy, and reliability.
+Assessment of LLM response quality, accuracy, and reliability.
 
 ### Model Quality Evaluator
 
@@ -568,7 +568,7 @@ from agenticaiframework.evaluation.autonomy_performance import DecisionScorer
 
 scorer = DecisionScorer(
     evaluation_model="gpt-4",
-    scoring_rubric="comprehensive"
+    scoring_rubric="detailed"
 )
 
 # Score agent decisions
@@ -584,7 +584,7 @@ for decision in agent_decisions:
 
 ## Tier 6: Security & Risk Evaluation
 
-Comprehensive security assessment and risk monitoring.
+Security assessment and risk monitoring.
 
 ### Security Risk Evaluator
 
@@ -1382,7 +1382,7 @@ for metric, diff in comparison.differences.items():
 
 ---
 
-## Comprehensive Evaluation Dashboard
+## Evaluation Dashboard
 
 ### Setting Up the Dashboard
 
@@ -1426,7 +1426,7 @@ generator = ReportGenerator(
     schedule="weekly"
 )
 
-# Generate comprehensive report
+# Generate report
 report = await generator.generate(
     time_range="last_7_days",
     include_recommendations=True
@@ -1497,7 +1497,7 @@ logger.info(f"\nOverall: {'PASS' if results.passed else 'FAIL'}")
 <div class="feature-grid">
 <div class="feature-card">
 <h3><a href="monitoring.md"> Monitoring</a></h3>
-<p>Set up comprehensive observability for your agents</p>
+<p>Set up metrics, tracing and alerting for your agents</p>
 </div>
 <div class="feature-card">
 <h3><a href="tracing.md"> Tracing</a></h3>

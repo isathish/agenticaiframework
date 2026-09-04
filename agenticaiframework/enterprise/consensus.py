@@ -445,7 +445,8 @@ class ConsensusTransport(ABC):
 class InMemoryTransport(ConsensusTransport):
     """Process-local transport; share one instance between nodes of a test cluster.
 
-    ``partition(a, b)`` / ``heal()`` simulate network partitions.
+    ``partition(a, b)`` injects a network partition between two nodes and
+    ``heal()`` removes all injected partitions.
     """
     
     def __init__(self, latency: float = 0.0):

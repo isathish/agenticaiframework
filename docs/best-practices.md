@@ -57,7 +57,7 @@ Build scalable, reliable AI agent applications with **400+ modules** and **237 e
 
 !!! tip "Monitor Everything"
 
-    Always implement comprehensive monitoring and logging from day one.
+    Set up metrics, tracing and logging from day one.
 
 ```python
 from agenticaiframework.monitoring import MonitoringSystem
@@ -704,7 +704,7 @@ class HealthChecker:
 
 ### 1. Enable All Security Features in Production
 
-Always enable comprehensive security in production environments:
+Enable all security features in production environments:
 
 ```python
 from agenticaiframework.security import SecurityManager
@@ -754,7 +754,7 @@ def secure_agent_input(user_input: str, user_id: str) -> dict:
 
 ### 3. Audit All Security Events
 
-Maintain comprehensive audit logs:
+Record every security event in the audit log:
 
 ```python
 from agenticaiframework.security import AuditLogger
@@ -916,4 +916,4 @@ def update_security_patterns():
         detector.add_pattern(pattern['regex'], pattern['severity'])
 ```
 
-These best practices will help you build robust, secure, scalable, and maintainable applications with AgenticAI Framework. Remember to adapt these patterns to your specific use case and requirements.
+These practices help you build secure, scalable, and maintainable applications with AgenticAI Framework. Remember to adapt these patterns to your specific use case and requirements.

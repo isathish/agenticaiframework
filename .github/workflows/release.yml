@@ -103,7 +103,7 @@ jobs:
           ")
 
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "📦 Version: $VERSION"
+          echo "Version: $VERSION"
 
       - name: Build
         if: steps.guard.outputs.skip != 'true'
@@ -159,9 +159,9 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           verbose: true
-          # Uses OIDC trusted publishing – no API token needed.
-          # Falls back to token auth if PYPI_TOKEN secret is set.
-          password: ${{ secrets.PYPI_TOKEN || '' }}
+          # Token auth only (PYPI_TOKEN secret); OIDC trusted publishing is not used.
+          password: ${{ secrets.PYPI_TOKEN }}
+          attestations: false
 
       - name: Create GitHub Release
         if: steps.guard.outputs.skip != 'true'

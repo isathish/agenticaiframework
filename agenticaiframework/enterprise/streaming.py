@@ -169,7 +169,7 @@ class LLMStreamSource(StreamSource[StreamEvent]):
                 elif isinstance(chunk, str):
                     yield chunk
         else:
-            # Fallback: simulate streaming from full response
+            # Chunk the complete response so callers always receive a stream
             response = await self.llm.ainvoke(self.prompt, **self.kwargs)
             content = response.content if hasattr(response, "content") else str(response)
             
@@ -516,7 +516,7 @@ def stream_response(fn: Callable) -> Callable:
         try:
             result = await fn(*args, **kwargs)
             
-            # Simulate streaming for non-streaming functions
+            # Chunk the complete response so callers always receive a stream
             if isinstance(result, str):
                 for i, char in enumerate(result):
                     yield StreamEvent(

@@ -5,7 +5,7 @@ description: Build complex AI teams with hierarchical workflows, parallel execut
 
 # Multi-Agent Orchestration
 
-AgenticAI Framework provides powerful orchestration capabilities for building sophisticated multi-agent systems. Create teams, define workflows, and coordinate agents seamlessly.
+AgenticAI Framework provides orchestration for multi-agent systems: create teams, define workflows, and coordinate agents.
 
 !!! success "Enterprise Orchestration"
 
@@ -96,7 +96,7 @@ researcher = Agent(
     config=AgentConfig(
         name="researcher",
         role="Research Analyst",
-        goal="Gather comprehensive information on topics",
+        goal="Gather information on topics",
         tools=["web_search", "wikipedia"]
     )
 )

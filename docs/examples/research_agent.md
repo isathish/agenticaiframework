@@ -13,7 +13,7 @@ tags:
 This example demonstrates building an AI research agent that can investigate topics and provide cited summaries.
 
 !!! success "Enterprise-Ready Pattern"
-    Leverages **400+ modules** including advanced guardrails and enterprise compliance features. See [Enterprise Documentation](../enterprise.md).
+    Uses **400+ modules** including guardrails and enterprise compliance features. See [Enterprise Documentation](../enterprise.md).
 
 ## Overview
 
@@ -21,7 +21,7 @@ The research agent uses LLMs with guardrails to ensure factual, well-cited respo
 
 ## Key Features
 
-- Comprehensive research capabilities
+- Web search and document retrieval
 - Source citation requirements
 - Content safety guardrails
 - Performance monitoring

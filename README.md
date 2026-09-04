@@ -12,7 +12,7 @@
 [![Tests](https://img.shields.io/badge/tests-1036%20passing-success.svg)](https://github.com/isathish/agenticaiframework)
 [![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-**The most comprehensive Python SDK for building production-ready AI agent systems with 400+ modules, 237 enterprise features, advanced orchestration, intelligent memory management, speech processing, state management, and enterprise-grade monitoring.**
+**A Python SDK for building production AI agent systems: 400+ modules, 237 enterprise modules, multi-agent orchestration, memory management, speech processing, state management, and monitoring.**
 
 [Documentation](https://isathish.github.io/agenticaiframework/) | [Quick Start](#quick-start) | [Examples](#examples) | [Contributing](#contributing)
 
@@ -54,7 +54,7 @@
 - Enterprise-grade reliability with **66% test coverage**
 - **1036+ tests** ensuring stability
 - Circuit breaker patterns & automatic retry
-- Comprehensive error handling
+- Typed exception hierarchy with error handling in every module
 
 ### **Modular Architecture**
 - **400+ independently composable modules**
@@ -294,7 +294,7 @@ engine.register_team(team)
 
 # Execute coordinated task
 result = engine.execute_task(
-    task="Research AI trends and write a comprehensive report",
+    task="Research AI trends and write a detailed report",
     team_id="ResearchTeam"
 )
 ```
@@ -418,7 +418,7 @@ speech.register_voice("user_001", voice_sample, metadata={"language": "en"})
 identified = speech.identify_speaker(audio_data)
 ```
 
-### 6. Comprehensive Monitoring
+### 6. Monitoring
 
 ```python
 from agenticaiframework import MonitoringSystem
@@ -638,7 +638,7 @@ formatted = formatter.format(
 
 ### 237 Enterprise-Grade Modules
 
-The AgenticAI Framework includes a comprehensive enterprise module library organized into the following categories:
+The AgenticAI Framework includes 237 enterprise modules organized into the following categories:
 
 <table>
 <tr>
@@ -790,7 +790,7 @@ masked = masker.mask("Contact: john@example.com, SSN: 123-45-6789")
 
 ## Evaluation Framework
 
-### 12-Tier Comprehensive Evaluation
+### 12-Tier Evaluation
 
 ```python
 from agenticaiframework.evaluation import EvaluationSystem
@@ -798,7 +798,7 @@ from agenticaiframework.evaluation import EvaluationSystem
 # Initialize evaluation system
 evaluator = EvaluationSystem()
 
-# Run comprehensive evaluation
+# Run evaluation across all tiers
 results = evaluator.evaluate(
     agent=my_agent,
     test_cases=test_suite,

@@ -300,8 +300,72 @@ class RollbackExecutor(ABC):
         pass
 
 
+TrafficSwitch = Callable[[str, str, int], Awaitable[None]]
+Recreate = Callable[[str, str], Awaitable[None]]
+
+
 class DefaultRollbackExecutor(RollbackExecutor):
-    """Default rollback executor."""
+    """
+    Default rollback executor.
+
+    Drives the rollback through two optional callables supplied by the
+    caller's platform integration:
+
+    - ``switch_traffic(deployment_name, version, percent)`` routes ``percent``
+      of traffic to ``version``.
+    - ``recreate(deployment_name, version)`` tears down and recreates the
+      deployment at ``version`` (used by :attr:`RollbackStrategy.RECREATE`).
+
+    When neither callable is provided the executor runs in in-memory mode: it
+    logs each step and reports success, which is what the in-memory
+    ``RollbackManager`` needs to keep its version history consistent.
+    """
+    
+    def __init__(
+        self,
+        switch_traffic: Optional[TrafficSwitch] = None,
+        recreate: Optional[Recreate] = None,
+        step_delay: float = 0.0,
+        monitor: Optional["HealthMonitor"] = None,
+        canary_percent: int = 10,
+    ):
+        self._switch_traffic = switch_traffic
+        self._recreate = recreate
+        self._step_delay = max(0.0, step_delay)
+        self._monitor = monitor
+        self._canary_percent = max(1, min(99, canary_percent))
+    
+    async def _switch(self, context: RollbackContext, percent: int) -> None:
+        logger.info(
+            "Rollback %s: routing %d%% of traffic to %s",
+            context.deployment_name, percent, context.to_version,
+        )
+        if self._switch_traffic is not None:
+            await self._switch_traffic(context.deployment_name, context.to_version, percent)
+    
+    async def _do_recreate(self, context: RollbackContext, to_artifacts: VersionArtifacts) -> None:
+        logger.info(
+            "Rollback %s: recreating deployment at %s (image=%s)",
+            context.deployment_name, context.to_version, to_artifacts.image,
+        )
+        if self._recreate is not None:
+            await self._recreate(context.deployment_name, context.to_version)
+    
+    async def _pause(self) -> None:
+        if self._step_delay > 0:
+            await asyncio.sleep(self._step_delay)
+    
+    async def _target_healthy(self, context: RollbackContext) -> bool:
+        monitor = self._monitor or context.metadata.get("monitor")
+        if monitor is None:
+            return True
+        status = await monitor.check_health(context.deployment_name, context.to_version)
+        if not status.healthy:
+            logger.error(
+                "Rollback %s: target version %s unhealthy (%s)",
+                context.deployment_name, context.to_version, status.message,
+            )
+        return status.healthy
     
     async def execute(
         self,
@@ -309,28 +373,35 @@ class DefaultRollbackExecutor(RollbackExecutor):
         from_artifacts: VersionArtifacts,
         to_artifacts: VersionArtifacts,
     ) -> bool:
-        # Simulate rollback execution
         logger.info(
             f"Executing rollback: {context.deployment_name} "
             f"{context.from_version} -> {context.to_version}"
         )
         
         if context.strategy == RollbackStrategy.IMMEDIATE:
-            await asyncio.sleep(0.1)  # Simulate instant switch
+            await self._switch(context, 100)
         
         elif context.strategy == RollbackStrategy.GRADUAL:
-            # Gradual traffic shift
             for percent in range(10, 101, 10):
-                logger.debug(f"Traffic shift: {percent}%")
-                await asyncio.sleep(0.05)
+                await self._switch(context, percent)
+                if percent < 100:
+                    await self._pause()
         
         elif context.strategy == RollbackStrategy.CANARY:
-            # Canary-style rollback
-            await asyncio.sleep(0.2)
+            await self._switch(context, self._canary_percent)
+            await self._pause()
+            if not await self._target_healthy(context):
+                await self._switch(context, 0)
+                return False
+            await self._switch(context, 100)
         
         elif context.strategy == RollbackStrategy.RECREATE:
-            # Delete and recreate
-            await asyncio.sleep(0.3)
+            await self._do_recreate(context, to_artifacts)
+            await self._pause()
+            await self._switch(context, 100)
+        
+        else:
+            raise RollbackError(f"Unsupported rollback strategy: {context.strategy}")
         
         return True
 
@@ -349,7 +420,7 @@ class RollbackManager:
     ):
         self._store = store or InMemoryVersionStore()
         self._monitor = monitor or DefaultHealthMonitor()
-        self._executor = executor or DefaultRollbackExecutor()
+        self._executor = executor or DefaultRollbackExecutor(monitor=self._monitor)
         self._policy = policy or RollbackPolicy()
         self._callbacks: Dict[str, List[Callable]] = {
             "before_rollback": [],

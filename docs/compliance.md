@@ -15,7 +15,7 @@ tags:
 
 **Enterprise compliance, audit trails, and data governance**
 
-Ensure regulatory compliance with comprehensive audit logging, policy enforcement, and data masking across **400+ modules**
+Regulatory compliance through audit logging, policy enforcement, and data masking across **400+ modules**
 
 </div>
 
@@ -633,7 +633,7 @@ customer = service.get_customer(
 
 !!! tip "Compliance Guidelines"
 
-    1. **Log everything** - Comprehensive audit trails are essential
+    1. **Log everything** - Audit trails must cover every data access and policy decision
     2. **Mask by default** - Apply PII masking to all outputs
     3. **Enforce policies** - Use decorators for consistent enforcement
     4. **Verify integrity** - Regularly check audit trail integrity

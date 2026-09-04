@@ -256,13 +256,22 @@ class TimingMiddleware(CommandMiddleware):
 
 
 class TransactionMiddleware(CommandMiddleware):
-    """Transaction middleware (simulated)."""
+    """
+    Wraps command execution in caller-supplied transaction hooks.
+
+    ``on_begin`` runs before the handler, ``on_commit`` after it returns
+    successfully, and ``on_rollback`` receives the exception when the handler
+    raises; the exception is then re-raised. Bind these hooks to the unit of
+    work of your data store (e.g. ``session.begin`` / ``commit`` / ``rollback``).
+    """
     
     def __init__(
         self,
         on_commit: Optional[Callable[[], Awaitable[None]]] = None,
         on_rollback: Optional[Callable[[Exception], Awaitable[None]]] = None,
+        on_begin: Optional[Callable[[], Awaitable[None]]] = None,
     ):
+        self._on_begin = on_begin
         self._on_commit = on_commit
         self._on_rollback = on_rollback
     
@@ -271,6 +280,9 @@ class TransactionMiddleware(CommandMiddleware):
         context: CommandContext,
         next_handler: Callable[[CommandContext], Awaitable[Any]],
     ) -> Any:
+        if self._on_begin:
+            await self._on_begin()
+        
         try:
             result = await next_handler(context)
             

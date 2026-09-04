@@ -12,14 +12,14 @@ tags:
 
 <div class="annotate" markdown>
 
-**Comprehensive HLD and LLD diagrams**
+**HLD and LLD diagrams**
 
 Visualize system design across **400+ modules** and **237 enterprise features**
 
 </div>
 
 !!! success "Enterprise Diagrams"
-    Part of **237 enterprise modules** with comprehensive architecture documentation. See [Enterprise Documentation](enterprise.md).
+    Part of **237 enterprise modules**, each documented in the architecture guide. See [Enterprise Documentation](enterprise.md).
 
 ---
 
@@ -361,7 +361,7 @@ graph TB
 
     1. **Complex Task Arrival**
        - A high-level task that's too complex for a single agent
-       - Example: "Generate a comprehensive market analysis report"
+       - Example: "Generate a market analysis report"
 
     2. **Task Decomposition**
        - Coordinator breaks down the task into manageable subtasks
@@ -782,7 +782,7 @@ sequenceDiagram
       - Masking in logs and exports
 
     - **Audit Logging**
-      - Comprehensive security event logging
+      - Security event logging
       - Tamper-proof log storage
       - SIEM integration
 

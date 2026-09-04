@@ -55,6 +55,8 @@ from typing import (
     TypeVar,
 )
 
+from .._internal import http as _http
+
 T = TypeVar('T')
 
 
@@ -685,10 +687,20 @@ class ServiceRegistry:
                 logger.error(f"Cleanup error: {e}")
 
 
+class ServiceCallError(ServiceDiscoveryError):
+    """Raised when a discovered service returns an HTTP error status."""
+
+    def __init__(self, status: int, uri: str, body: str = ""):
+        super().__init__(f"HTTP {status} from {uri}")
+        self.status = status
+        self.uri = uri
+        self.body = body
+
+
 # Service client helper
 class ServiceClient:
     """
-    Helper for calling discovered services.
+    Helper for calling discovered services over HTTP.
     
     Example:
         client = ServiceClient(registry)
@@ -699,9 +711,15 @@ class ServiceClient:
         self,
         registry: ServiceRegistry,
         strategy: LoadBalanceStrategy = LoadBalanceStrategy.ROUND_ROBIN,
+        timeout: float = 30.0,
+        headers: Optional[Dict[str, str]] = None,
+        verify: bool = True,
     ):
         self._registry = registry
         self._strategy = strategy
+        self._timeout = timeout
+        self._headers = dict(headers or {})
+        self._http = _http.AsyncClient(headers=self._headers, timeout=timeout, verify=verify)
     
     async def get_uri(
         self,
@@ -724,28 +742,55 @@ class ServiceClient:
         service: str,
         path: str = "",
         method: str = "GET",
+        *,
+        json: Any = None,
+        body: Any = None,
+        params: Optional[Dict[str, Any]] = None,
+        headers: Optional[Dict[str, str]] = None,
+        timeout: Optional[float] = None,
+        raise_for_status: bool = True,
         **kwargs,
     ) -> Any:
         """
-        Call service (mock implementation).
+        Call a discovered service instance over HTTP.
         
         Args:
             service: Service name
             path: Request path
             method: HTTP method
-            **kwargs: Additional arguments
+            json: JSON-serializable request body
+            body: Raw/form request body (ignored when ``json`` is given)
+            params: Query string parameters
+            headers: Extra request headers
+            timeout: Per-call timeout in seconds
+            raise_for_status: Raise :class:`ServiceCallError` on non-2xx/3xx
             
         Returns:
-            Mock response
+            Parsed JSON when the response content-type is JSON, otherwise text.
         """
+        if "data" in kwargs and body is None:
+            body = kwargs.pop("data")
         uri = await self.get_uri(service, path)
         
-        # Mock HTTP call
-        return {
-            "uri": uri,
-            "method": method,
-            "status": 200,
-        }
+        response = await self._http.request(
+            method.upper(),
+            uri,
+            params=params,
+            headers=headers,
+            json=json,
+            data=body,
+            timeout=timeout,
+        )
+        if raise_for_status and not response.ok:
+            raise ServiceCallError(response.status, uri, response.text)
+        
+        content_type = response.headers.get("content-type", "").lower()
+        if "json" in content_type:
+            try:
+                return response.json()
+            except ValueError:
+                return response.text
+        return response.text
 
 
 # Decorators
@@ -811,6 +856,7 @@ __all__ = [
     "ServiceNotFoundError",
     "NoHealthyInstanceError",
     "RegistrationError",
+    "ServiceCallError",
     # Enums
     "InstanceStatus",
     "HealthStatus",

@@ -1,6 +1,6 @@
 # AgenticAI Framework Tests
 
-Comprehensive test suite organized by type.
+Test suite organized by type.
 
 ## Directory Structure
 
