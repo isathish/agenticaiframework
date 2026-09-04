@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agenticaiframework"
-version = "3.0.10"
+version = "3.0.11"
 description = "Zero-dependency Python SDK for building AI agents: multi-agent orchestration, tool calling, MCP, RAG, memory, guardrails, evaluation and tracing."
 readme = "README.md"
 license = {text = "MIT"}
