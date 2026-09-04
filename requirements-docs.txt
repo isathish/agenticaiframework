@@ -8,3 +8,8 @@ pymdown-extensions>=10.0.0
 mkdocs-git-revision-date-localized-plugin>=1.2.0
 mkdocs-minify-plugin>=0.7.0
 mkdocs-glightbox>=0.3.5
+
+# Auto-generated API reference (docs/gen_ref_pages.py)
+mkdocs-gen-files>=0.5.0
+mkdocs-literate-nav>=0.6.0
+mkdocs-section-index>=0.3.8

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 128" width="560" height="128" role="img" aria-label="AgenticAI Framework">
+  <defs>
+    <linearGradient id="aaf-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6366f1"/>
+      <stop offset="1" stop-color="#06b6d4"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="url(#aaf-bg)"/>
+  <g stroke="#ffffff" stroke-width="7" stroke-linecap="round" fill="none">
+    <path d="M64 30 L38.7 82.2"/>
+    <path d="M64 30 L89.3 82.2"/>
+    <path d="M46 68 L82 68"/>
+  </g>
+  <circle cx="64" cy="30" r="12" fill="#ffffff"/>
+  <circle cx="34" cy="92" r="10" fill="none" stroke="#ffffff" stroke-width="6"/>
+  <circle cx="94" cy="92" r="10" fill="none" stroke="#ffffff" stroke-width="6"/>
+  <circle cx="46" cy="68" r="5.5" fill="#ffffff"/>
+  <circle cx="82" cy="68" r="5.5" fill="#ffffff"/>
+  <g font-family="Inter, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" fill="#f9fafb">
+    <text x="156" y="72" font-size="54" font-weight="700" letter-spacing="-1.5">Agentic<tspan fill="#818cf8">AI</tspan></text>
+    <text x="158" y="108" font-size="24" font-weight="500" letter-spacing="3" fill="#9ca3af">FRAMEWORK</text>
+  </g>
+</svg>

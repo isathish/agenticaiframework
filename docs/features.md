@@ -1,430 +1,167 @@
 ---
-title: Features
-description: Complete feature set of AgenticAI Framework including agents, tasks, memory, LLMs, and enterprise capabilities
+title: Feature Catalogue
+description: Every AgenticAI Framework module grouped by lifecycle stage - build, coordinate, remember, retrieve, protect, evaluate, observe, operate, enterprise and internals - with a link to each guide.
 tags:
-  - features
-  - capabilities
-  - overview
-  - comparison
+  - getting-started
+  - reference
 ---
 
-# Features
-
-<div class="annotate" markdown>
-
-**Complete feature set across 400+ modules**
-
-Everything you need to build intelligent multi-agent systems with **237 enterprise features**
-
-</div>
-
-!!! success "Enterprise Features"
-    See [Enterprise Documentation](enterprise.md) for advanced enterprise capabilities.
-
----
-
-## Core Features
-
-<div class="grid cards" markdown>
-
-- :robot:{ .lg .middle } **Intelligent Agents**
-
-    ---
-
-    Autonomous agents with memory, reasoning, and tool use
-
-    - LLM-powered decision making
-    - Dynamic tool integration
-    - Natural language understanding
-    - Role-based specialization
-
-    [:octicons-arrow-right-24: Learn More](agents.md)
-
-- :material-clipboard-check:{ .lg .middle } **Task Management**
-
-    ---
-
-    Flexible task orchestration and execution
-
-    - Sequential and parallel tasks
-    - Asynchronous execution
-    - Priority management
-    - Progress tracking
-
-    [:octicons-arrow-right-24: Learn More](tasks.md)
-
-- :material-brain:{ .lg .middle } **Memory Systems**
-
-    ---
-
-    Persistent and contextual memory
-
-    - Short and long-term memory
-    - Semantic search
-    - Knowledge retention
-    - Context management
-
-    [:octicons-arrow-right-24: Learn More](memory.md)
-
-- :material-routes:{ .lg .middle } **Process Orchestration**
-
-    ---
-
-    Multi-agent coordination patterns
-
-    - Sequential workflows
-    - Hierarchical structures
-    - Consensus mechanisms
-    - Parallel execution
-
-    [:octicons-arrow-right-24: Learn More](processes.md)
-
-- :material-shield-check:{ .lg .middle } **Guardrails & Safety**
-
-    ---
-
-    Content moderation and safety controls
-
-    - Input/output validation
-    - Content filtering
-    - Compliance checks
-    - Security policies
-
-    [:octicons-arrow-right-24: Learn More](guardrails.md)
-
-- :material-database:{ .lg .middle } **Knowledge Management**
-
-    ---
-
-    RAG and knowledge base integration
-
-    - Document processing
-    - Vector search
-    - Embeddings
-    - Knowledge graphs
-
-    [:octicons-arrow-right-24: Learn More](knowledge.md)
-
-- :material-tools:{ .lg .middle } **MCP Tools**
-
-    ---
-
-    Model Context Protocol integration
-
-    - External tool integration
-    - API connections
-    - Real-time data access
-    - Custom tool creation
-
-    [:octicons-arrow-right-24: Learn More](mcp_tools.md)
-
-- :material-chart-line:{ .lg .middle } **Monitoring & Observability**
-
-    ---
-
-    Production-ready monitoring
-
-    - Performance metrics
-    - Distributed tracing
-    - Structured logging
-    - Alerts and notifications
-
-    [:octicons-arrow-right-24: Learn More](monitoring.md)
-
-</div>
-
-## Process Types
-
-```mermaid
-graph LR
-    subgraph "Process Patterns"
-        SEQ[Sequential<br/>One after another]
-        HIE[Hierarchical<br/>Manager-Worker]
-        CON[Consensus<br/>Vote & Decide]
-        PAR[Parallel<br/>Run Together]
-    end
-
-    SEQ --> USE1[Task Pipeline]
-    HIE --> USE2[Team Coordination]
-    CON --> USE3[Decision Making]
-    PAR --> USE4[Bulk Processing]
-
-    style SEQ fill:#e1f5ff,stroke:#01579b
-    style HIE fill:#f3e5f5,stroke:#4a148c
-    style CON fill:#fff3e0,stroke:#e65100
-    style PAR fill:#e8f5e9,stroke:#1b5e20
-```
-
-## Feature Comparison
-
-| Feature | Community | Professional | Enterprise |
-|---------|-----------|--------------|------------|
-| **Agents** | Up to 5 | Unlimited | Unlimited |
-| **Memory** | In-Memory | Redis/Cache | Distributed |
-| **LLM Support** | OpenAI/Anthropic | All Providers | Private Models |
-| **Guardrails** | Basic | Advanced | Custom Rules |
-| **Monitoring** | Logs | Metrics | Full APM |
-| **MCP Tools** | 10 tools | 50 tools | Unlimited |
-| **Support** | Community | Email | 24/7 Priority |
-| **SLA** | None | 99.5% | 99.99% |
-
-## Performance Characteristics
-
-<div class="grid" markdown>
-
-=== "Latency"
-
-    **Response Times**
-
-    - **P50**: < 100ms
-    - **P95**: < 500ms
-    - **P99**: < 1s
-
-    Optimized for real-time applications
-
-=== "Throughput"
-
-    **Request Capacity**
-
-    - **Single Agent**: 1000 req/s
-    - **Multi-Agent**: 10000 req/s
-    - **Clustered**: 100000 req/s
-
-    Horizontal scaling capability
-
-=== "Memory"
-
-    **Resource Usage**
-
-    - **Base**: 50MB
-    - **Per Agent**: +10MB
-    - **With Memory**: +50MB
-
-    Efficient resource utilization
-
-=== "Scalability"
-
-    **Growth Capacity**
-
-    - **Vertical**: 100+ agents/process
-    - **Horizontal**: Unlimited nodes
-    - **Distributed**: Multi-region
-
-    Enterprise-scale ready
-
-</div>
-
-## Integration Capabilities
-
-```mermaid
-graph TB
-    subgraph "External Systems"
-        LLM[LLM Providers<br/>OpenAI, Anthropic, etc.]
-        DB[Databases<br/>PostgreSQL, MongoDB, Redis]
-        API[APIs<br/>REST, GraphQL, gRPC]
-        TOOL[Tools<br/>MCP, Custom]
-    end
-
-    subgraph "AgenticAI Framework"
-        AGENT[Agent System]
-        MEMORY[Memory Layer]
-        TASK[Task Engine]
-        GUARD[Guardrails]
-    end
-
-    LLM --> AGENT
-    DB --> MEMORY
-    API --> TOOL
-    TOOL --> AGENT
-    AGENT --> TASK
-    TASK --> GUARD
-
-    style AGENT fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
-    style MEMORY fill:#f3e5f5,stroke:#7b1fa2
-    style TASK fill:#fff3e0,stroke:#f57c00
-    style GUARD fill:#e8f5e9,stroke:#388e3c
-```
-
-## Development Features
-
-!!! tip "Developer Experience"
-    Framework designed for developer productivity
-
-<div class="grid cards" markdown>
-
-- ** Pythonic API**
-
-    Clean, intuitive Python interface
-
-    ```python
-    agent = Agent(
-        name="Assistant",
-        model="gpt-4"
-    )
-    ```
-
-- ** Type Hints**
-
-    Full type annotation support
-
-    ```python
-    def process(task: Task) -> TaskResult:
-        ...
-    ```
-
-- ** Configuration**
-
-    YAML-based setup
-
-    ```yaml
-    agents:
-      - name: worker
-        model: gpt-4
-    ```
-
-- ** Testing**
-
-    Built-in test utilities
-
-    ```python
-    @pytest.fixture
-    def agent():
-        return Agent(...)
-    ```
-
-</div>
-
-## Use Case Fit
-
-```mermaid
-graph TB
-    subgraph "Complexity & Agent Architecture"
-        SIMPLE_SINGLE[Simple + Single Agent<br/> Simple Chatbots]
-        SIMPLE_MULTI[Simple + Multi-Agent<br/> Customer Support]
-        COMPLEX_SINGLE[Complex + Single Agent<br/> Data Analysis]
-        COMPLEX_MULTI[Complex + Multi-Agent<br/> Enterprise Apps]
-    end
-
-    subgraph "Use Cases"
-        UC1[Customer Support<br/>Moderate Complexity<br/>Multi-Agent]
-        UC2[Code Generation<br/>Moderate Complexity<br/>Single Agent]
-        UC3[Research Agent<br/>High Complexity<br/>Multi-Agent]
-        UC4[Content Creation<br/>Moderate Complexity<br/>Single Agent]
-        UC5[Data Analysis<br/>High Complexity<br/>Single Agent]
-        UC6[Workflow Automation<br/>High Complexity<br/>Multi-Agent]
-    end
-
-    SIMPLE_MULTI -.-> UC1
-    SIMPLE_SINGLE -.-> UC2
-    COMPLEX_MULTI -.-> UC3
-    SIMPLE_SINGLE -.-> UC4
-    COMPLEX_SINGLE -.-> UC5
-    COMPLEX_MULTI -.-> UC6
-
-    style SIMPLE_SINGLE fill:#e3f2fd,stroke:#1976d2
-    style SIMPLE_MULTI fill:#f3e5f5,stroke:#7b1fa2
-    style COMPLEX_SINGLE fill:#fff3e0,stroke:#f57c00
-    style COMPLEX_MULTI fill:#e8f5e9,stroke:#388e3c,stroke-width:3px
-    style UC3 fill:#ffebee,stroke:#c62828
-    style UC6 fill:#e8f5e9,stroke:#388e3c
-```
-
-!!! tip "Framework Suitability"
-
-    AgenticAI Framework is **ideal for**:
-
-    - **High Complexity**: Research agents, data analysis, workflow automation
-    - **Multi-Agent Systems**: Enterprise apps, team coordination, complex workflows
-    - **Production Scale**: When reliability and monitoring are critical
-
-## Checklist: Right Fit for You?
-
-!!! question "Is AgenticAI Framework right for your project?"
-
-     **Perfect Fit**
-
-    - [ ] Need multi-agent coordination
-    - [ ] Require persistent memory
-    - [ ] Complex task orchestration
-    - [ ] Production-scale deployment
-    - [ ] Safety and guardrails critical
-    - [ ] Monitoring and observability needed
-
-     **Consider Alternatives**
-
-    - [ ] Simple single-prompt use case
-    - [ ] No need for agent autonomy
-    - [ ] Basic chatbot requirements
-    - [ ] Budget constraints for LLM calls
-
-## Roadmap
-
-!!! abstract "Upcoming Features"
-
-    **Q1 2026** Completed
-
-    - 237 Enterprise Modules
-    - API Management Suite (15 modules)
-    - Security & Compliance (18 modules)
-    - ML/AI Infrastructure (14 modules)
-    - Domain-Driven Design patterns (12 modules)
-
-    **Q2 2026**
-
-    - Visual workflow builder
-    - Enhanced analytics dashboard
-    - Advanced security features
-    - Multi-cloud deployment
-
-    **Q3 2026**
-
-    - AutoML for agent tuning
-    - Global edge deployment
-    - Mobile SDK
-    - Real-time collaboration
-
-## 🆚 Framework Comparison
-
-| Feature | AgenticAI | LangChain | AutoGen | CrewAI |
-|---------|-----------|-----------|---------|--------|
-| **Total Modules** | 400+ | ~50 | ~30 | ~20 |
-| **Enterprise Modules** | 237 | Limited | None | None |
-| **Multi-Agent** | Native | Limited | Yes | Yes |
-| **Memory Managers** | 7 Specialized | Plugin | No | Basic |
-| **State Managers** | 7 Specialized | No | No | No |
-| **Guardrails** | Advanced | No | No | No |
-| **MCP Tools** | Native | No | No | No |
-| **12-Tier Evaluation** | Built-in | No | No | No |
-| **Monitoring** | Production APM | Basic | No | Basic |
-| **ML/AI Infrastructure** | 14 Modules | Basic | No | No |
-| **Domain-Driven Design** | 12 Patterns | No | No | No |
-| **Learning Curve** | Easy | Medium | Hard | Easy |
-| **Documentation** | Excellent | Good | Fair | Good |
-| **Community** | Growing | Large | Active | Medium |
-
-## Learn More
-
-<div class="grid cards" markdown>
-
-- [**Quick Start →**](quick-start.md)
-
-    Get started in 5 minutes
-
-- [**Architecture →**](architecture.md)
-
-    Understand the design
-
-- [**Best Practices →**](best-practices.md)
-
-    Production patterns
-
-- [**API Reference →**](API_REFERENCE.md)
-
-    Complete API docs
-
-</div>
-
----
-
-!!! success "Ready to Build?"
-    Start with our [Quick Start Guide](quick-start.md) or explore [Example Projects](EXAMPLES.md)
+# Feature Catalogue
+
+A list of what is in the package, grouped by the stage of an agent system's life it serves. Each entry names the module, states what it does in one line and links to the guide that covers it. Counts come from the current release: 455 modules, 237 of them under `agenticaiframework.enterprise`, 45 standard-library-only modules under `agenticaiframework._internal`, 430 top-level exports, 0 runtime dependencies.
+
+## Build
+
+Define agents, give them work to do and the prompts, tools and models they need.
+
+| Module | What it does | Guide |
+|---|---|---|
+| `agenticaiframework.core` | `Agent`, `Agent.quick`, `Agent.from_config`, `AgentManager`, `AgentRunner` (ReAct and native tool-calling loops), `AgentInput`, `AgentOutput`, `AgentStep`, `AgentThought`, `AgentStatus`, `StepType` | [Agents](agents.md) |
+| `agenticaiframework.tasks` | `Task(name, objective, executor, inputs)` with `run()`; `TaskManager` registers tasks and runs them in order | [Tasks](tasks.md) |
+| `agenticaiframework.processes` | `Process(name, strategy="sequential"\|"parallel", max_workers)` runs callables directly or on a thread pool | [Processes](processes.md) |
+| `agenticaiframework.workflows` | `SequentialWorkflow`, `ParallelWorkflow` chain agent invocations | [Agents](agents.md) |
+| `agenticaiframework.prompts` | `Prompt`, `PromptManager` for templates with variable substitution and `PromptRenderError` | [Prompts](prompts.md) |
+| `agenticaiframework.prompt_versioning` | `PromptVersionManager` with versions, activation, rendering and an audit log; `PromptLibrary` | [Prompts](prompts.md) |
+| `agenticaiframework.tools` | `BaseTool`, `AsyncBaseTool`, `ToolConfig`, `ToolResult`, `ToolRegistry` with `discover()` for 46 built-in tools, `AgentToolManager` binding tools to agents | [Tools](tools.md) |
+| `agenticaiframework.tools` (MCP) | `MCPServer`, `MCPClient`, `MCPBridge`, `MCPToolAdapter` implementing the Model Context Protocol on stdio | [MCP Tools](mcp_tools.md) |
+| `agenticaiframework.mcp_tools` | `MCPTool(name, capability, execute_fn)` function wrappers and `MCPToolManager` | [MCP Tools](mcp_tools.md) |
+| `agenticaiframework.llms` | `LLMManager` (providers, fallback chain, cache, per-provider `CircuitBreaker`), `ModelRouter`, `MODEL_REGISTRY` with 17 models, `ModelConfig`, `ModelTier`, `ModelCapability` | [LLMs](llms.md) |
+| `agenticaiframework.llms.providers` | `OpenAIProvider`, `AnthropicProvider`, `GoogleProvider` on standard-library REST clients; `LLMMessage`, `LLMResponse`, `ProviderConfig` | [LLMs](llms.md) |
+| `agenticaiframework.speech` | `SpeechProcessor` with `OpenAISTT`/`OpenAITTS`, `AzureSTT`/`AzureTTS`, `GoogleSTT`/`GoogleTTS`, `ElevenLabsTTS`, `WhisperLocalSTT`; `STTResult`, `TTSResult`, `AudioFormat`, `VoiceConfig` | [Speech](speech.md) |
+| `agenticaiframework.formatting` | `OutputFormatter` with JSON, Markdown, HTML, plain-text, code and table formatters | [Agents](agents.md) |
+| `agenticaiframework.conversations` | `ConversationManager`, `SessionManager`, `ConversationLogger`, `StructuredLogger`, `Message`, `Turn` | [Agents](agents.md) |
+| `agenticaiframework.config` | `configure()`, `get_config()`, `is_configured()`, `reset_config()`, `FrameworkConfig` | [Configuration](CONFIGURATION.md) |
+| `agenticaiframework.configurations` | `ConfigurationManager` key/value store with validation | [Configuration reference](configuration-reference.md) |
+| `agenticaiframework.hub` | `Hub` registry for agents, tools and services by name | [Hub](hub.md) |
+| `agenticaiframework.framework` | `AgenticFramework` facade bundling managers for one application | [Architecture](architecture.md) |
+| `agenticaiframework.exceptions` | `AgenticAIError` hierarchy: `AgentError`, `TaskError`, `LLMError`, `GuardrailViolationError`, `RateLimitError`, `KnowledgeError`, `ProtocolError` and others | [API reference](API_REFERENCE.md) |
+
+## Coordinate
+
+Run several agents on one problem.
+
+| Module | What it does | Guide |
+|---|---|---|
+| `agenticaiframework.orchestration` | `AgentTeam(name, goal, roles)`, `TeamRole`, `AgentSupervisor`, `SupervisionConfig`, `SupervisionStrategy`, `AgentHandoff`, `TaskAssignment` | [Orchestration](orchestration.md) |
+| `agenticaiframework.orchestration` (engine) | `OrchestrationEngine.orchestrate(agents, task_callable, pattern=...)` with `OrchestrationPattern` `SEQUENTIAL`, `PARALLEL`, `HIERARCHICAL`, `SWARM`, `CONSENSUS`, `PIPELINE`, `BROADCAST`, `ROUND_ROBIN`, `PRIORITY`, `ADAPTIVE` | [Orchestration](orchestration.md) |
+| `agenticaiframework.communication` | `AgentChannel` in-process routing with `MessageType`; `AgentCommunicationManager`, `RemoteAgentClient`, `RemoteAgentServer` | [Communication](communication.md) |
+| `agenticaiframework.communication.protocols` | `HTTPProtocol`, `WebSocketProtocol`, `MQTTProtocol`, `SSEProtocol`, `STDIOProtocol` on the standard library | [Communication](communication.md) |
+| `agenticaiframework.hitl` | `HumanInTheLoop`, `ApprovalRequest`, `ApprovalDecision`, `ApprovalStatus`, `CallbackApprovalHandler`, `ConsoleApprovalHandler`, `QueueApprovalHandler`, `EscalationTrigger`, `FeedbackCollector` | [Agents - Human-in-the-loop](agents.md#human-in-the-loop) |
+| `agenticaiframework.infrastructure` | `DistributedCoordinator`, `ServerlessExecutor`, `MultiRegionManager`, `TenantManager` | [Infrastructure](infrastructure.md) |
+
+## Remember
+
+Keep conversation, working memory, facts and execution state between calls and between processes.
+
+| Module | What it does | Guide |
+|---|---|---|
+| `agenticaiframework.memory` | `MemoryManager` tiered store with `store`, `retrieve`, `search`, TTL and priority | [Memory](memory.md) |
+| `agenticaiframework.memory` (specialised) | `AgentMemoryManager` (turns, working memory, facts, episodes), `WorkflowMemoryManager`, `OrchestrationMemoryManager`, `KnowledgeMemoryManager`, `ToolMemoryManager`, `SpeechMemoryManager` | [Memory](memory.md) |
+| `agenticaiframework.state` | `AgentStateStore`, `AgentCheckpoint`, `AgentSnapshot`, `AgentRecoveryManager`, `RetryState` | [State](state.md) |
+| `agenticaiframework.state` (domain managers) | `WorkflowStateManager`, `OrchestrationStateManager`, `KnowledgeStateManager`, `ToolStateManager`, `SpeechStateManager` | [State](state.md) |
+| `agenticaiframework.state` (backends) | `StateBackend` interface with `MemoryBackend`, `FileBackend`, `RedisBackend` | [State](state.md) |
+| `agenticaiframework.context` | `ContextManager`, `ContextWindow`, `ContextItem`, `ContextType`, `ContextPriority`, `ContextCompressionStrategy`, `SemanticContextIndex` | [Context](context.md) |
+
+## Retrieve
+
+Load documents, embed them and give agents something to search.
+
+| Module | What it does | Guide |
+|---|---|---|
+| `agenticaiframework.knowledge` | `KnowledgeRetriever.register_source(name, fn)` and `retrieve(query, use_cache=True)` with an LRU cache | [Knowledge](knowledge.md) |
+| `agenticaiframework.knowledge.builder` | `KnowledgeBuilder(embedding_provider, embedding_model, chunk_size, chunk_overlap)` with `add_text`, `add_from_directory`; `KnowledgeChunk` | [Knowledge](knowledge.md) |
+| `agenticaiframework.knowledge` (loaders) | `TextLoader`, `MarkdownLoader`, `PDFLoader`, `DocxLoader`, `CSVLoader`, `JSONLoader`, `WebLoader`, `WebSearchLoader`, `APILoader`, `ImageLoader` | [Knowledge](knowledge.md) |
+| `agenticaiframework.knowledge` (embeddings) | `OpenAIEmbedding`, `AzureOpenAIEmbedding`, `CohereEmbedding`, `HuggingFaceEmbedding`, `EmbeddingProvider` | [Knowledge](knowledge.md) |
+| `agenticaiframework.knowledge.vector_db` | `InMemoryVectorDB`, `ChromaClient`, `QdrantClient`, `PineconeClient`, `VectorDBClient`, `VectorDBConfig`, `create_vector_db_tool` | [Knowledge](knowledge.md) |
+| `agenticaiframework.tools` (RAG tools) | `PDFRAGSearchTool`, `DOCXRAGSearchTool`, `CSVRAGSearchTool`, `JSONRAGSearchTool`, `DirectoryRAGSearchTool`, `PostgreSQLRAGSearchTool`, `MySQLRAGSearchTool`, `MongoDBVectorSearchTool` | [Tools](tools.md) |
+
+## Protect
+
+Validate what goes into and comes out of a model, and keep a record.
+
+| Module | What it does | Guide |
+|---|---|---|
+| `agenticaiframework.guardrails` | `GuardrailManager` with `create_standard_guardrails`, `register_guardrail`, `enforce_guardrails`; `Guardrail`, `GuardrailViolation`, `GuardrailSeverity` | [Guardrails](guardrails.md) |
+| `agenticaiframework.guardrails` (checks) | `PIIDetectionGuardrail`, `PromptInjectionGuardrail`, `InputLengthGuardrail`, `ContentSafetyGuardrail`, `OutputFormatGuardrail`, `ToolUseGuardrail`, `SemanticGuardrail`, `ChainOfThoughtGuardrail` | [Guardrails](guardrails.md) |
+| `agenticaiframework.guardrails` (pipelines and policies) | `GuardrailPipeline.minimal()`, `.safety_only()`, `.enterprise_defaults()`; `AgentPolicyManager`, `AgentPolicy`, `BehaviorPolicy`, `ResourcePolicy`, `SafetyPolicy` | [Guardrails](guardrails.md) |
+| `agenticaiframework.security` | `InputValidator`, `PromptInjectionDetector`, `PIIFilter`, `ProfanityFilter`, `ContentFilter`, `RateLimiter`, `TieredRateLimiter`, `AuditLogger`, `SecurityManager` | [Security](security.md) |
+| `agenticaiframework.compliance` | `DataMaskingEngine.mask()` and `detect_pii()`, `MaskingRule`; `AuditTrailManager` hash-chained log with `log`, `query`, `verify_integrity`; `PolicyEngine`, `Policy`, `PolicyType` | [Compliance](compliance.md) |
+
+## Evaluate
+
+Score outputs, retrieval, tool use, cost and drift; compare variants.
+
+| Module | What it does | Guide |
+|---|---|---|
+| `agenticaiframework.evaluation` (quality) | `ModelQualityEvaluator.evaluate_response(model_name, prompt, response, ground_truth=)`, `ModelTierEvaluator`, `TaskEvaluator` | [Evaluation](evaluation.md) |
+| `agenticaiframework.evaluation` (pipeline) | `RAGEvaluator`, `ToolInvocationEvaluator`, `WorkflowEvaluator`, `MemoryEvaluator`, `AutonomyEvaluator`, `PerformanceEvaluator` | [Evaluation](evaluation.md) |
+| `agenticaiframework.evaluation` (risk and cost) | `SecurityRiskScorer.assess_risk(input_text=, output_text=)`, `CostQualityScorer.record_execution()` and `get_cost_summary()` | [Evaluation](evaluation.md) |
+| `agenticaiframework.evaluation` (drift and outcomes) | `PromptDriftDetector`, `DriftAlert`, `HITLEvaluator`, `BusinessOutcomeEvaluator` | [Evaluation](evaluation.md) |
+| `agenticaiframework.evaluation` (experiments) | `ABTestingFramework`, `CanaryDeploymentManager`, `OfflineEvaluator`, `OnlineEvaluator`, `EvaluationResult`, `EvaluationType` | [Evaluation](evaluation.md) |
+
+## Observe
+
+See what ran, how long it took and what it cost.
+
+| Module | What it does | Guide |
+|---|---|---|
+| `agenticaiframework.tracing` | `AgentStepTracer` with `start_trace`, `start_span`, `set_attribute`, `end_span`, `get_trace_tree`; `Span`, `SpanContext`, `LatencyMetrics` | [Tracing](tracing.md) |
+| `agenticaiframework.monitoring` | `MonitoringSystem.record_metric`, `log_event`, `get_metrics`, `get_events` | [Monitoring](monitoring.md) |
+| `agenticaiframework.enterprise.tracing_otel` | Span exporters including `OTLPExporter` (OTLP/HTTP JSON) | [Tracing](tracing.md) |
+| `agenticaiframework.enterprise.metrics`, `.alerting`, `.alert_manager` | Prometheus and Datadog metric formats, alert rules and notification channels | [Monitoring](monitoring.md) |
+| `agenticaiframework.conversations` | `ConversationLogger`, `AgentLogger`, `StructuredLogger`, `LogEntry`, `LogLevel` | [Agents](agents.md) |
+
+## Operate
+
+Run the system in production.
+
+| Module | What it does | Guide |
+|---|---|---|
+| `agenticaiframework.infrastructure` | `ServerlessExecutor`, `ServerlessFunction`, `MultiRegionManager`, `Region`, `RegionConfig`, `Tenant`, `TenantManager` | [Infrastructure](infrastructure.md) |
+| `agenticaiframework.integrations` | `GitHubIntegration`, `AzureDevOpsIntegration`, `ServiceNowIntegration`, `DatabricksConnector`, `SnowflakeConnector`, `WebhookManager`, `IntegrationManager` | [Integration](integration.md) |
+| `agenticaiframework.llms` (resilience) | Per-provider `CircuitBreaker`, fallback chains, response cache, retry counts | [LLMs](llms.md), [Performance](performance.md) |
+| Deployment guidance | Containers, serverless, multi-region, configuration by environment | [Deployment](deployment.md), [Best practices](best-practices.md) |
+
+## Enterprise
+
+`agenticaiframework.enterprise` holds 237 self-contained modules. The groups below name representative modules; the full list is in [Enterprise](enterprise.md).
+
+| Group | Modules |
+|---|---|
+| Messaging and CQRS | `event_bus` (`InMemoryEventBus`), `command_bus`, `query_bus`, `cqrs`, `event_sourcing`, `event_store`, `outbox`, `saga`, `saga_orchestrator`, `pubsub`, `message_broker`, `dead_letter`, `stream_processing` |
+| Resilience | `circuit_breaker` (`CircuitBreaker`), `bulkhead`, `retry`, `retry_policy`, `timeout`, `fallback`, `rate_limiter`, `throttle`, `quota`, `load_balancer`, `health_check`, `chaos` |
+| Deployment | `blue_green`, `canary`, `rollback`, `deployment_manager`, `release_manager`, `feature_flags`, `feature_toggle`, `environment_manager`, `config_server` |
+| Data | `database`, `repository`, `unit_of_work`, `migration`, `data_pipeline`, `data_lineage`, `data_validator`, `schema_registry`, `vector_database`, `graph_database`, `timeseries_database`, `feature_store` |
+| Security | `rbac`, `permission_engine`, `oauth_provider`, `secrets_manager`, `secret_vault`, `encryption`, `encryption_service`, `data_masking`, `data_privacy_manager`, `audit_trail`, `compliance_engine` |
+| Multi-tenancy | `tenant`, `tenant_manager`, `multitenancy`, `session_manager`, `license_manager`, `subscription_manager` |
+| Observability | `tracing_otel`, `metrics`, `metrics_collector`, `alert_manager`, `alerting`, `log_aggregator`, `health_monitor`, `profiler`, `sla_manager`, `incident_manager`, `oncall_manager`, `runbook_manager` |
+| AI infrastructure | `ml_inference`, `embeddings`, `rag`, `knowledge_manager`, `summarization`, `json_mode`, `function_call`, `streaming`, `ranking`, `recommendation_engine`, `analytics_engine` |
+| Domain-driven design | `aggregate`, `aggregate_root`, `entity`, `value_object`, `domain_events`, `domain_service`, `bounded_context`, `specification`, `factories`, `projection` |
+| Integration | `api_gateway`, `gateway`, `api_versioning`, `api_lifecycle_manager`, `graphql_manager`, `grpc_manager`, `webhook`, `webhook_receiver`, `sse_manager`, `websocket`, `service_discovery`, `service_registry`, `mesh` |
+| Cloud adapters | `adapters` (S3, Azure Blob, Cosmos DB, Service Bus, GCS, Redis, Azure OpenAI), `secrets` (Azure Key Vault) |
+| Business services | `payment_gateway`, `invoice_generator`, `tax_calculator`, `order_processing`, `inventory_manager`, `shipping_service`, `booking_engine`, `loyalty_program`, `survey_engine`, `voting_system`, `calendar_service` |
+| Documents and media | `pdf_generator`, `document_generator`, `document_converter`, `excel_service`, `report_builder`, `report_generator`, `barcode_generator`, `qr_generator`, `image_processor`, `audio_processor`, `video_processor` |
+
+## Internals
+
+`agenticaiframework._internal` contains the standard-library implementations that make the zero-dependency install possible. They are not public API.
+
+| Module | Replaces |
+|---|---|
+| `http`, `http_server`, `h2`, `ws`, `mqtt`, `smtp`, `graphql` | HTTP/1.1 and HTTP/2 client, HTTP server, WebSocket, MQTT, SMTP and GraphQL clients |
+| `aes`, `aes_gcm`, `fernet`, `ec`, `jwt`, `pem` | AES-CBC/GCM, Fernet tokens, elliptic-curve signing, JWT encode/verify, PEM parsing |
+| `pdf`, `docx`, `html`, `yaml`, `msgpack`, `schema`, `tokenizer` | PDF read/write, DOCX text extraction, HTML parsing, YAML, MessagePack, JSON-schema validation, token counting |
+| `redis_resp`, `vector_store`, `array`, `cron`, `healthcheck`, `duckduckgo` | Redis RESP protocol, in-memory vector index, numeric arrays, cron expressions, health probes, web search |
+| `clients.openai_rest`, `clients.anthropic_rest`, `clients.gemini_rest`, `clients.cohere_rest` | Provider SDKs |
+| `clients.postgres_wire`, `clients.mysql_wire`, `clients.snowflake_rest`, `clients.mongo_data_api`, `clients.cosmos_rest`, `clients.qdrant_rest`, `clients.weaviate_rest` | Database drivers and vector store clients |
+| `clients.aws_sigv4`, `clients.s3_rest`, `clients.azure_blob_rest`, `clients.azure_servicebus_rest`, `clients.gcp_rest`, `clients.twilio_rest` | Cloud SDKs |
+
+See [Architecture](architecture.md) for how these layers fit together and [Installation and Usage](USAGE.md) for the third-party packages that are used when installed.
+
+## Related
+
+- [Quick Start](quick-start.md)
+- [Architecture](architecture.md)
+- [Framework comparison](comparison.md)
+- [API reference](API_REFERENCE.md)
+- [Examples](EXAMPLES.md)

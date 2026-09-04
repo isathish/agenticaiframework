@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="AgenticAI Framework">
+  <!-- Single-colour mark for use on coloured backgrounds (header bar, print). -->
+  <g stroke="currentColor" stroke-width="7" stroke-linecap="round" fill="none">
+    <path d="M64 22 L33.4 88.3"/>
+    <path d="M64 22 L94.6 88.3"/>
+    <path d="M43 70 L85 70"/>
+  </g>
+  <circle cx="64" cy="22" r="13" fill="currentColor"/>
+  <circle cx="28" cy="100" r="10" fill="none" stroke="currentColor" stroke-width="6"/>
+  <circle cx="100" cy="100" r="10" fill="none" stroke="currentColor" stroke-width="6"/>
+  <circle cx="43" cy="70" r="6" fill="currentColor"/>
+  <circle cx="85" cy="70" r="6" fill="currentColor"/>
+</svg>

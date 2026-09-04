@@ -6,9 +6,12 @@ repo_url: https://github.com/isathish/agenticaiframework
 repo_name: isathish/agenticaiframework
 edit_uri: edit/main/docs/
 
-# Copyright
+# Copyright (matches LICENSE)
 copyright: >
-  Copyright &copy; 2024-2026 AgenticAI Framework Contributors<br/> <a href="#__consent">Change cookie settings</a>
+  Copyright &copy; 2025&ndash;2026 <a href="https://github.com/isathish">Sathishkumar Nagarajan</a>.
+  Released under the <a href="https://github.com/isathish/agenticaiframework/blob/main/LICENSE">MIT License</a>.
+  Product names are trademarks of their respective owners.
+  &middot; <a href="#__consent">Cookie settings</a>
 
 # Theme Configuration
 theme:
@@ -19,9 +22,8 @@ theme:
     repo: fontawesome/brands/github
     edit: material/pencil
     view: material/eye
-    logo: material/robot-outline
-  # logo: assets/agenticaiframework.png
-  # favicon: assets/favicon.png
+  logo: assets/logo.svg
+  favicon: assets/favicon.svg
   palette:
   # Palette toggle for automatic mode
   - media: "(prefers-color-scheme)"
@@ -50,7 +52,6 @@ theme:
   - navigation.tabs
   - navigation.tabs.sticky
   - navigation.sections
-  - navigation.expand
   - navigation.path
   - navigation.prune
   - navigation.top
@@ -60,7 +61,6 @@ theme:
   - navigation.instant
   - navigation.instant.prefetch
   - navigation.instant.progress
-  - navigation.path
   # Search
   - search.highlight
   - search.share
@@ -75,13 +75,12 @@ theme:
   - content.action.view
   # TOC
   - toc.follow
-  - toc.integrate
   # Announce
   - announce.dismiss
 
   font:
-    text: Roboto
-    code: Roboto Mono
+    text: Inter
+    code: JetBrains Mono
 
 # Extensions
 markdown_extensions:
@@ -141,23 +140,50 @@ plugins:
     - en
 - tags:
     enabled: true
+- gen-files:
+    scripts:
+    - docs/gen_ref_pages.py
+- literate-nav:
+    nav_file: SUMMARY.md
+- section-index
 - mkdocstrings:
+    default_handler: python
     handlers:
       python:
+        paths: [.]
         options:
+          # Rendering
           show_source: false
           show_root_heading: true
+          show_root_full_path: false
+          show_object_full_path: false
           show_if_no_docstring: true
-          docstring_style: google
-          docstring_section_style: table
-          merge_init_into_class: true
-          show_signature_annotations: true
-          separate_signature: true
-          members_order: source
-          group_by_category: true
-          show_category_heading: true
           show_symbol_type_heading: true
           show_symbol_type_toc: true
+          show_category_heading: false
+          heading_level: 2
+          # Docstrings
+          docstring_style: google
+          docstring_section_style: table
+          docstring_options:
+            ignore_init_summary: true
+          merge_init_into_class: true
+          # Signatures
+          show_signature_annotations: true
+          separate_signature: true
+          signature_crossrefs: true
+          line_length: 80
+          # Members
+          members_order: source
+          group_by_category: true
+          inherited_members: false
+          filters:
+          - "!^_"
+          summary: true
+          show_labels: true
+          # Cross-refs
+          show_bases: true
+          annotations_path: brief
 - git-revision-date-localized:
     enable_creation_date: true
     type: timeago
@@ -186,54 +212,62 @@ plugins:
 
 # Navigation Structure
 nav:
-- Home:
-  - Overview: index.md
-  - Changelog: changelog.md
-- Getting Started:
-  - Quick Start Guide: quick-start.md
+- Home: index.md
+- Get Started:
+  - Quick Start: quick-start.md
   - Installation & Setup: USAGE.md
+  - Configuration: CONFIGURATION.md
   - Feature Overview: features.md
   - Framework Comparison: comparison.md
-  - Configuration Guide: CONFIGURATION.md
-  - Architecture Overview: architecture.md
+- Concepts:
+  - Architecture: architecture.md
   - Architecture Diagrams: diagrams.md
-- Core Modules:
   - Agents: agents.md
   - Tasks: tasks.md
   - Processes: processes.md
-  - LLMs: llms.md
-  - Memory: memory.md
-  - State Management: state.md
-  - Knowledge: knowledge.md
-  - Communication: communication.md
-  - Speech Processing: speech.md
-  - Tools: tools.md
-  - MCP Tools: mcp_tools.md
   - Prompts: prompts.md
   - Context Engineering: context.md
-- Orchestration & Teams:
   - Multi-Agent Orchestration: orchestration.md
   - Hub: hub.md
-- Monitoring & Evaluation:
-  - Monitoring: monitoring.md
-  - 12-Tier Evaluation: evaluation.md
-  - Tracing: tracing.md
-- Security & Compliance:
-  - Guardrails: guardrails.md
-  - Compliance: compliance.md
-  - Infrastructure: infrastructure.md
-- Enterprise:
-  - Enterprise Features: enterprise.md
-- Examples & Tutorials:
+- Guides:
+  - Models & Providers:
+    - LLMs: llms.md
+    - Speech Processing: speech.md
+  - Memory & Knowledge:
+    - Memory: memory.md
+    - State Management: state.md
+    - Knowledge & RAG: knowledge.md
+  - Tools & Integrations:
+    - Tools: tools.md
+    - MCP Tools: mcp_tools.md
+    - Communication Protocols: communication.md
+    - Integration Patterns: integration.md
+  - Cloud:
+    - Cloud Integrations: cloud.md
+    - Infrastructure: infrastructure.md
+    - Deployment: deployment.md
+  - Observability:
+    - Monitoring: monitoring.md
+    - Tracing: tracing.md
+    - 12-Tier Evaluation: evaluation.md
+  - Safety & Compliance:
+    - Guardrails: guardrails.md
+    - Security & Privacy: security.md
+    - Compliance: compliance.md
+  - Operations:
+    - Performance: performance.md
+    - Best Practices: best-practices.md
+    - Enterprise Features: enterprise.md
+- Examples:
   - Overview: EXAMPLES.md
-  - Basic Examples:
+  - Basics:
     - Agents: examples/agents_example.md
     - Tasks: examples/tasks_example.md
     - Memory: examples/memory_example.md
     - LLMs: examples/llms_example.md
     - Guardrails: examples/guardrails_example.md
     - Prompts: examples/prompts_example.md
-  - Manager Classes:
+  - Managers:
     - Agent Manager: examples/agent_manager_example.md
     - Task Manager: examples/task_manager_example.md
     - Memory Manager: examples/memory_manager_example.md
@@ -243,7 +277,7 @@ nav:
     - MCP Tools Manager: examples/mcp_tools_manager_example.md
     - Monitoring System: examples/monitoring_system_example.md
     - Configuration Manager: examples/configuration_manager_example.md
-  - Advanced Examples:
+  - Advanced:
     - Communication: examples/communication_example.md
     - Knowledge Retrieval: examples/knowledge_retrieval.md
     - Code Generation Pipeline: examples/code_generation_pipeline.md
@@ -258,23 +292,19 @@ nav:
     - Full Examples Index: examples/full_examples_index.md
     - MCP Tools: examples/mcp_tools_example.md
     - Monitoring: examples/monitoring_example.md
-- Advanced Topics:
-  - Best Practices: best-practices.md
-  - Performance Optimization: performance.md
-  - Security & Privacy: security.md
-  - Deployment Guide: deployment.md
-  - Integration Patterns: integration.md
+- API Reference:
+  - Overview: API_REFERENCE.md
+  - Modules: reference/
 - Reference:
-  - API Reference: API_REFERENCE.md
   - Configuration Reference: configuration-reference.md
   - CLI Reference: cli-reference.md
-  - Extending Framework: EXTENDING.md
-- Help & Support:
-  - Troubleshooting: TROUBLESHOOTING.md
-  - FAQ: faq.md
-  - Contributing: contributing.md
-- Development:
+  - Extending the Framework: EXTENDING.md
   - Testing Guide: TESTING.md
+- Community:
+  - FAQ: faq.md
+  - Troubleshooting: TROUBLESHOOTING.md
+  - Contributing: contributing.md
+  - Changelog: changelog.md
 
 # Extra CSS and JavaScript
 extra_css:

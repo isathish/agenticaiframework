@@ -1,98 +1,94 @@
 ---
 title: Processes
-description: Execute multi-step workflows with sequential, parallel, and hybrid strategies using bounded thread pools
+description: Run a list of callables sequentially, in a bounded thread pool, or half-and-half with agenticaiframework.processes.Process, and route work through agents with SequentialWorkflow and ParallelWorkflow.
 tags:
   - processes
   - workflows
-  - parallel
   - concurrency
 ---
 
-# :material-cog-transfer: Processes
+# Processes
 
-**Execute multi-step workflows with sequential, parallel, and hybrid strategies.**
+`agenticaiframework.processes.Process` collects callables with their arguments and runs them with one of three strategies: `sequential`, `parallel` (a `concurrent.futures.ThreadPoolExecutor` bounded by `max_workers`) or `hybrid`. `agenticaiframework.workflows` adds `SequentialWorkflow` and `ParallelWorkflow`, which run a callable through agents registered in an `AgentManager`. Use `Process` when you have plain Python steps to fan out or chain; use the workflows when the steps should be executed and tracked by agents.
 
-Thread-safe task execution with bounded `ThreadPoolExecutor` and automatic resource management.
+## At a glance
 
-!!! tip "v2.0 Improvements"
-    Processes now use **bounded thread pools** (`min(32, cpu_count + 4)` workers),
-    `__slots__` for lower memory overhead, and proper structured logging.
+| Class / function | Purpose |
+|---|---|
+| `Process(name, strategy="sequential", max_workers=None)` | Container for callables plus an execution strategy |
+| `process.add_task(fn, *args, **kwargs)` / `add_step(...)` | Append a callable with its arguments (`add_step` is an alias) |
+| `process.execute()` | Run all tasks, return their results in insertion order |
+| `process.status` | `initialized`, `running`, `completed` or `failed` |
+| `SequentialWorkflow(manager).execute_sequential(data, agent_chain, task_callable)` | Pass a value through a chain of agents |
+| `ParallelWorkflow(manager).execute_parallel_sync(data, agent_names, task_callable, max_workers=None)` | Run the same callable on several agents in threads |
+| `ParallelWorkflow(manager).execute_parallel(...)` | `async` variant using the running event loop |
 
----
+## Quick example
 
-## Overview
+```python
+from agenticaiframework import Process
 
-The `Process` class orchestrates callable tasks using one of three execution strategies:
+proc = Process(name="fetch_all", strategy="parallel", max_workers=4)
+for source in ("arxiv", "scholar", "pubmed"):
+    proc.add_task(lambda s: f"fetched {s}", source)
 
-| Strategy | Description | Best For |
-|----------|-------------|----------|
-| `sequential` | Tasks run one after another in the order added | Pipelines where each step depends on the previous |
-| `parallel` | All tasks run concurrently via `ThreadPoolExecutor` | Independent I/O-bound or CPU-bound work |
-| `hybrid` | First half sequentially, second half in parallel | Mixed dependency / fan-out patterns |
+print(proc.status)          # initialized
+print(proc.execute())       # ['fetched arxiv', 'fetched scholar', 'fetched pubmed']
+print(proc.status)          # completed
+```
 
----
+## Execution strategies
 
-## Sequential Execution
+| Strategy | Behaviour | Use when |
+|---|---|---|
+| `sequential` | Tasks run one after another in insertion order on the calling thread | Steps have side effects that must happen in order |
+| `parallel` | All tasks are submitted to a `ThreadPoolExecutor(max_workers)`; results are collected in insertion order | Independent I/O-bound work such as API calls or file reads |
+| `hybrid` | The first half of the task list runs sequentially, the second half in parallel | A setup phase followed by an independent fan-out |
 
-Tasks run one at a time in insertion order. The result list preserves that order.
+The default `max_workers` is `min(32, os.cpu_count() + 4)`. Each task receives only the arguments given to `add_task`; the return value of one task is not passed to the next. Chain values yourself if a step depends on the previous result.
+
+### Sequential
 
 ```python
 from agenticaiframework import Process
 
 def extract(url: str) -> dict:
-    return {"url": url, "data": "..."}
+    return {"url": url, "data": "raw"}
 
 def transform(record: dict) -> dict:
-    record["cleaned"] = True
-    return record
+    return {**record, "cleaned": True}
 
 pipeline = Process(name="etl", strategy="sequential")
 pipeline.add_task(extract, "https://example.com/data.json")
-pipeline.add_task(transform, {"url": "...", "data": "raw"})
+pipeline.add_task(transform, {"url": "https://example.com/data.json", "data": "raw"})
 
-results = pipeline.execute()
-# results is a list of return values in task order
+extracted, transformed = pipeline.execute()
+print(transformed["cleaned"])       # True
 ```
 
----
-
-## Parallel Execution
-
-All tasks are submitted to a `ThreadPoolExecutor` and run concurrently. The
-default worker count is `min(32, os.cpu_count() + 4)`, matching the Python 3.13
-default, and can be overridden via `max_workers`.
+### Parallel
 
 ```python
 import time
 from agenticaiframework import Process
 
 def fetch(url: str) -> str:
-    time.sleep(0.5) # simulate network I/O
+    time.sleep(0.2)                  # stands in for network I/O
     return f"fetched:{url}"
 
-urls = ["https://api.example.com/a",
-    "https://api.example.com/b",
-    "https://api.example.com/c",
-]
-
 proc = Process(name="fetch_all", strategy="parallel", max_workers=8)
-for url in urls:
+for url in ("https://api.example.com/a", "https://api.example.com/b", "https://api.example.com/c"):
     proc.add_task(fetch, url)
 
-results = proc.execute() # completes in ~0.5 s instead of ~1.5 s
+started = time.perf_counter()
+results = proc.execute()
+print(results, f"{time.perf_counter() - started:.2f}s")   # about 0.2s rather than 0.6s
 ```
 
-!!! warning "Thread Safety"
-    Tasks submitted to the parallel executor **must be thread-safe**.
-    Avoid mutating shared state without synchronisation.
+!!! warning "Thread safety"
+    Callables submitted with the `parallel` or `hybrid` strategy run on worker threads at the same time. Do not mutate shared state from them without a lock.
 
----
-
-## Hybrid Execution
-
-The first half of the task list runs sequentially; the second half runs in
-parallel. Useful when initial steps produce data that later steps consume
-independently.
+### Hybrid
 
 ```python
 from agenticaiframework import Process
@@ -112,16 +108,11 @@ proc.add_task(validate_config, {"batch_size": 100})
 proc.add_task(process_shard, 1)
 proc.add_task(process_shard, 2)
 
-# load_config + validate_config run sequentially,
-# then process_shard(1) + process_shard(2) run in parallel
-results = proc.execute()
+# load_config and validate_config run sequentially; both process_shard calls run in parallel
+print(proc.execute())
 ```
 
----
-
 ## Process Lifecycle
-
-Every `Process` instance transitions through these states:
 
 ```text
 initialized ──▶ running ──▶ completed
@@ -129,51 +120,63 @@ initialized ──▶ running ──▶ completed
                       └──▶ failed (on unhandled exception)
 ```
 
-Check the current state via `process.status`.
+`execute()` sets `status` to `running`, then `completed`. If any task raises, the status becomes `failed`, the exception is logged with `logger.exception` and re-raised to the caller; results from tasks that had already completed are discarded. Catch exceptions inside a task if partial failure should not stop the process.
 
----
+```python
+from agenticaiframework import Process
 
-## API Reference
+def boom():
+    raise RuntimeError("disk full")
 
-### `Process`
+proc = Process(name="fragile")
+proc.add_task(boom)
+try:
+    proc.execute()
+except RuntimeError as exc:
+    print(proc.status, exc)          # failed disk full
+```
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `name` | `str` | required | Human-readable process identifier |
-| `strategy` | `str` | `"sequential"` | One of `"sequential"`, `"parallel"`, `"hybrid"` |
-| `max_workers` | `int` or `None` | `None` | Thread pool size (defaults to `min(32, cpu_count + 4)`) |
+## Agent workflows
 
-**Attributes** (via `__slots__`): `name`, `strategy`, `tasks`, `status`, `max_workers`
+`agenticaiframework.workflows` runs a callable through agents that are registered in an `AgentManager`. Agents are resolved by id or by name; an unknown key raises `ValueError`. Each step calls `agent.execute_task(task_callable, value)`, so the agent's `performance_metrics` and context window are updated and exceptions are captured as `None` results (see [Agents](agents.md#error-handling)).
 
-#### Methods
+```python
+import asyncio
+from agenticaiframework import Agent, AgentManager
+from agenticaiframework.workflows import SequentialWorkflow, ParallelWorkflow
 
-| Method | Returns | Description |
-|--------|---------|-------------|
-| `add_task(callable, *args, **kwargs)` | `None` | Append a callable with its arguments |
-| `add_step(callable, *args, **kwargs)` | `None` | Alias for `add_task` |
-| `execute()` | `list[Any]` | Run all tasks and return results in order |
+manager = AgentManager()
+for name in ("Cleaner", "Enricher", "Publisher"):
+    manager.register_agent(Agent.quick(name, role="assistant"))
 
----
+def step(payload: dict) -> dict:
+    return {**payload, "hops": payload.get("hops", 0) + 1}
 
-## Best Practices
+sequential = SequentialWorkflow(manager)
+print(sequential.execute_sequential({"hops": 0}, ["Cleaner", "Enricher", "Publisher"], step))
+# {'hops': 3}
 
-!!! success "Do"
-    - Keep tasks as **pure functions** — accept input, return output, no side effects.
-    - Use `sequential` when order or data dependencies matter.
-    - Use `parallel` for independent I/O-bound work (API calls, file reads).
-    - Set `max_workers` explicitly for CPU-bound loads to avoid over-subscription.
-    - Handle exceptions inside tasks when partial failure is acceptable.
+parallel = ParallelWorkflow(manager)
+print(parallel.execute_parallel_sync({"hops": 0}, ["Cleaner", "Enricher"], step, max_workers=2))
+# [{'hops': 1}, {'hops': 1}]
 
-!!! danger "Don't"
-    - Mutate shared mutable state from parallel tasks without a lock.
-    - Use `parallel` strategy for tasks that must run in order.
-    - Ignore the return value of `execute()` — it contains all task results.
+print(asyncio.run(parallel.execute_parallel({"hops": 0}, ["Publisher"], step)))
+print(manager.get_aggregate_metrics()["total_tasks"])   # 6
+```
 
----
+`execute_sequential` threads the return value of each agent into the next call; the parallel variants give every agent the same `data` and return one result per agent in the order of `agent_names`. For coordination patterns beyond these two (hierarchical, consensus, round-robin and so on) use the [Orchestration](orchestration.md) engine.
 
-## Related Documentation
+## API summary
 
-- [Orchestration](orchestration.md) — multi-agent orchestration engine
-- [Tasks](tasks.md) — individual task definitions
-- [Agents](agents.md) — agent lifecycle
-- [Performance](performance.md) — tuning thread pools and concurrency
+| Symbol | Signature / key methods | Notes |
+|---|---|---|
+| `Process` | `Process(name, strategy="sequential", max_workers=None)`; `add_task(fn, *args, **kwargs)`, `add_step(...)`, `execute() -> list` | Attributes: `name`, `strategy`, `tasks`, `status`, `max_workers` (`__slots__`) |
+| `SequentialWorkflow` | `SequentialWorkflow(manager)`; `execute_sequential(data, agent_chain, task_callable) -> Any` | `agent_chain` holds agent ids or names |
+| `ParallelWorkflow` | `ParallelWorkflow(manager)`; `execute_parallel_sync(data, agent_names, task_callable, max_workers=None) -> list`; `async execute_parallel(data, agent_names, task_callable) -> list` | Thread pool or `loop.run_in_executor` |
+
+## Related
+
+- [Tasks](tasks.md): `Task` and `TaskManager` for named, tracked callables
+- [Orchestration](orchestration.md): multi-agent coordination patterns
+- [Agents](agents.md): `execute_task` and `AgentManager`
+- [Performance](performance.md): sizing thread pools

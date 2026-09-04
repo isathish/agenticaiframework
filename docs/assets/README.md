@@ -1,153 +1,44 @@
-# Assets Directory
+# Brand assets
 
-This directory contains branding assets for the AgenticAI Framework documentation.
+Source files are SVG; PNGs are rendered from them with `rsvg-convert`.
 
-## Required Assets
+| File | Use |
+|------|-----|
+| `logo.svg` / `logo.png` (512px) | Primary mark: gradient tile, white agent graph. Used as the site logo. |
+| `logo-mark-mono.svg` | Single-colour mark (`currentColor`), no tile. For coloured or print backgrounds. |
+| `logo-wordmark.svg` / `.png` | Mark + "AgenticAI Framework" for light backgrounds (README, slides). |
+| `logo-wordmark-dark.svg` | Wordmark for dark backgrounds. |
+| `favicon.svg`, `favicon-32.png`, `apple-touch-icon.png` | Browser and home-screen icons. |
+| `social-card.svg` / `.png` (1200x630) | Open Graph / Twitter preview image. |
 
-### 1. Logo (agenticaiframework.png)
-- **File**: `agenticaiframework.png`
-- **Recommended Size**: 128x128 pixels
-- **Format**: PNG with transparency
-- **Usage**: Displayed in the navigation bar
-- **Design Guidelines**:
-  - Simple, recognizable icon
-  - Works well at small sizes
-  - Good contrast against both light and dark backgrounds
-  - Represents AI/Agent concepts
+## Concept
 
-### 2. Favicon (favicon.png)
-- **File**: `favicon.png`
-- **Recommended Size**: 32x32 or 64x64 pixels
-- **Format**: PNG or ICO
-- **Usage**: Browser tab icon
-- **Design Guidelines**:
-  - Very simple, recognizable at tiny sizes
-  - High contrast
-  - Represents brand identity
+Three agents connected by edges form the letter A. The filled apex node is the
+orchestrator; the two ring nodes at the base are worker agents; the crossbar is
+the shared channel between them.
 
-## Creating Assets
+## Palette
 
-### Using SVG to PNG Conversion
+| Token | Hex |
+|-------|-----|
+| Indigo (primary) | `#6366f1` |
+| Indigo dark | `#4f46e5` |
+| Cyan (secondary) | `#06b6d4` |
+| Text | `#111827` (light) / `#f9fafb` (dark) |
+
+Gradient: 135deg from `#6366f1` to `#06b6d4`.
+
+## Regenerate PNGs
+
 ```bash
-# If you have an SVG logo
-inkscape agenticaiframework.svg --export-png=agenticaiframework.png --export-width=128 --export-height=128
-
-# For favicon
-inkscape agenticaiframework.svg --export-png=favicon.png --export-width=64 --export-height=64
+cd docs/assets
+cp logo.svg favicon.svg
+rsvg-convert -w 512 -h 512 logo.svg -o logo.png
+rsvg-convert -w 32  -h 32  logo.svg -o favicon-32.png
+rsvg-convert -w 180 -h 180 logo.svg -o apple-touch-icon.png
+rsvg-convert -w 1120 logo-wordmark.svg -o logo-wordmark.png
+rsvg-convert -w 1200 -h 630 social-card.svg -o social-card.png
 ```
 
-### Using ImageMagick
-```bash
-# Resize existing image to logo size
-convert existing-logo.png -resize 128x128 agenticaiframework.png
-
-# Create favicon
-convert existing-logo.png -resize 32x32 favicon.png
-```
-
-### Using Python (PIL/Pillow)
-```python
-from PIL import Image
-
-# Create logo
-img = Image.open('original.png')
-img = img.resize((128, 128), Image.Resampling.LANCZOS)
-img.save('agenticaiframework.png', 'PNG')
-
-# Create favicon
-img = img.resize((32, 32), Image.Resampling.LANCZOS)
-img.save('favicon.png', 'PNG')
-```
-
-## Temporary Placeholder
-
-Until custom assets are created, you can use placeholder images or disable the logo/favicon in `mkdocs.yml` by commenting out these lines:
-
-```yaml
-# logo: assets/agenticaiframework.png
-# favicon: assets/favicon.png
-```
-
-## Alternative: Use Emoji/Icon
-
-You can also use Material Design icons or emoji as the logo:
-
-```yaml
-theme:
-  icon:
-    logo: material/robot # Material Design icon
-  # Or use emoji
-  # logo: 
-```
-
-## Brand Colors
-
-Recommended colors for AgenticAI Framework branding:
-
-- **Primary**: Indigo (#3F51B5)
-- **Accent**: Amber (#FFC107)
-- **Background (Light)**: White (#FFFFFF)
-- **Background (Dark)**: Slate (#1E1E1E)
-- **Text**: Dark Gray (#212121) / White (#FFFFFF)
-
-## File Structure
-
-```
-docs/assets/
-├── README.md # This file
-├── agenticaiframework.png # Main logo (128x128)
-├── favicon.png # Favicon (32x32 or 64x64)
-├── agenticaiframework.svg # Optional: Vector version
-├── banner.png # Optional: Social media banner
-└── screenshots/ # Optional: Screenshots folder
-```
-
-## Social Media Assets (Optional)
-
-### Open Graph Image
-- **Size**: 1200x630 pixels
-- **File**: `og-image.png`
-- **Usage**: Social media previews
-
-### Twitter Card Image
-- **Size**: 1200x600 pixels
-- **File**: `twitter-card.png`
-- **Usage**: Twitter link previews
-
-## Testing Assets
-
-After adding assets, test them:
-
-1. **Local Development**:
-   ```bash
-   mkdocs serve
-   ```
-
-2. **Check**:
-   - Logo appears in navigation bar
-   - Favicon appears in browser tab
-   - Images render correctly in light/dark mode
-   - Proper sizing and alignment
-
-## Quick Start: Placeholder Creation
-
-If you need quick placeholders for testing:
-
-```python
-from PIL import Image, ImageDraw, ImageFont
-
-# Create logo placeholder
-img = Image.new('RGBA', (128, 128), (63, 81, 181, 255))
-draw = ImageDraw.Draw(img)
-draw.text((40, 50), "AI", fill=(255, 255, 255, 255), font=ImageFont.truetype("Arial", 48))
-img.save('agenticaiframework.png')
-
-# Create favicon placeholder
-img_small = img.resize((32, 32), Image.Resampling.LANCZOS)
-img_small.save('favicon.png')
-```
-
----
-
-**Status**: Directory created, assets pending 
-**Action Required**: Add agenticaiframework.png and favicon.png files or comment out logo/favicon in mkdocs.yml
+Do not add a margin, recolour the mark, or place it on a busy background. Keep
+clear space of at least 25% of the tile width around the mark.

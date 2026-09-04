@@ -1,873 +1,330 @@
 ---
-title: Memory Management
-description: Guide to AgenticAI Framework's 7 specialized memory managers
+title: Memory
+description: The seven memory managers in agenticaiframework.memory - MemoryManager tiers with TTL and consolidation, AgentMemoryManager conversation/working/facts/episodes, and the workflow, orchestration, knowledge, tool and speech managers.
+tags:
+  - memory
 ---
 
-# Memory Management
+# Memory
 
-AgenticAI Framework provides **7 specialized memory managers** designed for different use cases, from general-purpose storage to specialized domain-specific memory systems.
+`agenticaiframework.memory` stores what agents and their surrounding systems accumulate over time. `MemoryManager` is a thread-safe three-tier key/value store (short-term with TTL, long-term, external) with LRU/priority eviction, search and consolidation. Six specialised managers build on the same ideas for particular kinds of data: agent conversations and facts, workflow steps and checkpoints, inter-agent messages and handoffs, embedding and query caches, tool execution history, and speech transcriptions. All of them are in-process and need no external service; pass a shared `MemoryManager` to a specialised manager when you want its entries to be visible in one place. For durable snapshots and backends (file, Redis) see [State](state.md); for the per-call token window see [Context](context.md).
 
-!!! tip "Enterprise Storage"
+## At a glance
 
-    The framework also includes **14 enterprise storage & caching modules** for production deployments including Redis, distributed cache, and multi-tier caching.
+| Class | Purpose |
+|---|---|
+| `MemoryManager(short_term_limit=100, long_term_limit=1000)` | Tiered key/value store: `store`, `retrieve`, `search`, `consolidate`, `get_stats`, `export_to_json` |
+| `AgentMemoryManager(agent_id, ...)` | Conversation turns, working memory with TTL, learned facts, episodes |
+| `WorkflowMemoryManager(...)` | Per-workflow variables, step results, checkpoints, execution history |
+| `OrchestrationMemoryManager(...)` | Team shared context, agent-to-agent messages, handoffs, contributions |
+| `KnowledgeMemoryManager(...)` | Embedding cache, query-result cache, retrieval history, document tracking |
+| `ToolMemoryManager(...)` | Tool result cache, execution history, per-tool performance stats, argument suggestions |
+| `SpeechMemoryManager(...)` | Transcription and synthesis history, audio cache, voice profiles |
+| `MemoryEntry`, `MemoryStats`, `MemoryType` | Entry dataclass, counters and the `CONVERSATION/WORKING/EPISODIC/SEMANTIC/PROCEDURAL` enum |
+| `memory_manager` | Module-level `MemoryManager` instance |
 
----
+## Quick example
 
-## Quick Navigation
+```python
+from agenticaiframework.memory import MemoryManager, AgentMemoryManager
 
-<div class="grid cards" markdown>
+memory = MemoryManager()
+memory.store("user_pref", "concise answers", memory_type="long_term", metadata={"user": "alice"})
+print(memory.retrieve("user_pref"))                       # concise answers
+print([entry.key for entry in memory.search("concise")])  # ['user_pref']
 
-- :floppy_disk:{ .lg } **MemoryManager**
+agent_memory = AgentMemoryManager("agent_001")
+agent_memory.add_turn("user", "What's the weather like?")
+agent_memory.add_turn("assistant", "Sunny, 22 C.")
+agent_memory.set_working("current_task", "weather_query", ttl_seconds=300)
+agent_memory.learn_fact("preference", "User prefers Celsius")     # category first
+agent_memory.record_episode("weather_query", "success", summary="answered from cache")
 
-    ---
-
-    General-purpose memory for any agent
-
-    [:octicons-arrow-right-24: Jump to section](#memorymanager)
-
-- :robot:{ .lg } **AgentMemoryManager**
-
-    ---
-
-    Agent-specific context and state
-
-    [:octicons-arrow-right-24: Jump to section](#agentmemorymanager)
-
-- :arrows_counterclockwise:{ .lg } **WorkflowMemoryManager**
-
-    ---
-
-    Workflow execution tracking
-
-    [:octicons-arrow-right-24: Jump to section](#workflowmemorymanager)
-
-- :busts_in_silhouette:{ .lg } **OrchestrationMemoryManager**
-
-    ---
-
-    Multi-agent coordination
-
-    [:octicons-arrow-right-24: Jump to section](#orchestrationmemorymanager)
-
-- :books:{ .lg } **KnowledgeMemoryManager**
-
-    ---
-
-    Knowledge base storage
-
-    [:octicons-arrow-right-24: Jump to section](#knowledgememorymanager)
-
-- :hammer_and_wrench:{ .lg } **ToolMemoryManager**
-
-    ---
-
-    Tool execution history
-
-    [:octicons-arrow-right-24: Jump to section](#toolmemorymanager)
-
-- :microphone:{ .lg } **SpeechMemoryManager**
-
-    ---
-
-    Voice interaction data
-
-    [:octicons-arrow-right-24: Jump to section](#speechmemorymanager)
-
-</div>
-
----
-
-## Memory Manager Comparison
-
-| Manager | Purpose | Key Features | Best For |
-|---------|---------|--------------|----------|
-| **MemoryManager** | General storage | Semantic search, compression | Single agents |
-| **AgentMemoryManager** | Agent state | Context tracking, preferences | Agent persistence |
-| **WorkflowMemoryManager** | Workflow state | Step tracking, branching | Complex workflows |
-| **OrchestrationMemoryManager** | Multi-agent | Shared context, coordination | Agent teams |
-| **KnowledgeMemoryManager** | Knowledge base | RAG, document storage | Information retrieval |
-| **ToolMemoryManager** | Tool history | Execution logs, caching | Tool optimization |
-| **SpeechMemoryManager** | Voice data | Transcripts, audio metadata | Voice applications |
-
----
+print(agent_memory.get_conversation_text())
+print([f.content for f in agent_memory.search_facts("celsius")])
+print(agent_memory.get_stats())
+# {'agent_id': 'agent_001', 'conversation_turns': 2, 'working_items': 1, 'episodes': 1, 'facts': 1, 'total_tokens': 0}
+```
 
 ## MemoryManager
 
-The **MemoryManager** is the general-purpose memory solution for any agent. It provides semantic search, automatic compression, and flexible storage backends.
+### Tiers
 
-### Basic Usage
-
-```python
-import logging
-
-logger = logging.getLogger(__name__)
-
-from agenticaiframework import MemoryManager
-
-# Initialize memory manager
-memory = MemoryManager()
-
-# Store a memory
-memory.store(
-    content="User prefers detailed technical explanations",
-    metadata={
-        "type": "preference",
-        "user_id": "user_123",
-        "category": "communication_style"
-    }
-)
-
-# Search memories
-results = memory.search("user preferences", top_k=5)
-for result in results:
-    logger.info(f"Content: {result.content}")
-    logger.info(f"Similarity: {result.similarity:.2f}")
-```
-
-### Configuration Options
+| Tier | Default TTL | Limit | Eviction |
+|---|---|---|---|
+| `short_term` | 300 s | `short_term_limit` (100) | Lowest priority first (heap), then least recently used |
+| `long_term` | none | `long_term_limit` (1000) | Same rule |
+| `external` | none | unlimited | none; intended as a staging area for entries you persist elsewhere |
 
 ```python
-memory = MemoryManager(
-    # Storage backend
-    backend="in-memory", # Options: in-memory, redis, postgres, chromadb
+from agenticaiframework.memory import MemoryManager
 
-    # Capacity settings
-    max_entries=10000,
-    max_tokens_per_entry=2048,
+memory = MemoryManager(short_term_limit=500, long_term_limit=5000)
 
-    # Compression settings
-    enable_compression=True,
-    compression_threshold=1000, # Compress when > 1000 tokens
+memory.store("session:42", {"step": 3}, memory_type="short_term", ttl=60, priority=1)
+memory.store("policy", "refunds within 5 days", memory_type="long_term", priority=5,
+             metadata={"source": "handbook"})
+memory.store_short_term("scratch", [1, 2, 3])                 # ttl=300, priority=0
+memory.store_long_term("brand_voice", "plain, direct")        # ttl=None, priority=5
+memory.store_external("s3://bucket/report.pdf", {"etag": "abc"})
 
-    # Semantic search settings
-    embedding_model="text-embedding-3-small",
-    similarity_threshold=0.7,
+print(memory.retrieve("policy"))                              # searches short_term, long_term, external
+print(memory.retrieve("missing", default="n/a"))
+print(memory.get_memory("long_term", "policy"))               # tier-specific read
 
-    # Persistence
-    persist_path="./memory_data",
-    auto_save=True,
-    save_interval=300 # Save every 5 minutes
-)
+hits = memory.search("refund", memory_type="long_term")       # substring match on key, value and metadata
+print([(e.key, e.priority, e.access_count) for e in hits])
+
+memory.consolidate()          # entries read 5+ times move from short_term to long_term with priority + 2
+print(memory.get_stats())
+# {'total_stores': 5, 'total_retrievals': 3, 'cache_hits': 2, 'cache_misses': 1, 'evictions': 0,
+#  'expirations': 0, 'hit_rate': 0.67, 'short_term_count': 2, 'long_term_count': 2, 'external_count': 1}
+
+memory.export_to_json("/tmp/memory_dump.json")
+memory.clear("short_term")    # or clear_short_term() / clear_long_term() / clear_external() / clear_all()
 ```
 
-### Advanced Features
-
-=== "Semantic Search"
-    ```python
-    # Semantic search with filters
-    results = memory.search(
-        query="technical explanations",
-        top_k=10,
-        filters={"user_id": "user_123"},
-        threshold=0.75
-    )
-    ```
-
-=== "Memory Compression"
-    ```python
-    # Enable automatic compression
-    memory = MemoryManager(enable_compression=True)
-
-    # Manual compression
-    compressed = memory.compress(
-        entries=old_memories,
-        strategy="summarize" # Options: summarize, extract_key_points, merge
-    )
-    ```
-
-=== "Persistence"
-    ```python
-    # Save to disk
-    memory.save("./checkpoints/memory_backup.pkl")
-
-    # Load from disk
-    memory = MemoryManager.load("./checkpoints/memory_backup.pkl")
-
-    # Export to JSON
-    memory.export_json("./exports/memory.json")
-    ```
-
-=== "Batch Operations"
-    ```python
-    # Batch store
-    entries = [{"content": "Memory 1", "metadata": {"tag": "a"}},
-        {"content": "Memory 2", "metadata": {"tag": "b"}},
-        {"content": "Memory 3", "metadata": {"tag": "c"}},
-    ]
-    memory.store_batch(entries)
-
-    # Batch delete
-    memory.delete_batch(filters={"tag": "old"})
-    ```
-
----
+`retrieve` refreshes `accessed_at` and `access_count` on the entry, drops it if the TTL has expired (counted in `expirations`) and records a hit or miss in `stats`. `MemoryEntry` fields: `key`, `value`, `ttl`, `priority`, `metadata`, `created_at`, `accessed_at`, `access_count`; methods `is_expired()`, `access()`, `to_dict()`, `from_dict()`. The legacy `set_memory(memory_type, key, value)` / `get_memory(memory_type, key, default)` / `clear_memory(memory_type)` accept `"short"`, `"long"` or `"external"` as tier names. All public methods hold an internal lock.
 
 ## AgentMemoryManager
 
-The **AgentMemoryManager** is specialized for storing agent-specific context, preferences, and learned behaviors.
-
-### Basic Usage
+Per-agent memory in four parts, each with a cap: conversation turns (`max_conversation_turns=100`), working memory (`max_working_items=50`), episodes (`max_episodes=500`) and facts (`max_facts=1000`).
 
 ```python
-from agenticaiframework import AgentMemoryManager
+from agenticaiframework.memory import AgentMemoryManager
 
-# Initialize for specific agent
-agent_memory = AgentMemoryManager(agent_id="researcher_01")
+mem = AgentMemoryManager("support_agent", max_conversation_turns=200)
 
-# Store agent context
-agent_memory.store_context(
-    task_type="research",
-    context={
-        "topic": "AI safety",
-        "depth": "detailed",
-        "sources_used": ["arxiv", "google_scholar"]
-    }
+# Conversation
+mem.add_turn("system", "You help with billing.", tokens=6)
+mem.add_turn("user", "I was charged twice.", metadata={"channel": "chat"})
+mem.add_turn("assistant", "I can see two authorisations; one will drop off.")
+print(mem.get_conversation(last_n=2, roles=["user", "assistant"])[0].role)   # user
+print(mem.get_conversation_text(format="simple"))                             # role: content lines
+print(mem.summarize_conversation()[:40])       # default summariser truncates; pass summarizer=fn for an LLM
+
+# Working memory with relevance and TTL
+mem.set_working("ticket_id", "T-1042", relevance=1.0, ttl_seconds=900)
+mem.set_working("last_intent", "refund", relevance=0.6)
+mem.decay_working_memory(decay_rate=0.3)       # relevance *= (1 - rate); items below 0.1 are dropped
+print(mem.get_working("ticket_id"), mem.get_all_working())
+
+# Facts
+fact = mem.learn_fact("preference", "Prefers email over phone", source="ticket T-1042", confidence=0.9)
+mem.use_fact(fact.fact_id)                     # bumps use_count / last_used
+print([f.content for f in mem.get_facts(category="preference", min_confidence=0.5)])
+print([f.content for f in mem.search_facts("email", top_k=3)])
+mem.forget_fact(fact.fact_id)
+
+# Episodes
+mem.record_episode(
+    task="refund_request", outcome="success", summary="Refunded duplicate charge",
+    actions=["lookup_invoice", "issue_refund"], learnings=["check auth holds first"], importance=0.8,
 )
+print([e.task for e in mem.get_episodes(outcome="success", min_importance=0.5)])
+print([e.summary for e in mem.get_relevant_episodes("duplicate refund", top_k=2)])
 
-# Store learned preferences
-agent_memory.store_preference(
-    key="response_style",
-    value="detailed_with_citations",
-    confidence=0.9
-)
-
-# Retrieve agent context
-context = agent_memory.get_context(task_type="research")
+snapshot = mem.export_all()                    # {'agent_id', 'conversation', 'working', 'episodes', 'facts', 'exported_at'}
+mem.clear_working(); mem.clear_conversation(); mem.clear_all()
 ```
 
-### Agent State Tracking
-
-```python
-import logging
-
-logger = logging.getLogger(__name__)
-
-# Track agent performance
-agent_memory.record_performance(
-    task_id="task_001",
-    metrics={
-        "accuracy": 0.95,
-        "latency_ms": 1200,
-        "tokens_used": 850
-    }
-)
-
-# Get performance history
-history = agent_memory.get_performance_history(
-    task_type="research",
-    last_n=10
-)
-
-# Get agent statistics
-stats = agent_memory.get_statistics()
-logger.info(f"Total tasks: {stats.total_tasks}")
-logger.info(f"Average accuracy: {stats.avg_accuracy}")
-```
-
-### Skill Memory
-
-```python
-# Store learned skill
-agent_memory.store_skill(
-    skill_name="code_review",
-    skill_data={
-        "patterns_learned": ["security_checks", "performance_tips"],
-        "success_rate": 0.92,
-        "examples": [...]
-    }
-)
-
-# Retrieve skill knowledge
-skill = agent_memory.get_skill("code_review")
-```
-
----
+Dataclasses: `ConversationTurn(turn_id, role, content, timestamp, metadata, tokens)`, `WorkingMemoryItem(key, value, relevance, created_at, expires_at)`, `Fact(fact_id, category, content, source, confidence, learned_at, last_used, use_count)`, `Episode(episode_id, task, outcome, summary, actions, learnings, timestamp, importance, metadata)`. `search_facts` and `get_relevant_episodes` score by word overlap between the query and the stored text. If a `memory_manager` is supplied, facts and episodes are mirrored into its long-term tier.
 
 ## WorkflowMemoryManager
 
-The **WorkflowMemoryManager** tracks workflow execution state, step completions, and branching logic.
-
-### Basic Usage
+Tracks variables, step results and checkpoints for multi-step workflows so a run can be resumed or audited.
 
 ```python
-import logging
+from agenticaiframework.memory import WorkflowMemoryManager, StepResultType
 
-logger = logging.getLogger(__name__)
+wf = WorkflowMemoryManager(max_checkpoints_per_workflow=10, max_execution_history=100)
 
-from agenticaiframework import WorkflowMemoryManager
+ctx = wf.create_context("etl-2026-09", initial_variables={"batch_size": 100})
+wf.set_variable("etl-2026-09", "region", "eu")
+print(wf.get_variable("etl-2026-09", "batch_size"), wf.get_all_variables("etl-2026-09"))
 
-# Initialize for workflow
-workflow_memory = WorkflowMemoryManager(workflow_id="content_pipeline")
+wf.record_step_result("etl-2026-09", "s1", "load", output=[1, 2, 3], duration_ms=40)
+wf.record_step_result("etl-2026-09", "s2", "validate", error="schema mismatch", duration_ms=5)
+print(wf.get_step_output("etl-2026-09", "s1"))                    # [1, 2, 3]
+print(wf.get_last_step_result("etl-2026-09").result_type)         # StepResultType.ERROR
 
-# Record workflow step
-workflow_memory.record_step(
-    step_name="research",
-    status="completed",
-    input_data={"topic": "AI trends"},
-    output_data=research_results,
-    duration_ms=5000
-)
+total = wf.pass_output_to_next("etl-2026-09", from_step="s1", to_step="s3", transform=sum)
+print(total, wf.get_step_input("etl-2026-09", "s3"))              # 6 6
+print(wf.aggregate_outputs("etl-2026-09", ["s1"], aggregator=lambda outs: len(outs)))
 
-# Get workflow status
-status = workflow_memory.get_status()
-logger.info(f"Current step: {status.current_step}")
-logger.info(f"Completed: {status.completed_steps}")
-logger.info(f"Remaining: {status.remaining_steps}")
+checkpoint = wf.checkpoint("etl-2026-09", current_step=2)
+restored = wf.restore_from_checkpoint("etl-2026-09")              # latest, or pass checkpoint_id=
+print(restored.current_step, len(restored.step_results))
+
+wf.record_execution("etl-2026-09", "Nightly ETL", status="failed", total_steps=3, completed_steps=1,
+                    started_at="2026-09-04T01:00:00", total_duration_ms=45, error="schema mismatch")
+print([r.status for r in wf.get_execution_history(status="failed")])
+print(wf.get_stats())          # {'active_workflows': 1, 'total_checkpoints': 1, 'execution_history_size': 1}
+wf.cleanup_workflow("etl-2026-09")
 ```
 
-### Checkpoint Management
-
-```python
-# Create checkpoint
-checkpoint_id = workflow_memory.create_checkpoint(
-    name="after_research",
-    data={
-        "research_results": research_data,
-        "next_step": "writing"
-    }
-)
-
-# Restore from checkpoint
-workflow_memory.restore_checkpoint(checkpoint_id)
-
-# List all checkpoints
-checkpoints = workflow_memory.list_checkpoints()
-```
-
-### Branching Workflows
-
-```python
-# Record branch decision
-workflow_memory.record_branch(
-    decision_point="content_type",
-    selected_branch="technical_article",
-    conditions={"audience": "developers"},
-    alternatives=["blog_post", "whitepaper"]
-)
-
-# Get branch history
-branches = workflow_memory.get_branch_history()
-```
-
-### Error Recovery
-
-```python
-# Record error
-workflow_memory.record_error(
-    step_name="api_call",
-    error_type="RateLimitError",
-    error_message="API rate limit exceeded",
-    retry_count=3
-)
-
-# Get recovery suggestions
-suggestions = workflow_memory.get_recovery_suggestions("api_call")
-```
-
----
+`StepResult.result_type` is `StepResultType.OUTPUT`, `ERROR`, `SKIP` or `PENDING`. `WorkflowContext` holds `variables`, `step_outputs` and `errors`; `WorkflowMemoryCheckpoint` snapshots the context plus step results; `WorkflowExecutionRecord` summarises one run.
 
 ## OrchestrationMemoryManager
 
-The **OrchestrationMemoryManager** enables memory sharing and coordination across multiple agents.
-
-### Basic Usage
+Shared state for teams: a `SharedContext` per team, a mailbox per agent, handoff records and per-task contributions.
 
 ```python
-from agenticaiframework import OrchestrationMemoryManager
+from agenticaiframework.memory import OrchestrationMemoryManager
 
-# Initialize orchestration memory
-orch_memory = OrchestrationMemoryManager(team_id="research_team")
+orch = OrchestrationMemoryManager(max_messages_per_agent=100, max_handoffs=500)
 
-# Share context across agents
-orch_memory.share_context(
-    from_agent="researcher",
-    to_agents=["writer", "editor"],
-    context={
-        "findings": research_findings,
-        "sources": source_list,
-        "key_points": key_points
-    }
-)
+orch.create_team_context("content_team", goal="Publish the Q3 briefing",
+                         initial_variables={"deadline": "Friday"}, constraints=["no external links"])
+orch.update_team_variable("content_team", "status", "drafting")
+orch.add_shared_knowledge("content_team", "Legal approved the numbers")
+orch.update_progress("content_team", task_id="draft", progress={"percent": 40})
+print(orch.get_team_variable("content_team", "deadline"), orch.get_team_context("content_team").knowledge)
 
-# Get shared context
-context = orch_memory.get_shared_context(agent_id="writer")
+msg = orch.send_message("researcher", "writer", {"facts": 3}, priority="high", message_type="handoff")
+orch.broadcast_message("lead", "content_team", ["researcher", "writer"], "Standup in 5")
+print(orch.get_unread_count("writer"), [m.content for m in orch.get_messages("writer", unread_only=True)])
+orch.mark_read("writer", msg.message_id)
+
+handoff = orch.record_handoff("researcher", "writer", task_id="draft", task_description="Write section 2",
+                              context={"sources": ["a", "b"]}, reason="research complete")
+print([h.task_id for h in orch.get_pending_handoffs("writer")])
+orch.acknowledge_handoff(handoff.handoff_id, "writer")
+orch.complete_handoff(handoff.handoff_id)
+
+orch.record_contribution("writer", "draft", contribution_type="text", content="Section 2 v1")
+print(orch.aggregate_contributions("draft", contribution_type="text"))
+print(orch.get_handoff_history(agent_id="writer")[0].completed, orch.get_stats())
+orch.cleanup_team("content_team")
 ```
 
-### Agent Coordination
-
-```python
-# Register agent availability
-orch_memory.register_agent(
-    agent_id="researcher",
-    capabilities=["web_search", "data_analysis"],
-    status="available"
-)
-
-# Find available agents
-available = orch_memory.find_agents(
-    capability="web_search",
-    status="available"
-)
-
-# Update agent status
-orch_memory.update_agent_status(
-    agent_id="researcher",
-    status="busy",
-    current_task="market_research"
-)
-```
-
-### Message Passing
-
-```python
-# Send message between agents
-orch_memory.send_message(
-    from_agent="leader",
-    to_agent="researcher",
-    message_type="task_assignment",
-    content={
-        "task": "Research competitor analysis",
-        "priority": "high",
-        "deadline": "2024-01-15"
-    }
-)
-
-# Get pending messages
-messages = orch_memory.get_messages(agent_id="researcher")
-```
-
-### Consensus Building
-
-```python
-import logging
-
-logger = logging.getLogger(__name__)
-
-# Record agent vote/opinion
-orch_memory.record_vote(
-    topic="approach_selection",
-    agent_id="researcher",
-    vote="option_a",
-    confidence=0.8,
-    reasoning="Based on data accuracy requirements"
-)
-
-# Get consensus
-consensus = orch_memory.get_consensus("approach_selection")
-logger.info(f"Selected: {consensus.selected_option}")
-logger.info(f"Agreement: {consensus.agreement_level}")
-```
-
----
+`MessagePriority` is `LOW`, `NORMAL`, `HIGH`, `URGENT`; `send_message` and `broadcast_message` take the lowercase string. Dataclasses: `AgentMessage`, `TaskHandoff`, `SharedContext`, `AgentContribution`.
 
 ## KnowledgeMemoryManager
 
-The **KnowledgeMemoryManager** provides a knowledge base with document storage, chunking, and RAG capabilities.
-
-### Basic Usage
+Caches for the RAG pipeline plus a record of what was retrieved and how well it did.
 
 ```python
-import logging
+from agenticaiframework.memory import KnowledgeMemoryManager
 
-logger = logging.getLogger(__name__)
+km = KnowledgeMemoryManager(embedding_cache_ttl=86_400, query_cache_ttl=3_600, max_retrieval_history=1000)
 
-from agenticaiframework import KnowledgeMemoryManager
+km.cache_embedding("refund policy", [0.12, 0.98, 0.33], model="text-embedding-3-small")
+print(km.get_cached_embedding("refund policy", model="text-embedding-3-small"))
+km.batch_cache_embeddings(["a", "b"], [[0.1], [0.2]], model="text-embedding-3-small")
+vectors, missing_indexes = km.get_cached_embeddings_batch(["a", "zzz"], model="text-embedding-3-small")
+print(len(vectors), missing_indexes)                          # 2 [1]
 
-# Initialize knowledge base
-knowledge = KnowledgeMemoryManager()
+km.cache_query_result("how do refunds work", [{"text": "Refunds take 5 days", "score": 0.91}], kb_id="policies")
+print(km.get_cached_query_result("how do refunds work", kb_id="policies"))
 
-# Add document
-knowledge.add_document(
-    content=document_text,
-    source="company_policy.pdf",
-    metadata={
-        "category": "policies",
-        "department": "HR",
-        "version": "2.0"
-    }
-)
+record = km.record_retrieval("how do refunds work", kb_id="policies",
+                             results=[{"score": 0.91}], latency_ms=18, agent_id="support")
+km.add_retrieval_feedback(record.retrieval_id, "relevant")     # relevant | partial | irrelevant
+print(km.get_retrieval_stats(kb_id="policies"))
 
-# Query knowledge base
-results = knowledge.query(
-    question="What is the vacation policy?",
-    top_k=3
-)
+km.track_document("handbook.pdf", source_path="/docs/handbook.pdf", doc_type="pdf", chunk_count=42, total_tokens=18_000)
+km.access_document("handbook.pdf")
+print([d.doc_id for d in km.get_frequently_accessed_docs(top_k=5)], km.get_cache_stats())
 
-for result in results:
-    logger.info(f"Answer: {result.content}")
-    logger.info(f"Source: {result.source}")
-    logger.info(f"Confidence: {result.confidence:.2f}")
+km.invalidate_query_cache(kb_id="policies")
+km.clear_embedding_cache(model="text-embedding-3-small")
+print(km.cleanup_expired())                                   # {'embeddings': n, 'queries': n}
 ```
-
-### Document Processing
-
-```python
-# Add multiple documents
-knowledge.add_documents([{"content": doc1, "source": "file1.pdf"},
-    {"content": doc2, "source": "file2.pdf"},
-    {"content": doc3, "source": "file3.pdf"},
-])
-
-# Configure chunking
-knowledge = KnowledgeMemoryManager(
-    chunk_size=500,
-    chunk_overlap=50,
-    chunking_strategy="semantic" # Options: fixed, semantic, sentence
-)
-
-# Add from file
-knowledge.add_from_file("./documents/manual.pdf")
-
-# Add from URL
-knowledge.add_from_url("https://docs.example.com/api")
-```
-
-### RAG Integration
-
-```python
-# Configure RAG settings
-knowledge = KnowledgeMemoryManager(
-    embedding_model="text-embedding-3-large",
-    retrieval_strategy="hybrid", # Options: vector, keyword, hybrid
-    rerank_model="cross-encoder"
-)
-
-# RAG query with context
-context = knowledge.retrieve_context(
-    query="How do I configure authentication?",
-    top_k=5,
-    include_metadata=True
-)
-
-# Generate answer with context
-answer = agent.execute(
-    prompt=f"Based on this context: {context}\n\nAnswer: {query}"
-)
-```
-
-### Knowledge Categories
-
-```python
-# Create categories
-knowledge.create_category("technical_docs", parent=None)
-knowledge.create_category("api_reference", parent="technical_docs")
-
-# Add to category
-knowledge.add_document(
-    content=api_doc,
-    category="api_reference"
-)
-
-# Query specific category
-results = knowledge.query(
-    question="API authentication",
-    category="api_reference"
-)
-```
-
----
 
 ## ToolMemoryManager
 
-The **ToolMemoryManager** tracks tool execution history, caches results, and optimizes tool selection.
-
-### Basic Usage
+Result caching keyed by tool name and arguments, execution history and derived statistics.
 
 ```python
-from agenticaiframework import ToolMemoryManager
+from agenticaiframework.memory import ToolMemoryManager
 
-# Initialize tool memory
-tool_memory = ToolMemoryManager()
+tm = ToolMemoryManager(default_cache_ttl=3600, max_execution_history=1000)
 
-# Record tool execution
-tool_memory.record_execution(
-    tool_name="web_search",
-    input_params={"query": "AI trends 2024"},
-    output=search_results,
-    duration_ms=850,
-    success=True
-)
+tm.record_execution("WebSearchTool", {"query": "battery recycling"}, result={"hits": 12},
+                    success=True, execution_time_ms=340, agent_id="researcher")
+tm.record_execution("WebSearchTool", {"query": "lithium"}, result=None, success=False,
+                    error="timeout", execution_time_ms=5000)
+tm.cache_result("WebSearchTool", {"query": "battery recycling"}, {"hits": 12}, execution_time_ms=340)
 
-# Get execution history
-history = tool_memory.get_history(tool_name="web_search", last_n=10)
+print(tm.get_cached_result("WebSearchTool", {"query": "battery recycling"}))    # {'hits': 12}
+print(tm.get_last_result("WebSearchTool", agent_id="researcher"))
+
+stats = tm.get_performance_stats("WebSearchTool")
+print(stats.total_executions, stats.success_rate, stats.avg_time_ms, stats.cache_hit_rate)
+print(tm.get_slow_tools(threshold_ms=1000), tm.get_failing_tools(threshold=0.1))
+print([p.common_args for p in tm.get_common_patterns("WebSearchTool")])
+print(tm.suggest_args("WebSearchTool", partial_args={}))
+print(len(tm.get_similar_executions("WebSearchTool", {"query": "battery"}, top_k=3)))
+print(tm.get_execution_history(tool_name="WebSearchTool", success_only=True, last_n=5)[0].result)
+
+tm.invalidate_cache(tool_name="WebSearchTool")
+print(tm.cleanup_expired(), tm.get_memory_stats())
 ```
 
-### Result Caching
-
-```python
-# Configure caching
-tool_memory = ToolMemoryManager(
-    enable_caching=True,
-    cache_ttl=3600, # 1 hour
-    max_cache_size=1000
-)
-
-# Check cache before execution
-cached = tool_memory.get_cached_result(
-    tool_name="web_search",
-    input_params={"query": "AI trends"}
-)
-
-if cached:
-    result = cached.output
-else:
-    result = execute_search("AI trends")
-    tool_memory.cache_result(
-        tool_name="web_search",
-        input_params={"query": "AI trends"},
-        output=result
-    )
-```
-
-### Tool Analytics
-
-```python
-import logging
-
-logger = logging.getLogger(__name__)
-
-# Get tool performance metrics
-metrics = tool_memory.get_tool_metrics("web_search")
-logger.info(f"Success rate: {metrics.success_rate:.2%}")
-logger.info(f"Avg latency: {metrics.avg_latency_ms}ms")
-logger.info(f"Total calls: {metrics.total_calls}")
-
-# Get all tool statistics
-all_stats = tool_memory.get_all_statistics()
-for tool, stats in all_stats.items():
-    logger.info(f"{tool}: {stats.success_rate:.2%} success, {stats.avg_latency_ms}ms avg")
-```
-
-### Tool Optimization
-
-```python
-# Get tool recommendations
-recommendations = tool_memory.get_recommendations(
-    task_type="information_retrieval",
-    based_on="success_rate" # Options: success_rate, latency, cost
-)
-
-# Record tool failures for learning
-tool_memory.record_failure(
-    tool_name="api_call",
-    error_type="RateLimitError",
-    input_params=params,
-    recovery_action="retry_with_backoff"
-)
-```
-
----
+`ToolPerformanceStats` has `total_executions`, `successful_executions`, `failed_executions`, `min/max/avg_time_ms`, `cache_hits`, `cache_misses` and the `success_rate` / `cache_hit_rate` properties; `get_all_stats()` returns one per tool.
 
 ## SpeechMemoryManager
 
-The **SpeechMemoryManager** handles voice interaction data, including transcripts, audio metadata, and conversation flow.
-
-### Basic Usage
+History for speech-to-text and text-to-speech calls, an audio cache and voice profiles. See [Speech](speech.md) for the providers that produce this data.
 
 ```python
-from agenticaiframework import SpeechMemoryManager
+from agenticaiframework.memory import SpeechMemoryManager
 
-# Initialize speech memory
-speech_memory = SpeechMemoryManager()
+sm = SpeechMemoryManager(audio_cache_ttl=3600, max_transcription_history=500, max_synthesis_history=500)
 
-# Store transcript
-speech_memory.store_transcript(
-    session_id="voice_001",
-    speaker="user",
-    text="What's the weather like today?",
-    timestamp="2024-01-15T10:30:00Z",
-    audio_metadata={
-        "duration_ms": 2500,
-        "sample_rate": 16000,
-        "format": "wav"
-    }
-)
+t = sm.store_transcription("sha256:abc", "turn left at the next junction", language="en",
+                           confidence=0.96, provider="openai", model="whisper-1", duration_ms=2100)
+print(sm.get_transcription_by_audio("sha256:abc").word_count)              # 6
+print([x.text for x in sm.search_transcriptions("junction", top_k=5)])
+print(len(sm.get_transcription_history(language="en", provider="openai")))
 
-# Get conversation history
-history = speech_memory.get_conversation(session_id="voice_001")
+s = sm.store_synthesis("Turn left ahead", voice="alloy", provider="openai", model="tts-1",
+                       audio_format="mp3", duration_ms=1500, audio_size_bytes=24_000)
+print(sm.get_synthesis_by_text("Turn left ahead", voice="alloy").synthesis_id == s.synthesis_id)
+
+key = sm.cache_audio(b"\x00\x01", format="wav", duration_ms=10, storage_path="/tmp/a.wav")
+profile = sm.create_voice_profile("Ada", profile_type="user", preferred_language="en")
+sm.set_voice_embedding(profile.profile_id, [0.2, 0.4, 0.4])
+print(sm.find_speaker_by_embedding([0.2, 0.4, 0.4], threshold=0.9).name)  # Ada
+sm.update_voice_profile(profile.profile_id, speaking_rate=1.1)
+print(sm.get_stats())
 ```
 
-### Voice Profile Management
+Dataclasses: `TranscriptionMemory`, `SynthesisMemory`, `VoiceProfile`, `VoiceConversationMemory`, `AudioCache`.
+
+## Sharing one MemoryManager
+
+Every specialised manager accepts `memory_manager=` and, when given one, mirrors its records into that store's long-term tier under prefixed keys. That makes one `search()` cover everything and one `export_to_json()` dump it all.
 
 ```python
-# Store voice profile
-speech_memory.store_voice_profile(
-    user_id="user_123",
-    profile={
-        "voice_embedding": voice_embedding,
-        "language": "en-US",
-        "speaking_rate": 1.2,
-        "preferred_tts_voice": "alloy"
-    }
-)
+from agenticaiframework.memory import MemoryManager, AgentMemoryManager, ToolMemoryManager
 
-# Get voice profile
-profile = speech_memory.get_voice_profile(user_id="user_123")
+shared = MemoryManager(long_term_limit=10_000)
+agent_mem = AgentMemoryManager("agent_001", memory_manager=shared)
+tool_mem = ToolMemoryManager(memory_manager=shared)
+
+agent_mem.learn_fact("preference", "User prefers Celsius")
+tool_mem.record_execution("WeatherTool", {"city": "Oslo"}, {"temp": 12}, execution_time_ms=80)
+print(shared.get_stats()["long_term_count"] >= 1)
 ```
 
-### Speech Analytics
+## API summary
 
-```python
-import logging
+| Symbol | Signature / key methods | Notes |
+|---|---|---|
+| `MemoryManager` | `MemoryManager(short_term_limit=100, long_term_limit=1000)`; `store(key, value, memory_type="short_term", ttl=None, priority=0, metadata=None)`, `store_short_term`, `store_long_term`, `store_external`, `retrieve(key, default=None)`, `get_memory(tier, key, default)`, `search(query, memory_type=None) -> List[MemoryEntry]`, `consolidate()`, `get_stats()`, `export_to_json(path)`, `clear(memory_type=None)` | Thread-safe; `short_term`, `long_term`, `external` attributes are the underlying dicts |
+| `AgentMemoryManager` | `AgentMemoryManager(agent_id, memory_manager=None, max_conversation_turns=100, max_working_items=50, max_episodes=500, max_facts=1000)`; `add_turn`, `get_conversation`, `get_conversation_text`, `summarize_conversation`, `set_working(key, value, relevance=1.0, ttl_seconds=None)`, `get_working`, `get_all_working`, `decay_working_memory(decay_rate=0.1)`, `learn_fact(category, content, source=None, confidence=1.0)`, `get_facts`, `search_facts`, `use_fact`, `forget_fact`, `record_episode(task, outcome, summary=None, actions=None, learnings=None, importance=0.5, metadata=None)`, `get_episodes`, `get_relevant_episodes(task, top_k=5)`, `get_stats`, `export_all`, `clear_*` | |
+| `WorkflowMemoryManager` | `WorkflowMemoryManager(memory_manager=None, max_checkpoints_per_workflow=10, max_execution_history=100)`; `create_context`, `set_variable`, `get_variable`, `get_all_variables`, `record_step_result`, `get_step_output`, `get_step_input`, `get_last_step_result`, `get_all_step_results`, `pass_output_to_next`, `aggregate_outputs`, `checkpoint`, `get_latest_checkpoint`, `restore_from_checkpoint`, `record_execution`, `get_execution_history`, `get_stats`, `cleanup_workflow` | |
+| `OrchestrationMemoryManager` | `OrchestrationMemoryManager(memory_manager=None, max_messages_per_agent=100, max_handoffs=500)`; `create_team_context`, `update_team_variable`, `get_team_variable`, `add_shared_knowledge`, `update_progress`, `get_team_context`, `send_message`, `broadcast_message`, `get_messages`, `get_unread_count`, `mark_read`, `record_handoff`, `get_pending_handoffs`, `acknowledge_handoff`, `complete_handoff`, `get_handoff_history`, `record_contribution`, `get_task_contributions`, `aggregate_contributions`, `get_stats`, `cleanup_team` | |
+| `KnowledgeMemoryManager` | `KnowledgeMemoryManager(memory_manager=None, embedding_cache_ttl=86400, query_cache_ttl=3600, max_retrieval_history=1000)`; `cache_embedding`, `get_cached_embedding`, `batch_cache_embeddings`, `get_cached_embeddings_batch`, `clear_embedding_cache`, `cache_query_result`, `get_cached_query_result`, `invalidate_query_cache`, `record_retrieval`, `add_retrieval_feedback`, `get_retrieval_history`, `get_retrieval_stats`, `track_document`, `access_document`, `get_document_info`, `get_frequently_accessed_docs`, `get_cache_stats`, `cleanup_expired` | |
+| `ToolMemoryManager` | `ToolMemoryManager(memory_manager=None, default_cache_ttl=3600, max_execution_history=1000)`; `cache_result`, `get_cached_result`, `invalidate_cache`, `record_execution`, `get_execution_history`, `get_last_result`, `get_similar_executions`, `get_common_patterns`, `suggest_args`, `get_performance_stats`, `get_all_stats`, `get_slow_tools`, `get_failing_tools`, `cleanup_expired`, `get_memory_stats` | |
+| `SpeechMemoryManager` | `SpeechMemoryManager(memory_manager=None, audio_cache_ttl=3600, max_transcription_history=500, max_synthesis_history=500)`; `store_transcription`, `get_transcription_by_audio`, `search_transcriptions`, `get_transcription_history`, `store_synthesis`, `get_synthesis_by_text`, `get_synthesis_history`, `cache_audio`, `get_audio_cache`, `cleanup_expired_cache`, `create_voice_profile`, `get_voice_profile`, `update_voice_profile`, `set_voice_embedding`, `find_speaker_by_embedding`, `start_conversation`, `add_conversation_turn`, `get_conversation`, `get_conversation_transcript`, `end_conversation`, `get_stats` | |
+| `MemoryEntry`, `MemoryStats`, `MemoryType` | dataclasses / enum | `MemoryStats.hit_rate` property |
 
-logger = logging.getLogger(__name__)
+## Related
 
-# Get speech metrics
-metrics = speech_memory.get_session_metrics(session_id="voice_001")
-logger.info(f"Total duration: {metrics.total_duration_ms}ms")
-logger.info(f"User speaking time: {metrics.user_speaking_time_ms}ms")
-logger.info(f"Agent speaking time: {metrics.agent_speaking_time_ms}ms")
-logger.info(f"Turn count: {metrics.turn_count}")
-
-# Get transcription accuracy
-accuracy = speech_memory.get_transcription_accuracy(
-    session_id="voice_001",
-    ground_truth=expected_text
-)
-```
-
-### Multi-Speaker Support
-
-```python
-# Record multi-speaker conversation
-speech_memory.store_transcript(
-    session_id="meeting_001",
-    speaker="speaker_1",
-    speaker_label="Alice",
-    text="We should discuss the project timeline.",
-    timestamp="2024-01-15T14:00:00Z"
-)
-
-speech_memory.store_transcript(
-    session_id="meeting_001",
-    speaker="speaker_2",
-    speaker_label="Bob",
-    text="I think we need two more weeks.",
-    timestamp="2024-01-15T14:00:05Z"
-)
-
-# Get speaker-segmented transcript
-transcript = speech_memory.get_conversation(
-    session_id="meeting_001",
-    include_speaker_labels=True
-)
-```
-
----
-
-## Backend Configuration
-
-### In-Memory (Default)
-
-```python
-memory = MemoryManager(backend="in-memory")
-```
-
-### Redis
-
-```python
-memory = MemoryManager(
-    backend="redis",
-    backend_config={
-        "host": "localhost",
-        "port": 6379,
-        "db": 0,
-        "password": "your_password"
-    }
-)
-```
-
-### PostgreSQL
-
-```python
-memory = MemoryManager(
-    backend="postgres",
-    backend_config={
-        "host": "localhost",
-        "port": 5432,
-        "database": "agentic_memory",
-        "user": "postgres",
-        "password": "your_password"
-    }
-)
-```
-
-### ChromaDB
-
-```python
-memory = MemoryManager(
-    backend="chromadb",
-    backend_config={
-        "persist_directory": "./chroma_data",
-        "collection_name": "agent_memories"
-    }
-)
-```
-
----
-
-## Best Practices
-
-### Memory Hygiene
-
-```python
-# Regular cleanup of old memories
-memory.cleanup(
-    older_than_days=30,
-    keep_important=True
-)
-
-# Compress old memories
-memory.compress_old(
-    older_than_days=7,
-    strategy="summarize"
-)
-```
-
-### Memory Indexing
-
-```python
-# Add indexes for faster queries
-memory.create_index("user_id")
-memory.create_index("category")
-
-# Query with index
-results = memory.search(
-    query="user preferences",
-    filters={"user_id": "user_123"}, # Uses index
-    top_k=10
-)
-```
-
-### Memory Monitoring
-
-```python
-import logging
-
-logger = logging.getLogger(__name__)
-
-# Get memory statistics
-stats = memory.get_statistics()
-logger.info(f"Total entries: {stats.total_entries}")
-logger.info(f"Storage size: {stats.storage_size_mb} MB")
-logger.info(f"Average entry size: {stats.avg_entry_size_tokens} tokens")
-
-# Monitor memory health
-health = memory.health_check()
-if not health.is_healthy:
-    logger.info(f"Issues: {health.issues}")
-```
-
----
-
-## API Reference
-
-For complete API documentation, see:
-
-- [MemoryManager API](API_REFERENCE.md#memorymanager)
-- [AgentMemoryManager API](API_REFERENCE.md#agentmemorymanager)
-- [WorkflowMemoryManager API](API_REFERENCE.md#workflowmemorymanager)
-- [OrchestrationMemoryManager API](API_REFERENCE.md#orchestrationmemorymanager)
-- [KnowledgeMemoryManager API](API_REFERENCE.md#knowledgememorymanager)
-- [ToolMemoryManager API](API_REFERENCE.md#toolmemorymanager)
-- [SpeechMemoryManager API](API_REFERENCE.md#speechmemorymanager)
+- [State](state.md): checkpoints, snapshots, recovery and file/Redis backends
+- [Context](context.md): the token-bounded context window used inside a single call
+- [Agents](agents.md): `ConversationManager` for LLM-formatted history
+- [Knowledge](knowledge.md), [Tools](tools.md), [Speech](speech.md), [Orchestration](orchestration.md): the subsystems the specialised managers record
